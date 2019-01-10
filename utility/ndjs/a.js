@@ -1,32 +1,14 @@
 
-var request = require("request");
+
 const fs = require('fs');
 var path = require('path');
+var cheerio=require("cheerio"); //>> npm install cheerio
+ 
 
-var g_idx=0;
-const booklist_org="booklist_org";
-const booklist_tbl="booklist_tbl";
-const ctext_org="ctext_org";
-const ctext_tbl="ctext_tbl";
-const gBaseUrl="https://ctext.org/";
+   
 
-var options = {
-      method: 'POST',
-      url: 'https://bungeetech.com/api/v1/crawl',
-      headers:
-       { 'x-clientId': 'bungee_internal_rock_client',
-         'x-api-key':  'bungee_internal_rock_key',
-         'Content-Type': 'application/x-www-form-urlencoded' },
-      form:
-       { url: 'https://ctext.org/pre-qin-and-han/zh',
-         location: 'all',  //'all',
-         method: 'GET' } };
 
-// request(options, function (error, response, body) {
-//       if (error) throw new Error(error);
-// 
-//       console.log(body);
-//     });
+
 
 function getDateTime() {
 
@@ -53,7 +35,6 @@ function getDateTime() {
 
 }
 var dt=getDateTime();
-console.log("dt");
 console.log(dt);
 //return;
 
@@ -144,116 +125,41 @@ function request_a_book(bookname){
     });
 };//
 
+var outdirtmp="out/tmp";
+makePathDir(outdirtmp);
+
+var tardir="../../jsdb/bible/cuvs";
+function merge_jsfiles_in_Dir(sdir){
+  var arr=getFileNamesFromDir(tardir,".js");
+  var merges="";
+  console.log(tardir,arr);
+  for(var i=0;i<arr.length;i++){
+    var fname=arr[i];
+    var content=fs.readFileSync(fname);
+    merges+=content+"\n\n\n";
+  };
+  console.log(merges);
+
+  writeBody2file(outdirtmp+"/merge.js",merges);
+}
+merge_jsfiles_in_Dir(tardir);
+return;
 
 
 
 
-//writeBody2file("body", "analects/zh");
-//request_a_book("analects/zh");
 
-var BookRefsArr=[
-    "analects/zh",
-    "mengzi/zh",
-    "liji/zh",
-    "xunzi/zh",
-    "xiao-jing/zh",
-    "shuo-yuan/zh",
-    "chun-qiu-fan-lu/zh",
-    "han-shi-wai-zhuan/zh",
-    "da-dai-li-ji/zh",
-    "bai-hu-tong/zh",
-    "xin-shu/zh",
-    "xin-xu/zh",
-    "yangzi-fayan/zh",
-    "zhong-lun/zh",
-    "kongzi-jiayu/zh",
-    "qian-fu-lun/zh",
-    "lunheng/zh",
-    "taixuanjing/zh",
-    "fengsutongyi/zh",
-    "kongcongzi/zh",
-    "shenjian/zh",
-    "zhong-jing/zh",
-    "su-shu/zh",
-    "xinyu/zh",
-    "duduan/zh",
-    "caizhong-langji/zh",
-    "mozi/zh",
-    "mo-bian-zhu-xu/zh",
-    "zhuangzi/zh",
-    "dao-de-jing/zh",
-    "liezi/zh",
-    "he-guan-zi/zh",
-    "wenzi/zh",
-    "wenshi-zhenjing/zh",
-    "lie-xian-zhuan/zh",
-    "yuzi/zh",
-    "heshanggong/zh",
-    "hanfeizi/zh",
-    "shang-jun-shu/zh",
-    "shen-bu-hai/zh",
-    "shenzi/zh",
-    "jian-zhu-ke-shu/zh",
-    "guanzi/zh",
-    "gongsunlongzi/zh",
-    "art-of-war/zh",
-    "wu-zi/zh",
-    "liu-tao/zh",
-    "si-ma-fa/zh",
-    "wei-liao-zi/zh",
-    "three-strategies/zh",
-    "hai-dao-suan-jing/zh",
-    "nine-chapters/zh",
-    "sunzi-suan-jing/zh",
-    "zhou-bi-suan-jing/zh",
-    "huainanzi/zh",
-    "lv-shi-chun-qiu/zh",
-    "gui-gu-zi/zh",
-    "yin-wen-zi/zh",
-    "deng-xi-zi/zh",
-    "shiji/zh",
-    "chun-qiu-zuo-zhuan/zh",
-    "lost-book-of-zhou/zh",
-    "guo-yu/zh",
-    "yanzi-chun-qiu/zh",
-    "wu-yue-chun-qiu/zh",
-    "yue-jue-shu/zh",
-    "zhan-guo-ce/zh",
-    "yan-tie-lun/zh",
-    "lie-nv-zhuan/zh",
-    "guliang-zhuan/zh",
-    "gongyang-zhuan/zh",
-    "han-shu/zh",
-    "qian-han-ji/zh",
-    "dong-guan-han-ji/zh",
-    "hou-han-shu/zh",
-    "zhushu-jinian/zh",
-    "mutianzi-zhuan/zh",
-    "gu-san-fen/zh",
-    "yandanzi/zh",
-    "xijing-zaji/zh",
-    "book-of-poetry/zh",
-    "shang-shu/zh",
-    "book-of-changes/zh",
-    "rites-of-zhou/zh",
-    "chu-ci/zh",
-    "yili/zh",
-    "shan-hai-jing/zh",
-    "jiaoshi-yilin/zh",
-    "jingshi-yizhuan/zh",
-    "shishuo/zh",
-    "shuo-wen-jie-zi/zh",
-    "er-ya/zh",
-    "shi-ming/zh",
-    "fang-yan/zh",
-    "jijiupian/zh",
-    "huangdi-neijing/zh",
-    "nan-jing/zh",
-    "shang-han-lun/zh",
-    "jinkui-yaolue/zh",
-    "guodian/zh",
-    "mawangdui/zh"
-];
+
+
+
+
+
+
+
+
+
+
+
 
 
 
