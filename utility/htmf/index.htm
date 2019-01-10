@@ -27,16 +27,17 @@ $(function(){
         "STUS":"3,887,835 b",
         "WLVS":"2,866,838 b"};
 //https://wdingbox.github.io/ham12/jsdb/jsBibleTxt/BBE.json.js
-var url="https://wdingbox.github.io/ham12/jsdb/jsBibleObj/";
+
     var stb="";
     var lanArr=Object.keys(statBible);
     $.each(lanArr,function(i,slan){
-        var sf=slan+"_loadjson.htm";
+        var sf1=slan+"_loadjson.htm";
+        var sf2=slan+"_loadjson2.htm";
 
-        var as1="<a href='"+sf+"'>"+sf+"</a>";
-        var as2="<a href='"+sf+"'>"+sf+"</a>";
-        stb+="<tr><td></td><td>"+as1+"</td><td>"+statBible[slan]+"</td>";
-        stb+="<td></td>";
+        var as1="<a href='"+sf1+"'>"+sf1+"</a>";
+        var as2="<a href='"+sf2+"'>"+sf2+"</a>";
+        stb+="<tr><td></td><td>"+as1+"</td><td>"+as2+"</td>";
+        stb+="<td>"+statBible[slan]+"</td>";
         stb+="</tr>";
     });
     $("#tbd").html(stb);
@@ -48,9 +49,9 @@ var url="https://wdingbox.github.io/ham12/jsdb/jsBibleObj/";
 <table border="1">
     <thead><tr>
         <th>#</th>
-        <th>Links</th>
+        <th>localpath</th>
+        <th>url</th>
         <th>size</th>
-        <th>Notes</th>
     </tr></thead>
     <tbody id="tbd"></tbody>
 </table>
