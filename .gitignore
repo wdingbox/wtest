@@ -1,3 +1,5 @@
 .DS_Store
 ~visitCount.txt
-.DS_Store
+node_modules/
+out/
+package-lock.json
