@@ -65,9 +65,9 @@ console.log(a);
 
 var bjson={};
 
-var trs="";
-$.each(I,function(key,str){
-	trs+="<tr>";
+var trs="", idx=0;
+$.each(P,function(key,str){
+	trs+="<tr><td>"+(++idx)+"</td>";
 	trs+="<td>"+key+"</td><td>"+str+"</td>";
 	trs+="</tr>";
 
@@ -82,7 +82,7 @@ $.each(I,function(key,str){
 
 });
 $("#vbibtxt").html(trs);
-$("#out").val(JSON.stringify(bjson,null,2));
+$("#out").val("var PINYIN=\n"+JSON.stringify(bjson,null,2));
 
 
 });/////////////

@@ -18,7 +18,7 @@
     </script>
 
 
-    <script language="javascript" src="../../jsdb/jsBible/CUVS.json.js"></script>
+    <script language="javascript" src="../../jsdb/jsBible/NIV.json.js"></script>
     
 
     
@@ -63,14 +63,14 @@ a._1Jn={_1qw:"1a",2:"2b"}
 console.log(a);
 
 
-var bjson={};
+var idx=0;
 
 var trs="";
-$.each(CUVS,function(volname,ChpObj){
+$.each(NIV,function(volname,ChpObj){
 	$.each(ChpObj,function(chpKey,VerseObj){
 		$.each(VerseObj,function(versKey,Txt){
 			var vcv=volname+""+chpKey+":"+versKey;
-			trs+="<tr>";
+			trs+="<tr><td>"+(++idx)+"</td>";
 			trs+="<td>"+vcv+"</td><td>"+Txt+"</td>";
 			trs+="</tr>";
 		});
