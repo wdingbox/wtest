@@ -140,7 +140,7 @@ function merge_jsfiles_in_Dir(sdir){
   };
   console.log(merges);
 
-  writeBody2file(outdirtmp+"/merged.js",merges);
+  writeBody2file(outdirtmp+"/merged.js","var I = new Object();\n"+merges);
 }
 merge_jsfiles_in_Dir(tardir);
 return;

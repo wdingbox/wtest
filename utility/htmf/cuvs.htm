@@ -59,21 +59,45 @@ body {
 $(document).ready(function(){
 
 var a={};
-a._1Jn={1:"1a",2:"2b"}
+a._1Jn={_1qw:"1a",2:"2b"}
 console.log(a);
+
+
+var bjson={};
+
+var trs="";
+$.each(I,function(key,str){
+	trs+="<tr>";
+	trs+="<td>"+key+"</td><td>"+str+"</td>";
+	trs+="</tr>";
+
+
+	var mat=key.match(/([_0-9a-zA-Z]{4})([0-9]{1,})[_]([0-9]{1,})/);
+	if(mat){
+		console.log(mat);
+		if(!bjson[mat[1]]) bjson[mat[1]]={};
+		if(!bjson[mat[1]][mat[2]])bjson[mat[1]][mat[2]]={};
+		bjson[mat[1]][mat[2]][mat[3]]=str;
+	}
+
 });
+$("#vbibtxt").html(trs);
+$("#out").val(JSON.stringify(bjson,null,2));
+
+
+});/////////////
 
 </script>
 
 </HEAD>
 <BODY xxxonload="body_onload();">
 
+<textarea id="out"></textarea>
 
-
-<div id='vbibtxt' class='z'>
-		
+<table  border="1">
+	<tbody id='vbibtxt'></tbody>
         
- </div>
+ </table>
 
 
 
