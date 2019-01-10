@@ -17,13 +17,26 @@
 <script type="text/javascript">
     
 $(function(){
-    var lanArr=["BBE","CUVS","H_G","KJV","NIV","PINYIN","STUS","WLVS"];
-
+    var statBible={
+        "BBE":"4,655,556 b",
+        "CUVS":"3,694,124 b",
+        "H_G":"7,561,287 b",
+        "KJV":"4,615,880 b",
+        "NIV":"4,313,234 b",
+        "PINYIN":"4,305,591 b",
+        "STUS":"3,887,835 b",
+        "WLVS":"2,866,838 b"};
+//https://wdingbox.github.io/ham12/jsdb/jsBibleTxt/BBE.json.js
+var url="https://wdingbox.github.io/ham12/jsdb/jsBibleObj/";
     var stb="";
+    var lanArr=Object.keys(statBible);
     $.each(lanArr,function(i,slan){
         var sf=slan+"_loadjson.htm";
-        var as="<a href='"+sf+"'>"+sf+"</a>";
-        stb+="<tr><td></td><td>"+as+"</td><td></td>";
+
+        var as1="<a href='"+sf+"'>"+sf+"</a>";
+        var as2="<a href='"+sf+"'>"+sf+"</a>";
+        stb+="<tr><td></td><td>"+as1+"</td><td>"+statBible[slan]+"</td>";
+        stb+="<td></td>";
         stb+="</tr>";
     });
     $("#tbd").html(stb);
@@ -36,6 +49,7 @@ $(function(){
     <thead><tr>
         <th>#</th>
         <th>Links</th>
+        <th>size</th>
         <th>Notes</th>
     </tr></thead>
     <tbody id="tbd"></tbody>
