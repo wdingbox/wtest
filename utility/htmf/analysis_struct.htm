@@ -63,16 +63,6 @@ body {
 
     
 <script language="javascript">
-    var StatBibleStructArr=[
-        BBE_struct,
-        CUVS_struct,
-        H_G_struct,
-        KJV_struct,
-        NIV_struct,
-        PINYIN_struct,
-        STUS_struct,
-        WLVS_struct
-    ];
     var NameOfBibleObject={
         "BBE_st":BBE_struct,
         "CUVS_s":CUVS_struct,
@@ -84,6 +74,8 @@ body {
         "WLVS_s":WLVS_struct 
     }
     var g_DiffObj={};
+    var g_missingVolChpObj={};
+
 function GetMaxKeyObj(NameOfObject){
     var MaxKeyObj={};
     $.each(NameOfObject,function(Name,StructObj){
@@ -106,7 +98,7 @@ function GetMaxKeyObj(NameOfObject){
     });////////////// 
     return MaxKeyObj;  
 }
-function MaxObjContrastOneObj(MaxObj,OneObj,ObjName){
+function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
     var DiffArr=[]; 
     function assignKeyVal(obj,Vol,chpNum,versKey){
                     if(undefined==obj[Vol]){
@@ -120,16 +112,28 @@ function MaxObjContrastOneObj(MaxObj,OneObj,ObjName){
                     } 
                     return obj;       
     }
+    function assign_g_missingVolChpObj(VolChp){
+                    if(undefined==g_missingVolChpObj[VolChp]){
+                        g_missingVolChpObj[VolChp]=[];
+                        $.each(NameOfBibleObject,function(name,obj){
+                            g_missingVolChpObj[VolChp].push(name);
+                        });
+                    }
+                    return Object.keys(NameOfBibleObject);
+    }
     $.each(MaxObj,function(Vol,ChpObj){
         $.each(ChpObj,function(chpNum,VersObj){
             $.each(VersObj,function(versKey,str){
                 if(undefined==OneObj[Vol]) {
-                    console.error(Vol+"-:-");
+                    console.error(ObjName+" NO "+Vol+"*:*");
                 }else if(undefined==OneObj[Vol][chpNum]) {
-                    console.error(Vol+" "+chpNum + ":--");
+                    //console.error(ObjName+" miss "+Vol+" "+chpNum + ":*");
+                    var VolChp=Vol+"_"+chpNum;
+                    var idx=assign_g_missingVolChpObj(VolChp).indexOf(ObjName);
+                    g_missingVolChpObj[VolChp][idx]="miss";
                 }else if(undefined==OneObj[Vol][chpNum][versKey]) {
                     assignKeyVal(g_DiffObj,Vol,chpNum,versKey);
-                    g_DiffObj[Vol][chpNum][versKey].push(ObjName+"="+Vol+" "+chpNum+":"+versKey)
+                    g_DiffObj[Vol][chpNum][versKey].push(ObjName+"~"+Vol+" "+chpNum+":"+versKey);
                 };
 
             });
@@ -137,19 +141,22 @@ function MaxObjContrastOneObj(MaxObj,OneObj,ObjName){
     });
 };
 function MaxObjContrastAllObjs(MaxObj, NameOfObj){
+    var idx=-1;
     $.each(NameOfObj,function(name,Obj){
-        MaxObjContrastOneObj(MaxObj,Obj,name);
+        idx++;
+        MaxObjContrastOneObj(MaxObj,Obj,name,idx);
     });
     return g_DiffObj;
 }
 
 $(document).ready(function(){
-var idx=0;
-var trs="";
 
 var maxObj=GetMaxKeyObj(NameOfBibleObject);
 var difObj=MaxObjContrastAllObjs(maxObj,NameOfBibleObject);
-$("#out").html(JSON.stringify(difObj,null,4));
+
+var sout=JSON.stringify(g_missingVolChpObj,null,4);
+sout+="\n"+JSON.stringify(difObj,null,4);
+$("#out").html(sout);
 
 
 });/////////////
