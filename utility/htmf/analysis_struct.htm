@@ -103,19 +103,7 @@ function GetMaxKeyObj(NameOfObject){
     return MaxKeyObj;  
 }
 function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
-    var DiffArr=[]; 
-    function assignKeyVal(obj,Vol,chpNum,versKey){
-                    if(undefined==obj[Vol]){
-                        obj[Vol]={};
-                    }
-                    if(undefined==obj[Vol][chpNum]){
-                        obj[Vol][chpNum]={};
-                    }
-                    if(undefined==obj[Vol][chpNum][versKey]){
-                        obj[Vol][chpNum][versKey]=[];
-                    } 
-                    return obj;       
-    }
+  
     function assign_missingOne(gobj,VolChp, ObjName){
                     if(undefined==gobj[VolChp]){
                         gobj[VolChp]=[];
@@ -124,7 +112,7 @@ function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
                         });
                     }
                     var idx= Object.keys(NameOfBibleObject).indexOf(ObjName);
-                    gobj[VolChp][idx]="miss";
+                    gobj[VolChp][idx]="-";
     }
     $.each(MaxObj,function(Vol,ChpObj){
         $.each(ChpObj,function(chpNum,VersObj){
@@ -139,9 +127,6 @@ function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
                     var VolChp=Vol+"_"+chpNum+":"+versKey;
                     assign_missingOne(g_missingVolChpVerses, VolChp, ObjName);
                     //console.error(ObjName+" miss "+VolChp);
-
-                    //assignKeyVal(g_DiffObj,Vol,chpNum,versKey);
-                    //g_DiffObj[Vol][chpNum][versKey].push(ObjName+" miss "+VolChp);
                 };
 
             });
@@ -157,7 +142,7 @@ function MaxObjContrastAllObjs(MaxObj, NameOfObj){
     return g_DiffObj;
 }
 function gen_ths(thdID, NameOfObject){
-    var ths="<tr><th>#</th><th></th>";
+    var ths="<tr><th>#</th><th title='vol idx'>vidx</th><th title='Vol-Chp-Vrs'>vcv</th>";
     $.each(NameOfObject,function(skey,obj){
         ths+="<th>"+skey+"</th>";
     });
@@ -167,14 +152,23 @@ function gen_ths(thdID, NameOfObject){
 function gen_trs(tbdyID, missObj){
     var trs="";
     $.each(missObj,function(skey, arr){
-        trs+="<tr><td></td><td>"+skey+"</td>";
+        var idx=get_vol_idx(skey);
+        trs+="<tr><td></td><td>"+idx+"</td><td>"+idx+"-"+skey+"</td>";
         $.each(arr,function(i,val){
             trs+="<td>"+val+"</td>";
         });
         trs+="</tr>";
     });
     $("#"+tbdyID).html(trs);
-}
+};
+
+function get_vol_idx(vol){
+    var keyArr=Object.keys(NIV_struct);
+    var idx=keyArr.indexOf(vol.substring(0,3));
+    return (1+idx).toString(10).padStart(2, "0")
+c;//1based
+};
+
 $(document).ready(function(){
 
 var maxObj=GetMaxKeyObj(NameOfBibleObject);
@@ -192,7 +186,7 @@ gen_trs("g_missingVolChpVerses", g_missingVolChpVerses);
 
 
 table_sort();
-table_col_index();
+//table_col_index();
 });/////////////
 
 
@@ -203,11 +197,13 @@ table_col_index();
 
 <textarea id="out"></textarea>
 
-<table  border="1">
+
+    <button id="indxer">indxer</button>
+<table  border="1"><caption id="indxer">missed chapters</caption>
     <thead id="missingVolChpObj"></thead>
 	<tbody id='g_missingVolChpObj'></tbody>
  </table>
-<table  border="1">
+<table  border="1"><caption>missed versers</caption>
     <thead id="missingVolChpVerses"></thead>
     <tbody id='g_missingVolChpVerses'></tbody>
  </table>
