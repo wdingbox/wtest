@@ -1,4 +1,14 @@
-function index_col(){
+function table_sort(){
+    $("table").tablesorter({
+    //  theme: 'blue',
+        usNumberFormat : false,
+        sortReset      : true,
+        sortRestart    : true,  
+        widgets: ['columns','output', ],//'zebra', 'editable'
+    }); 
+}
+
+function table_col_index(){
 	$("table").each(function(){
     	$(this).find("tbody tr").each(function(i,v){
     	    $(this).find("td:eq(0)").text(1+i);
@@ -10,7 +20,7 @@ function index_col(){
 $(document).ready(function(){ 
 
     $("#indxer").click(function(){
-        index_col();
+        table_col_index();
     });
 
 

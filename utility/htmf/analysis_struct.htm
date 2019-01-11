@@ -17,6 +17,9 @@
 
     <script language="javascript" src="../htmjs/jq/jquery.js">
     </script>
+    <script language="javascript" src="../htmjs/jq/table_Indexer.js">
+    </script>
+    <script language="javascript" src="../htmjs/jq/jquery.tablesorter.js"></script>
 
 
     <script language="javascript" src="../../jsdb/jsBibleStats/BBE.json.js"></script>
@@ -74,6 +77,7 @@ body {
         "WLVS_s":WLVS_struct 
     }
     var g_DiffObj={};
+    var g_missingVolChpVerses={};
     var g_missingVolChpObj={};
 
 function GetMaxKeyObj(NameOfObject){
@@ -102,24 +106,25 @@ function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
     var DiffArr=[]; 
     function assignKeyVal(obj,Vol,chpNum,versKey){
                     if(undefined==obj[Vol]){
-                        g_DiffObj[Vol]={};
+                        obj[Vol]={};
                     }
                     if(undefined==obj[Vol][chpNum]){
-                        g_DiffObj[Vol][chpNum]={};
+                        obj[Vol][chpNum]={};
                     }
                     if(undefined==obj[Vol][chpNum][versKey]){
                         obj[Vol][chpNum][versKey]=[];
                     } 
                     return obj;       
     }
-    function assign_g_missingVolChpObj(VolChp){
-                    if(undefined==g_missingVolChpObj[VolChp]){
-                        g_missingVolChpObj[VolChp]=[];
+    function assign_missingOne(gobj,VolChp, ObjName){
+                    if(undefined==gobj[VolChp]){
+                        gobj[VolChp]=[];
                         $.each(NameOfBibleObject,function(name,obj){
-                            g_missingVolChpObj[VolChp].push(name);
+                            gobj[VolChp].push(name);
                         });
                     }
-                    return Object.keys(NameOfBibleObject);
+                    var idx= Object.keys(NameOfBibleObject).indexOf(ObjName);
+                    gobj[VolChp][idx]="miss";
     }
     $.each(MaxObj,function(Vol,ChpObj){
         $.each(ChpObj,function(chpNum,VersObj){
@@ -129,11 +134,14 @@ function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
                 }else if(undefined==OneObj[Vol][chpNum]) {
                     //console.error(ObjName+" miss "+Vol+" "+chpNum + ":*");
                     var VolChp=Vol+"_"+chpNum;
-                    var idx=assign_g_missingVolChpObj(VolChp).indexOf(ObjName);
-                    g_missingVolChpObj[VolChp][idx]="miss";
+                    assign_missingOne(g_missingVolChpObj, VolChp, ObjName);
                 }else if(undefined==OneObj[Vol][chpNum][versKey]) {
-                    assignKeyVal(g_DiffObj,Vol,chpNum,versKey);
-                    g_DiffObj[Vol][chpNum][versKey].push(ObjName+"~"+Vol+" "+chpNum+":"+versKey);
+                    var VolChp=Vol+"_"+chpNum+":"+versKey;
+                    assign_missingOne(g_missingVolChpVerses, VolChp, ObjName);
+                    //console.error(ObjName+" miss "+VolChp);
+
+                    //assignKeyVal(g_DiffObj,Vol,chpNum,versKey);
+                    //g_DiffObj[Vol][chpNum][versKey].push(ObjName+" miss "+VolChp);
                 };
 
             });
@@ -148,18 +156,45 @@ function MaxObjContrastAllObjs(MaxObj, NameOfObj){
     });
     return g_DiffObj;
 }
-
+function gen_ths(thdID, NameOfObject){
+    var ths="<tr><th>#</th><th></th>";
+    $.each(NameOfObject,function(skey,obj){
+        ths+="<th>"+skey+"</th>";
+    });
+    ths+="</tr>";
+    $("#"+thdID).html(ths);
+}
+function gen_trs(tbdyID, missObj){
+    var trs="";
+    $.each(missObj,function(skey, arr){
+        trs+="<tr><td></td><td>"+skey+"</td>";
+        $.each(arr,function(i,val){
+            trs+="<td>"+val+"</td>";
+        });
+        trs+="</tr>";
+    });
+    $("#"+tbdyID).html(trs);
+}
 $(document).ready(function(){
 
 var maxObj=GetMaxKeyObj(NameOfBibleObject);
 var difObj=MaxObjContrastAllObjs(maxObj,NameOfBibleObject);
 
 var sout=JSON.stringify(g_missingVolChpObj,null,4);
-sout+="\n"+JSON.stringify(difObj,null,4);
+sout+="\n===difObj===\n"+JSON.stringify(difObj,null,4);
+sout+="\n===g_missingVolChpVerses===\n"+JSON.stringify(g_missingVolChpVerses,null,4);
 $("#out").html(sout);
 
+gen_ths("missingVolChpObj",NameOfBibleObject);
+gen_ths("missingVolChpVerses",NameOfBibleObject);
+gen_trs("g_missingVolChpObj", g_missingVolChpObj);
+gen_trs("g_missingVolChpVerses", g_missingVolChpVerses);
 
+
+table_sort();
+table_col_index();
 });/////////////
+
 
 </script>
 
@@ -169,10 +204,13 @@ $("#out").html(sout);
 <textarea id="out"></textarea>
 
 <table  border="1">
-	<tbody id='vbibtxt'></tbody>
-        
+    <thead id="missingVolChpObj"></thead>
+	<tbody id='g_missingVolChpObj'></tbody>
  </table>
-
+<table  border="1">
+    <thead id="missingVolChpVerses"></thead>
+    <tbody id='g_missingVolChpVerses'></tbody>
+ </table>
 
 
 </BODY>
