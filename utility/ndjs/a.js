@@ -129,6 +129,13 @@ var outdirtmp="out/tmp";
 makePathDir(outdirtmp);
 
 var tardir="../../jsdb/bible/cuvs";
+var tardir="../../jsdb/bible/niv";
+var tardir="../../jsdb/bible/kjv";
+var tardir="../../jsdb/bible/stu";
+var tardir="../../jsdb/bible/hgr";
+var tardir="../../jsdb/bible/bbe";
+var tardir="../../jsdb/bible/wlvs"; 
+var tardir="../../jsdb/bible/pinyin/CUV_chars/splitter/2015"; 
 function merge_jsfiles_in_Dir(sdir){
   var arr=getFileNamesFromDir(tardir,".js");
   var merges="";
@@ -140,7 +147,7 @@ function merge_jsfiles_in_Dir(sdir){
   };
   console.log(merges);
 
-  writeBody2file(outdirtmp+"/merged.js","var I = new Object();\n"+merges);
+  writeBody2file(outdirtmp+"/merged.js","var P = new Object();\n"+merges);
 }
 merge_jsfiles_in_Dir(tardir);
 return;
