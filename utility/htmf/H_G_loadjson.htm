@@ -81,6 +81,17 @@ $.each(H_G,function(volname,ChpObj){
 $("#vbibtxt").html(trs);
 
 
+$("#paste_Hebrew").click(function(){
+    var shbr="";
+    $("tbody").find("tr").each(function(){
+        var idx=$(this).find("td:eq(0)").text();
+        if(parseInt(idx)<23192/1){
+            var sh=$(this).find("td:eq(2)").text();
+            shbr+=sh+"\n";
+        }
+    });
+    $("#out").val(shbr);
+});
 });/////////////
 
 </script>
@@ -89,7 +100,7 @@ $("#vbibtxt").html(trs);
 <BODY xxxonload="body_onload();">
 
 <textarea id="out"></textarea>
-
+<button id="paste_Hebrew"></button>
 <table  border="1">
 	<tbody id='vbibtxt'></tbody>
         
