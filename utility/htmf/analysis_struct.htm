@@ -121,10 +121,10 @@ function MaxObjContrastOneObj(MaxObj,OneObj, ObjName, ObjNameIdx){
                     console.error(ObjName+" NO "+Vol+"*:*");
                 }else if(undefined==OneObj[Vol][chpNum]) {
                     //console.error(ObjName+" miss "+Vol+" "+chpNum + ":*");
-                    var VolChp=Vol+"_"+chpNum;
+                    var VolChp=Vol+""+chpNum;
                     assign_missingOne(g_missingVolChpObj, VolChp, ObjName);
                 }else if(undefined==OneObj[Vol][chpNum][versKey]) {
-                    var VolChp=Vol+"_"+chpNum+":"+versKey;
+                    var VolChp=Vol+""+chpNum+":"+versKey;
                     assign_missingOne(g_missingVolChpVerses, VolChp, ObjName);
                     //console.error(ObjName+" miss "+VolChp);
                 };
