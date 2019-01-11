@@ -124,6 +124,18 @@ function request_a_book(bookname){
 
     });
 };//
+
+function Remove_PronounceMarks_Hebrew(sHebrewWord){
+        var sword='';
+        for(var k=0;k<sHebrewWord.length;k++){
+            var code=sHebrewWord.charCodeAt(k);
+            if(code>=1488 && code<=1514){
+                var ch=sHebrewWord.charAt(k);
+                sword+=ch;
+            }                
+        }  
+        return sword;
+}
   ////////////////////////////
  ////////////////////////////
 ////////////////////////////
@@ -143,7 +155,7 @@ function readHebrew(srcfile){
   console.log(kys);
   var txt="", bbreak=false;
   Object.keys(bbObj).forEach(function(vol) {
-    if(vol==="Exo"){
+    if(vol==="Mat"){
       bbreak=true;
       return true;
     }
@@ -164,16 +176,19 @@ function readHebrew(srcfile){
 
   var arr=txt.split(" "), frqObj={};
   for(var i=0;i<arr.length;i++){
-    var shb=arr[i].trim();
+    var shb=arr[i];//.trim();
     if( shb.length<=0)continue;
-    var lrm=String.fromCharCode(2066)+0xE2 +0x80 +0x8E;
-    //shb="___"+shb+"=~___";
+    //var lrm=String.fromCharCode(2066)+0xE2 +0x80 +0x8E;
+    shb="\u200F"+shb;
     if(undefined === frqObj[shb] ){
       frqObj[shb]=0;
     };
     frqObj[shb]++;
   }
-  console.log(JSON.stringify(frqObj,null,4));
+  var sout=JSON.stringify(frqObj,null,4);
+  console.log();
+
+  fs.writeFileSync("outfile.js", sout, 'utf8');
 }
 readHebrew(srcfile);
 return;
