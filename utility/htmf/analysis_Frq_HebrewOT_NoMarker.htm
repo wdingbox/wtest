@@ -73,15 +73,32 @@ table_sort();
 //table_col_index();
 });/////////////
 function gen_ths(id){
-    var ths="<tr><th>#</th><th>Hebrew</th><th>frq</th><th>voiceMarkers</th></tr>";
+    var ths="<tr><th>#</th><th>Hebrew</th><th>frq</th><th>Hebrew Words with Voice Markers</th></tr>";
     $("#"+id).html(ths);
 }
 function gen_trs(id,frqObj){
-    function sumup(obj2){
-        var ret={frq:0,str:""}
+    function sortByFrq(obj2){
+        var arr=[];
         $.each(obj2,function(kw,frq){
+            var sn=frq.toString(10).padStart(4, "0");
+            var ss=sn+"@&lrm;"+kw+"&lrm;";
+            arr.push(ss);
+        });
+        arr.sort().reverse();
+        var neoObj={};
+        $.each(arr,function(i,strn){
+            var frq=strn.substring(0,4);
+            var hbr=strn.substring(5);
+            neoObj[hbr]=parseInt(frq);
+        })
+        return neoObj;
+    }
+    function sumup(obj2){
+        var neobj=sortByFrq(obj2);
+        var ret={frq:0,str:""}
+        $.each(neobj,function(kw,frq){
             ret.frq+=frq;
-            ret.str+="&lrm;"+kw+"&lrm;("+frq+")";
+            ret.str+="&lrm;"+kw+"&lrm;("+frq+") ";
         });
         return ret;
     }
@@ -103,15 +120,12 @@ function gen_trs(id,frqObj){
     <button id="indxer">indxer</button>
     <hr/>
 
-<table  border="1" align="left"><caption title="from usage_tool english">Hebrew_1st_frq_usage</caption>
+<table  border="1" align="left"><caption title="from usage_tool english">OT Hebrew Statistics</caption>
     <thead id="missingVolChpObj"></thead>
 	<tbody id='g_missingVolChpObj'></tbody>
  </table>
 
-<table  border="1"><caption title='from nodejs'>Hebrew_1st_frq_json</caption>
-    <thead id="missingVolChpVerses"></thead>
-    <tbody id='g_missingVolChpVerses'></tbody>
- </table>
+
 
 
 </BODY>
