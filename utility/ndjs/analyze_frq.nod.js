@@ -201,10 +201,22 @@ var HebrewFrq1=readHebrewFrq(srcfile,outfileBase);
 
 
 console.log("=====22222222=====");
-console.log("merge Hebrew Word without voice markers");
+console.log("remove voice markers, then merge freq");
+function remove_voice_markers_and_merge(HebrwFrq, outfilebase){
+  var CleanedHebrewFrq={};
+  Object.keys(HebrwFrq).forEach(function(sHebrWord){
+    var cleanHbw=Remove_PronounceMarks_Hebrew(sHebrWord);
+    console.log(sHebrWord,"==" ,cleanHbw);
+    if(undefined==CleanedHebrewFrq[cleanHbw]){
+      CleanedHebrewFrq[cleanHbw]={};
+    }
+    CleanedHebrewFrq[cleanHbw][sHebrWord]=HebrwFrq[sHebrWord];
+  });
+  var sout=JSON.stringify(CleanedHebrewFrq,null,2);
+  fs.writeFileSync(outfileBase+"_CleanedHebrewFrq.json.js", sout, 'utf8');
+};///////////
 
-
-
+remove_voice_markers_and_merge(HebrewFrq1);
 
 
 return;
