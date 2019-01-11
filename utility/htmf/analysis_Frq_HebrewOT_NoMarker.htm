@@ -66,6 +66,7 @@ $(document).ready(function(){
 gen_ths("missingVolChpObj");
 gen_trs("g_missingVolChpObj",Hebrew_frq_NoMarker);
 
+stats_alphabet_pos(Hebrew_frq_NoMarker);
 
 
 
@@ -109,6 +110,37 @@ function gen_trs(id,frqObj){
     });
     $("#"+id).html(trs);
 }
+function stats_alphabet_pos(frqObj){
+    function initObj(obj){
+       var Alphabets="אבּבגדהוזחטיכּכךלמםנןסעפּפףצץקרשׁשׂשתּת";
+       for(var i=0;i<Alphabets.length;i++){
+          var cha=Alphabets[i];
+          obj[cha]=0;
+       } 
+    }
+    
+
+    var stats_1st={}, stats_end={};
+    initObj(stats_1st);
+    initObj(stats_end);
+    $.each(frqObj,function(hebrw,obj2){
+        hebrw=$.trim(hebrw);
+        if(hebrw.length==0)return;
+        var first=hebrw.charAt(0);
+        var last=hebrw.charAt(hebrw.length-1);
+        stats_1st[first]++;
+        stats_end[last]++;
+    });
+    console.log(stats_1st);
+    console.log(stats_end);
+
+    var trs="";
+    $.each(stats_1st,function(ke,frq){
+        trs+="<tr><td></td><td>"+ke+"</td><td>"+stats_end[ke]+"</td><td>"+frq+"</td></tr>";
+    });
+    $("#AlphabetTab").html(trs);
+
+}
 </script>
 
 </HEAD>
@@ -119,7 +151,16 @@ function gen_trs(id,frqObj){
 
     <button id="indxer">indxer</button>
     <hr/>
-
+<table border="1"><caption>First/Last Alphabet Frq</caption>
+    <thead><tr>
+        <td>#</td>
+        <td>A</td>
+        <td>end</td>
+        <td>1st</td>
+    </tr></thead>
+    <tbody id="AlphabetTab">
+    </tbody>
+</table>
 <table  border="1" align="left"><caption title="from usage_tool english">OT Hebrew Statistics</caption>
     <thead id="missingVolChpObj"></thead>
 	<tbody id='g_missingVolChpObj'></tbody>
