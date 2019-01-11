@@ -141,10 +141,7 @@ function Remove_PronounceMarks_Hebrew(sHebrewWord){
 ////////////////////////////
 // 1111111111111111111
 console.log("=====111111=====");
-var outdirtmp="out/tmp";
-makePathDir(outdirtmp);
 
-var outfile="tmp_hebrew_OT.txt"
 
 function readHebrewFrq(srcfile, outfileBase){
   var content=fs.readFileSync(srcfile, 'utf8');
@@ -174,7 +171,7 @@ function readHebrewFrq(srcfile, outfileBase){
 
   console.log(txt);
   //writeBody2file(outdirtmp,merges);
-  saved = fs.writeFileSync(outfile+"_OT.txt", txt, 'utf8');
+  saved = fs.writeFileSync(outfileBase+"_OT.txt", txt, 'utf8');
 
   var arr=txt.split(" "), frqObj={};
   for(var i=0;i<arr.length;i++){
@@ -191,15 +188,20 @@ function readHebrewFrq(srcfile, outfileBase){
   console.log();
 
   fs.writeFileSync(outfileBase+".json.js", sout, 'utf8');
+  return frqObj;
 }
 
+
+var outdirtmp="out/tmp/";
+makePathDir(outdirtmp);
+
 var srcfile="../../jsdb/jsBibleObj/H_G.json.js";
-var outfileBase="tmp_hebrew_frq"
-readHebrewFrq(srcfile,outfileBase);
+var outfileBase=outdirtmp+"/tmp_hebrew_frq"
+var HebrewFrq1=readHebrewFrq(srcfile,outfileBase);
 
 
 console.log("=====22222222=====");
-
+console.log("merge Hebrew Word without voice markers");
 
 
 
