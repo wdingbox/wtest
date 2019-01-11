@@ -139,12 +139,14 @@ function Remove_PronounceMarks_Hebrew(sHebrewWord){
   ////////////////////////////
  ////////////////////////////
 ////////////////////////////
+// 1111111111111111111
+console.log("=====111111=====");
 var outdirtmp="out/tmp";
 makePathDir(outdirtmp);
-var outfile=outdirtmp+"/hebrew.txt"
 
-var srcfile="../../jsdb/jsBibleObj/H_G.json.js";
-function readHebrew(srcfile){
+var outfile="tmp_hebrew_OT.txt"
+
+function readHebrewFrq(srcfile, outfileBase){
   var content=fs.readFileSync(srcfile, 'utf8');
   var str=content.substring(8);
     
@@ -172,7 +174,7 @@ function readHebrew(srcfile){
 
   console.log(txt);
   //writeBody2file(outdirtmp,merges);
-  saved = fs.writeFileSync(outfile, txt, 'utf8');
+  saved = fs.writeFileSync(outfile+"_OT.txt", txt, 'utf8');
 
   var arr=txt.split(" "), frqObj={};
   for(var i=0;i<arr.length;i++){
@@ -188,9 +190,21 @@ function readHebrew(srcfile){
   var sout=JSON.stringify(frqObj,null,4);
   console.log();
 
-  fs.writeFileSync("outfile.js", sout, 'utf8');
+  fs.writeFileSync(outfileBase+".json.js", sout, 'utf8');
 }
-readHebrew(srcfile);
+
+var srcfile="../../jsdb/jsBibleObj/H_G.json.js";
+var outfileBase="tmp_hebrew_frq"
+readHebrewFrq(srcfile,outfileBase);
+
+
+console.log("=====22222222=====");
+
+
+
+
+
+
 return;
 
 
