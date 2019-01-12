@@ -67,6 +67,9 @@ td:nth-child(2){
     position: absolute;
     right: 20px;
 }
+.hili{
+    background-color: #aaaa00;
+}
 </style>
 
 
@@ -84,6 +87,7 @@ gen_tr_ciuLeft("#left2ciu",ciuMat,Hebrew_words_ciu);
 gen_trs_pos_alphabet_frq("#AlphaBdy",Hebrew_frq_NoMarker);
 
 $("#alphTb tbody tr td").click(function(){
+    $(this).toggleClass("hili");
     var ch=$(this).text();
     var ss=$("#out").val();
     $("#out").val(ss+ch);
