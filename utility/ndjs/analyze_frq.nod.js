@@ -214,11 +214,43 @@ function remove_voice_markers_and_merge(HebrwFrq, outfilebase){
   });
   var sout=JSON.stringify(CleanedHebrewFrq,null,2);
   fs.writeFileSync(outfileBase+"_CleanedHebrewFrq.json.js", sout, 'utf8');
+  return CleanedHebrewFrq;
 };///////////
 
-remove_voice_markers_and_merge(HebrewFrq1);
+var cleanedFrq=remove_voice_markers_and_merge(HebrewFrq1);
 
+console.log("=====333=====");
+console.log("cleaned Frq Hebrw Statistics:");
+console.log("2,3,4,5 GroupLetters Frq");
 
+function run_Statistics(ObjFrq, outfBase){
+  var Alphabets="אבגדהוזחטיכךלמםנןסעפףצץקרשת";
+  console.log(Alphabets.length);
+  var grp2=[], idx=0;
+  for(var i=0;i<Alphabets.length;i++){
+    for(var j=0;j<Alphabets.length;j++){
+      grp2.push(Alphabets[i]+Alphabets[j]);
+    }
+  }
+  console.log(grp2.length,grp2);
+  var Grp2FrqObj={};
+  Object.keys(ObjFrq).forEach(function(hebs){
+    for(var k=0;k<grp2.length;k++){
+      var k2=grp2[k];
+      if(undefined===Grp2FrqObj[k2]){
+          Grp2FrqObj[k2]=0;
+      }      
+      if(hebs.indexOf(k2)>=0){
+        Grp2FrqObj[k2]++;
+      }
+    }
+  });
+  console.log(Grp2FrqObj);
+  var sout=JSON.stringify(Grp2FrqObj,null,4);
+  fs.writeFileSync(outfBase+"_Grp2HebrwFrq.json.js", sout, 'utf8');
+ 
+}
+run_Statistics(cleanedFrq,outfileBase);
 return;
 
 
