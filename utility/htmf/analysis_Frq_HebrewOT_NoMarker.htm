@@ -23,7 +23,9 @@
 
 
   
-    <script language="javascript" src="../../jsdb/jsBibleStudy/Hebrew_frq_NoMarker.js"></script>
+    <script language="javascript" src="../../jsdb/jsBibleSurvey/Hebrew_frq_NoMarker.js"></script>
+    <script language="javascript" src="../../jsdb/jsBibleSurvey/Hebrew_words_ciu.js"></script>
+ 
    
 
     
@@ -51,6 +53,15 @@ body {
 }
 td:nth-child(2){
     text-align: right;
+}
+.ciumatch0{
+    background-color:green ;
+}
+.ciumatch1{
+    background-color: blue;
+}
+.ciumatch2{
+    background-color: gray;
 }
 </style>
 
@@ -103,12 +114,60 @@ function gen_trs(id,frqObj){
         });
         return ret;
     }
+    var ciuMatchedObj={};
+    function get_cls_ciuMatchedObj(sHbrw){
+        var cls="",ciuMaxHbr="";
+        var ifind=Hebrew_words_ciu.indexOf(sHbrw);
+        if( ifind>=0){
+            ciuMaxHbr=Hebrew_words_ciu[ifind];
+            cls=" class='ciumatch0' title='ciu=ot:"+ciuMaxHbr+"'";
+            ciuMatchedObj[ciuMaxHbr]=0;
+            return cls;
+        }
+        return cls;
+
+
+        for(var i=0;i<Hebrew_words_ciu.length;i++){
+            var ciu=Hebrew_words_ciu[i];
+            if(sHbrw.indexOf(ciu)>=0){
+                if(ciu.length>ciuMaxHbr.length){
+                    ciuMaxHbr=ciu;
+                    cls=" class='ciumatch1' title='ciu{ot:";
+                }
+            }
+            if(ciu.indexOf(sHbrw)>=0){
+                if(ciu.length>ciuMaxHbr.length){
+                    ciuMaxHbr=ciu;
+                    cls=" class='ciumatch2' title='ciu}ot:";
+                }
+            }
+        };
+        if(ciuMaxHbr.length>2){
+            ciuMatchedObj[ciuMaxHbr]=2;
+            return cls+"&lrm;"+ciuMaxHbr+"&lrm;' ";
+        }
+        return cls;
+    }
     var trs="";
     $.each(frqObj,function(hebrw,obj2){
         var sum=sumup(obj2);
-        trs+="<tr><td></td><td>"+hebrw+"</td><td>"+sum.frq+"</td><td>"+sum.str+"</tr>";
+        var clsHbr=get_cls_ciuMatchedObj(hebrw);
+        trs+="<tr><td></td><td"+clsHbr+">"+hebrw+"</td><td>"+sum.frq+"</td><td>"+sum.str+"</tr>";
     });
     $("#"+id).html(trs);
+
+    ////////////////
+    //ciu left table
+    var trs="";
+    $.each(Hebrew_words_ciu,function(i,word){
+        if(0==ciuMatchedObj[word]) return;
+        if(2==ciuMatchedObj[word]){
+            trs+="<tr><td class='ciumatch1'>"+i+"</td><td>"+word+"</td></tr>";
+        }else {
+            trs+="<tr><td>"+i+"</td><td>"+word+"</td></tr>";
+        }
+    })
+    $("#left2ciu").html(trs);
 }
 function stats_alphabet_pos(frqObj){
     function initObj(obj){
@@ -151,8 +210,13 @@ function stats_alphabet_pos(frqObj){
 
 
     <button id="indxer">indxer</button>
+
+
+
     <hr/>
-<table border="1"><caption>First/Last Alphabet Frq</caption>
+
+
+<table border="1" align="left"><caption>First/Last Alphabet Frq</caption>
     <thead><tr>
         <td>#</td>
         <td>A</td>
@@ -162,6 +226,11 @@ function stats_alphabet_pos(frqObj){
     </tr></thead>
     <tbody id="AlphabetTab">
     </tbody>
+</table>
+<table border="1"><caption>Left in CIU</caption>
+    <thead><tr><td>#</td><td></td></tr></thead>
+    <tbody id="left2ciu"></tbody>
+    
 </table>
 <table  border="1" align="left"><caption title="from usage_tool english">OT Hebrew Statistics</caption>
     <thead id="missingVolChpObj"></thead>
