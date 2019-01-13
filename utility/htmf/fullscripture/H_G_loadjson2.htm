@@ -114,10 +114,10 @@ function search_hebrew_word(sword){
     $("#vbibtxt").html(trs);    
 }
 function Remove_PronounceMarks_Hebrew(sHebrewWord){
-        var sword='', spaceCode="־".charCodeAt(0);//32
+        var sword='', maqqeph="־".charCodeAt(0);//32
         for(var k=0;k<sHebrewWord.length;k++){
             var code=sHebrewWord.charCodeAt(k);
-            if(spaceCode===code){
+            if(maqqeph===code){
                 sword+="־";
                 continue;
             }
