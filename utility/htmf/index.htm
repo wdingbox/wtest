@@ -31,8 +31,9 @@ $(function(){
     var stb="";
     var lanArr=Object.keys(statBible);
     $.each(lanArr,function(i,slan){
-        var sf1=slan+"_loadjson.htm";
-        var sf2=slan+"_loadjson2.htm";
+        var dir="fullscripture/";
+        var sf1=dir+slan+"_loadjson.htm";
+        var sf2=dir+slan+"_loadjson2.htm";
 
         var as1="<a href='"+sf1+"'>"+sf1+"</a>";
         var as2="<a href='"+sf2+"'>"+sf2+"</a>";
