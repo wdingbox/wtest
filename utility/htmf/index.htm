@@ -42,7 +42,24 @@ $(function(){
         stb+="</tr>";
     });
     $("#tbd").html(stb);
+    var trs=trs_analist(anar);
+    $("#tbd").append(trs);
 });///////
+
+
+var anar=[
+"analysis/analysis_Frq_HebrewOT.htm",
+"analysis/analysis_Frq_HebrewOT_NoMarker.htm",
+"analysis/analysis_Frq_HebrewOT_grp2.htm",
+"analysis/analysis_struct.htm",
+];
+function trs_analist(ar){
+    var trs="";
+    $.each(ar,function(i,file){
+        trs+="<tr><td></td><td><a href='"+file+"'>"+file+"</a><td></td></tr>"
+    });
+    return trs;
+}
 </script>
 </HEAD>
 <BODY>
@@ -57,7 +74,8 @@ $(function(){
     <tbody id="tbd"></tbody>
 </table>
 <br>
-<a href="analysis_struct.htm">analysis_struct.htm</a>
+<a href="analysis/analysis_struct.htm">analysis_struct.htm</a>
+
 
 
 
