@@ -126,9 +126,17 @@ function request_a_book(bookname){
 };//
 
 function Remove_PronounceMarks_Hebrew(sHebrewWord){
-        var sword='';
+        var sword='', maqqeph="־".charCodeAt(0);//maqqeph 
         for(var k=0;k<sHebrewWord.length;k++){
             var code=sHebrewWord.charCodeAt(k);
+            if(maqqeph===code){
+                sword+="־";
+                continue;
+            }
+            if(32===code){
+                sword+=" ";
+                continue;
+            }
             if(code>=1488 && code<=1514){
                 var ch=sHebrewWord.charAt(k);
                 sword+=ch;
@@ -173,12 +181,16 @@ function readHebrewFrq(srcfile, outfileBase){
   //writeBody2file(outdirtmp,merges);
   saved = fs.writeFileSync(outfileBase+"_OT.txt", txt, 'utf8');
 
-  var arr=txt.split(" "), frqObj={};
+  var arr=txt.split(/[\s|־]/g);//by space or maqqeph. 
+  var frqObj={};
   for(var i=0;i<arr.length;i++){
     var shb=arr[i];//.trim();
     if( shb.length<=0)continue;
-    //var lrm=String.fromCharCode(2066)+0xE2 +0x80 +0x8E;
-    shb="\u200F"+shb;
+    //https://en.wikipedia.org/wiki/Left-to-right_mark
+    //https://en.wikipedia.org/wiki/Right-to-left_mark
+    //\u200E: left-to-ritht marker
+    //\u200F: ritht-to-left marker
+    //shb="\u200F"+shb;//u200F: ritht-to-left marker
     if(undefined === frqObj[shb] ){
       frqObj[shb]=0;
     };
