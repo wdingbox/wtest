@@ -95,48 +95,10 @@ function gen_table_StructAna (BsObj){
         }); 
         return trs;       
     };
-    function get_chars(BsObj){
-        var chObj={};
-        Object.keys(BsObj).forEach(function(vol){
-            var VOL=vol.toUpperCase();
-            for(var i=0;i<VOL.length;i++){
-                chObj[VOL[i]]=VOL[i];
-            }
-        });
-        var ks=Object.keys(chObj).sort();
-        console.log(ks);
-        return ks;
-    }
 
 
-    function get_vc3Objxxxxxx(BsObj){
-        var Vol3CharObj={};
-        Object.keys(BsObj).sort().forEach(function(vol){
-            var VOL=vol.toUpperCase();
-            if(!Vol3CharObj[VOL[0]]){
-                Vol3CharObj[VOL[0]]={};
-            }
-            if(!Vol3CharObj[VOL[0]][VOL[1]]){
-                Vol3CharObj[VOL[0]][VOL[1]]={};
-            }
-            if(!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]){
-                Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]=1;
-            }
-        });
 
-        ////
-        Object.keys(Vol3CharObj).sort().forEach(function(k0){
-            s+="<td col='0' class='abc c0_"+k0+"' next_cs='";
-            s+=Object.keys(Vol3CharObj[k0]).sort().join("-");
-            s+="'>"+k0+"</td>";
-            Object.keys(Vol3CharObj[k0]).sort().forEach(function(k1){
-                Object.keys(Vol3CharObj[k0][k1]).sort().forEach(function(k2){
-                });
-            });
-        });
-
-        return Vol3CharObj;
-    }
+    
     function get_v3cObj(BsObj){
         var Vol3CharObj=[{},{},{}];
         Object.keys(BsObj).forEach(function(vol){
@@ -179,7 +141,9 @@ function gen_table_StructAna (BsObj){
     }
 
     //var v3cObj=get_vc3Obj(BsObj);
-    get_chars(BsObj);
+
+
+
     var v3cObj=get_v3cObj(BsObj);
     var ss="<table id='IntelligentVolsInput' border='1'>";
     ss+=gen_vTbl(v3cObj);
@@ -197,7 +161,67 @@ function gen_table_StructAna (BsObj){
         $(this).addClass("hili");
         $("#IntelligentVolsInput").find(nextstr).addClass("hili")
     });
-    
+
+
+    function get_next_chars(vname,BsObj){
+        var Vol3CharObj={};
+        Object.keys(BsObj).sort().forEach(function(vol){
+            var VOL=vol.toUpperCase();
+            if(!Vol3CharObj[VOL[0]]){
+                Vol3CharObj[VOL[0]]={};
+            }
+            if(!Vol3CharObj[VOL[0]][VOL[1]]){
+                Vol3CharObj[VOL[0]][VOL[1]]={};
+            }
+            if(!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]){
+                Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]=1;
+            }
+        });
+
+        var VOL=vname.toUpperCase();
+        switch(VOL.length)
+        {
+            case 0:return [];
+            case 1:return Object.keys(Vol3CharObj[VOL[0]]).sort();
+            case 2:return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
+        };
+        return [];
+    }
+    function get_chars(BsObj){
+        var chObj={};
+        Object.keys(BsObj).forEach(function(vol){
+            var VOL=vol.toUpperCase();
+            for(var i=0;i<VOL.length;i++){
+                chObj[VOL[i]]=VOL[i];
+            }
+        });
+        var ks=Object.keys(chObj).sort();
+        console.log(ks);
+
+        var s="<tr id='vitr'>";
+        $.each(ks,function(i,c){
+            s+="<td><a class='vin'>"+c+"</td>";
+        });
+        s+="</tr>";
+        $("#inputmethod").html(s).find(".vin").bind("click",function(){
+            $(this).addClass("hili");
+            var ch=$(this).text();
+            var vname=$("#vname").text();
+            vname+=ch;
+            $("#vname").text(vname);
+            var arr=get_next_chars(vname, BsObj);
+            $(".vin").removeClass("hili");
+            $(".vin").each(function(){
+                var v=$(this).text();
+                if(arr.indexOf(v)>=0){
+                    $(this).addClass("hili");
+                }
+            })
+            console.log(arr);
+        });
+        return ks;
+    }    
+    var allchars=get_chars(BsObj);
 }
 </script>
 
@@ -215,9 +239,9 @@ function gen_table_StructAna (BsObj){
 </table>
 
 
-<table  border="1"><caption id="indxer">missed chapters</caption>
+<table  border="1"><caption id="">Bible Volname:<a id='vname'></a></caption>
     <thead id="missingVolChpObj"></thead>
-	<tbody id='g_missingVolChpObj'></tbody>
+	<tbody id='inputmethod'></tbody>
  </table>
 <table  border="1"><caption>missed versers</caption>
     <thead id="missingVolChpVerses"></thead>
