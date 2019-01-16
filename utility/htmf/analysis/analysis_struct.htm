@@ -60,6 +60,9 @@ body {
 
     font-family: 'Times New Roman';
 }
+.hili{
+    background-color: red; 
+}
 </style>
 
 
@@ -237,7 +240,14 @@ function gen_table_StructAna (BsObj){
                     s+="<td/>";
                 }else{
                     var nextks=Object.keys(v3cObj[col][ic]).sort();
-                    s+="<td>"+ic+":"+nextks.join("-")+"</td>";
+                    var nextcs=nextks.join("-");
+                    var next_col=col+1;
+                    var attrs= " next_col='"+next_col+"'"; 
+
+                    attrs+=" next_cs='"+nextcs+"'";
+                    
+                    attrs+=" class='vchar vc_"+col+"_"+ic+"'"; 
+                    s+="<td"+attrs+">"+ic+":"+nextcs+"</td>";
                 }
             }
             s+="</tr>";
@@ -245,15 +255,23 @@ function gen_table_StructAna (BsObj){
         return s;
     }
     var v3cObj=get_v3cObj(BsObj);
-    var ss="<table border='1'>"+gen_vTbl(v3cObj);
-    //$.each(Vol3CharObj,function(i,cobj){
-    //    ss+=gen_3char(i,cobj);
-    //});
+    var ss="<table id='IntelligentVolsInput' border='1'>";
+    ss+=gen_vTbl(v3cObj);
     ss+="</table>";
 
 
     var s=get_trs(BsObj);
     $("#StructAna").html(s).parent().parent().prepend(ss);
+    $("#IntelligentVolsInput").find(".vchar").bind("click",function(){
+        var next_cs=$(this).attr("next_cs");
+        var next_co=$(this).attr("next_col");
+        var srep=",.vc_"+next_co+"_";
+        var nextstr=srep.substring(1)+next_cs.replace(/-/g, srep);
+        console.log(next_cs);
+        $(this).addClass("hili");
+        $("#IntelligentVolsInput").find(nextstr).addClass("hili")
+    });
+    
 }
 </script>
 
