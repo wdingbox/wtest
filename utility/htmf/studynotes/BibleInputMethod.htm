@@ -187,13 +187,24 @@ function gen_table_StructAna (BsObj){
         };
         return [];
     }
+    function showOptions(ch,BsObj){
+        var s="";
+        Object.keys(BsObj).forEach(function(vol){
+            if(vol.indexOf(ch)==0){
+                s+="<tr><td/><td>"+vol+"</td></tr>";
+            };
+        });
+        $("#showOptions").html(s);
+
+
+    }
     function get_chars(BsObj){
         var chObj={};
         Object.keys(BsObj).forEach(function(vol){
-            var VOL=vol.toUpperCase();
-            for(var i=0;i<VOL.length;i++){
-                chObj[VOL[i]]=VOL[i];
-            }
+            //var VOL=vol.toUpperCase();
+            //for(var i=0;i<VOL.length;i++){
+                chObj[vol[0]]=vol[0];
+            //}
         });
         var ks=Object.keys(chObj).sort();
         console.log(ks);
@@ -204,20 +215,22 @@ function gen_table_StructAna (BsObj){
         });
         s+="</tr>";
         $("#inputmethod").html(s).find(".vin").bind("click",function(){
+            $(".vin").removeClass("hili");
             $(this).addClass("hili");
             var ch=$(this).text();
-            var vname=$("#vname").text();
-            vname+=ch;
-            $("#vname").text(vname);
-            var arr=get_next_chars(vname, BsObj);
-            $(".vin").removeClass("hili");
-            $(".vin").each(function(){
-                var v=$(this).text();
-                if(arr.indexOf(v)>=0){
-                    $(this).addClass("hili");
-                }
-            })
-            console.log(arr);
+            showOptions(ch, BsObj);
+            //var vname=$("#vname").text();
+            //vname+=ch;
+            //$("#vname").text(vname);
+            //var arr=get_next_chars(vname, BsObj);
+            //$(".vin").removeClass("hili");
+            //$(".vin").each(function(){
+            //    var v=$(this).text();
+            //    if(arr.indexOf(v)>=0){
+            //        $(this).addClass("hili");
+            //    }
+            //});
+            //console.log(arr);
         });
         return ks;
     }    
@@ -239,14 +252,17 @@ function gen_table_StructAna (BsObj){
 </table>
 
 
+
+<table  border="1"><caption>showOptions</caption>
+    <thead id="missingVolChpVerses"></thead>
+    <tbody id='showOptions'></tbody>
+ </table>
+
 <table  border="1"><caption id="">Bible Volname:<a id='vname'></a></caption>
     <thead id="missingVolChpObj"></thead>
 	<tbody id='inputmethod'></tbody>
  </table>
-<table  border="1"><caption>missed versers</caption>
-    <thead id="missingVolChpVerses"></thead>
-    <tbody id='g_missingVolChpVerses'></tbody>
- </table>
+
 
 
 </BODY>
