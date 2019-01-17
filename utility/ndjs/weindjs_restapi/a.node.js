@@ -48,3 +48,10 @@ console.log("port:",port);
 ///////////////////////////////
 //php -S localhost:7778
 // will override nodejs. server
+
+/////////////////////////
+// nodemon a.node.js
+//
+// client site:
+// open restapi_tester.htm
+// then click index button. 

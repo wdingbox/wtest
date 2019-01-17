@@ -100,28 +100,30 @@ var obj=
 }
 $(document).ready(function(){
   $("#indxer").click(function(){
-    //var obj={fname:"xyz",dat:"ffff"};
-    var s=JSON.stringify(obj,null,4);
-    s=encodeURI(s);
-    console.log(s);
-    s=encodeURIComponent(s);
-    console.log(s);
-    var fname="../out/tmp/xyz.js";
-    var url="localhost:7778/save2afile?";
-    url+="fname="+fname+"&dat=var xyz="+s;
-    //url="http://google.com"
-    var spec="location=yes,height=570,width=520,scrollbars=no,top=11,toolbar=yes,menubar=yes,titlebar=yes'";
-    window.open(url);//,"_blank",spec);
+    nodejs_restapi_save2afile();
   });
 
   $("#search").click(function(){
     var dat={a:"aa",b:"bb"};
-    jqsave2afile("test.json",dat);
+    ajax_save2afile("test.json",dat);
   });
 
 });/////////////
+function nodejs_restapi_save2afile(){
+  var s=JSON.stringify(obj,null,4);
+  s=encodeURI(s);//not work.
+  console.log(s);
+  s=encodeURIComponent(s);//this work ok!
+  console.log(s);
+  var fname="../out/tmp/xyz.js";
+  var url="localhost:7778/save2afile?";
+  url+="fname="+fname+"&dat=var xyz="+s;
+  //url="http://google.com"
+  //var spec="location=yes,height=570,width=520,scrollbars=no,top=11,toolbar=yes,menubar=yes,titlebar=yes'";
+  window.open(url);//,"_blank",spec);
+}
 ////////////////
-function jqsave2afile(fname,jsonDat){
+function ajax_save2afile(fname,jsonDat){
   var url="localhost:7778/save2afile";
   //var url="weindjs_restapi_tester.htm";
 	$.ajax({
@@ -140,20 +142,7 @@ function jqsave2afile(fname,jsonDat){
 		}
   });/////ajax
 };
-function jqsave2afilebbbbbbb(fname,jsonDat){
-  var url="localhost:7778/save2afile";
-  //var url="weindjs_restapi_tester.htm";
-	$.post(url, {
-						 filename: fname,
-						 txt:JSON.stringify(jsonDat)
-						 },
-			function(data, status){
-               alert(data);
 
-			},
-			"html"
-			);/////post
-};
 
 </script>
 
@@ -163,35 +152,14 @@ function jqsave2afilebbbbbbb(fname,jsonDat){
 <textarea id="out"></textarea>
 
 <a id="tst">test</a>
-    <button id="indxer">indxer</button>
-    <button id="search">search</button>
+    <button id="indxer">save2afile</button>
+
 
 
 
     <hr/>
 
 
-<table border="1" id="alphTb", align="left"><caption>Two Syllable Freq</caption>
-    <thead id="AlphaHdr"><tr>
-        <th>#</th>
-        <th>A</th>
-        <th>end</th>
-        <th>2nd</th>
-        <th>1st</th>
-    </tr></thead>
-    <tbody id="AlphaBdy">
-    </tbody>
-</table>
-<table id="ciu" border="1"><caption>Left in CIU</caption>
-    <thead><tr><th>#</th><th title="ciu learned but not in OT word list">ciu</th><th>frq</th></tr></thead>
-    <tbody id="left2ciu"></tbody>
-</table>
-
-
-<table  border="1" align="left"><caption title="from usage_tool english">OT Hebrew Statistics</caption>
-    <thead id="OTHdr"></thead>
-	<tbody id='OTBdy'></tbody>
- </table>
 
 
 
