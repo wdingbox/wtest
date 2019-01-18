@@ -50,8 +50,9 @@ console.log("port:",port);
 // will override nodejs. server
 
 /////////////////////////
+// Server Site:
 // nodemon a.node.js
 //
 // client site:
 // open restapi_tester.htm
-// then click index button. 
+// then click index button.

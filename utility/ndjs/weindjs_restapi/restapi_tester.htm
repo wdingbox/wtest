@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <HTML manifest___xxx="BiblePad-2015.appcache">
+
 <HEAD>
     <TITLE>rester</TITLE>
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
-	<META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
 
 
     <script>
-    var gStartDate = new Date();
-    console.log(  gStartDate.toString() +" ------ start load");//
+        var gStartDate = new Date();
+        console.log(gStartDate.toString() + " ------ start load");//
     </script>
 
 
@@ -26,21 +27,11 @@
     <script language="javascript" src="../../../jsdb/jsBibleSurvey/Hebrew_grp2_frq.json.js"></script>
     <script language="javascript" src="../../../jsdb/jsBibleSurvey/Hebrew_words_ciu.js"></script>
 
-
-
-
-
-
-
-
-
-
-
     <script>
-    console.log(  (new Date()).toString() );//
+        console.log((new Date()).toString());//
     </script>
-<style>
-body {
+    <style>
+        body {
     background-color: black;
     color: white;
     width:100%;
@@ -63,7 +54,7 @@ td:nth-child(2){
 .ciumatch2{
     background-color: gray;
 }
-#out{
+#outx{
     position: absolute;
     right: 20px;
 }
@@ -81,83 +72,80 @@ td:nth-child(2){
 
 
 
-<script language="javascript">
-var obj=
-{
-    "name": "weindjs_restapi",
-    "version": "1.0.0",
-    "description": "",
-    "main": "a.node.js",
-    "scripts": {
-        "test": "echo \"Error:&x=no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "express": "^4.16.4",
-        "jsonfile": "^5.0.0"
-    }
-}
-$(document).ready(function(){
-  $("#indxer").click(function(){
-    nodejs_restapi_save2afile();
-  });
+    <script language="javascript">
+        var obj =
+        {
+            "name": "weindjs_restapi",
+            "version": "1.0.0",
+            "description": "",
+            "main": "a.node.js",
+            "scripts": {
+                "test": "echo \"Error:&x=no test specified\" && exit 1"
+            },
+            "author": "",
+            "license": "ISC",
+            "dependencies": {
+                "express": "^4.16.4",
+                "jsonfile": "^5.0.0"
+            }
+        }
+        $(document).ready(function () {
+            var s = "var xyzObj=\n" + JSON.stringify(obj, null, 4);
+            $("#out").val(s);
 
-  $("#search").click(function(){
-    var dat={a:"aa",b:"bb"};
-    ajax_save2afile("test.json",dat);
-  });
+            $("#indxer").click(function () {
+                window.open(getUrl());
+            });
 
-});/////////////
-function nodejs_restapi_save2afile(){
-  var s=JSON.stringify(obj,null,4);
-  s=encodeURI(s);//not work.
-  console.log(s);
-  s=encodeURIComponent(s);//this work ok!
-  console.log(s);
-  var fname="../out/tmp/xyz.js";
-  var url="localhost:7778/save2afile?";
-  url+="fname="+fname+"&dat=var xyz="+s;
-  //url="http://google.com"
-  //var spec="location=yes,height=570,width=520,scrollbars=no,top=11,toolbar=yes,menubar=yes,titlebar=yes'";
-  window.open(url);//,"_blank",spec);
-}
+        });/////////////
+        function getUrl() {
+            var s = $("#out").val();
+
+            s = encodeURI(s);//not work.
+            console.log(s);
+            s = encodeURIComponent(s);//this work ok!
+            console.log(s);
+
+            var fname = $("#fname").val();// "../out/tmp/xyz.js";
+            var url = $("#retapi").val();//"localhost:7778/save2afile?";
+            url += "?fname=" + fname + "&dat=var xyz=" + s;
+            //url="http://google.com"
+            //var spec="location=yes,height=570,width=520,scrollbars=no,top=11,toolbar=yes,menubar=yes,titlebar=yes'";
+            $("#urlstr").val(url);
+            return url;
+            //window.open(url);//,"_blank",spec);
+        }
 ////////////////
-function ajax_save2afile(fname,jsonDat){
-  var url="localhost:7778/save2afile";
-  //var url="weindjs_restapi_tester.htm";
-	$.ajax({
-    url:url,
-    type:"post",
-    data:{
-						 filename: fname,
-						 txt:JSON.stringify(jsonDat)
-           },
-    crossDomain:true,
-    cache:false,
-    async:false,
-    success:function(data, status){
-               alert(data);
 
-		}
-  });/////ajax
-};
-
-
-</script>
+    </script>
 
 </HEAD>
+
 <BODY xxxonload="body_onload();">
+    <pre>
+  /////////////////////////
+  // Server Site:
+  // nodemon a.node.js
+  //
+  // client site:
+  // open restapi_tester.htm
+  // then click the  button.
+</pre>
+    <a>Text to be saved in server site</a><br>
+    <textarea id="out" rows="20" cols="100" title="text to be saved in server site."></textarea><br>
 
-<textarea id="out"></textarea>
+    <a>Filename to be saved in server stie:</a><br>
+    <input size=100 id="fname" value="../out/tmp/xyz.js"></input><br>
+    <a>Rest api to be used:</a><br>
+    <input size=100 id="retapi" value="localhost:7778/save2afile" /><br>
+    <button id="GetURL" onclick="getUrl();">GetURL</button><br>
+    <textarea id="urlstr" cols="100"></textarea><br>
+    <button id="indxer">run</button>
 
-<a id="tst">test</a>
-    <button id="indxer">save2afile</button>
 
 
 
-
-    <hr/>
+    <hr />
 
 
 
@@ -165,7 +153,26 @@ function ajax_save2afile(fname,jsonDat){
 
 
 </BODY>
+
 </HTML>
 <script type="text/javascript">
+    function ajax_save2afile(fname, jsonDat) {
+        var url = "localhost:7778/save2afile";
+        //var url="weindjs_restapi_tester.htm";
+        $.ajax({
+            url: url,
+            type: "post",
+            data: {
+                filename: fname,
+                txt: JSON.stringify(jsonDat)
+            },
+            crossDomain: true,
+            cache: false,
+            async: false,
+            success: function (data, status) {
+                alert(data);
 
+            }
+        });/////ajax
+    };
 </script>
