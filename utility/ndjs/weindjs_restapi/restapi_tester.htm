@@ -75,22 +75,29 @@ td:nth-child(2){
     <script language="javascript">
         var obj =
         {
-            "name": "weindjs_restapi",
-            "version": "1.0.0",
-            "description": "",
-            "main": "a.node.js",
-            "scripts": {
-                "test": "echo \"Error:&x=no test specified\" && exit 1"
-            },
-            "author": "",
-            "license": "ISC",
-            "dependencies": {
-                "express": "^4.16.4",
-                "jsonfile": "^5.0.0"
+            "chap01": {
+                "מֶ֫לֶךְ": [
+                    "king",
+                    "king.mp3",
+                    "4427",
+                    "362",
+                    "12",
+                    "n",
+                    "77777 sdfgsd"
+                ],
+                "מַלְכָּה": [
+                    "queen",
+                    "queen.mp3",
+                    "4436",
+                    "35",
+                    "1",
+                    "n",
+                    ""
+                ]
             }
         }
         $(document).ready(function () {
-            var s = "var xyzObj=\n" + JSON.stringify(obj, null, 4);
+            var s = "var VocabChapsBuf=\n" + JSON.stringify(obj, null, 4);
             $("#out").val(s);
 
             $("#indxer").click(function () {
@@ -131,16 +138,21 @@ td:nth-child(2){
   // open restapi_tester.htm
   // then click the  button.
 </pre>
-    <a>Text to be saved in server site</a><br>
-    <textarea id="out" rows="20" cols="100" title="text to be saved in server site."></textarea><br>
 
-    <a>Filename to be saved in server stie:</a><br>
-    <input size=100 id="fname" value="../out/tmp/xyz.js"></input><br>
-    <a>Rest api to be used:</a><br>
-    <input size=100 id="retapi" value="localhost:7778/save2afile" /><br>
-    <button id="GetURL" onclick="getUrl();">GetURL</button><br>
-    <textarea id="urlstr" cols="100"></textarea><br>
-    <button id="indxer">run</button>
+    <form action="http://localhost:7778/save2afile/" type="post">
+        <a>Text to be saved in server site</a><br>
+        <textarea id="out" name="dat" rows="20" cols="100" title="text to be saved in server site."></textarea><br>
+
+        <a>Filename to be saved in server stie:</a><br>
+        <input size=100 id="fname" name="fname" value="../out/tmp/xyz.js"></input><br>
+        <a>Rest api to be used:</a><br>
+        <input size=100 id="retapi" value="localhost:7778/save2afile" /><br>
+        <button id="GetURL" onclick="getUrl();">GetURL</button><br>
+        <textarea id="urlstr" cols="100"></textarea><br>
+        <button id="indxer">run</button>
+        <input type="submit" value="Submit">
+    </form>
+
 
 
 
