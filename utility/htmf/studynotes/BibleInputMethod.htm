@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <HTML manifest___xxx="BiblePad-2015.appcache">
+
 <HEAD>
     <TITLE>cuvs</TITLE>
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
-	<META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
-
-   
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <script>    
-    var gStartDate = new Date();
-    console.log(  gStartDate.toString() +" ------ start load");//
-    </script>   
+
+
+    <script>
+        var gStartDate = new Date();
+        console.log(gStartDate.toString() + " ------ start load");//
+    </script>
 
 
 
@@ -30,26 +31,26 @@
     <script language="javascript" src="../../../jsdb/jsBibleStruct/PINYIN.json.js"></script>
     <script language="javascript" src="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
     <script language="javascript" src="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
-    
 
-    
 
-  
-     
+
+
+
+
     </script>
-    
-    
 
 
 
 
 
-    
-    <script>    
-    console.log(  (new Date()).toString() );//
+
+
+
+    <script>
+        console.log((new Date()).toString());//
     </script>
-<style>
-body {
+    <style>
+        body {
     background-color: black;
     color: white;
     width:100%;
@@ -67,205 +68,201 @@ body {
 
 
 
-    
-<script language="javascript">
-$(document).ready(function(){
 
-gen_table_StructAna(H_G_struct);
+    <script language="javascript">
+        $(document).ready(function () {
 
-table_sort();
-//table_col_index();
-});/////////////
+            gen_table_StructAna(H_G_struct);
+
+            table_sort();
+            //table_col_index();
+        });/////////////
 
 
 
-function gen_table_StructAna (BsObj){
-    function get_trs(BsObj){
-        var trs="";
-        $.each(BsObj,function(vol,ChpObj){
-            trs+="<tr><td/><td>"+vol+"</td>";
-            $.each(ChpObj,function(Chp,VsObj){
-                trs+="<td>"+Chp+"</td>";
-                $.each(VsObj,function(vrs,txt){
-                    trs+="<td>"+vrs+"</td>";
+        function gen_table_StructAna(BsObj) {
+            function get_trs(BsObj) {
+                var trs = "";
+                $.each(BsObj, function (vol, ChpObj) {
+                    trs += "<tr><td/><td>" + vol + "</td>";
+                    $.each(ChpObj, function (Chp, VsObj) {
+                        trs += "<td>" + Chp + "</td>";
+                        $.each(VsObj, function (vrs, txt) {
+                            trs += "<td>" + vrs + "</td>";
+                        });
+                    })
+
+                    trs += "</tr>";
                 });
-            })
-
-            trs+="</tr>";
-        }); 
-        return trs;       
-    };
-
-
-
-    
-    function get_v3cObj(BsObj){
-        var Vol3CharObj=[{},{},{}];
-        Object.keys(BsObj).forEach(function(vol){
-            var VOL=vol.toUpperCase();
-            for(var i=0;i<3;i++){
-                if(!Vol3CharObj[i][VOL[i]]){
-                    Vol3CharObj[i][VOL[i]]={};
-                }
-                if(i<2) {
-                    Vol3CharObj[i][VOL[i]][VOL[1+i]]=i;
-                }
-            }
-        });
-        return Vol3CharObj;
-    }
-    function gen_vTbl(v3cObj){
-        var s="";
-        for(var i=0;i<30;i++){
-            s+="<tr><td/>";
-            for(var col=0;col<3;col++){
-                var ks=Object.keys(v3cObj[col]).sort();
-                var ic=ks[i];
-                if(i>=ks.length){
-                    s+="<td/>";
-                }else{
-                    var nextks=Object.keys(v3cObj[col][ic]).sort();
-                    var nextcs=nextks.join("-");
-                    var next_col=col+1;
-                    var attrs= " next_col='"+next_col+"'"; 
-
-                    attrs+=" next_cs='"+nextcs+"'";
-                    
-                    attrs+=" class='vchar vc_"+col+"_"+ic+"'"; 
-                    s+="<td"+attrs+">"+ic+":"+nextcs+"</td>";
-                }
-            }
-            s+="</tr>";
-        }
-        return s;
-    }
-
-    //var v3cObj=get_vc3Obj(BsObj);
-
-
-
-    var v3cObj=get_v3cObj(BsObj);
-    var ss="<table id='IntelligentVolsInput' border='1'>";
-    ss+=gen_vTbl(v3cObj);
-    ss+="</table>";
-
-
-    var s=get_trs(BsObj);
-    $("#StructAna").html(s).parent().parent().prepend(ss);
-    $("#IntelligentVolsInput").find(".vchar").bind("click",function(){
-        var next_cs=$(this).attr("next_cs");
-        var next_co=$(this).attr("next_col");
-        var srep=",.vc_"+next_co+"_";
-        var nextstr=srep.substring(1)+next_cs.replace(/-/g, srep);
-        console.log(next_cs);
-        $(this).addClass("hili");
-        $("#IntelligentVolsInput").find(nextstr).addClass("hili")
-    });
-
-
-    function get_next_chars(vname,BsObj){
-        var Vol3CharObj={};
-        Object.keys(BsObj).sort().forEach(function(vol){
-            var VOL=vol.toUpperCase();
-            if(!Vol3CharObj[VOL[0]]){
-                Vol3CharObj[VOL[0]]={};
-            }
-            if(!Vol3CharObj[VOL[0]][VOL[1]]){
-                Vol3CharObj[VOL[0]][VOL[1]]={};
-            }
-            if(!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]){
-                Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]=1;
-            }
-        });
-
-        var VOL=vname.toUpperCase();
-        switch(VOL.length)
-        {
-            case 0:return [];
-            case 1:return Object.keys(Vol3CharObj[VOL[0]]).sort();
-            case 2:return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
-        };
-        return [];
-    }
-    function showOptions(ch,BsObj){
-        var s="";
-        Object.keys(BsObj).forEach(function(vol){
-            if(vol.indexOf(ch)==0){
-                s+="<tr><td/><td>"+vol+"</td></tr>";
+                return trs;
             };
-        });
-        $("#showOptions").html(s);
 
 
-    }
-    function get_chars(BsObj){
-        var chObj={};
-        Object.keys(BsObj).forEach(function(vol){
-            //var VOL=vol.toUpperCase();
-            //for(var i=0;i<VOL.length;i++){
-                chObj[vol[0]]=vol[0];
-            //}
-        });
-        var ks=Object.keys(chObj).sort();
-        console.log(ks);
 
-        var s="<tr id='vitr'>";
-        $.each(ks,function(i,c){
-            s+="<td><a class='vin'>"+c+"</td>";
-        });
-        s+="</tr>";
-        $("#inputmethod").html(s).find(".vin").bind("click",function(){
-            $(".vin").removeClass("hili");
-            $(this).addClass("hili");
-            var ch=$(this).text();
-            showOptions(ch, BsObj);
-            //var vname=$("#vname").text();
-            //vname+=ch;
-            //$("#vname").text(vname);
-            //var arr=get_next_chars(vname, BsObj);
-            //$(".vin").removeClass("hili");
-            //$(".vin").each(function(){
-            //    var v=$(this).text();
-            //    if(arr.indexOf(v)>=0){
-            //        $(this).addClass("hili");
-            //    }
-            //});
-            //console.log(arr);
-        });
-        return ks;
-    }    
-    var allchars=get_chars(BsObj);
-}
-</script>
+
+            function get_v3cObj(BsObj) {
+                var Vol3CharObj = [{}, {}, {}];
+                Object.keys(BsObj).forEach(function (vol) {
+                    var VOL = vol.toUpperCase();
+                    for (var i = 0; i < 3; i++) {
+                        if (!Vol3CharObj[i][VOL[i]]) {
+                            Vol3CharObj[i][VOL[i]] = {};
+                        }
+                        if (i < 2) {
+                            Vol3CharObj[i][VOL[i]][VOL[1 + i]] = i;
+                        }
+                    }
+                });
+                return Vol3CharObj;
+            }
+            function gen_vTbl(v3cObj) {
+                var s = "";
+                for (var i = 0; i < 30; i++) {
+                    s += "<tr><td/>";
+                    for (var col = 0; col < 3; col++) {
+                        var ks = Object.keys(v3cObj[col]).sort();
+                        var ic = ks[i];
+                        if (i >= ks.length) {
+                            s += "<td/>";
+                        } else {
+                            var nextks = Object.keys(v3cObj[col][ic]).sort();
+                            var nextcs = nextks.join("-");
+                            var next_col = col + 1;
+                            var attrs = " next_col='" + next_col + "'";
+
+                            attrs += " next_cs='" + nextcs + "'";
+
+                            attrs += " class='vchar vc_" + col + "_" + ic + "'";
+                            s += "<td" + attrs + ">" + ic + ":" + nextcs + "</td>";
+                        }
+                    }
+                    s += "</tr>";
+                }
+                return s;
+            }
+
+
+
+            var v3cObj = get_v3cObj(BsObj);
+            var ss = "<table id='IntelligentVolsInput' border='1'>";
+            ss += gen_vTbl(v3cObj);
+            ss += "</table>";
+
+
+            var s = get_trs(BsObj);
+            $("#StructAna").html(s).parent().parent().prepend(ss);
+            $("#IntelligentVolsInput").find(".vchar").bind("click", function () {
+                var next_cs = $(this).attr("next_cs");
+                var next_co = $(this).attr("next_col");
+                var srep = ",.vc_" + next_co + "_";
+                var nextstr = srep.substring(1) + next_cs.replace(/-/g, srep);
+                console.log(next_cs);
+                $(this).addClass("hili");
+                $("#IntelligentVolsInput").find(nextstr).addClass("hili")
+            });
+
+
+            function get_next_chars(vname, BsObj) {
+                var Vol3CharObj = {};
+                Object.keys(BsObj).sort().forEach(function (vol) {
+                    var VOL = vol.toUpperCase();
+                    if (!Vol3CharObj[VOL[0]]) {
+                        Vol3CharObj[VOL[0]] = {};
+                    }
+                    if (!Vol3CharObj[VOL[0]][VOL[1]]) {
+                        Vol3CharObj[VOL[0]][VOL[1]] = {};
+                    }
+                    if (!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]) {
+                        Vol3CharObj[VOL[0]][VOL[1]][VOL[2]] = 1;
+                    }
+                });
+
+                var VOL = vname.toUpperCase();
+                switch (VOL.length) {
+                    case 0: return [];
+                    case 1: return Object.keys(Vol3CharObj[VOL[0]]).sort();
+                    case 2: return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
+                };
+                return [];
+            }
+            function showOptions(ch, BsObj) {
+                var s = "";
+                Object.keys(BsObj).forEach(function (vol) {
+                    if (vol.indexOf(ch) == 0) {
+                        s += "<tr><td/><td>" + vol + "</td></tr>";
+                    };
+                });
+                $("#showOptions").html(s);
+
+
+            }
+            function get_chars(BsObj) {
+                var chObj = {};
+                Object.keys(BsObj).forEach(function (vol) {
+                    //var VOL=vol.toUpperCase();
+                    //for(var i=0;i<VOL.length;i++){
+                    chObj[vol[0]] = vol[0];
+                    //}
+                });
+                var ks = Object.keys(chObj).sort();
+                console.log(ks);
+
+                var s = "<tr id='vitr'>";
+                $.each(ks, function (i, c) {
+                    s += "<td><a class='vin'>" + c + "</td>";
+                });
+                s += "</tr>";
+                $("#inputmethod").html(s).find(".vin").bind("click", function () {
+                    $(".vin").removeClass("hili");
+                    $(this).addClass("hili");
+                    var ch = $(this).text();
+                    showOptions(ch, BsObj);
+                });
+                return ks;
+            }
+            var allchars = get_chars(BsObj);
+        }
+    </script>
 
 </HEAD>
+
 <BODY xxxonload="body_onload();">
 
-<textarea id="out"></textarea>
+    <textarea id="out"></textarea>
 
 
     <button id="indxer">indxer</button>
 
-<table border="1">
-    <thead><tr><td>#</td><td>Vol</td><td>Chp</td><td>Ver</td></tr></thead>
-    <tbody id="StructAna"></tbody>
-</table>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Vol</td>
+                <td>Chp</td>
+                <td>Ver</td>
+            </tr>
+        </thead>
+        <tbody id="StructAna"></tbody>
+    </table>
 
 
 
-<table  border="1"><caption>showOptions</caption>
-    <thead id="missingVolChpVerses"></thead>
-    <tbody id='showOptions'></tbody>
- </table>
+    <table border="1">
+        <caption>showOptions</caption>
+        <thead id="missingVolChpVerses"></thead>
+        <tbody id='showOptions'></tbody>
+    </table>
 
-<table  border="1"><caption id="">Bible Volname:<a id='vname'></a></caption>
-    <thead id="missingVolChpObj"></thead>
-	<tbody id='inputmethod'></tbody>
- </table>
+    <table border="1">
+        <caption id="">Bible Volname:<a id='vname'></a></caption>
+        <thead id="missingVolChpObj"></thead>
+        <tbody id='inputmethod'></tbody>
+    </table>
 
 
 
 </BODY>
+
 </HTML>
 <script type="text/javascript">
 
