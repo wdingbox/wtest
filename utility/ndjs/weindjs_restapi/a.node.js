@@ -12,7 +12,7 @@ var path = require('path');
 var cheerio = require("cheerio"); //>> npm install cheerio
 
 
-
+app.g_iPort = 7778;
 app.get("/", (req, res) => {
   console.log("root ok");
   //res.send("<script>alert(\'ss\');</script>");
@@ -20,11 +20,27 @@ app.get("/", (req, res) => {
   var s = JSON.stringify(obj);
   res.send("clientSiteFuntion(" + s + ");");
 });
+app.get("/Jsonpster", (req, res) => {
+  console.log();
+  console.log("res.req.headers.host=",res.req.headers.host);
+  Object.keys(res.req.headers).forEach(function(v){
+    console.log(v);
+  })
+  
+  var q = url.parse(req.url, true).query;
+  q.test = function (i) {
+    alert(i);
+  }
+  console.log(JSON.stringify(q));
 
-
-tus
-
-
+  //
+  var s = "var Jsonpster={};";
+  s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+this.inp;};";
+  s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
+  console.log(s);
+  res.send(s);
+  res.end();
+});
 
 
 
@@ -81,10 +97,11 @@ HebrewQ.prototype.get_VocabHebrewBufObj = function () {
   return { header: shead, obj: obj, fname: targf };
 }
 HebrewQ.prototype.updateVocabHebrewBuf = function (q) {
-  q.dat = decodeURIComponent(q.dat);//must see client encodeURIComponent.
-  fs.writeFileSync(q.fname, q.dat, 'utf8');//debug only.
+  var inp = JSON.parse(q.in);
+  inp.dat = decodeURIComponent(inp.dat);//must see client encodeURIComponent.
+  fs.writeFileSync(inp.fname, inp.dat, 'utf8');//debug only.
 
-  var upobj = JSON.parse(q.dat);
+  var upobj = JSON.parse(inp.dat);
   var rsObj = hbrq.get_VocabHebrewBufObj();
   Object.keys(upobj).forEach(function (k) {
     rsObj.obj[k] = upobj[k];
@@ -103,36 +120,35 @@ var SvrApi = {
     console.log("root", req.url);
 
     var q = url.parse(req.url, true).query;
-    var txt = q.fname + " " + q.dat;
     console.log(q);
 
-    hbrq.updateVocabHebrewBuf(q);
+    //hbrq.updateVocabHebrewBuf(q);
 
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.write("jsonpsvr_ok();");
-    res.end();
     //res.json(q);
     //res.send("<a/>")
     //console.log(txt);
   },
   updateVocabHebrewDat: function (req, res) {
-    
+
   },
 };//////SvrApi////////
 Object.keys(SvrApi).forEach(function (api) {
   app.get("/" + api, (req, res) => {
-    SvrApi[api](req, res);
+    var ret=SvrApi[api](req, res);
+    res.writeHead(200, { 'Content-Type': 'text/javascript' });
+    res.write("Jsonpster.Response("+ret+");");
+    res.end();
   });
 });
 
 
 
-var port = 7778;
-app.listen(7778, () => {
+
+app.listen(app.g_iPort, () => {
   console.log("app listern port:7778...");
   hbrq.get_VocabHebrewBufObj();
 });
-console.log("port:", port);
+console.log("port:", app.g_iPort);
 ///////////////////////////////
 //php -S localhost:7778
 // will override nodejs. server
@@ -144,3 +160,6 @@ console.log("port:", port);
 // client site:
 // open restapi_tester.htm
 // then click index button.
+
+
+
