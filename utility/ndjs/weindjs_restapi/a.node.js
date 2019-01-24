@@ -96,17 +96,9 @@ HebrewQ.prototype.get_VocabHebrewBufObj = function () {
   });
   return { header: shead, obj: obj, fname: targf };
 }
-
-var hbrq = new HebrewQ();
-app.get("/updateVocabHebrewBuf", (req, res) => {
-  console.log("root", req.url);
-
-  var q = url.parse(req.url, true).query;
-  var txt = q.fname + " " + q.dat;
-  console.log(q);
-
+HebrewQ.prototype.updateVocabHebrewBuf = function (q) {
   q.dat = decodeURIComponent(q.dat);//must see client encodeURIComponent.
-  fs.writeFileSync(q.fname, q.dat, 'utf8');
+  fs.writeFileSync(q.fname, q.dat, 'utf8');//debug only.
 
   var upobj = JSON.parse(q.dat);
   var rsObj = hbrq.get_VocabHebrewBufObj();
@@ -116,11 +108,19 @@ app.get("/updateVocabHebrewBuf", (req, res) => {
   var s = rsObj.header;
   s += JSON.stringify(rsObj.obj, null, 4);
   fs.writeFileSync(rsObj.fname, s);
+}
+var hbrq = new HebrewQ();
+app.get("/updateVocabHebrewBuf", (req, res) => {
+  console.log("root", req.url);
 
+  var q = url.parse(req.url, true).query;
+  var txt = q.fname + " " + q.dat;
+  console.log(q);
 
+  hbrq.updateVocabHebrewBuf(q);
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('<html><body><h>' + JSON.stringify(q, null, 4) + "</h></body></html>");
+  res.write("jsonpsvr_ok();");
   res.end();
   //res.json(q);
   //res.send("<a/>")
