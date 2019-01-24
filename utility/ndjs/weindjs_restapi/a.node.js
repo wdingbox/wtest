@@ -35,7 +35,7 @@ app.get("/Jsonpster", (req, res) => {
 
   //
   var s = "var Jsonpster={};";
-  s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+this.inp;};";
+  s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
   s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
   console.log(s);
   res.send(s);
@@ -96,12 +96,10 @@ HebrewQ.prototype.get_VocabHebrewBufObj = function () {
   });
   return { header: shead, obj: obj, fname: targf };
 }
-HebrewQ.prototype.updateVocabHebrewBuf = function (q) {
-  var inp = JSON.parse(q.in);
-  inp.dat = decodeURIComponent(inp.dat);//must see client encodeURIComponent.
-  fs.writeFileSync(inp.fname, inp.dat, 'utf8');//debug only.
+HebrewQ.prototype.updateVocabHebrewBuf = function (inpObj) {
+  fs.writeFileSync(inpObj.fname, JSON.stringify(inpObj.dat,null,4), 'utf8');//debug only.
 
-  var upobj = JSON.parse(inp.dat);
+  var upobj = inpObj.dat;//JSON.parse(inp.dat);
   var rsObj = hbrq.get_VocabHebrewBufObj();
   Object.keys(upobj).forEach(function (k) {
     rsObj.obj[k] = upobj[k];
@@ -120,9 +118,13 @@ var SvrApi = {
     console.log("root", req.url);
 
     var q = url.parse(req.url, true).query;
-    console.log(q);
+    console.log("q=",q);
+    var s=decodeURIComponent(q.inp);
+    var inpObj=JSON.parse(s);
 
-    //hbrq.updateVocabHebrewBuf(q);
+    console.log("inpObj=",inpObj);
+
+    hbrq.updateVocabHebrewBuf(inpObj);
 
     //res.json(q);
     //res.send("<a/>")
