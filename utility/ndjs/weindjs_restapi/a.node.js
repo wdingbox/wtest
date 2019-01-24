@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 
-
+tus
 
 
 
@@ -114,6 +114,9 @@ var SvrApi = {
     //res.json(q);
     //res.send("<a/>")
     //console.log(txt);
+  },
+  updateVocabHebrewDat: function (req, res) {
+    
   },
 };//////SvrApi////////
 Object.keys(SvrApi).forEach(function (api) {
