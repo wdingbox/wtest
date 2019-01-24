@@ -24,8 +24,6 @@
 
 
 
-    <script language="javascript" src="../../../jsdb/jsBibleSurvey/Hebrew_grp2_frq.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleSurvey/Hebrew_words_ciu.js"></script>
 
     <script>
         console.log((new Date()).toString());//
@@ -97,7 +95,8 @@ td:nth-child(2){
             }
         }
         $(document).ready(function () {
-            var s = "var VocabChapsBuf=\n" + JSON.stringify(obj, null, 4);
+            var s = "var";
+            s+= "VocabChapsBuf=\n" + JSON.stringify(obj, null, 4);
             $("#out").val(s);
 
             $("#indxer").click(function () {
@@ -159,7 +158,7 @@ td:nth-child(2){
 
     <hr />
 
-
+    <button id="jsonptest" onclick="jsonptester();">jsonptest</button>
 
 
 
@@ -186,5 +185,20 @@ td:nth-child(2){
 
             }
         });/////ajax
+    };
+</script>
+
+<script type="text/javascript">
+function clientSiteFuntion(obj){
+    alert(obj);
+    console.log(obj);
+}
+
+    function jsonptester() {
+        var url = "http://localhost:7778/";
+        var s = document.createElement("script");
+        s.src = url;
+        alert(url)
+        document.body.appendChild(s);
     };
 </script>

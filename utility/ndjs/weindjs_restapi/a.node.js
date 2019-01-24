@@ -16,7 +16,10 @@ var cheerio=require("cheerio"); //>> npm install cheerio
 
 app.get("/", (req,res)=>{
   console.log("root ok");
-  res.send("hello a.node.js");
+  //res.send("<script>alert(\'ss\');</script>");
+  var obj={samp:'ffa'};
+  var s=JSON.stringify(obj);
+  res.send("clientSiteFuntion("+s+");");
 });
 
 app.get("/save2afile", (req,res)=>{
