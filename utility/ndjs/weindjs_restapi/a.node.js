@@ -13,7 +13,6 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 
 
 
-
 app.get("/", (req, res) => {
   console.log("root ok");
   //res.send("<script>alert(\'ss\');</script>");
@@ -22,23 +21,8 @@ app.get("/", (req, res) => {
   res.send("clientSiteFuntion(" + s + ");");
 });
 
-app.get("/save2afile", (req, res) => {
-  console.log("root", req.url);
 
-  var q = url.parse(req.url, true).query;
-  var txt = q.fname + " " + q.dat;
-  console.log(q);
 
-  q.dat = decodeURIComponent(q.dat);//must see client encodeURIComponent.
-  fs.writeFileSync(q.fname, q.dat, 'utf8');
-
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('<html><body><h>' + JSON.stringify(q, null, 4) + "</h></body></html>");
-  res.end();
-  //res.json(q);
-  //res.send("<a/>")
-  //console.log(txt);
-});
 
 
 
@@ -110,21 +94,32 @@ HebrewQ.prototype.updateVocabHebrewBuf = function (q) {
   fs.writeFileSync(rsObj.fname, s);
 }
 var hbrq = new HebrewQ();
-app.get("/updateVocabHebrewBuf", (req, res) => {
-  console.log("root", req.url);
 
-  var q = url.parse(req.url, true).query;
-  var txt = q.fname + " " + q.dat;
-  console.log(q);
 
-  hbrq.updateVocabHebrewBuf(q);
 
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write("jsonpsvr_ok();");
-  res.end();
-  //res.json(q);
-  //res.send("<a/>")
-  //console.log(txt);
+
+var SvrApi = {
+  updateVocabHebrewBuf: function (req, res) {
+    console.log("root", req.url);
+
+    var q = url.parse(req.url, true).query;
+    var txt = q.fname + " " + q.dat;
+    console.log(q);
+
+    hbrq.updateVocabHebrewBuf(q);
+
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.write("jsonpsvr_ok();");
+    res.end();
+    //res.json(q);
+    //res.send("<a/>")
+    //console.log(txt);
+  },
+};//////SvrApi////////
+Object.keys(SvrApi).forEach(function (api) {
+  app.get("/" + api, (req, res) => {
+    SvrApi[api](req, res);
+  });
 });
 
 
