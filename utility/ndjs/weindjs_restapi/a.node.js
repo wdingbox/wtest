@@ -15,18 +15,19 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 app.g_iPort = 7778;
 app.get("/", (req, res) => {
   console.log("root ok");
+  console.log("res.req.headers.host=", res.req.headers.host);
   //res.send("<script>alert(\'ss\');</script>");
   var obj = { samp: 'ffa' };
-  var s = JSON.stringify(obj);
-  res.send("clientSiteFuntion(" + s + ");");
+  var s = JSON.stringify(res.req.headers);
+  res.send("restapi Jsonpster. clientSite:" + s);
 });
 app.get("/Jsonpster", (req, res) => {
   console.log();
-  console.log("res.req.headers.host=",res.req.headers.host);
-  Object.keys(res.req.headers).forEach(function(v){
+  console.log("res.req.headers.host=", res.req.headers.host);
+  Object.keys(res.req.headers).forEach(function (v) {
     console.log(v);
   })
-  
+
   var q = url.parse(req.url, true).query;
   q.test = function (i) {
     alert(i);
@@ -97,7 +98,7 @@ HebrewQ.prototype.get_VocabHebrewBufObj = function () {
   return { header: shead, obj: obj, fname: targf };
 }
 HebrewQ.prototype.updateVocabHebrewBuf = function (inpObj) {
-  fs.writeFileSync(inpObj.fname, JSON.stringify(inpObj.dat,null,4), 'utf8');//debug only.
+  fs.writeFileSync(inpObj.fname, JSON.stringify(inpObj.dat, null, 4), 'utf8');//debug only.
 
   var upobj = inpObj.dat;//JSON.parse(inp.dat);
   var rsObj = hbrq.get_VocabHebrewBufObj();
@@ -114,34 +115,32 @@ var hbrq = new HebrewQ();
 
 
 var SvrApi = {
-  updateVocabHebrewBuf: function (req, res) {
-    console.log("root", req.url);
-
+  GetApiInputParamObj: function (req, res) {
+    console.log("req.url=", req.url);
     var q = url.parse(req.url, true).query;
-    console.log("q=",q);
-    var s=decodeURIComponent(q.inp);
-    var inpObj=JSON.parse(s);
-
-    console.log("inpObj=",inpObj);
-
-    hbrq.updateVocabHebrewBuf(inpObj);
-
-    //res.json(q);
-    //res.send("<a/>")
-    //console.log(txt);
+    console.log("q=", q);
+    var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
+    var inpObj = JSON.parse(s);
+    console.log("inpObj=", inpObj);
+    return inpObj;
+  },
+  updateVocabHebrewBuf: function (inpObj) {
+    return hbrq.updateVocabHebrewBuf(inpObj);
   },
   updateVocabHebrewDat: function (req, res) {
 
   },
-};//////SvrApi////////
+};//////SvrApi///////////////////////////////////
 Object.keys(SvrApi).forEach(function (api) {
   app.get("/" + api, (req, res) => {
-    var ret=SvrApi[api](req, res);
+    var inpObj = SvrApi.GetApiInputParamObj(req, res);
+    var ret = SvrApi[api](inpObj);
     res.writeHead(200, { 'Content-Type': 'text/javascript' });
-    res.write("Jsonpster.Response("+ret+");");
+    res.write("Jsonpster.Response(" + ret + ");");
     res.end();
   });
 });
+////////////////////////////////////////////////
 
 
 
@@ -152,9 +151,11 @@ app.listen(app.g_iPort, () => {
 });
 console.log("port:", app.g_iPort);
 ///////////////////////////////
-//php -S localhost:7778
+// php -S localhost:7778
 // will override nodejs. server
-
+//
+// https://www.npmjs.com/package/nodemon
+// npm install -g nodemon
 /////////////////////////
 // Server Site:
 // nodemon a.node.js
