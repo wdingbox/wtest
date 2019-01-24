@@ -150,7 +150,7 @@
 
 
             var s = get_trs(BsObj);
-            $("#StructAna").html(s).parent().parent().prepend(ss);
+            //$("#StructAna").html(s).parent().parent().prepend(ss);
             $("#IntelligentVolsInput").find(".vchar").bind("click", function () {
                 var next_cs = $(this).attr("next_cs");
                 var next_co = $(this).attr("next_col");
@@ -186,37 +186,53 @@
                 return [];
             }
             function showOptions(ch, BsObj) {
-                var s = "";
+                var s = "", i=0;
                 Object.keys(BsObj).forEach(function (vol) {
                     if (vol.indexOf(ch) == 0) {
                         s += "<tr><td/><td>" + vol + "</td></tr>";
+                        i++;
                     };
                 });
-                $("#showOptions").html(s);
-
-
-            }
+                //$("#showOptions").html(s);
+                return {trs:s, size:i};
+            };
             function get_chars(BsObj) {
                 var chObj = {};
                 Object.keys(BsObj).forEach(function (vol) {
-                    //var VOL=vol.toUpperCase();
-                    //for(var i=0;i<VOL.length;i++){
                     chObj[vol[0]] = vol[0];
-                    //}
                 });
                 var ks = Object.keys(chObj).sort();
                 console.log(ks);
 
-                var s = "<tr id='vitr'>";
+                var s = "";
+                s += "<tr>";
+                for (var i = 0; i < 10; i++) {
+                    var ret=showOptions(""+i, BsObj);
+                    var sdisable="",sch=""+i+"<sup>"+ret.size+"</sup>";
+                    if(0==ret.size){
+                        sdisable="disabled";
+                        sch=""+i;
+                    }
+                    s += "<td><button "+sdisable+" class='vin'>" + sch + "</button></td>";
+                }
+                s += "</tr>";
+                s += "<tr id='vitr'>";
                 $.each(ks, function (i, c) {
-                    s += "<td><a class='vin'>" + c + "</td>";
+                    if (("" + parseInt(c)) == c) {
+                        return;
+                    }
+                    c=c+"<sup>"+showOptions(c,BsObj).size+"</sup>";
+                    s += "<td><button class='vin'>" + c + "</button></td>";
                 });
                 s += "</tr>";
+
+
                 $("#inputmethod").html(s).find(".vin").bind("click", function () {
                     $(".vin").removeClass("hili");
                     $(this).addClass("hili");
                     var ch = $(this).text();
-                    showOptions(ch, BsObj);
+                    var ret=showOptions(ch[0], BsObj);
+                    $("#showOptions").html(ret.trs);
                 });
                 return ks;
             }
@@ -247,18 +263,18 @@
 
 
 
+
+
+    <table border="0">
+        <caption id="">Bible Volname:<a id='vname'></a></caption>
+        <thead id="missingVolChpObj"></thead>
+        <tbody id='inputmethod'></tbody>
+    </table>
     <table border="1">
         <caption>showOptions</caption>
         <thead id="missingVolChpVerses"></thead>
         <tbody id='showOptions'></tbody>
     </table>
-
-    <table border="1">
-        <caption id="">Bible Volname:<a id='vname'></a></caption>
-        <thead id="missingVolChpObj"></thead>
-        <tbody id='inputmethod'></tbody>
-    </table>
-
 
 
 </BODY>
