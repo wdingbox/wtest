@@ -96,7 +96,7 @@ td:nth-child(2){
         }
         $(document).ready(function () {
             var s = "var";
-            s+= "VocabChapsBuf=\n" + JSON.stringify(obj, null, 4);
+            s += "VocabChapsBuf=\n" + JSON.stringify(obj, null, 4);
             $("#out").val(s);
 
             $("#indxer").click(function () {
@@ -189,10 +189,10 @@ td:nth-child(2){
 </script>
 
 <script type="text/javascript">
-function clientSiteFuntion(obj){
-    alert(obj);
-    console.log(obj);
-}
+    function clientSiteFuntion(obj) {
+        alert(obj);
+        console.log(obj);
+    }
 
     function jsonptester() {
         var url = "http://localhost:7778/";
