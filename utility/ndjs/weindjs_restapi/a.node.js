@@ -176,12 +176,19 @@ BibleObj.prototype.assign_to_clientBibleObj = function (clientObj, SvrObj) {
         clientObj[vol][chp] = {};
       }
       Object.keys(vrsObj).forEach(function (vrs) {
-        var str=vrsObj[vrs];
+        var final=vrsObj[vrs];
         if (undefined == clientObj[vol][chp][vrs]) {
           clientObj[vol][chp][vrs] = [];
           //console.log("client *****",clientObj)
         }
-        clientObj[vol][chp][vrs].push(str);
+        if("string"===typeof final){
+          clientObj[vol][chp][vrs].push(final);
+        }
+        else if("object"===typeof final){
+          final.forEach(function(str){
+            clientObj[vol][chp][vrs].push(str);
+          });
+        }
         //console.log("client *************",clientObj)
       });
     });
