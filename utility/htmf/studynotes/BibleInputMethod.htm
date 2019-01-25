@@ -68,11 +68,10 @@
 
 
 
-
     <script language="javascript">
         $(document).ready(function () {
 
-            gen_table_StructAna(H_G_struct);
+            gen_1st_char_btns(H_G_struct);
 
             table_sort();
             //table_col_index();
@@ -80,164 +79,291 @@
 
 
 
-        function gen_table_StructAna(BsObj) {
-            function get_trs(BsObj) {
-                var trs = "";
-                $.each(BsObj, function (vol, ChpObj) {
-                    trs += "<tr><td/><td>" + vol + "</td>";
-                    $.each(ChpObj, function (Chp, VsObj) {
-                        trs += "<td>" + Chp + "</td>";
-                        $.each(VsObj, function (vrs, txt) {
-                            trs += "<td>" + vrs + "</td>";
-                        });
-                    })
-
-                    trs += "</tr>";
-                });
-                return trs;
-            };
-
-
+        //function gen_table_StructAna(BsObj) {
+        //function get_trs(BsObj) {
+        //    var trs = "";
+        //    $.each(BsObj, function (vol, ChpObj) {
+        //        trs += "<tr><td/><td>" + vol + "</td>";
+        //        $.each(ChpObj, function (Chp, VsObj) {
+        //            trs += "<td>" + Chp + "</td>";
+        //            $.each(VsObj, function (vrs, txt) {
+        //                trs += "<td>" + vrs + "</td>";
+        //            });
+        //        })
+        //
+        //        trs += "</tr>";
+        //    });
+        //    return trs;
+        //};
 
 
-            function get_v3cObj(BsObj) {
-                var Vol3CharObj = [{}, {}, {}];
-                Object.keys(BsObj).forEach(function (vol) {
-                    var VOL = vol.toUpperCase();
-                    for (var i = 0; i < 3; i++) {
-                        if (!Vol3CharObj[i][VOL[i]]) {
-                            Vol3CharObj[i][VOL[i]] = {};
-                        }
-                        if (i < 2) {
-                            Vol3CharObj[i][VOL[i]][VOL[1 + i]] = i;
-                        }
-                    }
-                });
-                return Vol3CharObj;
-            }
-            function gen_vTbl(v3cObj) {
-                var s = "";
-                for (var i = 0; i < 30; i++) {
-                    s += "<tr><td/>";
-                    for (var col = 0; col < 3; col++) {
-                        var ks = Object.keys(v3cObj[col]).sort();
-                        var ic = ks[i];
-                        if (i >= ks.length) {
-                            s += "<td/>";
-                        } else {
-                            var nextks = Object.keys(v3cObj[col][ic]).sort();
-                            var nextcs = nextks.join("-");
-                            var next_col = col + 1;
-                            var attrs = " next_col='" + next_col + "'";
 
-                            attrs += " next_cs='" + nextcs + "'";
 
-                            attrs += " class='vchar vc_" + col + "_" + ic + "'";
-                            s += "<td" + attrs + ">" + ic + ":" + nextcs + "</td>";
-                        }
-                    }
-                    s += "</tr>";
+        //function get_v3cObj(BsObj) {
+        //    var Vol3CharObj = [{}, {}, {}];
+        //    Object.keys(BsObj).forEach(function (vol) {
+        //        var VOL = vol.toUpperCase();
+        //        for (var i = 0; i < 3; i++) {
+        //            if (!Vol3CharObj[i][VOL[i]]) {
+        //                Vol3CharObj[i][VOL[i]] = {};
+        //            }
+        //            if (i < 2) {
+        //                Vol3CharObj[i][VOL[i]][VOL[1 + i]] = i;
+        //            }
+        //        }
+        //    });
+        //    return Vol3CharObj;
+        //}
+        //function gen_vTbl(v3cObj) {
+        //    var s = "";
+        //    for (var i = 0; i < 30; i++) {
+        //        s += "<tr><td/>";
+        //        for (var col = 0; col < 3; col++) {
+        //            var ks = Object.keys(v3cObj[col]).sort();
+        //            var ic = ks[i];
+        //            if (i >= ks.length) {
+        //                s += "<td/>";
+        //            } else {
+        //                var nextks = Object.keys(v3cObj[col][ic]).sort();
+        //                var nextcs = nextks.join("-");
+        //                var next_col = col + 1;
+        //                var attrs = " next_col='" + next_col + "'";
+        //
+        //                attrs += " next_cs='" + nextcs + "'";
+        //
+        //                attrs += " class='vchar vc_" + col + "_" + ic + "'";
+        //                s += "<td" + attrs + ">" + ic + ":" + nextcs + "</td>";
+        //            }
+        //        }
+        //        s += "</tr>";
+        //    }
+        //    return s;
+        //}
+
+
+
+        //var v3cObj = get_v3cObj(BsObj);
+        //var ss = "<table id='IntelligentVolsInput' border='1'>";
+        //ss += gen_vTbl(v3cObj);
+        //ss += "</table>";
+
+
+        //var s = get_trs(BsObj);
+        //$("#StructAna").html(s).parent().parent().prepend(ss);
+        //$("#IntelligentVolsInput").find(".vchar").bind("click", function () {
+        //    var next_cs = $(this).attr("next_cs");
+        //    var next_co = $(this).attr("next_col");
+        //    var srep = ",.vc_" + next_co + "_";
+        //    var nextstr = srep.substring(1) + next_cs.replace(/-/g, srep);
+        //    console.log(next_cs);
+        //    $(this).addClass("hili");
+        //    $("#IntelligentVolsInput").find(nextstr).addClass("hili")
+        //});
+
+
+        //function get_next_chars(vname, BsObj) {
+        //    var Vol3CharObj = {};
+        //    Object.keys(BsObj).sort().forEach(function (vol) {
+        //        var VOL = vol.toUpperCase();
+        //        if (!Vol3CharObj[VOL[0]]) {
+        //            Vol3CharObj[VOL[0]] = {};
+        //        }
+        //        if (!Vol3CharObj[VOL[0]][VOL[1]]) {
+        //            Vol3CharObj[VOL[0]][VOL[1]] = {};
+        //        }
+        //        if (!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]) {
+        //            Vol3CharObj[VOL[0]][VOL[1]][VOL[2]] = 1;
+        //        }
+        //    });
+        //
+        //    var VOL = vname.toUpperCase();
+        //    switch (VOL.length) {
+        //        case 0: return [];
+        //        case 1: return Object.keys(Vol3CharObj[VOL[0]]).sort();
+        //        case 2: return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
+        //    };
+        //    return [];
+        //}
+        function get_trs_1stCharMatchVol(ch, BsObj) {
+            var s = "", i = 0;
+            Object.keys(BsObj).forEach(function (vol) {
+                if (vol.indexOf(ch) == 0) {
+                    s += "<tr><td/><td class='v3'>" + vol + "</td></tr>";
+                    i++;
+                };
+            });
+            //$("#showOptions").html(s);
+            return { trs: s, size: i };
+        };
+        function get_all_1stCharsOfVol(BsObj, iPos) {
+            var chObj = {};
+            Object.keys(BsObj).forEach(function (vol) {
+                chObj[vol[iPos]] = vol[iPos];
+            });
+            var ks = Object.keys(chObj).sort();
+            console.log(ks);
+            return ks;
+        }
+        function gen_1st_char_btns(BsObj) {
+            var ks = get_all_1stCharsOfVol(BsObj, 0);
+
+            var s = "";
+            s += "<tr>";
+            for (var i = 0; i < 10; i++) {
+                var ret = get_trs_1stCharMatchVol("" + i, BsObj);
+                var sdisable = "", sch = "" + i + "<sup>" + ret.size + "</sup>";
+                if (0 == ret.size) {
+                    sdisable = "disabled";
+                    sch = "" + i;
                 }
-                return s;
+                s += "<td><button " + sdisable + " class='vin'>" + sch + "</button></td>";
             }
+            s += "</tr>";
+            s += "<tr id='vitr'>";
+            $.each(ks, function (i, c) {
+                if (("" + parseInt(c)) == c) {
+                    return;
+                }
+                c = c + "<sup>" + get_trs_1stCharMatchVol(c, BsObj).size + "</sup>";
+                s += "<td><button class='vin'>" + c + "</button></td>";
+            });
+            s += "</tr>";
 
 
-
-            var v3cObj = get_v3cObj(BsObj);
-            var ss = "<table id='IntelligentVolsInput' border='1'>";
-            ss += gen_vTbl(v3cObj);
-            ss += "</table>";
-
-
-            var s = get_trs(BsObj);
-            //$("#StructAna").html(s).parent().parent().prepend(ss);
-            $("#IntelligentVolsInput").find(".vchar").bind("click", function () {
-                var next_cs = $(this).attr("next_cs");
-                var next_co = $(this).attr("next_col");
-                var srep = ",.vc_" + next_co + "_";
-                var nextstr = srep.substring(1) + next_cs.replace(/-/g, srep);
-                console.log(next_cs);
+            $("#inputmethod").html(s).find(".vin").bind("click", function () {
+                $(".vin").removeClass("hili");
                 $(this).addClass("hili");
-                $("#IntelligentVolsInput").find(nextstr).addClass("hili")
+                var ch = $(this).text();
+                var ret = get_trs_1stCharMatchVol(ch[0], BsObj);
+                $("#showOptions").html(ret.trs).find(".v3").bind("click", function () {
+                    var vol = $(this).text();
+                    $(".v3").removeClass("hili");
+                    $(this).addClass("hili");
+                    $("#out").val(vol);
+                    gen_Chapts_DiPos(BsObj, vol, 0);
+                });
+            });
+            return ks;
+        }
+
+        function get_arr_nextChars(obj, str) {
+            var ret = {};
+            Object.keys(obj).forEach(function (v) {
+                if (v.indexOf(str) == 0) {
+                    var idx = str.length;
+                    if (v.length > idx) {
+                        var ch = v[idx];
+                        if (!ret[ch]) ret[ch] = 0;
+                        ret[ch]++;
+                    }
+
+                }
+            });
+            var ks = Object.keys(ret).sort();
+            return ks;
+        }
+        function get_chap_by_selected(){
+            var arr=["","",""];
+            arr[0]=$(".chpos0.hili").text();
+            arr[1]=$(".chpos1.hili").text();
+            arr[2]=$(".chpos2.hili").text();
+            return arr.join("");
+        }
+        function gen_verseNum(BsObj){
+            var chp=get_chap_by_selected();
+            console.log(chp);
+        }
+        var chpos0 = chpos1 = chpos2 = "";
+        function gen_Chapts_DiPos(BsObj, Vol, iPos) {
+            var maxchp = "" + Object.keys(BsObj[Vol]).length;
+            var n = maxchp.length;
+            var p0ar = get_all_1stCharsOfVol(BsObj[Vol], iPos);
+            var s = "";
+            for (var i = 0; i < 10; i++) {
+                s += "<tr>";
+                for (var k = 0; k < n; k++) {
+                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
+                }
+                s += "</tr>";
+            };
+            var chpTab = $("#chp").html(s);
+            $(chpTab).find(".chpos0").each(function (i) {
+                var row = $(this).attr("chprow");
+                var irow = parseInt(row);
+                if (p0ar[irow]) {
+                    $(this).text(p0ar[irow]);
+                } else {
+                    $(this).text("");
+                }
             });
 
+            $(chpTab).find(".chpos0").bind("click", function () {
+                var ss = $(this).text();
+                if (ss.length === 0) return;
+                chpos0 = ss;
+                chpos1 = chpos2 = "";
 
-            function get_next_chars(vname, BsObj) {
-                var Vol3CharObj = {};
-                Object.keys(BsObj).sort().forEach(function (vol) {
-                    var VOL = vol.toUpperCase();
-                    if (!Vol3CharObj[VOL[0]]) {
-                        Vol3CharObj[VOL[0]] = {};
-                    }
-                    if (!Vol3CharObj[VOL[0]][VOL[1]]) {
-                        Vol3CharObj[VOL[0]][VOL[1]] = {};
-                    }
-                    if (!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]) {
-                        Vol3CharObj[VOL[0]][VOL[1]][VOL[2]] = 1;
-                    }
-                });
+                $(".chpos0").removeClass("hili");
+                $(".chpos1").removeClass("hili");
+                $(".chpos2").removeClass("hili");
 
-                var VOL = vname.toUpperCase();
-                switch (VOL.length) {
-                    case 0: return [];
-                    case 1: return Object.keys(Vol3CharObj[VOL[0]]).sort();
-                    case 2: return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
-                };
-                return [];
-            }
-            function showOptions(ch, BsObj) {
-                var s = "", i=0;
-                Object.keys(BsObj).forEach(function (vol) {
-                    if (vol.indexOf(ch) == 0) {
-                        s += "<tr><td/><td>" + vol + "</td></tr>";
-                        i++;
+                $(this).addClass("hili");
+                chpos0 = $(this).text();
+                var p1ar = get_arr_nextChars(BsObj[Vol], chpos0);
+                $(".chpos1").each(function (i) {
+                    var row = $(this).attr("chprow");
+                    var irow = parseInt(row);
+                    if (p1ar[irow]) {
+                        $(this).text(p1ar[irow]);
+                    } else {
+                        $(this).text("");
                     };
                 });
-                //$("#showOptions").html(s);
-                return {trs:s, size:i};
-            };
-            function get_chars(BsObj) {
-                var chObj = {};
-                Object.keys(BsObj).forEach(function (vol) {
-                    chObj[vol[0]] = vol[0];
-                });
-                var ks = Object.keys(chObj).sort();
-                console.log(ks);
+                gen_verseNum();
+            });
+            $(chpTab).find(".chpos1").bind("click", function () {
+                var ss = $(this).text();
+                if (ss.length === 0) return;
+                chpos1 = ss;
 
-                var s = "";
-                s += "<tr>";
-                for (var i = 0; i < 10; i++) {
-                    var ret=showOptions(""+i, BsObj);
-                    var sdisable="",sch=""+i+"<sup>"+ret.size+"</sup>";
-                    if(0==ret.size){
-                        sdisable="disabled";
-                        sch=""+i;
-                    }
-                    s += "<td><button "+sdisable+" class='vin'>" + sch + "</button></td>";
-                }
-                s += "</tr>";
-                s += "<tr id='vitr'>";
-                $.each(ks, function (i, c) {
-                    if (("" + parseInt(c)) == c) {
-                        return;
-                    }
-                    c=c+"<sup>"+showOptions(c,BsObj).size+"</sup>";
-                    s += "<td><button class='vin'>" + c + "</button></td>";
+                $(".chpos1").removeClass("hili");
+                $(".chpos2").removeClass("hili");
+                $(this).addClass("hili");
+                var p1ar = get_arr_nextChars(BsObj[Vol], chpos0 + chpos1);
+                $(".chpos2").each(function (i) {
+                    var row = $(this).attr("chprow");
+                    var irow = parseInt(row);
+                    if (p1ar[irow]) {
+                        $(this).text(p1ar[irow]);
+                    } else {
+                        $(this).text("");
+                    };
                 });
-                s += "</tr>";
+                gen_verseNum();
+            });
+            $(chpTab).find(".chpos2").bind("click", function () {
+                var ss = $(this).text();
+                if (ss.length === 0) return;
+                chpos2 = ss;
 
-
-                $("#inputmethod").html(s).find(".vin").bind("click", function () {
-                    $(".vin").removeClass("hili");
-                    $(this).addClass("hili");
-                    var ch = $(this).text();
-                    var ret=showOptions(ch[0], BsObj);
-                    $("#showOptions").html(ret.trs);
+                //$(".chpos1").removeClass("hili");
+                $(".chpos2").removeClass("hili");
+                $(this).addClass("hili");
+                var p2ar = get_arr_nextChars(BsObj[Vol], chpos0 + chpos1 + chpos2);
+                $(".chpos3").each(function (i) {
+                    var row = $(this).attr("chprow");
+                    var irow = parseInt(row);
+                    if (p2ar[irow]) {
+                        $(this).text(p2ar[irow]);
+                    } else {
+                        $(this).text("");
+                    };
                 });
-                return ks;
-            }
-            var allchars = get_chars(BsObj);
-        }
+                gen_verseNum();
+            });
+        };
+            //var allchars = gen_1st_char_btns(BsObj);
+        //}
     </script>
 
 </HEAD>
@@ -270,12 +396,30 @@
         <thead id="missingVolChpObj"></thead>
         <tbody id='inputmethod'></tbody>
     </table>
-    <table border="1">
-        <caption>showOptions</caption>
+    <table border="1" style="float:left;">
+        <caption>Vol</caption>
         <thead id="missingVolChpVerses"></thead>
         <tbody id='showOptions'></tbody>
     </table>
 
+    <table border="1" style="float:left;">
+        <caption>__chapters__</caption>
+        <thead id=""></thead>
+        <tbody id='chp'>
+            <tr>
+                <td>1</td>
+            </tr>
+        </tbody>
+    </table>
+    <table border="1" align="">
+        <caption>Verses</caption>
+        <thead id=""></thead>
+        <tbody id='chp'>
+            <tr>
+                <td>1</td>
+            </tr>
+        </tbody>
+    </table>
 
 </BODY>
 
