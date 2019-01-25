@@ -128,14 +128,14 @@ var hbrq = new HebrewQ();
 
 var BibleObj = function () {
 };
-BibleObj.prototype.load_as_content = function (fname) {
+BibleObj.prototype.load_BibleJstrn = function (fname) {
   var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
   spathfile = "../../../jsdb/jsBibleObj/"+fname+".json.js";
   var content = Uti.GetJsonStringFrmFile(spathfile);
   return content;
 };
-BibleObj.prototype.load_Obj = function (fname) {
-  var content = this.load_as_content(fname);
+BibleObj.prototype.load_BibleObj = function (fname) {
+  var content = this.load_BibleJstrn(fname);
   var bobj = JSON.parse(content);
   return bobj;
 };
@@ -180,7 +180,7 @@ BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
   return retObj;
 };
 BibleObj.prototype.fetch_by_keys = function (fname, keyObj) {
-  var bobj = this.load_Obj(fname);
+  var bobj = this.load_BibleObj(fname);
   var retObj = this.fetch_bibObj_by_keyParm(bobj, keyObj);
   var ss = JSON.stringify(retObj);
   return ss;
@@ -205,7 +205,7 @@ var SvrApi = {
   loadBibleObj: function (inpObj) {
     console.log("... loadBibleObj ...");
     var bo = new BibleObj();
-    return bo.load_as_content();
+    return bo.load_BibleJstrn();
   },
   loadBibible_VolChpVrs: function (inpObj) {
     console.log("... loadBibible_VolChpVrs ...");
