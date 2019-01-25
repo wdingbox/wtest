@@ -220,7 +220,7 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chap_Menu("#chp",BsObj, vol);
+                    gen_Chap_Menu("#chp", BsObj, vol);
                 });
             });
             return ks;
@@ -253,75 +253,74 @@ sub{
 
 
 
-        
-            function chp_table_init(tid, uobj) {
-                var maxchp = "" + Object.keys(uobj).length;
-                var n = maxchp.length;
-                var p0ar = get_cha_arr_after_str(uobj, "");
-                var s = "";
-                for (var i = 0; i < 10; i++) {
-                    s += "<tr>";
-                    for (var k = 0; k < n; k++) {
-                        s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
-                    }
-                    s += "</tr>";
-                };
-                var chpTab = $(tid).html(s);
-                return chpTab;
+
+        function chp_table_init(tid, uobj) {
+            var maxchp = "" + Object.keys(uobj).length;
+            var n = maxchp.length;
+            var p0ar = get_cha_arr_after_str(uobj, "");
+            var s = "";
+            for (var i = 0; i < 10; i++) {
+                s += "<tr>";
+                for (var k = 0; k < n; k++) {
+                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
+                }
+                s += "</tr>";
             };
-
-
-            function chp_table_fill_col(tid,uobj, icol, keysearch) {
-                
-                var p0ar = get_cha_arr_after_str(uobj, keysearch);
-                $(tid).find(".chpos" + icol).each(function (i) {
-                    var row = $(this).attr("chprow");
-                    var irow = parseInt(row);
-                    if (p0ar[irow]) {
-                        var ch = p0ar[irow];
-                        var nxAr = get_cha_arr_after_str(uobj, keysearch+ch);
-                        var ssub = "" + nxAr.length;
-                        if (nxAr.length === 0) ssub = "";
-                        $(this).html(ch + "<sub>" + ssub + "</sub>");
-                    } else {
-                        $(this).text("");
-                    }
-                });
-            };
-            function chp_table_bind_col(tid,uobj, icol, cbfunc) {
-                $(tid).find(".chpos"+icol).bind("click", function () {
-                    var ss = $(this).text();
-                    if (ss.length === 0) return;
-
-                    for (var i = icol; i < 3; i++) {
-                        $(".chpos" + i).removeClass("hili");
-                    }
-
-                    $(this).addClass("hili");
-                    
-                    //var ret = get_chap_by_selected();
-                    var ssrch=cbfunc();
-
-                    chp_table_fill_col(tid,uobj, 1+icol, ssrch);
-
-                    gen_verse_Menu("#vrs",uobj[ssrch]);
-                });
-            }
-        function gen_Chap_Menu(tbdid, BsObj, Vol) { 
-            function get_search_str_by_hili(){
-                var ret= get_chap_by_selected();
-                return ret.chp;
-            }
-            var vobj=BsObj[Vol];
-            chp_table_init(tbdid, vobj);
-            var ret = get_chap_by_selected();
-            chp_table_fill_col(tbdid, vobj,  0, ret.chp);
-            chp_table_bind_col(tbdid, vobj,  0,get_search_str_by_hili );
-            chp_table_bind_col(tbdid, vobj,  1,get_search_str_by_hili );
-            chp_table_bind_col(tbdid, vobj,  2,get_search_str_by_hili );
+            var chpTab = $(tid).html(s);
+            return chpTab;
         };
 
-        function gen_verse_Menu(tbdid, BsObj,vol) {
+
+        function chp_table_fill_col(tid, uobj, icol, keysearch) {
+
+            var p0ar = get_cha_arr_after_str(uobj, keysearch);
+            $(tid).find(".chpos" + icol).each(function (i) {
+                var row = $(this).attr("chprow");
+                var irow = parseInt(row);
+                if (p0ar[irow]) {
+                    var ch = p0ar[irow];
+                    var nxAr = get_cha_arr_after_str(uobj, keysearch + ch);
+                    var ssub = "" + nxAr.length;
+                    if (nxAr.length === 0) ssub = "";
+                    $(this).html(ch + "<sub>" + ssub + "</sub>");
+                } else {
+                    $(this).text("");
+                }
+            });
+        };
+        function chp_table_bind_col(tid, uobj, icol, cbfunc) {
+            $(tid).find(".chpos" + icol).bind("click", function () {
+                var ss = $(this).text();
+                if (ss.length === 0) return;
+
+                for (var i = icol; i < 3; i++) {
+                    $(".chpos" + i).removeClass("hili");
+                }
+
+                $(this).addClass("hili");
+
+                //var ret = get_chap_by_selected();
+                var ssrch = cbfunc();
+
+                chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
+
+                gen_verse_Menu("#vrs", uobj[ssrch]);
+            });
+        }
+        function gen_Chap_Menu(tbdid, BsObj, Vol) {
+            function get_search_str_by_hili() {
+                var ret = get_chap_by_selected();
+                return ret.chp;
+            }
+            var vobj = BsObj[Vol];
+            chp_table_init(tbdid, vobj);
+            chp_table_fill_col(tbdid, vobj, 0, get_search_str_by_hili());
+            chp_table_bind_col(tbdid, vobj, 0, get_search_str_by_hili);
+            chp_table_bind_col(tbdid, vobj, 1, get_search_str_by_hili);
+            chp_table_bind_col(tbdid, vobj, 2, get_search_str_by_hili);
+        };
+
+        function gen_verse_Menu(tbdid, BsObj, vol) {
             var ret = get_chap_by_selected();
             console.log(ret);
             //chp_table_init(tbdid, BsObj[ret.vol], ret.chp);
