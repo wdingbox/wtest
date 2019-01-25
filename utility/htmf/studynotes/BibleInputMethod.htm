@@ -220,7 +220,7 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chap_Menu(BsObj, vol);
+                    gen_Chap_Menu("#chp",BsObj, vol);
                 });
             });
             return ks;
@@ -252,8 +252,8 @@ sub{
         }
 
 
-        function gen_Chap_Menu(BsObj, Vol) {
-            function chp_table_init(BsObj, Vol) {
+        function gen_Chap_Menu(tbdid, BsObj, Vol) { 
+            function chp_table_init(tid, BsObj, Vol) {
                 var maxchp = "" + Object.keys(BsObj[Vol]).length;
                 var n = maxchp.length;
                 var p0ar = get_cha_arr_after_str(BsObj[Vol], "");
@@ -265,15 +265,15 @@ sub{
                     }
                     s += "</tr>";
                 };
-                var chpTab = $("#chp").html(s);
+                var chpTab = $(tid).html(s);
                 return chpTab;
             };
 
 
-            function chp_table_fill_col(BsObj, Vol, icol) {
+            function chp_table_fill_col(tid,BsObj, Vol, icol) {
                 var ret = get_chap_by_selected();
                 var p0ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
-                $("#chp").find(".chpos" + icol).each(function (i) {
+                $(tid).find(".chpos" + icol).each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
                     if (p0ar[irow]) {
@@ -287,8 +287,8 @@ sub{
                     }
                 });
             };
-            function chp_table_bind_col(BsObj, Vol, icol) {
-                $("#chp").find(".chpos"+icol).bind("click", function () {
+            function chp_table_bind_col(tid,BsObj, Vol, icol) {
+                $(tid).find(".chpos"+icol).bind("click", function () {
                     var ss = $(this).text();
                     if (ss.length === 0) return;
 
@@ -298,17 +298,17 @@ sub{
 
                     $(this).addClass("hili");
 
-                    chp_table_fill_col(BsObj, Vol, 1+icol);
+                    chp_table_fill_col(tid,BsObj, Vol, 1+icol);
 
                     gen_verse_Menu();
                 });
             }
 
-            chp_table_init(BsObj, Vol);
-            chp_table_fill_col(BsObj, Vol, 0);
-            chp_table_bind_col(BsObj, Vol, 0);
-            chp_table_bind_col(BsObj, Vol, 1);
-            chp_table_bind_col(BsObj, Vol, 2);
+            chp_table_init(tbdid, BsObj, Vol);
+            chp_table_fill_col(tbdid, BsObj, Vol, 0);
+            chp_table_bind_col(tbdid, BsObj, Vol, 0);
+            chp_table_bind_col(tbdid, BsObj, Vol, 1);
+            chp_table_bind_col(tbdid, BsObj, Vol, 2);
 
         };
 
