@@ -73,8 +73,8 @@ sub{
 
     <script language="javascript">
         $(document).ready(function () {
-
-            gen_char_Menu_for_Vol(H_G_struct);
+            var bim = new BibleInputMenu(H_G_struct);
+            bim.Gen_Keys_Menu();
 
             table_sort();
             //table_col_index();
@@ -187,9 +187,14 @@ sub{
         //    };
         //    return [];
         //}
-        function get_vol_trs_match_str(BsObj, ch) {
+        var BibleInputMenu = function (Obj) {
+            this.m_chptbid = "#chp";
+            this.m_vrstbid = "#vrs";
+            this.m_structObj = Obj;
+        }
+        BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             var s = "", i = 0;
-            Object.keys(BsObj).forEach(function (vol) {
+            Object.keys(this.m_structObj).forEach(function (vol) {
                 if (vol.indexOf(ch) == 0) {
                     s += "<tr><td/><td class='v3'>" + vol + "</td></tr>";
                     i++;
@@ -199,12 +204,13 @@ sub{
             return { trs: s, size: i };
         };
 
-        function gen_char_Menu_for_Vol(BsObj) {
-            var ks = get_cha_arr_after_str(BsObj, "");
+        BibleInputMenu.prototype.Gen_Keys_Menu = function () {
+            var ks = this.get_cha_arr_after_str(this.m_structObj, "");
 
             var s = "<tr id='vitr'>";
+            var _This = this;
             $.each(ks, function (i, c) {
-                c = c + "<sub>" + get_vol_trs_match_str(BsObj, c).size + "</sub>";
+                c = c + "<sub>" + _This.get_vol_trs_match_str(c).size + "</sub>";
                 s += "<td><button class='vin'>" + c + "</button></td>";
                 if (9 == i) s += "</tr><tr>";
             });
@@ -214,19 +220,20 @@ sub{
                 $(".vin").removeClass("hili");
                 $(this).addClass("hili");
                 var ch = $(this).text();
-                var ret = get_vol_trs_match_str(BsObj, ch[0]);
+                var ret = _This.get_vol_trs_match_str(ch[0]);
                 $("#showOptions").html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chap_Menu("#chp", BsObj[vol]);
+                    _This.gen_Chap_Menu("#chp", "#vrs", _This.m_structObj[vol]);
                 });
             });
             return ks;
         }
 
-        function get_cha_arr_after_str(obj, str) {
+        BibleInputMenu.prototype.get_cha_arr_after_str = function (obj, str) {
+            if (!obj) return [];
             var ret = {};
             Object.keys(obj).forEach(function (v) {
                 if (v.indexOf(str) == 0) {
@@ -241,23 +248,29 @@ sub{
             var ks = Object.keys(ret).sort();
             return ks;
         }
-        function get_chap_by_selected() {
+        BibleInputMenu.prototype.get_chap_by_selected = function () {
             var vol = $(".v3.hili").text();
 
+            var chparr = ["", "", ""];
+            chparr[0] = $(this.m_chptbid).find(".chpos0.hili").text().charAt(0);
+            chparr[1] = $(this.m_chptbid).find(".chpos1.hili").text().charAt(0);
+            chparr[2] = $(this.m_chptbid).find(".chpos2.hili").text().charAt(0);
+
             var arr = ["", "", ""];
-            arr[0] = $(".chpos0.hili").text().charAt(0);
-            arr[1] = $(".chpos1.hili").text().charAt(0);
-            arr[2] = $(".chpos2.hili").text().charAt(0);
-            return { vol: vol, chp: arr.join(""), vrs: "" };
+            arr[0] = $(this.m_vrstbid).find(".chpos0.hili").text().charAt(0);
+            arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
+            arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
+            return { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
         }
 
 
 
 
-        function chp_table_init(tid, uobj) {
+        BibleInputMenu.prototype.chp_table_init = function (tid, uobj) {
+            if (!uobj) return;
             var maxchp = "" + Object.keys(uobj).length;
             var n = maxchp.length;
-            var p0ar = get_cha_arr_after_str(uobj, "");
+            var p0ar = this.get_cha_arr_after_str(uobj, "");
             var s = "";
             for (var i = 0; i < 10; i++) {
                 s += "<tr>";
@@ -271,15 +284,15 @@ sub{
         };
 
 
-        function chp_table_fill_col(tid, uobj, icol, keysearch) {
-
-            var p0ar = get_cha_arr_after_str(uobj, keysearch);
+        BibleInputMenu.prototype.chp_table_fill_col = function (tid, uobj, icol, keysearch) {
+            var _This = this;
+            var p0ar = _This.get_cha_arr_after_str(uobj, keysearch);
             $(tid).find(".chpos" + icol).each(function (i) {
                 var row = $(this).attr("chprow");
                 var irow = parseInt(row);
                 if (p0ar[irow]) {
                     var ch = p0ar[irow];
-                    var nxAr = get_cha_arr_after_str(uobj, keysearch + ch);
+                    var nxAr = _This.get_cha_arr_after_str(uobj, keysearch + ch);
                     var ssub = "" + nxAr.length;
                     if (nxAr.length === 0) ssub = "";
                     $(this).html(ch + "<sub>" + ssub + "</sub>");
@@ -288,44 +301,52 @@ sub{
                 }
             });
         };
-        function chp_table_bind_col(tid, uobj, icol, cbfunc) {
+        BibleInputMenu.prototype.chp_table_bind_col = function (tid, uobj, icol, cbfunc) {
+            var _This = this;
             $(tid).find(".chpos" + icol).bind("click", function () {
                 var ss = $(this).text();
                 if (ss.length === 0) return;
 
                 for (var i = icol; i < 3; i++) {
-                    $(".chpos" + i).removeClass("hili");
+                    $(tid).find(".chpos" + i).removeClass("hili");
                 }
 
                 $(this).addClass("hili");
 
-                //var ret = get_chap_by_selected();
+
                 var ssrch = cbfunc();
+                _This.chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
 
-                chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
-
-                gen_verse_Menu("#vrs", uobj[ssrch]);
+                _This.gen_verse_Menu( uobj[ssrch]);
             });
         }
-        function gen_Chap_Menu(tbdid, vobj) {
+        BibleInputMenu.prototype.gen_Chap_Menu = function (chptbdid, vrstid, vobj) {
+            var _This = this;
             function get_search_str_by_hili() {
-                var ret = get_chap_by_selected();
+                var ret = _This.get_chap_by_selected();
                 return ret.chp;
             }
             //var vobj = BsObj[Vol];
-            chp_table_init(tbdid, vobj);
-            chp_table_fill_col(tbdid, vobj, 0, get_search_str_by_hili());
-            chp_table_bind_col(tbdid, vobj, 0, get_search_str_by_hili);
-            chp_table_bind_col(tbdid, vobj, 1, get_search_str_by_hili);
-            chp_table_bind_col(tbdid, vobj, 2, get_search_str_by_hili);
+            this.chp_table_init(this.m_chptbid, vobj);
+            this.chp_table_fill_col(this.m_chptbid, vobj, 0, get_search_str_by_hili());
+            this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
+            this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
+            this.chp_table_bind_col(this.m_chptbid, vobj, 2, get_search_str_by_hili);
         };
 
-        function gen_verse_Menu(tbdid, BsObj, vol) {
-            var ret = get_chap_by_selected();
-            console.log(ret);
-            //chp_table_init(tbdid, BsObj[ret.vol], ret.chp);
-            //chp_table_fill_col(tbdid, BsObj[ret.vol], ret.chp, 0);
-            //chp_table_bind_col(tbdid, BsObj[ret.vol], ret.chp, 0);
+        BibleInputMenu.prototype.gen_verse_Menu = function (vobj) {
+            var _This = this;
+            function get_search_str_by_hili() {
+                var ret = _This.get_chap_by_selected();
+                console.log(ret);
+                return ret.vrs;
+            }
+            //var vobj = BsObj[Vol];
+            this.chp_table_init(this.m_vrstbid, vobj);
+            this.chp_table_fill_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili());
+            this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
+            this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
+            this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
         }
             //var allchars = gen_char_Menu_for_Vol(BsObj);
         //}
