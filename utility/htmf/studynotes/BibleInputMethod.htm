@@ -67,7 +67,7 @@
 sub{
     font-size: 8px;
 }
-#BbibInputMenu{
+#BibInputMenuHolder{
     position:fixed;
     top:10px;
     right: 20px;
@@ -80,7 +80,8 @@ sub{
 
     <script language="javascript">
         $(document).ready(function () {
-            var bim = new BibleInputMenu(H_G_struct);
+            var bim = new BibleInputMenu("#BibInputMenuHolder",H_G_struct);
+            bim.init();
             bim.Gen_Keys_Menu();
 
             $("#load").click(function () {
@@ -95,10 +96,47 @@ sub{
         });/////////////
 
 
-        var BibleInputMenu = function (Obj) {
+        var BibleInputMenu = function (menuId, Obj) {
+            this.m_menuId = menuId;
             this.m_chptbid = "#chp";
             this.m_vrstbid = "#vrs";
             this.m_structObj = Obj;
+        }
+        BibleInputMenu.prototype.init = function () {
+            var stables = `
+        <table border="0">
+            <caption id="">First Letter of Volume Name<a id='vname'></a></caption>
+            <thead id="inoutkeyhdr"></thead>
+            <tbody id='inputmethod'></tbody>
+        </table>
+
+        <table border="1" style="float:left;">
+            <caption>Vol</caption>
+            <thead id="vol_hdr"></thead>
+            <tbody id='vol'></tbody>
+        </table>
+
+        <table border="1" style="float:left;">
+            <caption>__chapters__</caption>
+            <thead id="chp_hdr"></thead>
+            <tbody id='chp'>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table border="1">
+            <caption>Verses</caption>
+            <thead id="vrs_hdr"></thead>
+            <tbody id='vrs'>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <br>`;
+            $(this.m_menuId).html(stables);
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             var s = "", i = 0;
@@ -279,7 +317,7 @@ sub{
                         });
                     });
                 });
-                s+="</table>";
+                s += "</table>";
                 $("#oBible").html(s);
                 jsonpsvr_ok();
             });
@@ -306,37 +344,8 @@ sub{
 
 
 
-    <div id="BbibInputMenu" height="100%">
-        <table border="0">
-            <caption id="">Bible Volname:<a id='vname'></a></caption>
-            <thead id="missingVolChpObj"></thead>
-            <tbody id='inputmethod'></tbody>
-        </table>
-        <table border="1" style="float:left;">
-            <caption>Vol</caption>
-            <thead id="missingVolChpVerses"></thead>
-            <tbody id='vol'></tbody>
-        </table>
+    <div id="BibInputMenuHolder" height="100%">
 
-        <table border="1" style="float:left;">
-            <caption>__chapters__</caption>
-            <thead id=""></thead>
-            <tbody id='chp'>
-                <tr>
-                    <td>1</td>
-                </tr>
-            </tbody>
-        </table>
-        <table border="1" style="float:bottom;">
-            <caption>Verses</caption>
-            <thead id=""></thead>
-            <tbody id='vrs'>
-                <tr>
-                    <td>1</td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
     </div>
 
 
