@@ -269,7 +269,7 @@ sub{
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
 
             var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
-            var ret = { fname: fnamesArr[0], dat: dat };
+            var ret = { fname: fnamesArr, dat: dat };
             return ret;
         }
 
