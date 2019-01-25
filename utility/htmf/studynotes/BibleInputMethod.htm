@@ -168,8 +168,8 @@ sub{
                 str+="<tr><td class='cbkn "+hil+"'>"+v+"</td></tr>";
             });
             $("#bkn_bdy").html(str).find(".cbkn").bind("click",function(){
-                $(".cbkn").removeClass("hili");
-                $(this).addClass("hili");
+                //$(".cbkn").removeClass("hili");
+                $(this).toggleClass("hili");
             });
 
             
@@ -247,7 +247,15 @@ sub{
         }
         BibleInputMenu.prototype.get_chap_by_selected = function () {
 
-            var fname=$(".cbkn.hili").text();
+            var fnamesArr=[];
+            $(".cbkn.hili").each(function(){
+                var ss=$(this).text();
+                fnamesArr.push(ss);
+            });
+            if(fnamesArr.length==0){
+                alert("no bookname selecged.");
+            }
+
             var vol = $(".v3.hili").text();
 
             var chparr = ["", "", ""];
@@ -261,7 +269,7 @@ sub{
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
 
             var dat={ vol: vol, chp: chparr.join(""), vrs: arr.join("") };
-            var ret={fname:fname, dat:dat};
+            var ret={fname:fnamesArr[0], dat:dat};
             return ret;
         }
 

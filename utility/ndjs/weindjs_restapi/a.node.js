@@ -179,9 +179,9 @@ BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
   // console.log("retObj=", retObj);
   return retObj;
 };
-BibleObj.prototype.fetch_by_keys = function (fname, keyObj) {
-  var bobj = this.load_BibleObj(fname);
-  var retObj = this.fetch_bibObj_by_keyParm(bobj, keyObj);
+BibleObj.prototype.load_Bkn_VolChpVrs = function (inpObj) {
+  var bobj = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
+  var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
   var ss = JSON.stringify(retObj);
   return ss;
 }
@@ -210,7 +210,7 @@ var SvrApi = {
   loadBible_Bkn_VolChpVrs: function (inpObj) {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
-    var ss = bo.fetch_by_keys(inpObj.fname, inpObj.dat);
+    var ss = bo.load_Bkn_VolChpVrs(inpObj);
     return ss;
   }
 };//////SvrApi///////////////////////////////////
