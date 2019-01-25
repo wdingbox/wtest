@@ -207,8 +207,8 @@ var SvrApi = {
     var bo = new BibleObj();
     return bo.load_BibleJstrn();
   },
-  loadBibible_VolChpVrs: function (inpObj) {
-    console.log("... loadBibible_VolChpVrs ...");
+  loadBible_Bkn_VolChpVrs: function (inpObj) {
+    console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
     var ss = bo.fetch_by_keys(inpObj.fname, inpObj.dat);
     return ss;
