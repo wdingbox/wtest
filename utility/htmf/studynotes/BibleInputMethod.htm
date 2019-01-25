@@ -202,11 +202,11 @@ sub{
         function gen_char_Menu_for_Vol(BsObj) {
             var ks = get_cha_arr_after_str(BsObj, "");
 
-            var s ="<tr id='vitr'>";
+            var s = "<tr id='vitr'>";
             $.each(ks, function (i, c) {
                 c = c + "<sub>" + get_vol_trs_match_str(BsObj, c).size + "</sub>";
                 s += "<td><button class='vin'>" + c + "</button></td>";
-                if(9==i)s+="</tr><tr>";
+                if (9 == i) s += "</tr><tr>";
             });
             s += "</tr>";
 
@@ -220,7 +220,7 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chap_Menu(BsObj, vol, 0);
+                    gen_Chap_Menu(BsObj, vol);
                 });
             });
             return ks;
@@ -241,109 +241,79 @@ sub{
             var ks = Object.keys(ret).sort();
             return ks;
         }
-        function get_chap_by_selected(){
-            var vol=$(".v3.hili").text();
+        function get_chap_by_selected() {
+            var vol = $(".v3.hili").text();
 
-            var arr=["","",""];
-            arr[0]=$(".chpos0.hili").text();
-            arr[1]=$(".chpos1.hili").text();
-            arr[2]=$(".chpos2.hili").text();
-            return {vol:vol, chp:arr.join(""), vrs:""};
+            var arr = ["", "", ""];
+            arr[0] = $(".chpos0.hili").text().charAt(0);
+            arr[1] = $(".chpos1.hili").text().charAt(0);
+            arr[2] = $(".chpos2.hili").text().charAt(0);
+            return { vol: vol, chp: arr.join(""), vrs: "" };
         }
 
-        
-        function gen_Chap_Menu(BsObj, Vol, iPos) {
-            var maxchp = "" + Object.keys(BsObj[Vol]).length;
-            var n = maxchp.length;
-            var p0ar = get_cha_arr_after_str(BsObj[Vol], "");
-            var s = "";
-            for (var i = 0; i < 10; i++) {
-                s += "<tr>";
-                for (var k = 0; k < n; k++) {
-                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
-                }
-                s += "</tr>";
+
+        function gen_Chap_Menu(BsObj, Vol) {
+            function chp_table_init(BsObj, Vol) {
+                var maxchp = "" + Object.keys(BsObj[Vol]).length;
+                var n = maxchp.length;
+                var p0ar = get_cha_arr_after_str(BsObj[Vol], "");
+                var s = "";
+                for (var i = 0; i < 10; i++) {
+                    s += "<tr>";
+                    for (var k = 0; k < n; k++) {
+                        s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
+                    }
+                    s += "</tr>";
+                };
+                var chpTab = $("#chp").html(s);
+                return chpTab;
             };
-            var chpTab = $("#chp").html(s);
-            $(chpTab).find(".chpos0").each(function (i) {
-                var row = $(this).attr("chprow");
-                var irow = parseInt(row);
-                if (p0ar[irow]) {
-                    $(this).text(p0ar[irow]);
-                } else {
-                    $(this).text("");
-                }
-            });
 
-            $(chpTab).find(".chpos0").bind("click", function () {
-                var ss = $(this).text();
-                if (ss.length === 0) return;
 
-                $(".chpos0").removeClass("hili");
-                $(".chpos1").removeClass("hili");
-                $(".chpos2").removeClass("hili");
-
-                $(this).addClass("hili");
-                
-                var ret=get_chap_by_selected();
-                var p1ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
-                $(".chpos1").each(function (i) {
+            function chp_table_fill_col(BsObj, Vol, icol) {
+                var ret = get_chap_by_selected();
+                var p0ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
+                $("#chp").find(".chpos" + icol).each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
-                    if (p1ar[irow]) {
-                        $(this).text(p1ar[irow]);
+                    if (p0ar[irow]) {
+                        var ch = p0ar[irow];
+                        var nxAr = get_cha_arr_after_str(BsObj[Vol], ret.chp+ch);
+                        var ssub = "" + nxAr.length;
+                        if (nxAr.length === 0) ssub = "";
+                        $(this).html(ch + "<sub>" + ssub + "</sub>");
                     } else {
                         $(this).text("");
-                    };
+                    }
                 });
-                gen_verse_Menu();
-            });
-            $(chpTab).find(".chpos1").bind("click", function () {
-                var ss = $(this).text();
-                if (ss.length === 0) return;
-                
+            };
+            function chp_table_bind_col(BsObj, Vol, icol) {
+                $("#chp").find(".chpos"+icol).bind("click", function () {
+                    var ss = $(this).text();
+                    if (ss.length === 0) return;
 
-                $(".chpos1").removeClass("hili");
-                $(".chpos2").removeClass("hili");
-                $(this).addClass("hili");
-                var ret=get_chap_by_selected();
-                var p1ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
-                $(".chpos2").each(function (i) {
-                    var row = $(this).attr("chprow");
-                    var irow = parseInt(row);
-                    if (p1ar[irow]) {
-                        $(this).text(p1ar[irow]);
-                    } else {
-                        $(this).text("");
-                    };
-                });
-                gen_verse_Menu();
-            });
-            $(chpTab).find(".chpos2").bind("click", function () {
-                var ss = $(this).text();
-                if (ss.length === 0) return;
-                
+                    for (var i = icol; i < 3; i++) {
+                        $(".chpos" + i).removeClass("hili");
+                    }
 
-                //$(".chpos1").removeClass("hili");
-                $(".chpos2").removeClass("hili");
-                $(this).addClass("hili");
-                var ret=get_chap_by_selected();
-                var p2ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
-                $(".chpos3").each(function (i) {
-                    var row = $(this).attr("chprow");
-                    var irow = parseInt(row);
-                    if (p2ar[irow]) {
-                        $(this).text(p2ar[irow]);
-                    } else {
-                        $(this).text("");
-                    };
+                    $(this).addClass("hili");
+
+                    chp_table_fill_col(BsObj, Vol, 1+icol);
+
+                    gen_verse_Menu();
                 });
-                gen_verse_Menu();
-            });
+            }
+
+            chp_table_init(BsObj, Vol);
+            chp_table_fill_col(BsObj, Vol, 0);
+            chp_table_bind_col(BsObj, Vol, 0);
+            chp_table_bind_col(BsObj, Vol, 1);
+            chp_table_bind_col(BsObj, Vol, 2);
+
         };
 
-        function gen_verse_Menu(BsObj){
-            var chp=get_chap_by_selected();
+        function gen_verse_Menu(BsObj) {
+            var chp = get_chap_by_selected();
             console.log(chp);
         }
             //var allchars = gen_char_Menu_for_Vol(BsObj);
