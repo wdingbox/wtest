@@ -179,10 +179,10 @@ BibleObj.prototype.assign_to_clientBibleObj = function (clientObj, SvrObj) {
         var str=vrsObj[vrs];
         if (undefined == clientObj[vol][chp][vrs]) {
           clientObj[vol][chp][vrs] = [];
-          console.log("client *****",clientObj)
+          //console.log("client *****",clientObj)
         }
         clientObj[vol][chp][vrs].push(str);
-        console.log("client *************",clientObj)
+        //console.log("client *************",clientObj)
       });
     });
   });
@@ -201,7 +201,6 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var bobj = this.load_BibleObj(fnam);//.fname, inpObj.dat
       var retObj = this.Fetch_Partial_BibleObj_by_keyParm(bobj, inpObj.dat);
       this.assign_to_clientBibleObj(RetsObj, retObj);
-
       //console.log("client RetsObj222 *************",RetsObj)
     }
   }
