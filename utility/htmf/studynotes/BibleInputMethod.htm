@@ -271,7 +271,7 @@ sub{
             };
 
 
-            function chp_table_fill_col(tid,uobj, keysearch, icol) {
+            function chp_table_fill_col(tid,uobj, icol, keysearch) {
                 
                 var p0ar = get_cha_arr_after_str(uobj, keysearch);
                 $(tid).find(".chpos" + icol).each(function (i) {
@@ -302,7 +302,7 @@ sub{
                     //var ret = get_chap_by_selected();
                     var ssrch=cbfunc();
 
-                    chp_table_fill_col(tid,uobj, ssrch,  1+icol);
+                    chp_table_fill_col(tid,uobj, 1+icol, ssrch);
 
                     gen_verse_Menu("#vrs",uobj[ssrch]);
                 });
@@ -315,7 +315,7 @@ sub{
             var vobj=BsObj[Vol];
             chp_table_init(tbdid, vobj);
             var ret = get_chap_by_selected();
-            chp_table_fill_col(tbdid, vobj, ret.chp, 0);
+            chp_table_fill_col(tbdid, vobj,  0, ret.chp);
             chp_table_bind_col(tbdid, vobj,  0,get_search_str_by_hili );
             chp_table_bind_col(tbdid, vobj,  1,get_search_str_by_hili );
             chp_table_bind_col(tbdid, vobj,  2,get_search_str_by_hili );
