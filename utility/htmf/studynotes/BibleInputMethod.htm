@@ -184,7 +184,7 @@
         //    };
         //    return [];
         //}
-        function get_trs_1stCharMatchVol(ch, BsObj) {
+        function get_vol_trs_match_str(BsObj, ch) {
             var s = "", i = 0;
             Object.keys(BsObj).forEach(function (vol) {
                 if (vol.indexOf(ch) == 0) {
@@ -195,24 +195,15 @@
             //$("#showOptions").html(s);
             return { trs: s, size: i };
         };
-        function get_all_1stCharsOfVol(BsObj, iPos) {
-            return get_cha_arr_after_str(BsObj,"");
-            var chObj = {};
-            Object.keys(BsObj).forEach(function (vol) {
-                chObj[vol[iPos]] = vol[iPos];
-            });
-            var ks = Object.keys(chObj).sort();
-            console.log(ks);
-            return ks;
-        }
+
         function gen_1st_char_btns(BsObj) {
             var ks = get_cha_arr_after_str(BsObj, "");
 
             var s = "";
             s += "<tr>";
             for (var i = 0; i < 10; i++) {
-                var ret = get_trs_1stCharMatchVol("" + i, BsObj);
-                var sdisable = "", sch = "" + i + "<sup>" + ret.size + "</sup>";
+                var ret = get_vol_trs_match_str( BsObj, "" + i);
+                var sdisable = "", sch = "" + i + "<sub>" + ret.size + "</sub>";
                 if (0 == ret.size) {
                     sdisable = "disabled";
                     sch = "" + i;
@@ -225,7 +216,7 @@
                 if (("" + parseInt(c)) == c) {
                     return;
                 }
-                c = c + "<sup>" + get_trs_1stCharMatchVol(c, BsObj).size + "</sup>";
+                c = c + "<sub>" + get_vol_trs_match_str(BsObj, c).size + "</sub>";
                 s += "<td><button class='vin'>" + c + "</button></td>";
             });
             s += "</tr>";
@@ -235,7 +226,7 @@
                 $(".vin").removeClass("hili");
                 $(this).addClass("hili");
                 var ch = $(this).text();
-                var ret = get_trs_1stCharMatchVol(ch[0], BsObj);
+                var ret = get_vol_trs_match_str(BsObj, ch[0]);
                 $("#showOptions").html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
