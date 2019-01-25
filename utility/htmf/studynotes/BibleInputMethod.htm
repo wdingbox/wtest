@@ -226,7 +226,7 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    _This.gen_Chap_Menu("#chp", "#vrs", _This.m_structObj[vol]);
+                    _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
             });
             return ks;
@@ -317,11 +317,11 @@ sub{
                 var ssrch = cbfunc();
                 _This.chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
 
-                if(Object.keys(uobj[ssrch]).length==0)return;
-                _This.gen_verse_Menu( uobj[ssrch]);
+                if (Object.keys(uobj[ssrch]).length == 0) return;
+                _This.gen_verse_Menu(uobj[ssrch]);
             });
         }
-        BibleInputMenu.prototype.gen_Chap_Menu = function (chptbdid, vrstid, vobj) {
+        BibleInputMenu.prototype.gen_Chap_Menu = function (vobj) {
             var _This = this;
             function get_search_str_by_hili() {
                 var ret = _This.get_chap_by_selected();
