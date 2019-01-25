@@ -91,7 +91,7 @@ sub{
                 var ret = gBim.get_chap_by_selected();
                 $("#out").val(JSON.stringify(ret, null, 4));
 
-                restapi_loadBibleObj("test", ret);
+                restapi_loadBibleObj("test", ret.dat);
             });
 
             table_sort();
@@ -108,6 +108,7 @@ sub{
             this.m_vrstbid = "#vrs_tbd";
 
             this.m_structObj = Obj;
+            this.m_bknArr=["BBE","CUVS","H_G","KJV","NIV","PINYIN","STUS","WLVS"];
         }
         BibleInputMenu.prototype.init = function () {
             var stables = `   
@@ -116,6 +117,16 @@ sub{
             <thead id="inoutkeyhdr"></thead>
             <tbody id='key_bdy'></tbody>
         </table>
+        <table border="1" style="float:left;">
+            <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
+            <thead id="bkn_hdr"></thead>
+            <tbody id='bkn_bdy'>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
         <table border="1" style="float:left;">
             <caption class='vcvCap' id='vol_cap'>Vol</caption>
             <thead id="vol_hdr"></thead>
@@ -149,6 +160,19 @@ sub{
         <button id="run">-</button>
         <br>`;
             $(this.m_menuHolderId).html(stables);
+
+            var str="";
+            $.each(this.m_bknArr,function(i,v){
+                var hil="";
+                if(i==2)hil="hili";
+                str+="<tr><td class='cbkn "+hil+"'>"+v+"</td></tr>";
+            });
+            $("#bkn_bdy").html(str).find(".cbkn").bind("click",function(){
+                $(".cbkn").removeClass("hili");
+                $(this).addClass("hili");
+            });
+
+            
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             var s = "", i = 0;
@@ -162,7 +186,8 @@ sub{
         };
 
         BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
-            var ret = this.get_chap_by_selected();
+            var inp = this.get_chap_by_selected();
+            var ret=inp.dat;
             if (!ret.vol) ret.vol = "-";
             if (!ret.chp) ret.chp = "-";
             if (!ret.vrs) ret.vrs = "-";
@@ -221,6 +246,8 @@ sub{
             return ks;
         }
         BibleInputMenu.prototype.get_chap_by_selected = function () {
+
+            var fname=$(".cbkn.hili").text();
             var vol = $(".v3.hili").text();
 
             var chparr = ["", "", ""];
@@ -232,7 +259,10 @@ sub{
             arr[0] = $(this.m_vrstbid).find(".chpos0.hili").text().charAt(0);
             arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
-            return { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
+
+            var dat={ vol: vol, chp: chparr.join(""), vrs: arr.join("") };
+            var ret={fname:fname, dat:dat};
+            return ret;
         }
 
 
@@ -298,7 +328,7 @@ sub{
             var _This = this;
             function get_search_str_by_hili() {
                 var ret = _This.get_chap_by_selected();
-                return ret.chp;
+                return ret.dat.chp;
             }
             //var vobj = BsObj[Vol];
             this.chp_table_init(this.m_chptbid, vobj);
@@ -314,7 +344,7 @@ sub{
             function get_search_str_by_hili() {
                 var ret = _This.get_chap_by_selected();
                 console.log(ret);
-                return ret.vrs;
+                return ret.dat.vrs;
             }
             //var vobj = BsObj[Vol];
             this.chp_table_init(this.m_vrstbid, vobj);
@@ -343,8 +373,8 @@ sub{
         function restapi_loadBibVolChpVrs() {
             var obj = gBim.get_chap_by_selected();
             console.log(obj);
-            var inp = { fname: "KJV", dat: obj };
-            var par = { api: "loadBibible_VolChpVrs", inp: inp };
+            //var inp = { fname: "KJV", dat: obj };
+            var par = { api: "loadBibible_VolChpVrs", inp: obj };
             
             Jsonpster.Run(par, function (ret) {
                 console.log(ret);

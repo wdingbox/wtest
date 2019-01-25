@@ -129,8 +129,9 @@ var hbrq = new HebrewQ();
 var BibleObj = function () {
 };
 BibleObj.prototype.load_as_content = function (fname) {
-  var fname = "../../../jsdb/jsBibleObj/H_G.json.js";
-  var content = Uti.GetJsonStringFrmFile(fname);
+  var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
+  spathfile = "../../../jsdb/jsBibleObj/"+fname+".json.js";
+  var content = Uti.GetJsonStringFrmFile(spathfile);
   return content;
 };
 BibleObj.prototype.load_Obj = function (fname) {
