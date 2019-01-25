@@ -64,6 +64,9 @@
 .hili{
     background-color: red; 
 }
+sub{
+    font-size: 8px;
+}
 </style>
 
 
@@ -71,7 +74,7 @@
     <script language="javascript">
         $(document).ready(function () {
 
-            gen_1st_char_btns(H_G_struct);
+            gen_char_Menu_for_Vol(H_G_struct);
 
             table_sort();
             //table_col_index();
@@ -196,7 +199,7 @@
             return { trs: s, size: i };
         };
 
-        function gen_1st_char_btns(BsObj) {
+        function gen_char_Menu_for_Vol(BsObj) {
             var ks = get_cha_arr_after_str(BsObj, "");
 
             var s ="<tr id='vitr'>";
@@ -239,6 +242,8 @@
             return ks;
         }
         function get_chap_by_selected(){
+            var vol=$(".v3.hili").text();
+
             var arr=["","",""];
             arr[0]=$(".chpos0.hili").text();
             arr[1]=$(".chpos1.hili").text();
@@ -338,7 +343,7 @@
                 gen_verseNum();
             });
         };
-            //var allchars = gen_1st_char_btns(BsObj);
+            //var allchars = gen_char_Menu_for_Vol(BsObj);
         //}
     </script>
 
