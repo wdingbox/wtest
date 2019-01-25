@@ -117,7 +117,11 @@ sub{
         <table border="1" style="float:left;">
             <caption>Vol</caption>
             <thead id="vol_hdr"></thead>
-            <tbody id='vol_bdy'></tbody>
+            <tbody id='vol_bdy'>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
         </table>
 
         <table border="1" style="float:left;">
@@ -174,7 +178,7 @@ sub{
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
-                    $("#out").val(vol);
+                    //$("#out").val(vol);
                     _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
             });
@@ -219,7 +223,7 @@ sub{
             if (!uobj) return;
             var maxchp = "" + Object.keys(uobj).length;
             var n = maxchp.length;
-            var p0ar = this.get_cha_arr_after_str(uobj, "");
+    
             var s = "";
             for (var i = 0; i < 10; i++) {
                 s += "<tr>";
