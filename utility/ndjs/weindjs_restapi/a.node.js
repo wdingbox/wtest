@@ -67,6 +67,15 @@ var Uti = {
     recursiveDir(startPath, filter);
     return outFilesArr;
   },
+
+  GetJsonStringFrmFile:function(fname){
+    var content = fs.readFileSync(fname, "utf8");
+    var idx = 2 + content.indexOf("=\n");
+    var shead = content.substr(0, idx);
+    console.log("shead==", shead);
+    content = content.substring(idx);
+    return content;
+  },
 };//////Uti//////
 
 
@@ -114,6 +123,18 @@ var hbrq = new HebrewQ();
 
 
 
+
+
+
+var BibleObj=function(){
+
+}
+BibleObj.prototype.load=function(fname){
+  var fname="../../../jsdb/jsBibleObj/H_G.json.js";
+  var content=Uti.GetJsonStringFrmFile(fname);
+  return content;
+}
+
 var SvrApi = {
   GetApiInputParamObj: function (req, res) {
     console.log("req.url=", req.url);
@@ -127,9 +148,13 @@ var SvrApi = {
   updateVocabHebrewBuf: function (inpObj) {
     return hbrq.updateVocabHebrewBuf(inpObj);
   },
-  updateVocabHebrewDat: function (req, res) {
+  updateVocabHebrewDat: function (inpObj) {
 
   },
+  loadBibleObj:function(inpObj){
+    var bo=new BibleObj();
+    return bo.load();
+  }
 };//////SvrApi///////////////////////////////////
 Object.keys(SvrApi).forEach(function (api) {
   app.get("/" + api, (req, res) => {
