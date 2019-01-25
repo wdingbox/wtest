@@ -107,15 +107,14 @@ sub{
             this.m_structObj = Obj;
         }
         BibleInputMenu.prototype.init = function () {
-            var stables = `
+            var stables = `   
         <table border="0">
             <caption id="">First Letter of Volume Name<a id='vname'></a></caption>
             <thead id="inoutkeyhdr"></thead>
             <tbody id='key_bdy'></tbody>
         </table>
-
         <table border="1" style="float:left;">
-            <caption>Vol</caption>
+            <caption class='vcvCap' id='vol_cap'>Vol</caption>
             <thead id="vol_hdr"></thead>
             <tbody id='vol_bdy'>
                 <tr>
@@ -125,7 +124,7 @@ sub{
         </table>
 
         <table border="1" style="float:left;">
-            <caption>__chapters__</caption>
+            <caption class='vcvCap' id='chp_cap'>__chapters__</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
                 <tr>
@@ -134,8 +133,8 @@ sub{
             </tbody>
         </table>
 
-        <table border="1">
-            <caption>Verses</caption>
+        <table border="1" style="float:left;">
+            <caption class='vcvCap' id='vrs_cap'>Verses</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
                 <tr>
@@ -143,6 +142,8 @@ sub{
                 </tr>
             </tbody>
         </table>
+        <button id="loadVolChpVrs">Load</button><br>
+        <button id="run">-</button>
         <br>`;
             $(this.m_menuHolderId).html(stables);
         }
@@ -156,6 +157,16 @@ sub{
             });
             return { trs: s, size: i };
         };
+
+        BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
+            var ret=this.get_chap_by_selected();
+            if(!ret.vol)ret.vol="-";
+            if(!ret.chp)ret.chp="-";
+            if(!ret.vrs)ret.vrs="-";
+            $("#vol_cap").text(ret.vol);
+            $("#chp_cap").text(ret.chp);
+            $("#vrs_cap").text(ret.vrs);
+        }
 
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = this.get_cha_arr_after_str(this.m_structObj, "");
@@ -178,12 +189,14 @@ sub{
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
+                    _This.Fresh_Caption_Txt();
                     //$("#out").val(vol);
                     $(_This.m_vrstbid).html("");
                     _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
                 $(_This.m_chptbid).html("");
                 $(_This.m_vrstbid).html("");
+                $(".vcvCap").text(".");
             });
             return ks;
         }
@@ -268,6 +281,7 @@ sub{
                 }
 
                 $(this).addClass("hili");
+                _This.Fresh_Caption_Txt();
 
 
                 var ssrch = cbfunc();
