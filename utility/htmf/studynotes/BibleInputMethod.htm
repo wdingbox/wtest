@@ -97,10 +97,13 @@ sub{
 
 
         var BibleInputMenu = function (menuId, Obj) {
-            this.m_menuId = menuId;
+            this.m_menuHolderId = menuId;
+
+            this.m_keytbid = "#key_bdy";
+            this.m_voltbid = "#vol_bdy";
             this.m_chptbid = "#chp_bdy";
             this.m_vrstbid = "#vrs_tbd";
-            this.m_voltbid = "#vol_bdy";
+            
             this.m_structObj = Obj;
         }
         BibleInputMenu.prototype.init = function () {
@@ -108,7 +111,7 @@ sub{
         <table border="0">
             <caption id="">First Letter of Volume Name<a id='vname'></a></caption>
             <thead id="inoutkeyhdr"></thead>
-            <tbody id='inputmethod'></tbody>
+            <tbody id='key_bdy'></tbody>
         </table>
 
         <table border="1" style="float:left;">
@@ -137,7 +140,7 @@ sub{
             </tbody>
         </table>
         <br>`;
-            $(this.m_menuId).html(stables);
+            $(this.m_menuHolderId).html(stables);
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             var s = "", i = 0;
@@ -162,7 +165,7 @@ sub{
             });
             s += "</tr>";
 
-            $("#inputmethod").html(s).find(".vin").bind("click", function () {
+            $(_This.m_keytbid).html(s).find(".vin").bind("click", function () {
                 $(".vin").removeClass("hili");
                 $(this).addClass("hili");
                 var ch = $(this).text();
