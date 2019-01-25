@@ -252,11 +252,12 @@ sub{
         }
 
 
-        function gen_Chap_Menu(tbdid, BsObj, Vol) { 
-            function chp_table_init(tid, BsObj, Vol) {
-                var maxchp = "" + Object.keys(BsObj[Vol]).length;
+
+        
+            function chp_table_init(tid, uobj) {
+                var maxchp = "" + Object.keys(uobj).length;
                 var n = maxchp.length;
-                var p0ar = get_cha_arr_after_str(BsObj[Vol], "");
+                var p0ar = get_cha_arr_after_str(uobj, "");
                 var s = "";
                 for (var i = 0; i < 10; i++) {
                     s += "<tr>";
@@ -270,15 +271,15 @@ sub{
             };
 
 
-            function chp_table_fill_col(tid,BsObj, Vol, icol) {
-                var ret = get_chap_by_selected();
-                var p0ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
+            function chp_table_fill_col(tid,uobj, keysearch, icol) {
+                
+                var p0ar = get_cha_arr_after_str(uobj, keysearch);
                 $(tid).find(".chpos" + icol).each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
                     if (p0ar[irow]) {
                         var ch = p0ar[irow];
-                        var nxAr = get_cha_arr_after_str(BsObj[Vol], ret.chp+ch);
+                        var nxAr = get_cha_arr_after_str(uobj, keysearch+ch);
                         var ssub = "" + nxAr.length;
                         if (nxAr.length === 0) ssub = "";
                         $(this).html(ch + "<sub>" + ssub + "</sub>");
@@ -287,7 +288,7 @@ sub{
                     }
                 });
             };
-            function chp_table_bind_col(tid,BsObj, Vol, icol) {
+            function chp_table_bind_col(tid,uobj, icol) {
                 $(tid).find(".chpos"+icol).bind("click", function () {
                     var ss = $(this).text();
                     if (ss.length === 0) return;
@@ -297,24 +298,29 @@ sub{
                     }
 
                     $(this).addClass("hili");
+                    var ret = get_chap_by_selected();
 
-                    chp_table_fill_col(tid,BsObj, Vol, 1+icol);
+                    chp_table_fill_col(tid,uobj, ret.chp,  1+icol);
 
-                    gen_verse_Menu();
+                    gen_verse_Menu("#vrs",uobj[ret.chp]);
                 });
             }
-
-            chp_table_init(tbdid, BsObj, Vol);
-            chp_table_fill_col(tbdid, BsObj, Vol, 0);
-            chp_table_bind_col(tbdid, BsObj, Vol, 0);
-            chp_table_bind_col(tbdid, BsObj, Vol, 1);
-            chp_table_bind_col(tbdid, BsObj, Vol, 2);
-
+        function gen_Chap_Menu(tbdid, BsObj, Vol) { 
+            var vobj=BsObj[Vol];
+            chp_table_init(tbdid, vobj);
+            var ret = get_chap_by_selected();
+            chp_table_fill_col(tbdid, vobj, ret.chp, 0);
+            chp_table_bind_col(tbdid, vobj,  0);
+            chp_table_bind_col(tbdid, vobj,  1);
+            chp_table_bind_col(tbdid, vobj,  2);
         };
 
-        function gen_verse_Menu(BsObj) {
-            var chp = get_chap_by_selected();
-            console.log(chp);
+        function gen_verse_Menu(tbdid, BsObj,vol) {
+            var ret = get_chap_by_selected();
+            console.log(ret);
+            //chp_table_init(tbdid, BsObj[ret.vol], ret.chp);
+            //chp_table_fill_col(tbdid, BsObj[ret.vol], ret.chp, 0);
+            //chp_table_bind_col(tbdid, BsObj[ret.vol], ret.chp, 0);
         }
             //var allchars = gen_char_Menu_for_Vol(BsObj);
         //}
@@ -368,7 +374,7 @@ sub{
     <table border="1" align="">
         <caption>Verses</caption>
         <thead id=""></thead>
-        <tbody id='chp'>
+        <tbody id='vrs'>
             <tr>
                 <td>1</td>
             </tr>
