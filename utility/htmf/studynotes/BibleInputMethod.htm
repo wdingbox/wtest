@@ -217,7 +217,7 @@
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chapts_DiPos(BsObj, vol, 0);
+                    gen_Chap_Menu(BsObj, vol, 0);
                 });
             });
             return ks;
@@ -250,7 +250,7 @@
             console.log(chp);
         }
         var chpos0 = chpos1 = chpos2 = "";
-        function gen_Chapts_DiPos(BsObj, Vol, iPos) {
+        function gen_Chap_Menu(BsObj, Vol, iPos) {
             var maxchp = "" + Object.keys(BsObj[Vol]).length;
             var n = maxchp.length;
             var p0ar = get_cha_arr_after_str(BsObj[Vol], "");
