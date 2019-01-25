@@ -80,10 +80,10 @@ sub{
 
     <script language="javascript">
         var gBim = null;//new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
-            
+
         $(document).ready(function () {
             gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
-        
+
             gBim.init();
             gBim.Gen_Keys_Menu();
 
@@ -108,7 +108,7 @@ sub{
             this.m_vrstbid = "#vrs_tbd";
 
             this.m_structObj = Obj;
-            this.m_bknArr=["BBE","CUVS","H_G","KJV","NIV","PINYIN","STUS","WLVS"];
+            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS"];
         }
         BibleInputMenu.prototype.init = function () {
             var stables = `   
@@ -161,18 +161,18 @@ sub{
         <br>`;
             $(this.m_menuHolderId).html(stables);
 
-            var str="";
-            $.each(this.m_bknArr,function(i,v){
-                var hil="";
-                if(i==2)hil="hili";
-                str+="<tr><td class='cbkn "+hil+"'>"+v+"</td></tr>";
+            var str = "";
+            $.each(this.m_bknArr, function (i, v) {
+                var hil = "";
+                if (i == 2) hil = "hili";
+                str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
             });
-            $("#bkn_bdy").html(str).find(".cbkn").bind("click",function(){
+            $("#bkn_bdy").html(str).find(".cbkn").bind("click", function () {
                 //$(".cbkn").removeClass("hili");
                 $(this).toggleClass("hili");
             });
 
-            
+
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             var s = "", i = 0;
@@ -187,7 +187,7 @@ sub{
 
         BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
             var inp = this.get_chap_by_selected();
-            var ret=inp.dat;
+            var ret = inp.dat;
             if (!ret.vol) ret.vol = "-";
             if (!ret.chp) ret.chp = "-";
             if (!ret.vrs) ret.vrs = "-";
@@ -247,12 +247,12 @@ sub{
         }
         BibleInputMenu.prototype.get_chap_by_selected = function () {
 
-            var fnamesArr=[];
-            $(".cbkn.hili").each(function(){
-                var ss=$(this).text();
+            var fnamesArr = [];
+            $(".cbkn.hili").each(function () {
+                var ss = $(this).text();
                 fnamesArr.push(ss);
             });
-            if(fnamesArr.length==0){
+            if (fnamesArr.length == 0) {
                 alert("no bookname selecged.");
             }
 
@@ -268,8 +268,8 @@ sub{
             arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
 
-            var dat={ vol: vol, chp: chparr.join(""), vrs: arr.join("") };
-            var ret={fname:fnamesArr[0], dat:dat};
+            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
+            var ret = { fname: fnamesArr[0], dat: dat };
             return ret;
         }
 
@@ -367,7 +367,7 @@ sub{
         //////////
         //////////
         /////////
-        var VerseRefMenu=function(){
+        var VerseRefMenu = function () {
 
         }
 
@@ -383,22 +383,31 @@ sub{
             console.log(obj);
             //var inp = { fname: "KJV", dat: obj };
             var par = { api: "loadBible_Bkn_VolChpVrs", inp: obj };
-            
+
             Jsonpster.Run(par, function (ret) {
                 console.log(ret);
                 var s = "<table border='1'>";
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, str) {
+                        $.each(vrsObj, function (vrs, val) {
+                            console.log("typeof val=", typeof val);
                             var bid = vol + chp + ":" + vrs;
                             s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
-                            s += str + "</td></tr>";
+                            if ("object" == typeof val) {
+                                $.each(val, function (i, str) {
+                                    s += "<div>" + str + "</iv>";
+                                });
+                            }
+                            if ("string" == typeof val) {
+                                s += "<div>" + val + "</iv>";
+                            }
+                            s += "</td></tr>";
                         });
                     });
                 });
                 s += "</table>";
-                $("#oBible").html(s).find(".vid").bind("click",function(){
-                    var vid=$(this).text();
+                $("#oBible").html(s).find(".vid").bind("click", function () {
+                    var vid = $(this).text();
                     $(this).toggleClass("hili");
                     //alert(vid);
                 });
@@ -411,7 +420,7 @@ sub{
 
 
         function restapi_loadBibleObj(fname, vobj) {
-            
+
             //var txt = JSON.stringify(vobj);
             //xtxt = encodeURIComponent(txt);//must see svr decodeURIComponent();
             //var inp = { fname: "../../../jsdb/jsBibleObj/KJV.json.js", dat: vobj };
@@ -425,10 +434,21 @@ sub{
                 var s = "<table border='1'>";
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, str) {
+                        $.each(vrsObj, function (vrs, tx) {
+                            console.error("typeof tx=", typeof tx);
                             var bid = vol + chp + ":" + vrs;
                             s += "<tr><td/><td>" + bid + "</td><td>";
-                            s += str + "</td></tr>";
+
+
+                            if ("string" == typeof tx) {
+                                s += "<div>" + tx + "</div>";
+                            }
+                            else {
+                                $.each(tx, function (i, str) {
+                                    //s += "<div>" + str + "</div>";
+                                });
+                            }
+                            s += "</td></tr>";
                         });
                     });
                 });

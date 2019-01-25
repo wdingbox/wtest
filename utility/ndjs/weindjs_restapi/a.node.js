@@ -130,7 +130,7 @@ var BibleObj = function () {
 };
 BibleObj.prototype.load_BibleJstrn = function (fname) {
   var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
-  spathfile = "../../../jsdb/jsBibleObj/"+fname+".json.js";
+  spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
   var content = Uti.GetJsonStringFrmFile(spathfile);
   return content;
 };
@@ -147,10 +147,10 @@ BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
   console.log(keyObj);
 
   for (var i = 0; i < arr.length; i++) {
-    if(undefined === keyObj[arr[i]]){
+    if (undefined === keyObj[arr[i]]) {
       console.log("*** input keys not match keyObj keys ***");
-      console.log("keyObj=",keyObj);
-      console.log("keys should be:",arr);
+      console.log("keyObj=", keyObj);
+      console.log("keys should be:", arr);
       return {};
     }
     var key = keyObj[arr[i]];
@@ -162,15 +162,15 @@ BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
         p2[key] = {};
         p = p[key];
         p2 = p2[key];
-      }else{
+      } else {
         console.log("*******fatal err: key unmatch*********");
         break;
       }
-    }else{
-      console.log("Object.assign(p2,p); --undefined key=",key);
+    } else {
+      console.log("Object.assign(p2,p); --undefined key=", key);
       //console.log("p===",p);
       //console.log("p2===",p2);
-      Object.assign(p2,p);
+      Object.assign(p2, p);
       break;
     };
   };
@@ -179,9 +179,42 @@ BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
   // console.log("retObj=", retObj);
   return retObj;
 };
+BibleObj.prototype.assign_obj_val_to_arr = function (targetObj, SrcObj) {
+  Object.keys(SrcObj).forEach(function (vol) {
+    chpObj=SrcObj[vol];
+    if (undefined == targetObj[vol]) {
+      targetObj[vol] = {};
+    }
+    Object.keys(chpObj).forEach(function (chp) {
+      var vrsObj=chpObj[chp];
+      if (undefined == targetObj[vol][chp]) {
+        targetObj[vol][chp] = {};
+      }
+      Object.keys(vrsObj).forEach(function (vrs) {
+        var str=vrsObj[vrs];
+        if (undefined == targetObj[vol][chp][vrs]) {
+          targetObj[vol][chp][vrs] = [];
+        }
+        targetObj[vol][chp][vrs].push(str);
+      });
+    });
+  });
+}
 BibleObj.prototype.load_Bkn_VolChpVrs = function (inpObj) {
-  var bobj = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
-  var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
+  var RetsObj = {};
+  if ("string" === typeof inpObj.fname) {
+    var bobj = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
+    var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
+    this.assign_obj_val_to_arr(RetsObj, retObj);
+  }
+  if ("object" === typeof inpObj.fname) {
+    for (var i = 0; i < inpObj.fname.length; i++) {
+      var fnam = inpObj.fname[i];
+      var bobj = this.load_BibleObj(fnam);//.fname, inpObj.dat
+      var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
+      this.assign_obj_val_to_arr(RetsObj, retObj);
+    }
+  }
   var ss = JSON.stringify(retObj);
   return ss;
 }
