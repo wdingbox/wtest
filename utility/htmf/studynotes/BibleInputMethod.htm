@@ -199,28 +199,13 @@
         function gen_1st_char_btns(BsObj) {
             var ks = get_cha_arr_after_str(BsObj, "");
 
-            var s = "";
-            s += "<tr>";
-            for (var i = 0; i < 10; i++) {
-                var ret = get_vol_trs_match_str( BsObj, "" + i);
-                var sdisable = "", sch = "" + i + "<sub>" + ret.size + "</sub>";
-                if (0 == ret.size) {
-                    sdisable = "disabled";
-                    sch = "" + i;
-                }
-                s += "<td><button " + sdisable + " class='vin'>" + sch + "</button></td>";
-            }
-            s += "</tr>";
-            s += "<tr id='vitr'>";
+            var s ="<tr id='vitr'>";
             $.each(ks, function (i, c) {
-                if (("" + parseInt(c)) == c) {
-                    return;
-                }
                 c = c + "<sub>" + get_vol_trs_match_str(BsObj, c).size + "</sub>";
                 s += "<td><button class='vin'>" + c + "</button></td>";
+                if(9==i)s+="</tr><tr>";
             });
             s += "</tr>";
-
 
             $("#inputmethod").html(s).find(".vin").bind("click", function () {
                 $(".vin").removeClass("hili");
