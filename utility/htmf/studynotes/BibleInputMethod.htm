@@ -100,6 +100,7 @@ sub{
             this.m_menuId = menuId;
             this.m_chptbid = "#chp_bdy";
             this.m_vrstbid = "#vrs_tbd";
+            this.m_voltbid = "#vol_bdy";
             this.m_structObj = Obj;
         }
         BibleInputMenu.prototype.init = function () {
@@ -113,7 +114,7 @@ sub{
         <table border="1" style="float:left;">
             <caption>Vol</caption>
             <thead id="vol_hdr"></thead>
-            <tbody id='vol'></tbody>
+            <tbody id='vol_bdy'></tbody>
         </table>
 
         <table border="1" style="float:left;">
@@ -166,7 +167,7 @@ sub{
                 $(this).addClass("hili");
                 var ch = $(this).text();
                 var ret = _This.get_vol_trs_match_str(ch[0]);
-                $("#vol").html(ret.trs).find(".v3").bind("click", function () {
+                $(_This.m_voltbid).html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
