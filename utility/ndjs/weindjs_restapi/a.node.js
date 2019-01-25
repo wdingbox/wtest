@@ -72,7 +72,7 @@ var Uti = {
     var content = fs.readFileSync(fname, "utf8");
     var idx = 2 + content.indexOf("=\n");
     var shead = content.substr(0, idx);
-    console.log("shead==", shead);
+    //console.log("shead==", shead);
     content = content.substring(idx);
     return content;
   },
@@ -206,7 +206,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   }
   //console.log("clientBibleObj=",RetsObj);
   var ss = JSON.stringify(RetsObj);
-  console.log(ss);
+  //console.log(ss);
   return ss;
 }
 
