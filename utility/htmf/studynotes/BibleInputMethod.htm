@@ -317,6 +317,7 @@ sub{
                 var ssrch = cbfunc();
                 _This.chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
 
+                if(Object.keys(uobj[ssrch]).length==0)return;
                 _This.gen_verse_Menu( uobj[ssrch]);
             });
         }
