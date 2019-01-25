@@ -248,13 +248,10 @@ sub{
             arr[0]=$(".chpos0.hili").text();
             arr[1]=$(".chpos1.hili").text();
             arr[2]=$(".chpos2.hili").text();
-            return arr.join("");
+            return {vol:vol, chp:arr.join(""), vrs:""};
         }
-        function gen_verseNum(BsObj){
-            var chp=get_chap_by_selected();
-            console.log(chp);
-        }
-        var chpos0 = chpos1 = chpos2 = "";
+
+        
         function gen_Chap_Menu(BsObj, Vol, iPos) {
             var maxchp = "" + Object.keys(BsObj[Vol]).length;
             var n = maxchp.length;
@@ -281,16 +278,15 @@ sub{
             $(chpTab).find(".chpos0").bind("click", function () {
                 var ss = $(this).text();
                 if (ss.length === 0) return;
-                chpos0 = ss;
-                chpos1 = chpos2 = "";
 
                 $(".chpos0").removeClass("hili");
                 $(".chpos1").removeClass("hili");
                 $(".chpos2").removeClass("hili");
 
                 $(this).addClass("hili");
-                chpos0 = $(this).text();
-                var p1ar = get_cha_arr_after_str(BsObj[Vol], chpos0);
+                
+                var ret=get_chap_by_selected();
+                var p1ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
                 $(".chpos1").each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
@@ -300,17 +296,18 @@ sub{
                         $(this).text("");
                     };
                 });
-                gen_verseNum();
+                gen_verse_Menu();
             });
             $(chpTab).find(".chpos1").bind("click", function () {
                 var ss = $(this).text();
                 if (ss.length === 0) return;
-                chpos1 = ss;
+                
 
                 $(".chpos1").removeClass("hili");
                 $(".chpos2").removeClass("hili");
                 $(this).addClass("hili");
-                var p1ar = get_cha_arr_after_str(BsObj[Vol], chpos0 + chpos1);
+                var ret=get_chap_by_selected();
+                var p1ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
                 $(".chpos2").each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
@@ -320,17 +317,18 @@ sub{
                         $(this).text("");
                     };
                 });
-                gen_verseNum();
+                gen_verse_Menu();
             });
             $(chpTab).find(".chpos2").bind("click", function () {
                 var ss = $(this).text();
                 if (ss.length === 0) return;
-                chpos2 = ss;
+                
 
                 //$(".chpos1").removeClass("hili");
                 $(".chpos2").removeClass("hili");
                 $(this).addClass("hili");
-                var p2ar = get_cha_arr_after_str(BsObj[Vol], chpos0 + chpos1 + chpos2);
+                var ret=get_chap_by_selected();
+                var p2ar = get_cha_arr_after_str(BsObj[Vol], ret.chp);
                 $(".chpos3").each(function (i) {
                     var row = $(this).attr("chprow");
                     var irow = parseInt(row);
@@ -340,9 +338,14 @@ sub{
                         $(this).text("");
                     };
                 });
-                gen_verseNum();
+                gen_verse_Menu();
             });
         };
+
+        function gen_verse_Menu(BsObj){
+            var chp=get_chap_by_selected();
+            console.log(chp);
+        }
             //var allchars = gen_char_Menu_for_Vol(BsObj);
         //}
     </script>
