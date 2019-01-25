@@ -34,7 +34,7 @@
 
 
 
-
+    <script src="http://localhost:7778/Jsonpster/"></script>
 
 
     </script>
@@ -67,6 +67,13 @@
 sub{
     font-size: 8px;
 }
+#BbibInputMenu{
+    position:fixed;
+    top:10px;
+    right: 20px;
+    opacity: 100;
+    background-color: rgb(51, 158, 158);
+}
 </style>
 
 
@@ -76,117 +83,18 @@ sub{
             var bim = new BibleInputMenu(H_G_struct);
             bim.Gen_Keys_Menu();
 
+            $("#load").click(function () {
+                var ret = bim.get_chap_by_selected();
+                $("#out").val(JSON.stringify(ret, null, 4));
+
+                restapi_loadBibleObj("test", ret);
+            });
+
             table_sort();
             //table_col_index();
         });/////////////
 
 
-
-        //function gen_table_StructAna(BsObj) {
-        //function get_trs(BsObj) {
-        //    var trs = "";
-        //    $.each(BsObj, function (vol, ChpObj) {
-        //        trs += "<tr><td/><td>" + vol + "</td>";
-        //        $.each(ChpObj, function (Chp, VsObj) {
-        //            trs += "<td>" + Chp + "</td>";
-        //            $.each(VsObj, function (vrs, txt) {
-        //                trs += "<td>" + vrs + "</td>";
-        //            });
-        //        })
-        //
-        //        trs += "</tr>";
-        //    });
-        //    return trs;
-        //};
-
-
-
-
-        //function get_v3cObj(BsObj) {
-        //    var Vol3CharObj = [{}, {}, {}];
-        //    Object.keys(BsObj).forEach(function (vol) {
-        //        var VOL = vol.toUpperCase();
-        //        for (var i = 0; i < 3; i++) {
-        //            if (!Vol3CharObj[i][VOL[i]]) {
-        //                Vol3CharObj[i][VOL[i]] = {};
-        //            }
-        //            if (i < 2) {
-        //                Vol3CharObj[i][VOL[i]][VOL[1 + i]] = i;
-        //            }
-        //        }
-        //    });
-        //    return Vol3CharObj;
-        //}
-        //function gen_vTbl(v3cObj) {
-        //    var s = "";
-        //    for (var i = 0; i < 30; i++) {
-        //        s += "<tr><td/>";
-        //        for (var col = 0; col < 3; col++) {
-        //            var ks = Object.keys(v3cObj[col]).sort();
-        //            var ic = ks[i];
-        //            if (i >= ks.length) {
-        //                s += "<td/>";
-        //            } else {
-        //                var nextks = Object.keys(v3cObj[col][ic]).sort();
-        //                var nextcs = nextks.join("-");
-        //                var next_col = col + 1;
-        //                var attrs = " next_col='" + next_col + "'";
-        //
-        //                attrs += " next_cs='" + nextcs + "'";
-        //
-        //                attrs += " class='vchar vc_" + col + "_" + ic + "'";
-        //                s += "<td" + attrs + ">" + ic + ":" + nextcs + "</td>";
-        //            }
-        //        }
-        //        s += "</tr>";
-        //    }
-        //    return s;
-        //}
-
-
-
-        //var v3cObj = get_v3cObj(BsObj);
-        //var ss = "<table id='IntelligentVolsInput' border='1'>";
-        //ss += gen_vTbl(v3cObj);
-        //ss += "</table>";
-
-
-        //var s = get_trs(BsObj);
-        //$("#StructAna").html(s).parent().parent().prepend(ss);
-        //$("#IntelligentVolsInput").find(".vchar").bind("click", function () {
-        //    var next_cs = $(this).attr("next_cs");
-        //    var next_co = $(this).attr("next_col");
-        //    var srep = ",.vc_" + next_co + "_";
-        //    var nextstr = srep.substring(1) + next_cs.replace(/-/g, srep);
-        //    console.log(next_cs);
-        //    $(this).addClass("hili");
-        //    $("#IntelligentVolsInput").find(nextstr).addClass("hili")
-        //});
-
-
-        //function get_next_chars(vname, BsObj) {
-        //    var Vol3CharObj = {};
-        //    Object.keys(BsObj).sort().forEach(function (vol) {
-        //        var VOL = vol.toUpperCase();
-        //        if (!Vol3CharObj[VOL[0]]) {
-        //            Vol3CharObj[VOL[0]] = {};
-        //        }
-        //        if (!Vol3CharObj[VOL[0]][VOL[1]]) {
-        //            Vol3CharObj[VOL[0]][VOL[1]] = {};
-        //        }
-        //        if (!Vol3CharObj[VOL[0]][VOL[1]][VOL[2]]) {
-        //            Vol3CharObj[VOL[0]][VOL[1]][VOL[2]] = 1;
-        //        }
-        //    });
-        //
-        //    var VOL = vname.toUpperCase();
-        //    switch (VOL.length) {
-        //        case 0: return [];
-        //        case 1: return Object.keys(Vol3CharObj[VOL[0]]).sort();
-        //        case 2: return Object.keys(Vol3CharObj[VOL[0]][VOL[1]]).sort();
-        //    };
-        //    return [];
-        //}
         var BibleInputMenu = function (Obj) {
             this.m_chptbid = "#chp";
             this.m_vrstbid = "#vrs";
@@ -200,7 +108,6 @@ sub{
                     i++;
                 };
             });
-            //$("#showOptions").html(s);
             return { trs: s, size: i };
         };
 
@@ -221,7 +128,7 @@ sub{
                 $(this).addClass("hili");
                 var ch = $(this).text();
                 var ret = _This.get_vol_trs_match_str(ch[0]);
-                $("#showOptions").html(ret.trs).find(".v3").bind("click", function () {
+                $("#vol").html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
@@ -349,18 +256,89 @@ sub{
             this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
         }
-            //var allchars = gen_char_Menu_for_Vol(BsObj);
-        //}
+
+
+
+        function restapi_loadBibleObj(fname, vobj) {
+            var txt = JSON.stringify(vobj);
+            txt = encodeURIComponent(txt);//must see svr decodeURIComponent();
+            var inp = { fname: "../../../jsdb/jsBibleObj/KJV.json.js", dat: vobj };
+            var prm = { api: "loadBibleObj", inp: inp };
+            //window.open(url);
+            console.log(Jsonpster);
+            //Jsonpster.Set ({api:"updateVocabHebrewBuf", param:inp}); // = JSON.stringify(inp);
+            Jsonpster.Run(prm, function (ret) {
+                console.log(ret);
+                var s = "<table border='1'>";
+                $.each(ret, function (vol, chpObj) {
+                    $.each(chpObj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, str) {
+                            var bid = vol + chp + ":" + vrs;
+                            s += "<tr><td/><td>" + bid + "</td><td>";
+                            s += str + "</td></tr>";
+                        });
+                    });
+                });
+                s+="</table>";
+                $("#oBible").html(s);
+                jsonpsvr_ok();
+            });
+        };
+
+        function jsonpsvr_ok() {
+            //https://www.w3schools.com/js/js_json_jsonp.asp
+            var s = $("#out").val();
+            if (s.length > 10) s = "";
+            $("#texta").val(s + ".");
+        }
     </script>
 
 </HEAD>
 
-<BODY xxxonload="body_onload();">
+<BODY>
 
     <textarea id="out"></textarea>
 
 
     <button id="indxer">indxer</button>
+    <button id="load">load</button>
+
+
+
+
+    <div id="BbibInputMenu" height="100%">
+        <table border="0">
+            <caption id="">Bible Volname:<a id='vname'></a></caption>
+            <thead id="missingVolChpObj"></thead>
+            <tbody id='inputmethod'></tbody>
+        </table>
+        <table border="1" style="float:left;">
+            <caption>Vol</caption>
+            <thead id="missingVolChpVerses"></thead>
+            <tbody id='vol'></tbody>
+        </table>
+
+        <table border="1" style="float:left;">
+            <caption>__chapters__</caption>
+            <thead id=""></thead>
+            <tbody id='chp'>
+                <tr>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+        <table border="1" style="float:bottom;">
+            <caption>Verses</caption>
+            <thead id=""></thead>
+            <tbody id='vrs'>
+                <tr>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+    </div>
+
 
     <table border="1">
         <thead>
@@ -375,38 +353,8 @@ sub{
     </table>
 
 
-
-
-
-    <table border="0">
-        <caption id="">Bible Volname:<a id='vname'></a></caption>
-        <thead id="missingVolChpObj"></thead>
-        <tbody id='inputmethod'></tbody>
-    </table>
-    <table border="1" style="float:left;">
-        <caption>Vol</caption>
-        <thead id="missingVolChpVerses"></thead>
-        <tbody id='showOptions'></tbody>
-    </table>
-
-    <table border="1" style="float:left;">
-        <caption>__chapters__</caption>
-        <thead id=""></thead>
-        <tbody id='chp'>
-            <tr>
-                <td>1</td>
-            </tr>
-        </tbody>
-    </table>
-    <table border="1" align="">
-        <caption>Verses</caption>
-        <thead id=""></thead>
-        <tbody id='vrs'>
-            <tr>
-                <td>1</td>
-            </tr>
-        </tbody>
-    </table>
+    <hr />
+    <span id='oBible'>----</span>
 
 </BODY>
 
