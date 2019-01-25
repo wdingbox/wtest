@@ -179,8 +179,11 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     //$("#out").val(vol);
+                    $(_This.m_vrstbid).html("");
                     _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
+                $(_This.m_chptbid).html("");
+                $(_This.m_vrstbid).html("");
             });
             return ks;
         }
@@ -221,14 +224,14 @@ sub{
 
         BibleInputMenu.prototype.chp_table_init = function (tid, uobj) {
             if (!uobj) return;
-            var maxchp = "" + Object.keys(uobj).length;
+            var maxchp = "000";// + Object.keys(uobj).length;
             var n = maxchp.length;
     
             var s = "";
             for (var i = 0; i < 10; i++) {
                 s += "<tr>";
                 for (var k = 0; k < n; k++) {
-                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + i + ":" + k + "</td>";
+                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + "</td>";
                 }
                 s += "</tr>";
             };
@@ -286,6 +289,7 @@ sub{
             this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 2, get_search_str_by_hili);
+
         };
 
         BibleInputMenu.prototype.gen_verse_Menu = function (vobj) {
@@ -301,7 +305,13 @@ sub{
             this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
-        }
+        };
+
+        ///////////
+        //////////
+        //////////
+        //////////
+        /////////
 
 
 
