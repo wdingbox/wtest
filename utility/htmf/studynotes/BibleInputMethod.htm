@@ -220,7 +220,7 @@ sub{
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
                     $("#out").val(vol);
-                    gen_Chap_Menu("#chp", BsObj, vol);
+                    gen_Chap_Menu("#chp", BsObj[vol]);
                 });
             });
             return ks;
@@ -307,12 +307,12 @@ sub{
                 gen_verse_Menu("#vrs", uobj[ssrch]);
             });
         }
-        function gen_Chap_Menu(tbdid, BsObj, Vol) {
+        function gen_Chap_Menu(tbdid, vobj) {
             function get_search_str_by_hili() {
                 var ret = get_chap_by_selected();
                 return ret.chp;
             }
-            var vobj = BsObj[Vol];
+            //var vobj = BsObj[Vol];
             chp_table_init(tbdid, vobj);
             chp_table_fill_col(tbdid, vobj, 0, get_search_str_by_hili());
             chp_table_bind_col(tbdid, vobj, 0, get_search_str_by_hili);
