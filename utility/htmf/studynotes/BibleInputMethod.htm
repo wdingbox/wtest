@@ -329,6 +329,16 @@ sub{
         //////////
         //////////
         /////////
+        var VerseRefMenu=function(){
+
+        }
+
+
+        ///////////
+        //////////
+        //////////
+        //////////
+        /////////
 
         function restapi_loadBibVolChpVrs() {
             var obj = gBim.get_chap_by_selected();
@@ -343,13 +353,17 @@ sub{
                     $.each(chpObj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, str) {
                             var bid = vol + chp + ":" + vrs;
-                            s += "<tr><td/><td>" + bid + "</td><td>";
+                            s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
                             s += str + "</td></tr>";
                         });
                     });
                 });
                 s += "</table>";
-                $("#oBible").html(s);
+                $("#oBible").html(s).find(".vid").bind("click",function(){
+                    var vid=$(this).text();
+                    $(this).toggleClass("hili");
+                    //alert(vid);
+                });
                 jsonpsvr_ok();
             });
 
