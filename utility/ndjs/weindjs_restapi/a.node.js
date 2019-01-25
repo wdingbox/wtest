@@ -139,44 +139,29 @@ BibleObj.prototype.load_BibleObj = function (fname) {
   var bobj = JSON.parse(content);
   return bobj;
 };
-BibleObj.prototype.fetch_bibObj_by_keyParm = function (srcObj, keyObj) {
+
+BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj) {
   var retObj = {};
   var arr = ["vol", "chp", "vrs"];
-  var p = srcObj, p2 = retObj;
-  console.log("keyObj=====");
-  console.log(keyObj);
-
-  for (var i = 0; i < arr.length; i++) {
-    if (undefined === keyObj[arr[i]]) {
-      console.log("*** input keys not match keyObj keys ***");
-      console.log("keyObj=", keyObj);
-      console.log("keys should be:", arr);
-      return {};
-    }
-    var key = keyObj[arr[i]];
-    if (undefined != p[key]) {
-      if ("string" == typeof p[key]) {
-        p2[key] = p[key];
-        break;
-      } else if ("object" == typeof p[key]) {
-        p2[key] = {};
-        p = p[key];
-        p2 = p2[key];
-      } else {
-        console.log("*******fatal err: key unmatch*********");
-        break;
-      }
-    } else {
-      console.log("Object.assign(p2,p); --undefined key=", key);
-      //console.log("p===",p);
-      //console.log("p2===",p2);
-      Object.assign(p2, p);
-      break;
-    };
-  };
-  // console.log("p=", p);
-  // console.log("p2=", p2);
-  // console.log("retObj=", retObj);
+  var vol=keyObj.vol;
+  if(undefined===srcObj[vol]){
+    Object.assign(retObj, srcObj);
+    return retObj;
+  }
+  retObj[vol]={};
+  var chp=keyObj.chp;
+  if(undefined===srcObj[vol][chp]){
+    Object.assign(retObj[vol], srcObj[vol]);
+    return retObj;
+  }
+  retObj[vol][chp]={};
+  var vrs=keyObj.vrs;
+  if(undefined===srcObj[vol][chp][vrs]){
+    Object.assign(retObj[vol][chp], srcObj[vol][chp]);
+    return retObj;
+  }
+  retObj[vol][chp][vrs]="";
+  retObj[vol][chp][vrs]=srcObj[vol][chp][vrs];
   return retObj;
 };
 BibleObj.prototype.assign_obj_val_to_arr = function (targetObj, SrcObj) {
@@ -204,14 +189,14 @@ BibleObj.prototype.load_Bkn_VolChpVrs = function (inpObj) {
   var RetsObj = {};
   if ("string" === typeof inpObj.fname) {
     var bobj = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
-    var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
+    var retObj = this.Fetch_Partial_BibleObj_by_keyParm(bobj, inpObj.dat);
     this.assign_obj_val_to_arr(RetsObj, retObj);
   }
   if ("object" === typeof inpObj.fname) {
     for (var i = 0; i < inpObj.fname.length; i++) {
       var fnam = inpObj.fname[i];
       var bobj = this.load_BibleObj(fnam);//.fname, inpObj.dat
-      var retObj = this.fetch_bibObj_by_keyParm(bobj, inpObj.dat);
+      var retObj = this.Fetch_Partial_BibleObj_by_keyParm(bobj, inpObj.dat);
       this.assign_obj_val_to_arr(RetsObj, retObj);
     }
   }
