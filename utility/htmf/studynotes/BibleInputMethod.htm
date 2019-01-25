@@ -98,8 +98,8 @@ sub{
 
         var BibleInputMenu = function (menuId, Obj) {
             this.m_menuId = menuId;
-            this.m_chptbid = "#chp";
-            this.m_vrstbid = "#vrs";
+            this.m_chptbid = "#chp_bdy";
+            this.m_vrstbid = "#vrs_tbd";
             this.m_structObj = Obj;
         }
         BibleInputMenu.prototype.init = function () {
@@ -119,7 +119,7 @@ sub{
         <table border="1" style="float:left;">
             <caption>__chapters__</caption>
             <thead id="chp_hdr"></thead>
-            <tbody id='chp'>
+            <tbody id='chp_bdy'>
                 <tr>
                     <td></td>
                 </tr>
@@ -129,7 +129,7 @@ sub{
         <table border="1">
             <caption>Verses</caption>
             <thead id="vrs_hdr"></thead>
-            <tbody id='vrs'>
+            <tbody id='vrs_tbd'>
                 <tr>
                     <td></td>
                 </tr>
