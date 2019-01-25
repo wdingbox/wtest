@@ -382,7 +382,7 @@ sub{
             var obj = gBim.get_chap_by_selected();
             console.log(obj);
             //var inp = { fname: "KJV", dat: obj };
-            var par = { api: "loadBible_Bkn_VolChpVrs", inp: obj };
+            var par = { api: "loadBible_Bkns_VolChpVrs", inp: obj };
 
             Jsonpster.Run(par, function (ret) {
                 console.log(ret);
