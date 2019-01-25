@@ -79,13 +79,16 @@ sub{
 
 
     <script language="javascript">
+        var gBim = null;//new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
+            
         $(document).ready(function () {
-            var bim = new BibleInputMenu("#BibInputMenuHolder",H_G_struct);
-            bim.init();
-            bim.Gen_Keys_Menu();
+            gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
+        
+            gBim.init();
+            gBim.Gen_Keys_Menu();
 
             $("#load").click(function () {
-                var ret = bim.get_chap_by_selected();
+                var ret = gBim.get_chap_by_selected();
                 $("#out").val(JSON.stringify(ret, null, 4));
 
                 restapi_loadBibleObj("test", ret);
@@ -103,7 +106,7 @@ sub{
             this.m_voltbid = "#vol_bdy";
             this.m_chptbid = "#chp_bdy";
             this.m_vrstbid = "#vrs_tbd";
-            
+
             this.m_structObj = Obj;
         }
         BibleInputMenu.prototype.init = function () {
@@ -142,7 +145,7 @@ sub{
                 </tr>
             </tbody>
         </table>
-        <button id="loadVolChpVrs">Load</button><br>
+        <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button><br>
         <button id="run">-</button>
         <br>`;
             $(this.m_menuHolderId).html(stables);
@@ -159,10 +162,10 @@ sub{
         };
 
         BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
-            var ret=this.get_chap_by_selected();
-            if(!ret.vol)ret.vol="-";
-            if(!ret.chp)ret.chp="-";
-            if(!ret.vrs)ret.vrs="-";
+            var ret = this.get_chap_by_selected();
+            if (!ret.vol) ret.vol = "-";
+            if (!ret.chp) ret.chp = "-";
+            if (!ret.vrs) ret.vrs = "-";
             $("#vol_cap").text(ret.vol);
             $("#chp_cap").text(ret.chp);
             $("#vrs_cap").text(ret.vrs);
@@ -239,7 +242,7 @@ sub{
             if (!uobj) return;
             var maxchp = "000";// + Object.keys(uobj).length;
             var n = maxchp.length;
-    
+
             var s = "";
             for (var i = 0; i < 10; i++) {
                 s += "<tr>";
@@ -327,12 +330,40 @@ sub{
         //////////
         /////////
 
+        function restapi_loadBibVolChpVrs() {
+            var obj = gBim.get_chap_by_selected();
+            console.log(obj);
+            var inp = { fname: "KJV", dat: obj };
+            var par = { api: "loadBibible_VolChpVrs", inp: inp };
+            
+            Jsonpster.Run(par, function (ret) {
+                console.log(ret);
+                var s = "<table border='1'>";
+                $.each(ret, function (vol, chpObj) {
+                    $.each(chpObj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, str) {
+                            var bid = vol + chp + ":" + vrs;
+                            s += "<tr><td/><td>" + bid + "</td><td>";
+                            s += str + "</td></tr>";
+                        });
+                    });
+                });
+                s += "</table>";
+                $("#oBible").html(s);
+                jsonpsvr_ok();
+            });
+
+            console.log(Jsonpster);
+        };
+
 
 
         function restapi_loadBibleObj(fname, vobj) {
-            var txt = JSON.stringify(vobj);
-            txt = encodeURIComponent(txt);//must see svr decodeURIComponent();
-            var inp = { fname: "../../../jsdb/jsBibleObj/KJV.json.js", dat: vobj };
+            
+            //var txt = JSON.stringify(vobj);
+            //xtxt = encodeURIComponent(txt);//must see svr decodeURIComponent();
+            //var inp = { fname: "../../../jsdb/jsBibleObj/KJV.json.js", dat: vobj };
+            var inp = { fname: "KJV", dat: vobj };
             var prm = { api: "loadBibleObj", inp: inp };
             //window.open(url);
             console.log(Jsonpster);

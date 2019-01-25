@@ -68,7 +68,7 @@ var Uti = {
     return outFilesArr;
   },
 
-  GetJsonStringFrmFile:function(fname){
+  GetJsonStringFrmFile: function (fname) {
     var content = fs.readFileSync(fname, "utf8");
     var idx = 2 + content.indexOf("=\n");
     var shead = content.substr(0, idx);
@@ -126,13 +126,59 @@ var hbrq = new HebrewQ();
 
 
 
-var BibleObj=function(){
-
-}
-BibleObj.prototype.load=function(fname){
-  var fname="../../../jsdb/jsBibleObj/H_G.json.js";
-  var content=Uti.GetJsonStringFrmFile(fname);
+var BibleObj = function () {
+};
+BibleObj.prototype.load_as_content = function (fname) {
+  var fname = "../../../jsdb/jsBibleObj/H_G.json.js";
+  var content = Uti.GetJsonStringFrmFile(fname);
   return content;
+};
+BibleObj.prototype.load_Obj = function (fname) {
+  var content = this.load_as_content(fname);
+  var bobj = JSON.parse(content);
+  return bobj;
+};
+BibleObj.prototype.fetch_bbObj_by_keyObj = function (srcObj, keyObj) {
+  var retObj = {};
+  var arr = ["vol", "chp", "vrs"];
+  var p = srcObj, p2 = retObj;
+  p2 = retObj;
+  console.log("keyObj=====");
+  console.log(keyObj);
+
+  for (var i = 0; i < arr.length; i++) {
+    var key = keyObj[arr[i]];
+    console.log(key);
+    console.log(typeof p[key]);
+    if (undefined != p[key]) {
+      if ("string" == typeof p[key]) {
+        p2[key] = p[key];
+        break;
+      } else if ("object" == typeof p[key]) {
+        p2[key] = {};
+        p = p[key];
+        p2 = p2[key];
+      }else{
+        console.log("*******fatal err*********");
+      }
+    }else{
+      console.log("not defined..key=",key);
+      console.log("p===",p);
+      console.log("p2===",p2);
+      Object.assign(p2,p);
+      break;
+    };
+  };
+  console.log("p=", p);
+  console.log("p2=", p2);
+  console.log("retObj=", retObj);
+  return retObj;
+};
+BibleObj.prototype.fetch_by_keys = function (fname, keyObj) {
+  var bobj = this.load_Obj(fname);
+  var retObj = this.fetch_bbObj_by_keyObj(bobj, keyObj);
+  var ss = JSON.stringify(retObj);
+  return ss;
 }
 
 var SvrApi = {
@@ -151,9 +197,16 @@ var SvrApi = {
   updateVocabHebrewDat: function (inpObj) {
 
   },
-  loadBibleObj:function(inpObj){
-    var bo=new BibleObj();
-    return bo.load();
+  loadBibleObj: function (inpObj) {
+    console.log("... loadBibleObj ...");
+    var bo = new BibleObj();
+    return bo.load_as_content();
+  },
+  loadBibible_VolChpVrs: function (inpObj) {
+    console.log("... loadBibible_VolChpVrs ...");
+    var bo = new BibleObj();
+    var ss = bo.fetch_by_keys(inpObj.fname, inpObj.dat);
+    return ss;
   }
 };//////SvrApi///////////////////////////////////
 Object.keys(SvrApi).forEach(function (api) {
