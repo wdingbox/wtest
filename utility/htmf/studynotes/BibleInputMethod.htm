@@ -306,7 +306,7 @@ sub{
 
 
 
-        BibleInputMenu.prototype.chp_table_init = function (tid) {
+        BibleInputMenu.prototype.digi_table_init = function (tid) {
             var maxchp = "000";// + Object.keys(uobj).length;
             var n = maxchp.length;
 
@@ -323,15 +323,15 @@ sub{
         };
 
 
-        BibleInputMenu.prototype.chp_table_fill_col = function (tid, uobj, icol, keysearch) {
+        BibleInputMenu.prototype.digi_table_fill_col = function (tid, uobj, icol, prevStrn) {
             var _This = this;
-            var p0ar = _This.get_cha_arr_after_str(uobj, keysearch);
+            var curAr = _This.get_cha_arr_after_str(uobj, prevStrn);
             $(tid).find(".chpos" + icol).each(function (i) {
                 var row = $(this).attr("chprow");
                 var irow = parseInt(row);
-                if (p0ar[irow]) {
-                    var ch = p0ar[irow];
-                    var nxAr = _This.get_cha_arr_after_str(uobj, keysearch + ch);
+                if (curAr[irow]) {
+                    var ch = curAr[irow];
+                    var nxAr = _This.get_cha_arr_after_str(uobj, prevStrn + ch);
                     var ssub = "" + nxAr.length;
                     if (nxAr.length === 0) ssub = "";
                     $(this).html(ch + "<sub>" + ssub + "</sub>");
@@ -355,7 +355,7 @@ sub{
 
 
                 var ssrch = cbfunc();
-                _This.chp_table_fill_col(tid, uobj, 1 + icol, ssrch);
+                _This.digi_table_fill_col(tid, uobj, 1 + icol, ssrch);
 
                 if (Object.keys(uobj[ssrch]).length == 0) return;
                 _This.gen_verse_Menu(uobj[ssrch]);
@@ -368,8 +368,8 @@ sub{
                 return ret.dat.chp;
             }
             //var vobj = BsObj[Vol];
-            this.chp_table_init(this.m_chptbid);
-            this.chp_table_fill_col(this.m_chptbid, vobj, 0, get_search_str_by_hili());
+            this.digi_table_init(this.m_chptbid);
+            this.digi_table_fill_col(this.m_chptbid, vobj, 0, get_search_str_by_hili());
             this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 2, get_search_str_by_hili);
@@ -384,8 +384,8 @@ sub{
                 return ret.dat.vrs;
             }
             //var vobj = BsObj[Vol];
-            this.chp_table_init(this.m_vrstbid);
-            this.chp_table_fill_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili());
+            this.digi_table_init(this.m_vrstbid);
+            this.digi_table_fill_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili());
             this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
