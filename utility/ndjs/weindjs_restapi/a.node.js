@@ -129,7 +129,7 @@ var hbrq = new HebrewQ();
 var BibleObj = function () {
 };
 
-BibleObj.prototype.BibleObj_update_Zealot = function (inpObj) {
+BibleObj.prototype.BibleObj_update_notes = function (inpObj) {
   var vol=inpObj.dat.vol;
   var chp=inpObj.dat.chp;
   var vrs=inpObj.dat.vrs;
@@ -299,10 +299,10 @@ var SvrApi = {
     var ss = bo.loadBible_read_history(inpObj);
     return ss;
   },
-  BibleObj_update_Zealot:function(inpObj){
+  BibleObj_update_notes:function(inpObj){
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
-    var ss = bo.BibleObj_update_Zealot(inpObj);
+    var ss = bo.BibleObj_update_notes(inpObj);
     return ss;
   }
 };//////SvrApi///////////////////////////////////
