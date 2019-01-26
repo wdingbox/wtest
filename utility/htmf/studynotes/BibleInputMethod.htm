@@ -433,9 +433,8 @@ sub{
                         $.each(vrsObj, function (vrs, ob) {
                             var str = vol + chp + ":" + vrs;
                             ops += "<option>" + str + "</option>"
-                        })
-
-                    })
+                        });
+                    });
                 });
                 $("#history").html(ops).find("option").bind("click", function () {
                     var s = $(this).text();
