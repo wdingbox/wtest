@@ -108,7 +108,7 @@ sub{
             this.m_vrstbid = "#vrs_tbd";
 
             this.m_structObj = Obj;
-            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS","ZEALOT"];
+            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "ZEALOT"];
         }
         BibleInputMenu.prototype.init = function () {
             var stables = `   
@@ -158,7 +158,7 @@ sub{
         </table>
         <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button><br>
         
-        <select id="history" multiple size='10'><option/></select>
+        <select id="history" multiple size='5'><option/></select>
         <button id="loadhistory" onclick='loadBible_history();'>+</button>
         <br>`;
             $(this.m_menuHolderId).html(stables);
@@ -380,50 +380,78 @@ sub{
         //////////
         /////////
 
+        function restapi_loadBibVolChpVrs_genTable(ret) {
+            console.log(ret);
+            var s = "<table border='1'>";
+            $.each(ret, function (vol, chpObj) {
+                $.each(chpObj, function (chp, vrsObj) {
+                    $.each(vrsObj, function (vrs, val) {
+                        console.log("typeof val=", typeof val);
+                        var bid = vol + chp + ":" + vrs;
+                        s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
+                        if ("object" == typeof val) {
+                            $.each(val, function (i, str) {
+                                s += "<div>" + str + "</iv>";
+                            });
+                        }
+                        if ("string" == typeof val) {
+                            s += "<div>" + val + "</iv>";
+                        }
+                        s += "</td></tr>";
+                    });
+                });
+            });
+            s += "</table>";
+            $("#oBible").html(s).find(".vid").bind("click", function () {
+                var vid = $(this).text();
+                $(this).toggleClass("hili");
+                //alert(vid);
+            });
+            //jsonpsvr_ok();
+        }
+
         function restapi_loadBibVolChpVrs() {
             var obj = gBim.get_chap_by_selected();
             console.log(obj);
             //var inp = { fname: "KJV", dat: obj };
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: obj };
 
-            Jsonpster.Run(par, function (ret) {
-                console.log(ret);
-                var s = "<table border='1'>";
-                $.each(ret, function (vol, chpObj) {
-                    $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, val) {
-                            console.log("typeof val=", typeof val);
-                            var bid = vol + chp + ":" + vrs;
-                            s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
-                            if ("object" == typeof val) {
-                                $.each(val, function (i, str) {
-                                    s += "<div>" + str + "</iv>";
-                                });
-                            }
-                            if ("string" == typeof val) {
-                                s += "<div>" + val + "</iv>";
-                            }
-                            s += "</td></tr>";
-                        });
-                    });
-                });
-                s += "</table>";
-                $("#oBible").html(s).find(".vid").bind("click", function () {
-                    var vid = $(this).text();
-                    $(this).toggleClass("hili");
-                    //alert(vid);
-                });
-                jsonpsvr_ok();
-            });
+            Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
 
             console.log(Jsonpster);
         };
 
-        function loadBible_history(){
+        function loadBible_history() {
             var inp = { fname: [], dat: {} };
             var prm = { api: "loadBible_read_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
+                //history
                 console.log(ret);
+                var ops = "";
+                $.each(ret, function (vol, chobj) {
+                    $.each(chobj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, ob) {
+                            var str = vol + chp + ":" + vrs;
+                            ops += "<option>" + str + "</option>"
+                        })
+
+                    })
+                });
+                $("#history").html(ops).find("option").bind("click", function () {
+                    var s = $(this).text();
+                    var mat = s.match(/^(\w{3})(\d+)[\:](\d+)$/);
+                    if (mat) {
+                        console.log(mat);
+                        var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
+                        var ret = gBim.get_chap_by_selected();
+                        var inp = { fname: ret.fname, dat: dat };
+                        console.log(inp);
+
+                        var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
+
+                        Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
+                    }
+                });
 
             });
         }
