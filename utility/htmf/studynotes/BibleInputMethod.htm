@@ -306,8 +306,7 @@ sub{
 
 
 
-        BibleInputMenu.prototype.chp_table_init = function (tid, uobj) {
-            if (!uobj) return;
+        BibleInputMenu.prototype.chp_table_init = function (tid) {
             var maxchp = "000";// + Object.keys(uobj).length;
             var n = maxchp.length;
 
@@ -369,7 +368,7 @@ sub{
                 return ret.dat.chp;
             }
             //var vobj = BsObj[Vol];
-            this.chp_table_init(this.m_chptbid, vobj);
+            this.chp_table_init(this.m_chptbid);
             this.chp_table_fill_col(this.m_chptbid, vobj, 0, get_search_str_by_hili());
             this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
@@ -385,7 +384,7 @@ sub{
                 return ret.dat.vrs;
             }
             //var vobj = BsObj[Vol];
-            this.chp_table_init(this.m_vrstbid, vobj);
+            this.chp_table_init(this.m_vrstbid);
             this.chp_table_fill_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili());
             this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);

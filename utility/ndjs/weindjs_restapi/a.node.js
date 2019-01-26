@@ -70,11 +70,11 @@ var Uti = {
 
   GetJsonStringFrmFile: function (fname) {
     var content = fs.readFileSync(fname, "utf8");
-    var idx = 1 + content.indexOf("=");
+    var idx = content.indexOf("{");
     var shead = content.substr(0, idx);
-    //console.log("shead==", shead);
+    console.log("shead==", shead);
     content = content.substring(idx);
-    return {header:shead, jstrn:content};
+    return {fname:fname, header:shead, jstrn:content};
   },
 };//////Uti//////
 
@@ -144,7 +144,6 @@ BibleObj.prototype.load_BibleJstrn = function (fname) {
   var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
   spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
   var ret = Uti.GetJsonStringFrmFile(spathfile);
-  ret.fname=spathfile;
   return ret;//{fname:spathfile,jstrn:content};
 };
 BibleObj.prototype.load_BibleObj = function (fname) {
@@ -234,7 +233,7 @@ BibleObj.prototype.loadBible_write_history = function (aobj) {
   this.modidy_vrs(his.obj,function(vrsOb){
     return "="+vrsOb.length;
   });
-  fs.writeFileSync(his.fname, "var _history=\n"+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
+  fs.writeFileSync(his.fname, his.header+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
   console.log("*** save to history",his.fname);
 }
 BibleObj.prototype.loadBible_read_history = function (inpObj) {
