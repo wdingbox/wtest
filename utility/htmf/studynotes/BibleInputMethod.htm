@@ -243,7 +243,7 @@ div[contenteditable]{
 
 
         <table border="1" style="float:left;">
-            <caption><button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button>
+            <caption><button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
         </caption>
             <thead></thead>
             <tbody>
@@ -360,7 +360,6 @@ div[contenteditable]{
             return ks;
         }
         BibleInputMenu.prototype.get_chap_by_selected = function () {
-
             var fnamesArr = [];
             $(".cbkn.hili").each(function () {
                 var ss = $(this).text();
@@ -384,6 +383,21 @@ div[contenteditable]{
 
             var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
             var ret = { fname: fnamesArr, dat: dat };
+            ret.validateBibleLoad=function(){
+                if(this.fname.length===0){
+                    alert("Please select a biblical BooK Name.");
+                    return false;
+                }
+                if( (this.dat.vol && this.dat.vol.length>0) ){
+                    return true;
+                }
+                var s=JSON.stringify(this);
+                s+="\n\n no vol,chp,vrs. Load whole Bible?";
+                return confirm(s);
+            }
+            ret.getApiParam=function(sApiName){
+                return {api:sApiName, inp:this};
+            }
             return ret;
         }
 
@@ -625,10 +639,11 @@ div[contenteditable]{
         }
 
         function restapi_loadBibVolChpVrs() {
-            var obj = gBim.get_chap_by_selected();
-            console.log(obj);
-            //var inp = { fname: "KJV", dat: obj };
-            var par = { api: "loadBible_Bkns_VolChpVrs", inp: obj };
+            var inp = gBim.get_chap_by_selected();
+            if(!inp.validateBibleLoad())return;
+            console.log(inp);
+            var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
+            par=inp.getApiParam("loadBible_Bkns_VolChpVrs");
 
             Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
 
