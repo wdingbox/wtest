@@ -70,11 +70,11 @@ var Uti = {
 
   GetJsonStringFrmFile: function (fname) {
     var content = fs.readFileSync(fname, "utf8");
-    var idx = 2 + content.indexOf("=\n");
+    var idx = 1 + content.indexOf("=");
     var shead = content.substr(0, idx);
     //console.log("shead==", shead);
     content = content.substring(idx);
-    return content;
+    return {header:shead, jstrn:content};
   },
 };//////Uti//////
 
@@ -128,11 +128,24 @@ var hbrq = new HebrewQ();
 
 var BibleObj = function () {
 };
+
+BibleObj.prototype.BibleObj_update_Zealot = function (inpObj) {
+  var vol=inpObj.dat.vol;
+  var chp=inpObj.dat.chp;
+  var vrs=inpObj.dat.vrs;
+  var txt=inpObj.dat.txt;
+  var ret = this.load_BibleObj("ZEALOT");
+  ret.obj[vol][chp][vrs]=txt;
+  var sss=JSON.stringify(ret.obj,null,4);
+  fs.writeFileSync(ret.fname, sss, "utf8");
+  return sss;
+};
 BibleObj.prototype.load_BibleJstrn = function (fname) {
   var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
   spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
-  var content = Uti.GetJsonStringFrmFile(spathfile);
-  return {fname:spathfile,jstrn:content};
+  var ret = Uti.GetJsonStringFrmFile(spathfile);
+  ret.fname=spathfile;
+  return ret;//{fname:spathfile,jstrn:content};
 };
 BibleObj.prototype.load_BibleObj = function (fname) {
   var ret = this.load_BibleJstrn(fname);
@@ -285,6 +298,12 @@ var SvrApi = {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
     var ss = bo.loadBible_read_history(inpObj);
+    return ss;
+  },
+  BibleObj_update_Zealot:function(inpObj){
+    console.log("... loadBible_Bkn_VolChpVrs ...");
+    var bo = new BibleObj();
+    var ss = bo.BibleObj_update_Zealot(inpObj);
     return ss;
   }
 };//////SvrApi///////////////////////////////////

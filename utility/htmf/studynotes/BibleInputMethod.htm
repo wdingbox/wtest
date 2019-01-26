@@ -283,7 +283,7 @@ sub{
                 fnamesArr.push(ss);
             });
             if (fnamesArr.length == 0) {
-                alert("no bookname selecged.");
+                alert("Err: no bookname selected.");
             }
 
             var vol = $(".v3.hili").text();
@@ -477,17 +477,25 @@ sub{
         };//BookChapterVerseMax
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
+            var inpobj = gBim.get_chap_by_selected();
+            var fnamAr= inpobj.fname;
+            const cidx=fnamAr.indexOf("ZEALOT");
             console.log(ret);
             var s = "<table border='1'>";
             $.each(ret, function (vol, chpObj) {
                 $.each(chpObj, function (chp, vrsObj) {
                     $.each(vrsObj, function (vrs, val) {
                         //console.log("typeof val=", typeof val);
-                        var bid = vol + chp + ":" + vrs;
-                        s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
+                        var vid = vol + chp + ":" + vrs;
+                        s += "<tr><td/><td class='vid'>" + vid + "</td><td>";
                         if ("object" == typeof val) {
                             $.each(val, function (i, str) {
-                                s += "<div>" + str + "</iv>";
+                                if(str.length===0)str="@";
+                                var attr="";
+                                if(cidx===i){
+                                    attr=" contenteditable fnm='ZEALOT' vid='"+vid+"'"
+                                }
+                                s += "<div" +attr+">" + str + "</iv>";
                             });
                         }
                         if ("string" == typeof val) {
@@ -503,7 +511,7 @@ sub{
                 var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
                 var blb = BlueLetterBibleCode[mat[1]];
                 $(this).toggleClass("hili");
-                $("#selvcv").text(vid);
+                $("#selvcv").text(vid).toggleClass("hili");
 
 
                 //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
@@ -512,6 +520,23 @@ sub{
                 srf += "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> ";
                 $("#refpop").html(srf);
                 //alert(vid);
+            });
+            $("#oBible").find("[contenteditable]").bind("keyup",function(){
+                var txt=$(this).html();
+                var vid=$(this).attr("vid");
+                var mat=vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+                var dat={}
+                if(mat){
+                    dat.vol=mat[1];
+                    dat.chp=mat[2];
+                    dat.vrs=mat[3];
+                };
+                dat.txt=txt;
+                var inp={fname:["ZEALOT"],dat:dat};
+                var par={api:"BibleObj_update_Zealot",inp:inp};
+                Jsonpster.Run(par,function(){
+                    jsonpsvr_ok();
+                });
             });
             //jsonpsvr_ok();
         }
