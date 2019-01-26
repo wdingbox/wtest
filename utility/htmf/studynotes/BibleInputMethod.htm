@@ -157,7 +157,9 @@ sub{
             </tbody>
         </table>
         <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button><br>
-        <button id="run">-</button>
+        
+        <select id="history" multiple size='10'><option/></select>
+        <button id="loadhistory" onclick='loadBible_history();'>+</button>
         <br>`;
             $(this.m_menuHolderId).html(stables);
 
@@ -417,16 +419,20 @@ sub{
             console.log(Jsonpster);
         };
 
+        function loadBible_history(){
+            var inp = { fname: [], dat: {} };
+            var prm = { api: "loadBible_read_history", inp: inp };
+            Jsonpster.Run(prm, function (ret) {
+                console.log(ret);
+
+            });
+        }
+
 
 
         function restapi_loadBibleObj(fname, vobj) {
-
-            //var txt = JSON.stringify(vobj);
-            //xtxt = encodeURIComponent(txt);//must see svr decodeURIComponent();
-            //var inp = { fname: "../../../jsdb/jsBibleObj/KJV.json.js", dat: vobj };
             var inp = { fname: "KJV", dat: vobj };
             var prm = { api: "loadBibleObj", inp: inp };
-            //window.open(url);
             console.log(Jsonpster);
             //Jsonpster.Set ({api:"updateVocabHebrewBuf", param:inp}); // = JSON.stringify(inp);
             Jsonpster.Run(prm, function (ret) {
