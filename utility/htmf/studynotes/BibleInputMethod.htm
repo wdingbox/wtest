@@ -3,7 +3,7 @@
 
 <HEAD>
     <TITLE>cuvs</TITLE>
-    <base target="_blank"/>
+    <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
@@ -187,11 +187,6 @@ sub{
                 </tr>
             </tbody>
         </table>
-
-
-        
-        
-        
         
         <br>`;
             $(this.m_menuHolderId).html(stables);
@@ -412,6 +407,74 @@ sub{
         //////////
         //////////
         /////////
+        var BlueLetterBibleCode = {
+            "Gen": "Gen",
+            "Exo": "Exo",
+            "Lev": "Lev",
+            "Num": "Num",
+            "Deu": "Deu",
+            "Jos": "Jos",
+            "Jug": "Jug",
+            "Rut": "Rut",
+            "1Sa": "1Sa",
+            "2Sa": "2Sa",
+            "1Ki": "1Ki",
+            "2Ki": "2Ki",
+            "1Ch": "1Ch",
+            "2Ch": "2Ch",
+            "Ezr": "Ezr",
+            "Neh": "Neh",
+            "Est": "Est",
+            "Job": "Job",
+            "Psm": "Psa",//
+            "Pro": "Pro",
+            "Ecc": "Ecc",
+            "Son": "Son",
+            "Isa": "Isa",
+            "Jer": "Jer",
+            "Lam": "Lam",
+            "Eze": "Eze",
+            "Dan": "Dan",
+            "Hos": "Hos",
+            "Joe": "Joe",
+            "Amo": "Amo",
+            "Oba": "Oba",
+            "Jon": "Jon",
+            "Mic": "Mic",
+            "Nah": "Nah",
+            "Hab": "Hab",
+            "Zep": "Zep",
+            "Hag": "Hag",
+            "Zec": "Zec",
+            "Mal": "Mal",
+            "Mat": "Mat",
+            "Mak": "Mak",
+            "Luk": "Luk",
+            "Jhn": "Jhn",
+            "Act": "Act",
+            "Rom": "Rom",
+            "1Co": "1Co",
+            "2Co": "2Co",
+            "Gal": "Gal",
+            "Eph": "Eph",
+            "Phl": "Phl",
+            "Col": "Col",
+            "1Ts": "1Ts",
+            "2Ts": "2Ts",
+            "1Ti": "1Ti",
+            "2Ti": "2Ti",
+            "Tit": "Tit",
+            "Phm": "Phm",
+            "Heb": "Heb",
+            "Jas": "Jas",
+            "1Pe": "1Pe",
+            "2Pe": "2Pe",
+            "1Jn": "1Jn",
+            "2Jn": "2Jn",
+            "3Jn": "3Jn",
+            "Jud": "Jud",
+            "Rev": "Rev",
+        };//BookChapterVerseMax
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
             console.log(ret);
@@ -419,7 +482,7 @@ sub{
             $.each(ret, function (vol, chpObj) {
                 $.each(chpObj, function (chp, vrsObj) {
                     $.each(vrsObj, function (vrs, val) {
-                        console.log("typeof val=", typeof val);
+                        //console.log("typeof val=", typeof val);
                         var bid = vol + chp + ":" + vrs;
                         s += "<tr><td/><td class='vid'>" + bid + "</td><td>";
                         if ("object" == typeof val) {
@@ -437,13 +500,16 @@ sub{
             s += "</table>";
             $("#oBible").html(s).find(".vid").bind("click", function () {
                 var vid = $(this).text();
-                var mat=vid.toLowerCase().match(/^(\w{3})(\d+)\:(\d+)$/);
+                var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+                var blb = BlueLetterBibleCode[mat[1]];
                 $(this).toggleClass("hili");
                 $("#selvcv").text(vid);
 
 
                 //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
-                var srf="<a href='https://www.blueletterbible.org/kjv/"+mat[1]+"/"+mat[2]+"/"+mat[3]+"'>blb</a>";
+                var srf = "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> | ";
+                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
+                srf += "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> ";
                 $("#refpop").html(srf);
                 //alert(vid);
             });
