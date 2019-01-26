@@ -70,7 +70,7 @@ sub{
 }
 
 
-#BibInputMenuHolder{
+#menuContainer, #menuToggler{
     position:fixed;
     top:10px;
     right: 20px;
@@ -79,6 +79,9 @@ sub{
 }
 div[contenteditable]{
     background-color:rgb(40, 49, 70);
+}
+#BibInputMenuHolder{
+
 }
 
 #chp_tab{
@@ -93,13 +96,16 @@ div[contenteditable]{
 
 
     <script language="javascript">
-        var gBim = null;//new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
+        var gBim = null;//
 
         $(document).ready(function () {
             gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
 
             gBim.init();
             gBim.Gen_Keys_Menu();
+            $("#menuToggler").click(function(){
+                $("#menuContainer").slideToggle();
+            });
 
             $("#load").click(function () {
                 var ret = gBim.get_chap_by_selected();
@@ -194,7 +200,8 @@ div[contenteditable]{
             this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "_notes"];
         }
         BibleInputMenu.prototype.init = function () {
-            var stables = `   
+            var stables = `
+        <div id="BibleInputMenuContainer">   
         <table border="0">
             <caption id="">Bible Input Keys<a id='vname'></a></caption>
             <thead id="inoutkeyhdr"></thead>
@@ -270,9 +277,12 @@ div[contenteditable]{
                 </tr>
             </tbody>
         </table>
+        </div>
+        
+
         
         <br>`;
-            $(this.m_menuHolderId).html(stables);
+            $(this.m_menuHolderId).prepend(stables);
 
             var str = "";
             $.each(this.m_bknArr, function (i, v) {
@@ -284,6 +294,9 @@ div[contenteditable]{
                 //$(".cbkn").removeClass("hili");
                 $(this).toggleClass("hili");
             });
+
+            var _This=this;
+           
 
 
         }
@@ -716,19 +729,18 @@ div[contenteditable]{
 
 <BODY>
 
-    <textarea id="out"></textarea>
-
-
-    <button id="indxer">indxer</button>
-    <button id="load">load</button>
+  
 
 
 
-
+<div id="menuContainer">
     <div id="BibInputMenuHolder" height="100%">
-
     </div>
+       <textarea id="out"></textarea>
 
+
+        <button id="indxer">indxer</button>
+        <button id="load">load</button>
 
     <table border="1">
         <thead>
@@ -741,7 +753,8 @@ div[contenteditable]{
         </thead>
         <tbody id="StructAna"></tbody>
     </table>
-
+</div>
+<button id='menuToggler'>-</button>
 
     <hr />
     <span id='oBible'>----</span>
