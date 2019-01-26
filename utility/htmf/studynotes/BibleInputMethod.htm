@@ -3,6 +3,7 @@
 
 <HEAD>
     <TITLE>cuvs</TITLE>
+    <base target="_blank"/>
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
@@ -113,7 +114,7 @@ sub{
         BibleInputMenu.prototype.init = function () {
             var stables = `   
         <table border="0">
-            <caption id="">First Letter of Volume Name<a id='vname'></a></caption>
+            <caption id="">Bible Input Keys<a id='vname'></a></caption>
             <thead id="inoutkeyhdr"></thead>
             <tbody id='key_bdy'></tbody>
         </table>
@@ -156,10 +157,42 @@ sub{
                 </tr>
             </tbody>
         </table>
-        <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button><br>
+
+
+        <table border="1" style="float:left;">
+            <caption><button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();'>Load</button>
+        </caption>
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td>
+                       <select id="history" multiple size='5'><option/></select><br>
+                       <button id="loadhistory" onclick='loadBible_history();'>+</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table border="1" style="float:left;">
+            <caption id='selvcv'>-
+        </caption>
+            <thead></thead>
+            <tbody>
+                <tr>
+                    <td id='refpop'>
+                       
+                       
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
         
-        <select id="history" multiple size='5'><option/></select>
-        <button id="loadhistory" onclick='loadBible_history();'>+</button>
+        
+        
+        
         <br>`;
             $(this.m_menuHolderId).html(stables);
 
@@ -404,7 +437,14 @@ sub{
             s += "</table>";
             $("#oBible").html(s).find(".vid").bind("click", function () {
                 var vid = $(this).text();
+                var mat=vid.toLowerCase().match(/^(\w{3})(\d+)\:(\d+)$/);
                 $(this).toggleClass("hili");
+                $("#selvcv").text(vid);
+
+
+                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
+                var srf="<a href='https://www.blueletterbible.org/kjv/"+mat[1]+"/"+mat[2]+"/"+mat[3]+"'>blb</a>";
+                $("#refpop").html(srf);
                 //alert(vid);
             });
             //jsonpsvr_ok();
@@ -456,40 +496,6 @@ sub{
         }
 
 
-
-        function restapi_loadBibleObj(fname, vobj) {
-            var inp = { fname: "KJV", dat: vobj };
-            var prm = { api: "loadBibleObj", inp: inp };
-            console.log(Jsonpster);
-            //Jsonpster.Set ({api:"updateVocabHebrewBuf", param:inp}); // = JSON.stringify(inp);
-            Jsonpster.Run(prm, function (ret) {
-                console.log(ret);
-                var s = "<table border='1'>";
-                $.each(ret, function (vol, chpObj) {
-                    $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, tx) {
-                            console.error("typeof tx=", typeof tx);
-                            var bid = vol + chp + ":" + vrs;
-                            s += "<tr><td/><td>" + bid + "</td><td>";
-
-
-                            if ("string" == typeof tx) {
-                                s += "<div>" + tx + "</div>";
-                            }
-                            else {
-                                $.each(tx, function (i, str) {
-                                    //s += "<div>" + str + "</div>";
-                                });
-                            }
-                            s += "</td></tr>";
-                        });
-                    });
-                });
-                s += "</table>";
-                $("#oBible").html(s);
-                jsonpsvr_ok();
-            });
-        };
 
         function jsonpsvr_ok() {
             //https://www.w3schools.com/js/js_json_jsonp.asp
