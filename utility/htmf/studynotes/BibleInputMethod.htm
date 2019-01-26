@@ -288,15 +288,24 @@ div[contenteditable]{
 
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
-            var s = "", i = 0;
-            Object.keys(this.m_structObj).forEach(function (vol) {
-                if (vol.indexOf(ch) == 0) {
-                    //<td align='right'>"+BibVolName[vol][0]+"</td>
-                    s += "<tr><td/><td class='v3' title='"+BibVolName[vol]+"'>" + vol + "</td></tr>";
-                    i++;
-                };
+            function get_vol_arr(bbObj,ch) {
+                var arr = [];
+                Object.keys(bbObj).forEach(function (vol) {
+                    if (vol.indexOf(ch) == 0) {
+                        arr.push(vol);
+                    };
+                });
+                return arr;
+            }
+            var trarr = [];
+            var volarr = get_vol_arr(this.m_structObj, ch);
+            var cls = " class='v3' ";
+            if (volarr.length == 1) cls = " class='v3 hili' ";
+            volarr.forEach(function (vol) {
+                //<td align='right'>"+BibVolName[vol][0]+"</td>
+                trarr.push( "<tr><td/><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
             });
-            return { trs: s, size: i };
+            return trarr;
         };
 
         BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
@@ -316,7 +325,7 @@ div[contenteditable]{
             var s = "<tr id='vitr'>";
             var _This = this;
             $.each(ks, function (i, c) {
-                c = c + "<sub>" + _This.get_vol_trs_match_str(c).size + "</sub>";
+                c = c + "<sub>" + _This.get_vol_trs_match_str(c).length + "</sub>";
                 s += "<td><button class='vin'>" + c + "</button></td>";
                 if (9 == i) s += "</tr><tr>";
             });
@@ -327,7 +336,7 @@ div[contenteditable]{
                 $(this).addClass("hili");
                 var ch = $(this).text();
                 var ret = _This.get_vol_trs_match_str(ch[0]);
-                $(_This.m_voltbid).html(ret.trs).find(".v3").bind("click", function () {
+                $(_This.m_voltbid).html(ret.join("")).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
@@ -383,20 +392,20 @@ div[contenteditable]{
 
             var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
             var ret = { fname: fnamesArr, dat: dat };
-            ret.validateBibleLoad=function(){
-                if(this.fname.length===0){
+            ret.validateBibleLoad = function () {
+                if (this.fname.length === 0) {
                     alert("Please select a biblical BooK Name.");
                     return false;
                 }
-                if( (this.dat.vol && this.dat.vol.length>0) ){
+                if ((this.dat.vol && this.dat.vol.length > 0)) {
                     return true;
                 }
-                var s=JSON.stringify(this);
-                s+="\n\n no vol,chp,vrs. Load whole Bible?";
+                var s = JSON.stringify(this);
+                s += "\n\n no vol,chp,vrs. Load whole Bible?";
                 return confirm(s);
             }
-            ret.getApiParam=function(sApiName){
-                return {api:sApiName, inp:this};
+            ret.getApiParam = function (sApiName) {
+                return { api: sApiName, inp: this };
             }
             return ret;
         }
@@ -640,10 +649,10 @@ div[contenteditable]{
 
         function restapi_loadBibVolChpVrs() {
             var inp = gBim.get_chap_by_selected();
-            if(!inp.validateBibleLoad())return;
+            if (!inp.validateBibleLoad()) return;
             console.log(inp);
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
-            par=inp.getApiParam("loadBible_Bkns_VolChpVrs");
+            par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
 
             Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
 
