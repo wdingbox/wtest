@@ -103,7 +103,7 @@ div[contenteditable]{
 
             gBim.init();
             gBim.Gen_Keys_Menu();
-            $("#menuToggler").click(function(){
+            $("#menuToggler").click(function () {
                 $("#menuContainer").slideToggle();
             });
 
@@ -295,13 +295,13 @@ div[contenteditable]{
                 $(this).toggleClass("hili");
             });
 
-            var _This=this;
-           
+            var _This = this;
+
 
 
         }
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
-            function get_vol_arr(bbObj,ch) {
+            function get_vol_arr(bbObj, ch) {
                 var arr = [];
                 Object.keys(bbObj).forEach(function (vol) {
                     if (vol.indexOf(ch) == 0) {
@@ -316,7 +316,7 @@ div[contenteditable]{
             if (volarr.length == 1) cls = " class='v3 hili' ";
             volarr.forEach(function (vol) {
                 //<td align='right'>"+BibVolName[vol][0]+"</td>
-                trarr.push( "<tr><td/><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
+                trarr.push("<tr><td/><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
             });
             return trarr;
         };
@@ -338,9 +338,9 @@ div[contenteditable]{
             var s = "<tr id='vitr'>";
             var _This = this;
             $.each(ks, function (i, c) {
-                var trs=_This.get_vol_trs_match_str(c);
-                var ssb="<sub>" + trs.length + "</sub>";
-                if(trs.length===1)ssb="";
+                var trs = _This.get_vol_trs_match_str(c);
+                var ssb = "<sub>" + trs.length + "</sub>";
+                if (trs.length === 1) ssb = "";
                 c = c + ssb;
                 s += "<td><button class='vin'>" + c + "</button></td>";
                 if (9 == i) s += "</tr><tr>";
@@ -366,7 +366,7 @@ div[contenteditable]{
                     $(_This.m_vrstbid).html("");
                     _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
-                if(ret.length===1){
+                if (ret.length === 1) {
                     restapi_loadBibVolChpVrs();
                 }
             });
@@ -729,32 +729,32 @@ div[contenteditable]{
 
 <BODY>
 
-  
 
 
 
-<div id="menuContainer">
-    <div id="BibInputMenuHolder" height="100%">
-    </div>
-       <textarea id="out"></textarea>
+
+    <div id="menuContainer">
+        <div id="BibInputMenuHolder" height="100%">
+        </div>
+        <textarea id="out"></textarea>
 
 
         <button id="indxer">indxer</button>
         <button id="load">load</button>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <td>#</td>
-                <td>Vol</td>
-                <td>Chp</td>
-                <td>Ver</td>
-            </tr>
-        </thead>
-        <tbody id="StructAna"></tbody>
-    </table>
-</div>
-<button id='menuToggler'>-</button>
+        <table border="1">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Vol</td>
+                    <td>Chp</td>
+                    <td>Ver</td>
+                </tr>
+            </thead>
+            <tbody id="StructAna"></tbody>
+        </table>
+    </div>
+    <button id='menuToggler'>-</button>
 
     <hr />
     <span id='oBible'>----</span>
