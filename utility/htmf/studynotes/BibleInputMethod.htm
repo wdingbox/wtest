@@ -331,9 +331,9 @@ sub{
                 var irow = parseInt(row);
                 if (curAr[irow]) {
                     var ch = curAr[irow];
-                    var nxAr = _This.get_cha_arr_after_str(uobj, prevStrn + ch);
-                    var ssub = "" + nxAr.length;
-                    if (nxAr.length === 0) ssub = "";
+                    var nexAr = _This.get_cha_arr_after_str(uobj, prevStrn + ch);
+                    var ssub = "" + nexAr.length;
+                    if (nexAr.length === 0) ssub = "";
                     $(this).html(ch + "<sub>" + ssub + "</sub>");
                 } else {
                     $(this).text("");
@@ -369,7 +369,7 @@ sub{
             }
             //var vobj = BsObj[Vol];
             this.digi_table_init(this.m_chptbid);
-            this.digi_table_fill_col(this.m_chptbid, vobj, 0, get_search_str_by_hili());
+            this.digi_table_fill_col(this.m_chptbid, vobj, 0, "");
             this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_chptbid, vobj, 2, get_search_str_by_hili);
@@ -385,7 +385,7 @@ sub{
             }
             //var vobj = BsObj[Vol];
             this.digi_table_init(this.m_vrstbid);
-            this.digi_table_fill_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili());
+            this.digi_table_fill_col(this.m_vrstbid, vobj, 0, "");
             this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
             this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
