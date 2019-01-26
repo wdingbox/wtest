@@ -166,8 +166,8 @@ sub{
             <tbody>
                 <tr>
                     <td>
-                       <select id="history" multiple size='5'><option/></select><br>
-                       <button id="loadhistory" onclick='loadBible_history();'>+</button>
+                       <select id="history" multiple size='15'><option/></select><br>
+                       <button id="loadhistory" onclick='loadBible_history();' title='load history'>history</button>
                     </td>
                 </tr>
             </tbody>
@@ -557,18 +557,19 @@ sub{
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
-                var ops = "";
+                var ops = [];
                 $.each(ret, function (vol, chobj) {
                     $.each(chobj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, ob) {
-                            var str = vol + chp + ":" + vrs;
-                            ops += "<option>" + str + "</option>"
+                            var str = vol + " " + chp + " : " + vrs;
+                            ops.push("<option>" + str + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
                         });
                     });
                 });
-                $("#history").html(ops).find("option").bind("click", function () {
+                ops.sort();
+                $("#history").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text();
-                    var mat = s.match(/^(\w{3})(\d+)[\:](\d+)$/);
+                    var mat = s.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
                     if (mat) {
                         console.log(mat);
                         var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
