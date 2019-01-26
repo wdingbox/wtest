@@ -137,7 +137,8 @@ BibleObj.prototype.BibleObj_update_notes = function (inpObj) {
   var ret = this.load_BibleObj("_notes");
   ret.obj[vol][chp][vrs]=txt;
   var sss=JSON.stringify(ret.obj,null,4);
-  fs.writeFileSync(ret.fname, sss, "utf8");
+  //fs.writeFileSync(ret.fname, sss, "utf8");
+  ret.writeback();
   return sss;
 };
 BibleObj.prototype.load_BibleJstrn = function (fname) {
@@ -150,6 +151,9 @@ BibleObj.prototype.load_BibleObj = function (fname) {
   var ret = this.load_BibleJstrn(fname);
   var bobj = JSON.parse(ret.jstrn);
   ret.obj=bobj;
+  ret.writeback=function(){
+    fs.writeFileSync(this.fname,this.header+JSON.stringify(this.obj,null,4),"utf8");
+  };
   return ret;
 };
 BibleObj.prototype.save_BibleObj = function (fname) {
@@ -240,7 +244,8 @@ BibleObj.prototype.loadBible_write_history = function (aobj) {
   this.modidy_vrs(his.obj,function(vrsOb){
     return "="+vrsOb.length;
   });
-  fs.writeFileSync(his.fname, his.header+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
+  his.writeback();
+  // fs.writeFileSync(his.fname, his.header+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
   console.log("*** save to history",his.fname);
 }
 BibleObj.prototype.loadBible_read_history = function (inpObj) {
