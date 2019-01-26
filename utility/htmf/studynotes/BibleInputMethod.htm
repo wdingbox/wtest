@@ -109,7 +109,7 @@ sub{
             this.m_vrstbid = "#vrs_tbd";
 
             this.m_structObj = Obj;
-            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "ZEALOT"];
+            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "_notes"];
         }
         BibleInputMenu.prototype.init = function () {
             var stables = `   
@@ -479,7 +479,7 @@ sub{
         function restapi_loadBibVolChpVrs_genTable(ret) {
             var inpobj = gBim.get_chap_by_selected();
             var fnamAr= inpobj.fname;
-            const cidx=fnamAr.indexOf("ZEALOT");
+            const cidx=fnamAr.indexOf("_notes");
             console.log(ret);
             var s = "<table border='1'>";
             $.each(ret, function (vol, chpObj) {
@@ -493,7 +493,7 @@ sub{
                                 if(str.length===0)str="@";
                                 var attr="";
                                 if(cidx===i){
-                                    attr=" contenteditable fnm='ZEALOT' vid='"+vid+"'"
+                                    attr=" contenteditable vid='"+vid+"'"
                                 }
                                 s += "<div" +attr+">" + str + "</iv>";
                             });
@@ -532,7 +532,7 @@ sub{
                     dat.vrs=mat[3];
                 };
                 dat.txt=txt;
-                var inp={fname:["ZEALOT"],dat:dat};
+                var inp={fname:["_notes"],dat:dat};
                 var par={api:"BibleObj_update_Zealot",inp:inp};
                 Jsonpster.Run(par,function(){
                     jsonpsvr_ok();

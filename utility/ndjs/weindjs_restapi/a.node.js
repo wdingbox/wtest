@@ -134,7 +134,7 @@ BibleObj.prototype.BibleObj_update_Zealot = function (inpObj) {
   var chp=inpObj.dat.chp;
   var vrs=inpObj.dat.vrs;
   var txt=inpObj.dat.txt;
-  var ret = this.load_BibleObj("ZEALOT");
+  var ret = this.load_BibleObj("_notes");
   ret.obj[vol][chp][vrs]=txt;
   var sss=JSON.stringify(ret.obj,null,4);
   fs.writeFileSync(ret.fname, sss, "utf8");
