@@ -335,6 +335,11 @@ div[contenteditable]{
                 $(".vin").removeClass("hili");
                 $(this).addClass("hili");
                 var ch = $(this).text();
+
+                $(_This.m_chptbid).html("");
+                $(_This.m_vrstbid).html("");
+                $(".vcvCap").text(".");
+
                 var ret = _This.get_vol_trs_match_str(ch[0]);
                 $(_This.m_voltbid).html(ret.join("")).find(".v3").bind("click", function () {
                     var vol = $(this).text();
@@ -345,9 +350,9 @@ div[contenteditable]{
                     $(_This.m_vrstbid).html("");
                     _This.gen_Chap_Menu(_This.m_structObj[vol]);
                 });
-                $(_This.m_chptbid).html("");
-                $(_This.m_vrstbid).html("");
-                $(".vcvCap").text(".");
+                if(ret.length===1){
+                    restapi_loadBibVolChpVrs();
+                }
             });
             return ks;
         }
