@@ -75,6 +75,17 @@ sub{
     opacity: 100;
     background-color: rgb(51, 158, 158);
 }
+
+
+#chp_tab{
+    background-color: green;
+};
+
+
+/*unknown why not work,*/
+#vrs_tab{
+    background-color:red;
+};
 </style>
 
 
@@ -138,7 +149,7 @@ sub{
             </tbody>
         </table>
 
-        <table border="1" style="float:left;">
+        <table id='chp_tab' border="1" style="float:left;">
             <caption class='vcvCap' id='chp_cap'>__chapters__</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
@@ -147,8 +158,9 @@ sub{
                 </tr>
             </tbody>
         </table>
+        <a style="float:left;">:</a>
 
-        <table border="1" style="float:left;">
+        <table id="vrs_tab" border="1" style="float:left;">
             <caption class='vcvCap' id='vrs_cap'>Verses</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
@@ -333,7 +345,7 @@ sub{
                     var ch = curAr[irow];
                     var nexAr = _This.get_cha_arr_after_str(uobj, prevStrn + ch);
                     var ssub = "" + nexAr.length;
-                    if (nexAr.length === 0) ssub = "";
+                    if (nexAr.length === 0) ssub = "&nbsp;&nbsp;&nbsp;";
                     $(this).html(ch + "<sub>" + ssub + "</sub>");
                 } else {
                     $(this).text("");
