@@ -691,11 +691,11 @@ div[contenteditable]{
                     $.each(chobj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, ob) {
                             var str = vol + " " + chp + " : " + vrs;
-                            ops.push("<option>" + str + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
+                            ops.push("<option time='"+ob+"'>" + str + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
                         });
                     });
                 });
-                ops.sort();
+                ops.sort().reverse();
                 $("#history").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
