@@ -74,8 +74,33 @@ var Uti = {
     var shead = content.substr(0, idx);
     console.log("shead==", shead);
     content = content.substring(idx);
-    return {fname:fname, header:shead, jstrn:content};
+    return { fname: fname, header: shead, jstrn: content };
   },
+
+  getDateTime: function () {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sec;
+
+  }
 };//////Uti//////
 
 
@@ -130,13 +155,13 @@ var BibleObj = function () {
 };
 
 BibleObj.prototype.BibleObj_update_notes = function (inpObj) {
-  var vol=inpObj.dat.vol;
-  var chp=inpObj.dat.chp;
-  var vrs=inpObj.dat.vrs;
-  var txt=inpObj.dat.txt;
+  var vol = inpObj.dat.vol;
+  var chp = inpObj.dat.chp;
+  var vrs = inpObj.dat.vrs;
+  var txt = inpObj.dat.txt;
   var ret = this.load_BibleObj("_notes");
-  ret.obj[vol][chp][vrs]=txt;
-  var sss=JSON.stringify(ret.obj,null,4);
+  ret.obj[vol][chp][vrs] = txt;
+  var sss = JSON.stringify(ret.obj, null, 4);
   //fs.writeFileSync(ret.fname, sss, "utf8");
   ret.writeback();
   return sss;
@@ -150,9 +175,9 @@ BibleObj.prototype.load_BibleJstrn = function (fname) {
 BibleObj.prototype.load_BibleObj = function (fname) {
   var ret = this.load_BibleJstrn(fname);
   var bobj = JSON.parse(ret.jstrn);
-  ret.obj=bobj;
-  ret.writeback=function(){
-    fs.writeFileSync(this.fname,this.header+JSON.stringify(this.obj,null,4),"utf8");
+  ret.obj = bobj;
+  ret.writeback = function () {
+    fs.writeFileSync(this.fname, this.header + JSON.stringify(this.obj, null, 4), "utf8");
   };
   return ret;
 };
@@ -165,73 +190,78 @@ BibleObj.prototype.save_BibleObj = function (fname) {
 BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj) {
   var retObj = {};
   var arr = ["vol", "chp", "vrs"];
-  var vol=keyObj.vol;
-  if(undefined===srcObj[vol]){
+  var vol = keyObj.vol;
+  if (undefined === srcObj[vol]) {
     Object.assign(retObj, srcObj);
-    return {part:"whole",retObj:retObj};
+    return { part: "whole", retObj: retObj };
   }
-  retObj[vol]={};
-  var chp=keyObj.chp;
-  if(undefined===srcObj[vol][chp]){
+  retObj[vol] = {};
+  var chp = keyObj.chp;
+  if (undefined === srcObj[vol][chp]) {
     Object.assign(retObj[vol], srcObj[vol]);
-    return {part:"vol",retObj:retObj};
+    return { part: "vol", retObj: retObj };
   }
-  retObj[vol][chp]={};
-  var vrs=keyObj.vrs;
-  if(undefined===srcObj[vol][chp][vrs]){
+  retObj[vol][chp] = {};
+  var vrs = keyObj.vrs;
+  if (undefined === srcObj[vol][chp][vrs]) {
     Object.assign(retObj[vol][chp], srcObj[vol][chp]);
-    return {part:"chp",retObj:retObj};
+    return { part: "chp", retObj: retObj };
   }
-  retObj[vol][chp][vrs]="";
-  retObj[vol][chp][vrs]=srcObj[vol][chp][vrs];
-  return {part:"vrs",retObj:retObj};
+  retObj[vol][chp][vrs] = "";
+  retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
+  return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.append_to_clientBibleObj = function (clientObj, SrcObj) {
+BibleObj.prototype.append_to_clientBibleObj = function (clientObj, SrcObj, cb) {
+  var coreback = {};
+  coreback.func = function (dstChpObj, vsrVal, SrcVal) {
+    if (undefined == dstChpObj[vsrVal]) {
+      dstChpObj[vsrVal] = [];   //console.log("client *****",clientObj)
+    }
+    if ("string" == typeof dstChpObj[vsrVal]) {
+      var tmp = dstChpObj[vsrVal];
+      dstChpObj[vsrVal] = [];
+      dstChpObj[vsrVal].push(tmp);//keep original.
+      //console.log("client *****",clientObj)
+    }
+    if ("string" === typeof SrcVal) {//src obj is server type obj.
+      dstChpObj[vsrVal].push(SrcVal);
+    }
+    else if ("object" === typeof SrcVal) {//srcObj is client type obj. 
+      SrcVal.forEach(function (str) {
+        dstChpObj[vsrVal].push(str);
+      });
+    }
+  };
+  if ("function" === typeof cb) {
+    coreback.func = cb;
+  }
+
   //SrcObj can be server obj or client obj. 
   Object.keys(SrcObj).forEach(function (vol) {
-    chpObj=SrcObj[vol];
+    chpObj = SrcObj[vol];
     if (undefined == clientObj[vol]) {
       clientObj[vol] = {};
     }
     Object.keys(chpObj).forEach(function (chp) {
-      var vrsObj=chpObj[chp];
+      var vrsObj = chpObj[chp];
       if (undefined == clientObj[vol][chp]) {
         clientObj[vol][chp] = {};
       }
       Object.keys(vrsObj).forEach(function (vrs) {
-        var final=vrsObj[vrs];
-        if (undefined == clientObj[vol][chp][vrs] ) {
-          clientObj[vol][chp][vrs] = [];
-          //console.log("client *****",clientObj)
-        }
-        if ( "string" == typeof clientObj[vol][chp][vrs]) {
-          var tmp=clientObj[vol][chp][vrs];
-          clientObj[vol][chp][vrs] = [];
-          clientObj[vol][chp][vrs].push(tmp);//keep original.
-          //console.log("client *****",clientObj)
-        }
-        if("string"===typeof final){//src obj is server type obj.
-          clientObj[vol][chp][vrs].push(final);
-        }
-        else if("object"===typeof final){//srcObj is client type obj. 
-          final.forEach(function(str){
-            clientObj[vol][chp][vrs].push(str);
-          });
-        }
-        //console.log("client *************",clientObj)
+        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs]);
       });
     });
   });
 }
 BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
   Object.keys(clientObj).forEach(function (vol) {
-    chpObj=clientObj[vol];
+    chpObj = clientObj[vol];
     Object.keys(chpObj).forEach(function (chp) {
-      var vrsObj=chpObj[chp];
+      var vrsObj = chpObj[chp];
       Object.keys(vrsObj).forEach(function (vrs) {
-        var final=vrsObj[vrs];
-        if("function" == typeof cb){
-          vrsObj[vrs]=cb(final);
+        var final = vrsObj[vrs];
+        if ("function" == typeof cb) {
+          vrsObj[vrs] = cb(final);
         }
         //console.log("client *************",clientObj)
       });
@@ -239,17 +269,19 @@ BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
   });
 };
 BibleObj.prototype.loadBible_write_history = function (aobj) {
-  var his=this.load_BibleObj("_history");
-  this.append_to_clientBibleObj(his.obj, aobj);
-  this.modidy_vrs(his.obj,function(vrsOb){
-    return "="+vrsOb.length;
+  var his = this.load_BibleObj("_history");
+  this.append_to_clientBibleObj(his.obj, aobj, function () {
+
+  });
+  this.modidy_vrs(his.obj, function (vrsOb) {
+    return Uti.getDateTime();//"=" + vrsOb.length;
   });
   his.writeback();
   // fs.writeFileSync(his.fname, his.header+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
-  console.log("*** save to history",his.fname);
+  console.log("*** save to history", his.fname);
 }
 BibleObj.prototype.loadBible_read_history = function (inpObj) {
-  var ret=this.load_BibleObj("_history");
+  var ret = this.load_BibleObj("_history");
   return ret.jstrn;
 }
 BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
@@ -266,7 +298,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var bib = this.load_BibleObj(fnam);//.fname, inpObj.dat
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
       this.append_to_clientBibleObj(RetsObj, ret.retObj);
-      if("vrs"===ret.part){//save to history.
+      if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }
       //console.log("client RetsObj222 *************",RetsObj)
@@ -305,13 +337,13 @@ var SvrApi = {
     var ss = bo.loadBible_Bkns_VolChpVrs(inpObj);
     return ss;
   },
-  loadBible_read_history:function (inpObj){
+  loadBible_read_history: function (inpObj) {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
     var ss = bo.loadBible_read_history(inpObj);
     return ss;
   },
-  BibleObj_update_notes:function(inpObj){
+  BibleObj_update_notes: function (inpObj) {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
     var ss = bo.BibleObj_update_notes(inpObj);
