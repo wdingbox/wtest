@@ -211,9 +211,9 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, cb) {
+BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, SrcFilename, cb) {
   var coreback = {};
-  coreback.func = function (dstChpObj, vsrVal, SrcVal) {
+  coreback.func_arr_push = function (dstChpObj, vsrVal, SrcVal,SrcFnm) {
     if (undefined == dstChpObj[vsrVal]) {
       dstChpObj[vsrVal] = [];
     }
@@ -232,9 +232,34 @@ BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, cb) {
       });
     }
   };
-  if ("function" === typeof cb) {
-    coreback.func = cb;
-  }
+  coreback.func_obj_set = function (dstChpObj, vsrVal, SrcVal,SrcFnm) {
+    if (undefined == dstChpObj[vsrVal]) {
+      dstChpObj[vsrVal] = [];
+    }
+    if ("string" == typeof dstChpObj[vsrVal]) {
+      var tmp = dstChpObj[vsrVal];
+      dstChpObj[vsrVal] = [];
+      dstChpObj[vsrVal].push(tmp);//keep original.
+      //console.log("client *****",clientObj)
+    }
+    if ("string" === typeof SrcVal) {//src obj is server type obj.
+      dstChpObj[vsrVal].push(SrcVal);
+    }
+    else if ("object" === typeof SrcVal) {//srcObj is client type obj. 
+      SrcVal.forEach(function (str) {
+        dstChpObj[vsrVal].push(str);
+      });
+    }
+  };
+  coreback.set=function(cbf){
+    this.func = this.func_obj_set;
+    this.func = this.func_arr_push;
+    if ("function" === typeof cbf) {
+      this.func = cbf;
+    }    
+  };
+
+  coreback.set(cb);
 
   //SrcObj can be server obj or client obj. 
   Object.keys(SrcObj).forEach(function (vol) {
@@ -248,7 +273,7 @@ BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, cb) {
         clientObj[vol][chp] = {};
       }
       Object.keys(vrsObj).forEach(function (vrs) {
-        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs]);
+        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs], SrcFilename);
       });
     });
   });
@@ -294,10 +319,10 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   }
   if ("object" === typeof inpObj.fname) {
     for (var i = 0; i < inpObj.fname.length; i++) {
-      var fnam = inpObj.fname[i];
-      var bib = this.load_BibleObj(fnam);//.fname, inpObj.dat
+      var fnm = inpObj.fname[i];
+      var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-      this.putin_clientBibleObj(RetsObj, ret.retObj);
+      this.putin_clientBibleObj(RetsObj, ret.retObj,fnm);
       if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }
