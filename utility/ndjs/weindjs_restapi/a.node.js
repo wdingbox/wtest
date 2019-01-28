@@ -245,21 +245,7 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
     });
   });
 }
-BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
-  Object.keys(clientObj).forEach(function (vol) {
-    chpObj = clientObj[vol];
-    Object.keys(chpObj).forEach(function (chp) {
-      var vrsObj = chpObj[chp];
-      Object.keys(vrsObj).forEach(function (vrs) {
-        var final = vrsObj[vrs];
-        if ("function" == typeof cb) {
-          vrsObj[vrs] = cb(final);
-        }
-        //console.log("client *************",clientObj)
-      });
-    });
-  });
-};
+
 BibleObj.prototype.loadBible_write_history = function (aobj) {
   var his = this.load_BibleObj("_history");
   this.merge_clientBibleObj(his.obj, { "dtime": aobj},function (srcval){
