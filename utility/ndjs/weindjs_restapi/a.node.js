@@ -273,15 +273,18 @@ BibleObj.prototype.search_cliObj = function (cliObj, searchFile, searchStrn, cb)
       Object.keys(cliObj[vol][chp]).forEach(function (vrs) {
         var bFound = false;
         //Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
-          var txt = cliObj[vol][chp][vrs][searchFile];
-          if ("string"===typeof txt) {
-            if ("function" === typeof cb) {
-              bFound=cb(txt, searchStrn);
-            }
-            else if (txt.indexOf(searchStrn) >= 0) {
-              bFound = true;
-            }
+        var txt = cliObj[vol][chp][vrs][searchFile];
+        if ("string" === typeof txt) {
+          if ("function" === typeof cb) {
+            bFound = cb(txt, searchStrn);
           }
+          else if (txt.indexOf(searchStrn) >= 0) {
+            var rep = new RegExp(searchStrn, "g");
+            txt = txt.replace(rep, "<font color='red'>" + searchStrn + "</font>");
+            cliObj[vol][chp][vrs][searchFile] = txt;
+            bFound = true;
+          }
+        }
         //});
         if (bFound) {//do merge.
           Object.keys(cliObj[vol][chp][vrs]).forEach(function (bkn) {
@@ -290,9 +293,9 @@ BibleObj.prototype.search_cliObj = function (cliObj, searchFile, searchStrn, cb)
             //Object.assign(srcDat, bibObj[vol][chp][vrs][bkn]);
             _This.merge_clientBibleObj(foundCliObj, srcDat);
           });
-        }
-      })
-    })
+        };
+      });
+    });
   });
   return foundCliObj;
 }
