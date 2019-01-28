@@ -187,22 +187,21 @@ BibleObj.prototype.save_BibleObj = function (fname) {
   return bobj;
 };
 
-BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj) {
+BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyDat) {
   var retObj = {};
-  var arr = ["vol", "chp", "vrs"];
-  var vol = keyObj.vol;
+  var vol = keyDat.vol;
   if (undefined === srcObj[vol]) {
     Object.assign(retObj, srcObj);
     return { part: "whole", retObj: retObj };
   }
   retObj[vol] = {};
-  var chp = keyObj.chp;
+  var chp = keyDat.chp;
   if (undefined === srcObj[vol][chp]) {
     Object.assign(retObj[vol], srcObj[vol]);
     return { part: "vol", retObj: retObj };
   }
   retObj[vol][chp] = {};
-  var vrs = keyObj.vrs;
+  var vrs = keyDat.vrs;
   if (undefined === srcObj[vol][chp][vrs]) {
     Object.assign(retObj[vol][chp], srcObj[vol][chp]);
     return { part: "chp", retObj: retObj };
