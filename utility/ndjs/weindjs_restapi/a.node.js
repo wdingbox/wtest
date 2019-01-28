@@ -211,7 +211,7 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj,  cb) {
+BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcDat,  cb) {
   //SrcDat{name:Srcefilename, obj:SrcObj}
   var coreback = {};
   coreback.func_arr_push = function (dstChpObj, dstKey, SrcVal, SrcFnm) {
@@ -263,6 +263,7 @@ BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj,  cb) {
   coreback.set(cb);
 
   //SrcObj can be server obj or client obj. 
+  var SrcObj=SrcDat.obj;
   Object.keys(SrcObj).forEach(function (vol) {
     chpObj = SrcObj[vol];
     if (undefined == clientObj[vol]) {
@@ -296,7 +297,7 @@ BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
 };
 BibleObj.prototype.loadBible_write_history = function (aobj) {
   var his = this.load_BibleObj("_history");
-  this.putin_clientBibleObj(his.obj, aobj, function (chpObj, vsr, src) {
+  this.putin_clientBibleObj(his.obj, {name:"history",obj:aobj}, function (chpObj, vsr, src) {
     chpObj[vsr] = Uti.getDateTime();
   });
   //this.modidy_vrs(his.obj, function (vrsOb) {
@@ -315,7 +316,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   if ("string" === typeof inpObj.fname) {
     var bib = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
     var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-    this.putin_clientBibleObj(RetsObj, ret.retObj);
+    this.putin_clientBibleObj(RetsObj, {name:inpObj.fname,obj:ret.retObj});
     //console.log("client RetsObj *************",RetsObj)
   }
   if ("object" === typeof inpObj.fname) {
@@ -323,7 +324,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var fnm = inpObj.fname[i];
       var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-      this.putin_clientBibleObj(RetsObj, ret.retObj,fnm);
+      this.putin_clientBibleObj(RetsObj, {name:fnm,obj:ret.retObj});
       if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }
