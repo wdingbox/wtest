@@ -283,7 +283,8 @@ div[contenteditable]{
         </table>
         </div>
         <textarea id="out" cols='50'></textarea><br>
-        <a id="searchFile">NIV<a><button onclick="BibleObj_search();">search</button>
+        <button onclick="BibleObj_search();">search</button>
+        <a id="searchResult">NIV<a>
         
         
 
@@ -655,12 +656,13 @@ div[contenteditable]{
             };
             function gen_table(ret) {
                 var s = "<table border='1'>";
+                var idx=0;
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, val) {
                             //console.log("typeof val=", typeof val);
                             var vid = vol + "<br>" + chp + ":" + vrs;
-                            s += "<tr><td/><td class='vid'>" + vid + "</td><td>";
+                            s += "<tr><td>"+(++idx)+"</td><td class='vid'>" + vid + "</td><td>";
                             if ("object" == typeof val) {
                                 $.each(val, function (key, str) {
                                     var vid = vol + chp + ":" + vrs;
@@ -675,14 +677,15 @@ div[contenteditable]{
                     });
                 });
                 s += "</table>";
-                return s;
+                return {htm:s,size:idx};
             }
             var inpobj = gBim.get_chap_by_selected();
             var fnamAr = inpobj.fname;
             const cidx = fnamAr.indexOf("_notes");
             console.log(ret);
-
-            $("#oBible").html(gen_table(ret));
+            var tb=gen_table(ret);
+            $("#searchResult").text("size="+tb.size);
+            $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
                 var vid = $(this).text();
                 var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
