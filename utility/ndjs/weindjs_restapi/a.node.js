@@ -211,7 +211,7 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcDat,  cb) {
+BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj,  cb) {
   //SrcDat{name:Srcefilename, obj:SrcObj}
   var coreback = {};
   coreback.func_arr_push = function (dstChpObj, dstKey, SrcVal, SrcFnm) {
@@ -274,7 +274,7 @@ BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcDat,  cb) {
         clientObj[vol][chp] = {};
       }
       Object.keys(vrsObj).forEach(function (vrs) {
-        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs], SrcFilename);
+        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs]);
       });
     });
   });
