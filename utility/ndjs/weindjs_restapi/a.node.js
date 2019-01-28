@@ -228,15 +228,15 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
           if (undefined == clientObj[vol][chp][vrs]) {
             clientObj[vol][chp][vrs] = {};
           }
-          if("object"!=typeof clientObj[vol][chp][vrs]){
-            var tmp=clientObj[vol][chp][vrs];
-            clientObj[vol][chp][vrs]={orig:tmp};
+          if ("object" != typeof clientObj[vol][chp][vrs]) {
+            var tmp = clientObj[vol][chp][vrs];
+            clientObj[vol][chp][vrs] = { orig: tmp };
           }
           var str = vrsObj[vrs];
-          if("function"===typeof cb){
+          if ("function" === typeof cb) {
             clientObj[vol][chp][vrs][name] = cb(str);//allow overide
           }
-          else{
+          else {
             clientObj[vol][chp][vrs][name] = str;
           }
         });
@@ -247,7 +247,7 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
 
 BibleObj.prototype.loadBible_write_history = function (aobj) {
   var his = this.load_BibleObj("_history");
-  this.merge_clientBibleObj(his.obj, { "dtime": aobj},function (srcval){
+  this.merge_clientBibleObj(his.obj, { "dtime": aobj }, function (srcval) {
     return Uti.getDateTime();
   });
   his.writeback();
@@ -257,15 +257,54 @@ BibleObj.prototype.loadBible_read_history = function (inpObj) {
   var ret = this.load_BibleObj("_history");
   return ret.jstrn;
 }
+BibleObj.prototype.Fetch_Partial_BibleObj_by_Search = function (bibObj, searchFile, searchStrn, cb) {
+  function gen_SrcDat(bkn, vol, chp, vrs, txt) {
+    var obj = {};
+    obj[bkn] = {};
+    obj[bkn][vol] = {};
+    obj[bkn][vol][chp] = {};
+    obj[bkn][vol][chp][vrs] = txt;
+    return obj;
+  }
+  var foundObj = {};
+  var _This = this;
+  Object.keys(bibObj).forEach(function (vol) {
+    Object.keys(bibObj[vol]).forEach(function (chp) {
+      Object.keys(bibObj[vol][chp]).forEach(function (vrs) {
+        Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
+          var bFound = false;
+          var txt = bibObj[vol][chp][vrs][bkn];
+          if (searchFile === bkn) {
+            
+            if ("function" === typeof cb) {
+
+            }
+            else {
+              if (txt.indexOf(searchStrn) >= 0) {
+                bFound = true;
+              }
+            }
+          }
+          if (bFound){//do merge.
+            var srcDat = gen_SrcDat(bkn, vol, chp, vrs, txt);
+            _This.merge_clientBibleObj(foundObj, srcDat);
+          }
+      });
+    })
+  })
+});
+return foundObj;
+}
 BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
-  var RetsObj = {};
+  var ss = "", RetObj = {};
+
   if ("string" === typeof inpObj.fname) {
     var bib = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
     var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
     var srcO = {};
     srcO[inpObj.fname] = ret.retObj;
-    this.merge_clientBibleObj(RetsObj, srcO);
-    console.log("erro input dat *************", RetsObj);
+    this.merge_clientBibleObj(RetObj, srcO);
+    console.log("erro input dat *************", RetObj);
   }
   if ("object" === typeof inpObj.fname) {
     for (var i = 0; i < inpObj.fname.length; i++) {
@@ -274,16 +313,19 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
       var srcO = {};
       srcO[fnm] = ret.retObj;
-      this.merge_clientBibleObj(RetsObj, srcO);
+      this.merge_clientBibleObj(RetObj, srcO);
       if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }
       //console.log("client RetsObj222 *************",RetsObj)
     }
   }
-  //console.log("clientBibleObj=",RetsObj);
-  var ss = JSON.stringify(RetsObj);
-  //console.log(ss);
+  if (inpObj.dat.searchFile.length > 0 && inpObj.dat.searchStrn.length > 0) {
+    var ret2Obj = this.Fetch_Partial_BibleObj_by_Search(RetObj, inpObj.dat.searchFile, inpObj.dat.searchStrn);
+    ss = JSON.stringify(ret2Obj);
+  } else {
+    ss = JSON.stringify(RetObj);
+  }
   return ss;
 }
 
