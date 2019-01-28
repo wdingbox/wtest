@@ -211,7 +211,7 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.copy_to_clientBibleObj = function (clientObj, SrcObj, cb) {
+BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, cb) {
   var coreback = {};
   coreback.func = function (dstChpObj, vsrVal, SrcVal) {
     if (undefined == dstChpObj[vsrVal]) {
@@ -270,7 +270,7 @@ BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
 };
 BibleObj.prototype.loadBible_write_history = function (aobj) {
   var his = this.load_BibleObj("_history");
-  this.copy_to_clientBibleObj(his.obj, aobj, function (chpObj, vsr, src) {
+  this.putin_clientBibleObj(his.obj, aobj, function (chpObj, vsr, src) {
     chpObj[vsr] = Uti.getDateTime();
   });
   //this.modidy_vrs(his.obj, function (vrsOb) {
@@ -289,7 +289,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   if ("string" === typeof inpObj.fname) {
     var bib = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
     var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-    this.copy_to_clientBibleObj(RetsObj, ret.retObj);
+    this.putin_clientBibleObj(RetsObj, ret.retObj);
     //console.log("client RetsObj *************",RetsObj)
   }
   if ("object" === typeof inpObj.fname) {
@@ -297,7 +297,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var fnam = inpObj.fname[i];
       var bib = this.load_BibleObj(fnam);//.fname, inpObj.dat
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-      this.copy_to_clientBibleObj(RetsObj, ret.retObj);
+      this.putin_clientBibleObj(RetsObj, ret.retObj);
       if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }
