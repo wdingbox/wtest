@@ -211,71 +211,36 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat,  cb) {
-  //SrcDat{name:Srcefilename, obj:SrcObj}
-  var coreback = {};
-  coreback.func_arr_push = function (dstChpObj, dstKey, SrcVal, SrcFnm) {
-    if (undefined == dstChpObj[dstKey]) {
-      dstChpObj[dstKey] = [];
-    }
-    if ("string" == typeof dstChpObj[dstKey]) {
-      var tmp = dstChpObj[dstKey];
-      dstChpObj[dstKey] = [];
-      dstChpObj[dstKey].push(tmp);//keep original.
-      //console.log("client *****",clientObj)
-    }
-    if ("string" === typeof SrcVal) {//src obj is server type obj.
-      dstChpObj[dstKey].push(SrcVal);
-    }
-    else if ("object" === typeof SrcVal) {//srcObj is client type obj. 
-      SrcVal.forEach(function (str) {
-        dstChpObj[dstKey].push(str);
-      });
-    }
-  };
-  coreback.func_obj_set = function (dstChpObj, vsrVal, SrcVal,SrcFnm) {
-    if (undefined == dstChpObj[vsrVal]) {
-      dstChpObj[vsrVal] = [];
-    }
-    if ("string" == typeof dstChpObj[vsrVal]) {
-      var tmp = dstChpObj[vsrVal];
-      dstChpObj[vsrVal] = [];
-      dstChpObj[vsrVal].push(tmp);//keep original.
-      //console.log("client *****",clientObj)
-    }
-    if ("string" === typeof SrcVal) {//src obj is server type obj.
-      dstChpObj[vsrVal].push(SrcVal);
-    }
-    else if ("object" === typeof SrcVal) {//srcObj is client type obj. 
-      SrcVal.forEach(function (str) {
-        dstChpObj[vsrVal].push(str);
-      });
-    }
-  };
-  coreback.set=function(cbf){
-    this.func = this.func_obj_set;
-    this.func = this.func_arr_push;
-    if ("function" === typeof cbf) {
-      this.func = cbf;
-    }    
-  };
-
-  coreback.set(cb);
-
-  //SrcObj can be server obj or client obj. 
-  var SrcObj=SrcDat.obj;
-  Object.keys(SrcObj).forEach(function (vol) {
-    chpObj = SrcObj[vol];
-    if (undefined == clientObj[vol]) {
-      clientObj[vol] = {};
-    }
-    Object.keys(chpObj).forEach(function (chp) {
-      var vrsObj = chpObj[chp];
-      if (undefined == clientObj[vol][chp]) {
-        clientObj[vol][chp] = {};
+BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
+  //SrcDat{Srcefilename : SrcObj}, can be server obj or client obj. 
+  Object.keys(SrcDat).forEach(function (name) {
+    var SrcObj = SrcDat[name];
+    Object.keys(SrcObj).forEach(function (vol) {
+      var chpObj = SrcObj[vol];
+      if (undefined == clientObj[vol]) {
+        clientObj[vol] = {};
       }
-      Object.keys(vrsObj).forEach(function (vrs) {
-        coreback.func(clientObj[vol][chp], vrs, vrsObj[vrs]);
+      Object.keys(chpObj).forEach(function (chp) {
+        var vrsObj = chpObj[chp];
+        if (undefined == clientObj[vol][chp]) {
+          clientObj[vol][chp] = {};
+        }
+        Object.keys(vrsObj).forEach(function (vrs) {
+          if (undefined == clientObj[vol][chp][vrs]) {
+            clientObj[vol][chp][vrs] = {};
+          }
+          if("object"!=typeof clientObj[vol][chp][vrs]){
+            var tmp=clientObj[vol][chp][vrs];
+            clientObj[vol][chp][vrs]={orig:tmp};
+          }
+          var str = vrsObj[vrs];
+          if("function"===typeof cb){
+            clientObj[vol][chp][vrs][name] = cb(str);//allow overide
+          }
+          else{
+            clientObj[vol][chp][vrs][name] = str;
+          }
+        });
       });
     });
   });
@@ -297,15 +262,11 @@ BibleObj.prototype.modidy_vrs = function (clientObj, cb) {
 };
 BibleObj.prototype.loadBible_write_history = function (aobj) {
   var his = this.load_BibleObj("_history");
-  this.merge_clientBibleObj(his.obj, {name:"history",obj:aobj}, function (chpObj, vsr, src) {
-    chpObj[vsr] = Uti.getDateTime();
+  this.merge_clientBibleObj(his.obj, { "dtime": aobj},function (srcval){
+    return Uti.getDateTime();
   });
-  //this.modidy_vrs(his.obj, function (vrsOb) {
-  //return Uti.getDateTime();//"=" + vrsOb.length;
-  //});
   his.writeback();
-  // fs.writeFileSync(his.fname, his.header+JSON.stringify(his.obj, null, 4), 'utf8');//debug only.
-  console.log("*** save to history", his.fname);
+  console.log("*** save to history.");
 }
 BibleObj.prototype.loadBible_read_history = function (inpObj) {
   var ret = this.load_BibleObj("_history");
@@ -316,15 +277,19 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   if ("string" === typeof inpObj.fname) {
     var bib = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
     var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-    this.merge_clientBibleObj(RetsObj, {name:inpObj.fname,obj:ret.retObj});
-    //console.log("client RetsObj *************",RetsObj)
+    var srcO = {};
+    srcO[inpObj.fname] = ret.retObj;
+    this.merge_clientBibleObj(RetsObj, srcO);
+    console.log("erro input dat *************", RetsObj);
   }
   if ("object" === typeof inpObj.fname) {
     for (var i = 0; i < inpObj.fname.length; i++) {
       var fnm = inpObj.fname[i];
       var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
       var ret = this.Fetch_Partial_BibleObj_by_keyParm(bib.obj, inpObj.dat);
-      this.merge_clientBibleObj(RetsObj, {name:fnm,obj:ret.retObj});
+      var srcO = {};
+      srcO[fnm] = ret.retObj;
+      this.merge_clientBibleObj(RetsObj, srcO);
       if ("vrs" === ret.part) {//save to history.
         this.loadBible_write_history(ret.retObj);
       }

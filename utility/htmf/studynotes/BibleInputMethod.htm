@@ -257,7 +257,7 @@ div[contenteditable]{
                 <tr>
                     <td>
                        <select id="sel_history" multiple size='15'><option/></select><br>
-                       <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>history</button>
+                       <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
                        <button id="sort_history_by_vcvID"  onclick='loadBible_history(0);' title='sort by str'>^</button>
                     </td>
                 </tr>
@@ -286,10 +286,10 @@ div[contenteditable]{
 
         
         <br>`;
-     
-        if("undefined" === typeof Jsonpster){
-            alert("Jsonpster server failed.");
-        }
+
+            if ("undefined" === typeof Jsonpster) {
+                alert("Jsonpster server failed.");
+            }
             $(this.m_menuHolderId).prepend(stables);
 
             var str = "";
@@ -303,7 +303,7 @@ div[contenteditable]{
                 $(this).toggleClass("hili");
             });
 
-        
+
 
 
 
@@ -612,51 +612,7 @@ div[contenteditable]{
         };//BookChapterVerseMax
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
-            var inpobj = gBim.get_chap_by_selected();
-            var fnamAr = inpobj.fname;
-            const cidx = fnamAr.indexOf("_notes");
-            console.log(ret);
-            var s = "<table border='1'>";
-            $.each(ret, function (vol, chpObj) {
-                $.each(chpObj, function (chp, vrsObj) {
-                    $.each(vrsObj, function (vrs, val) {
-                        //console.log("typeof val=", typeof val);
-                        var vid = vol + chp + ":" + vrs;
-                        s += "<tr><td/><td class='vid'>" + vid + "</td><td>";
-                        if ("object" == typeof val) {
-                            $.each(val, function (i, str) {
-                                if (str.length === 0) str = "@";
-                                var attr = "";
-                                if (cidx === i) {
-                                    attr = " contenteditable vid='" + vid + "'"
-                                }
-                                s += "<div" + attr + ">" + str + "</iv>";
-                            });
-                        }
-                        if ("string" == typeof val) {
-                            s += "<div>" + val + "</iv>";
-                        }
-                        s += "</td></tr>";
-                    });
-                });
-            });
-            s += "</table>";
-            $("#oBible").html(s).find(".vid").bind("click", function () {
-                var vid = $(this).text();
-                var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
-                var blb = BlueLetterBibleCode[mat[1]];
-                $(this).toggleClass("hili");
-                $("#selvcv").text(vid).toggleClass("hili");
-
-
-                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
-                var srf = "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> | ";
-                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
-                srf += "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> ";
-                $("#refpop").html(srf);
-                //alert(vid);
-            });
-            $("#oBible").find("[contenteditable]").bind("keyup", function () {
+            function on_editing() {
                 var txt = $(this).html();
                 var vid = $(this).attr("vid");
                 var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
@@ -672,8 +628,61 @@ div[contenteditable]{
                 Jsonpster.Run(par, function () {
                     jsonpsvr_ok();
                 });
+            };
+            function gen_table(ret) {
+                var s = "<table border='1'>";
+                $.each(ret, function (vol, chpObj) {
+                    $.each(chpObj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, val) {
+                            //console.log("typeof val=", typeof val);
+                            var vid = vol + "<br>" + chp + ":" + vrs;
+                            s += "<tr><td/><td class='vid'>" + vid + "</td><td>";
+                            if ("object" == typeof val) {
+                                $.each(val, function (key, str) {
+                                    var vid = vol + chp + ":" + vrs;
+                                    s += "<div><input type='checkbox' title='" + key + "'/><a vid='" + vid + "'>" + str + "</a></div>";
+                                });
+                            }
+                            if ("string" == typeof val) {
+                                s += "<div>" + val + "</iv>";
+                            }
+                            s += "</td></tr>";
+                        });
+                    });
+                });
+                s += "</table>";
+                return s;
+            }
+            var inpobj = gBim.get_chap_by_selected();
+            var fnamAr = inpobj.fname;
+            const cidx = fnamAr.indexOf("_notes");
+            console.log(ret);
+
+            $("#oBible").html(gen_table(ret));
+            $("#oBible").find(".vid").bind("click", function () {
+                var vid = $(this).text();
+                var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+                var blb = BlueLetterBibleCode[mat[1]];
+                $(this).toggleClass("hili");
+                $("#selvcv").text(vid).toggleClass("hili");
+
+
+                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
+                var srf = "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> | ";
+                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
+                srf += "<a href='https://www.blueletterbible.org/kjv/" + blb + "/" + mat[2] + "/" + mat[3] + "'>blb</a> ";
+                $("#refpop").html(srf);
+                //alert(vid);
             });
-            //jsonpsvr_ok();
+            $("#oBible").find("[type=checkbox]").bind("click", function () {
+                if ($(this).attr("title") === "_notes") {
+                    if ($(this).prop("checked"))
+                        $(this).next().attr("contenteditable", "true").addClass("hili").bind("keyup", on_editing);
+                    else {
+                        $(this).next().removeClass("hili").attr("contenteditable", null);
+                    }
+                }
+            });
         }
 
         function restapi_loadBibVolChpVrs() {
@@ -698,20 +707,23 @@ div[contenteditable]{
                 $.each(ret, function (vol, chobj) {
                     $.each(chobj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, ob) {
-                            if(!bSortByTime)ob="-";
+
+                            var dtm = "";
+                            if (bSortByTime) dtm = ob.dtime;
                             var str = vol + " " + chp + " : " + vrs;
-                            ops.push("<option time='"+ob+"'>" + str + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
+                            ops.push("<option time='" + dtm + "'>" + str + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
+
                         });
                     });
                 });
-                
-                if(bSortByTime){
+
+                if (bSortByTime) {
                     ops.sort().reverse();
                 }
-                else{
+                else {
                     ops.sort();
                 }
-                
+
                 $("#sel_history").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
@@ -739,13 +751,13 @@ div[contenteditable]{
             if (s.length > 10) s = "";
             $("#texta").val(s + ".");
         }
-        function BibleObj_search(){
+        function BibleObj_search() {
             var s = $("#out").val().trim();
-            if (s.length===0) {
+            if (s.length === 0) {
                 return alert("empty search string");
             };
-            var inp=gBim.get_chap_by_selected();
-            ipn.fname=[];
+            var inp = gBim.get_chap_by_selected();
+            ipn.fname = [];
 
         }
     </script>
@@ -761,7 +773,7 @@ div[contenteditable]{
     <div id="menuContainer">
         <div id="BibInputMenuHolder" height="100%">
         </div>
-        
+
 
 
         <button id="indxer">indxer</button>
