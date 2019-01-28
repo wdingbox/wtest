@@ -271,13 +271,12 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_Search = function (bibObj, searchFi
   Object.keys(bibObj).forEach(function (vol) {
     Object.keys(bibObj[vol]).forEach(function (chp) {
       Object.keys(bibObj[vol][chp]).forEach(function (vrs) {
+        var bFound = false;
         Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
-          var bFound = false;
           var txt = bibObj[vol][chp][vrs][bkn];
           if (searchFile === bkn) {
-            
             if ("function" === typeof cb) {
-
+              bFound=cb(txt, searchStrn);
             }
             else {
               if (txt.indexOf(searchStrn) >= 0) {
@@ -285,15 +284,18 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_Search = function (bibObj, searchFi
               }
             }
           }
-          if (bFound){//do merge.
+        });
+        if (bFound) {//do merge.
+          Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
+            var txt = bibObj[vol][chp][vrs][bkn];
             var srcDat = gen_SrcDat(bkn, vol, chp, vrs, txt);
             _This.merge_clientBibleObj(foundObj, srcDat);
-          }
-      });
+          });
+        }
+      })
     })
-  })
-});
-return foundObj;
+  });
+  return foundObj;
 }
 BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
   var ss = "", RetObj = {};
