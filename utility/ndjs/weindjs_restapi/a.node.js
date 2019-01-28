@@ -211,24 +211,25 @@ BibleObj.prototype.Fetch_Partial_BibleObj_by_keyParm = function (srcObj, keyObj)
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcObj, SrcFilename, cb) {
+BibleObj.prototype.putin_clientBibleObj = function (clientObj, SrcDat,  cb) {
+  //SrcDat{name:Srcefilename, obj:SrcObj}
   var coreback = {};
-  coreback.func_arr_push = function (dstChpObj, vsrVal, SrcVal,SrcFnm) {
-    if (undefined == dstChpObj[vsrVal]) {
-      dstChpObj[vsrVal] = [];
+  coreback.func_arr_push = function (dstChpObj, dstKey, SrcVal, SrcFnm) {
+    if (undefined == dstChpObj[dstKey]) {
+      dstChpObj[dstKey] = [];
     }
-    if ("string" == typeof dstChpObj[vsrVal]) {
-      var tmp = dstChpObj[vsrVal];
-      dstChpObj[vsrVal] = [];
-      dstChpObj[vsrVal].push(tmp);//keep original.
+    if ("string" == typeof dstChpObj[dstKey]) {
+      var tmp = dstChpObj[dstKey];
+      dstChpObj[dstKey] = [];
+      dstChpObj[dstKey].push(tmp);//keep original.
       //console.log("client *****",clientObj)
     }
     if ("string" === typeof SrcVal) {//src obj is server type obj.
-      dstChpObj[vsrVal].push(SrcVal);
+      dstChpObj[dstKey].push(SrcVal);
     }
     else if ("object" === typeof SrcVal) {//srcObj is client type obj. 
       SrcVal.forEach(function (str) {
-        dstChpObj[vsrVal].push(str);
+        dstChpObj[dstKey].push(str);
       });
     }
   };
