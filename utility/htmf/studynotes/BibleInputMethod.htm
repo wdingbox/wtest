@@ -286,6 +286,10 @@ div[contenteditable]{
 
         
         <br>`;
+     
+        if("undefined" === typeof Jsonpster){
+            alert("Jsonpster server failed.");
+        }
             $(this.m_menuHolderId).prepend(stables);
 
             var str = "";
