@@ -65,6 +65,9 @@
 .hili{
     background-color: red; 
 }
+.searchFile{
+    color:blue;
+}
 sub{
     font-size: 8px;
 }
@@ -280,7 +283,7 @@ div[contenteditable]{
         </table>
         </div>
         <textarea id="out" cols='50'></textarea><br>
-        <a id="FindinBKN"><a><button onclick="BibleObj_search();">search</button>
+        <a id="searchFile">NIV<a><button onclick="BibleObj_search();">search</button>
         
         
 
@@ -301,6 +304,11 @@ div[contenteditable]{
             $("#bkn_bdy").html(str).find(".cbkn").bind("click", function () {
                 //$(".cbkn").removeClass("hili");
                 $(this).toggleClass("hili");
+
+                $(".searchFile").removeClass("searchFile");
+                $(this).toggleClass("searchFile");
+
+                $("#searchFile").text($(this).text());
             });
 
 
@@ -406,6 +414,9 @@ div[contenteditable]{
             if (fnamesArr.length == 0) {
                 alert("Err: no bookname selected.");
             }
+            //
+            var searchFileName=$(".cbkn.hili.searchFile").text();
+            var searchStrn=$("#out").val();
 
             var vol = $(".v3.hili").text();
 
@@ -419,7 +430,9 @@ div[contenteditable]{
             arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
 
-            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join("") };
+            
+
+            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join(""), searchFile: searchFileName, searchStrn:searchStrn };
             var ret = { fname: fnamesArr, dat: dat };
             ret.validateBibleLoad = function () {
                 if (this.fname.length === 0) {
@@ -432,6 +445,17 @@ div[contenteditable]{
                 var s = JSON.stringify(this);
                 s += "\n\n no vol,chp,vrs. Load whole Bible?";
                 return confirm(s);
+            };
+            ret.validateSearch=function(){
+                if(!this.dat.searchFile) {
+                    alert("no searchFile");
+                    return false;
+                }
+                if(this.dat.searchStrn.length==0) {
+                    alert("no searchStrn");
+                    return false;
+                }
+                return true;
             }
             ret.getApiParam = function (sApiName) {
                 return { api: sApiName, inp: this };
@@ -684,7 +708,19 @@ div[contenteditable]{
                 }
             });
         }
+        function BibleObj_search() {
+            var s = $("#out").val().trim();
+            var inp = gBim.get_chap_by_selected();
+            if(!inp.validateSearch()) return;
+            console.log(inp);
+            var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
+            par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
 
+            Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
+
+            console.log(Jsonpster);
+
+        }
         function restapi_loadBibVolChpVrs() {
             var inp = gBim.get_chap_by_selected();
             if (!inp.validateBibleLoad()) return;
@@ -751,15 +787,7 @@ div[contenteditable]{
             if (s.length > 10) s = "";
             $("#texta").val(s + ".");
         }
-        function BibleObj_search() {
-            var s = $("#out").val().trim();
-            if (s.length === 0) {
-                return alert("empty search string");
-            };
-            var inp = gBim.get_chap_by_selected();
-            ipn.fname = [];
-
-        }
+        
     </script>
 
 </HEAD>
