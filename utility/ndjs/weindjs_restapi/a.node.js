@@ -274,15 +274,19 @@ BibleObj.prototype.search_cliObj = function (cliObj, searchFile, searchStrn, cb)
         var bFound = false;
         //Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
         var txt = cliObj[vol][chp][vrs][searchFile];
+        var rep = new RegExp(searchStrn, "g");
         if ("string" === typeof txt) {
           if ("function" === typeof cb) {
             bFound = cb(txt, searchStrn);
           }
-          else if (txt.indexOf(searchStrn) >= 0) {
-            var rep = new RegExp(searchStrn, "g");
-            txt = txt.replace(rep, "<font color='red'>" + searchStrn + "</font>");
-            cliObj[vol][chp][vrs][searchFile] = txt;
-            bFound = true;
+          else {
+            var mat = txt.match(rep);
+            if (mat) {
+              txt = txt.replace(mat[0], "<font color='red'>" + mat[0] + "</font>");
+              cliObj[vol][chp][vrs][searchFile] = txt;
+              bFound = true;
+            }
+
           }
         }
         //});
