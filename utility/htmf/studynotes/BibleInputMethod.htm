@@ -282,12 +282,12 @@ div[contenteditable]{
             </tbody>
         </table>
         </div>
+        
         <textarea id="out" cols='50'></textarea><br>
+        
         <button onclick="BibleObj_search();">search</button>
-        <a id="searchResult">NIV<a>
-        
-        
-
+        <a id="searchResult" onclick="load_search_string_history();">NIV<a><br>
+        <select id="regex_history_lst" size='15'><option/></select>
         
         <br>`;
 
@@ -777,6 +777,37 @@ div[contenteditable]{
 
                         Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
                     }
+                });
+
+            });
+        }
+        function load_search_string_history(bSortByTime) {
+            var inp = { fname: ["search_history"], dat: {} };
+            var prm = { api: "loadBible_read_regex_search_history", inp: inp };
+            Jsonpster.Run(prm, function (ret) {
+                //history
+                console.log(ret);
+                var ops = [];
+                $.each(ret, function (vol, chobj) {
+                    $.each(chobj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, ob) {
+                            $.each(ob,function(searchStr,tm){
+                                ops.push("<option time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
+                            });   
+                        });
+                    });
+                });
+
+                if (bSortByTime) {
+                    ops.sort().reverse();
+                }
+                else {
+                    ops.sort();
+                }
+
+                $("#regex_history_lst").html(ops.join("")).find("option").bind("click", function () {
+                    var s = $(this).text().trim();
+                    $("#out").val(s);
                 });
 
             });
