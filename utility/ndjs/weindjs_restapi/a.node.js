@@ -246,7 +246,7 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
 }
 
 BibleObj.prototype.loadBible_write_history = function (aobj) {
-  var his = this.load_BibleObj("_history");
+  var his = this.load_BibleObj("_history_verses_loaded");
   this.merge_clientBibleObj(his.obj, { "dtime": aobj }, function (srcval) {
     return Uti.getDateTime();
   });
@@ -254,7 +254,7 @@ BibleObj.prototype.loadBible_write_history = function (aobj) {
   console.log("*** save to history.");
 }
 BibleObj.prototype.loadBible_read_history = function (inpObj) {
-  var ret = this.load_BibleObj("_history");
+  var ret = this.load_BibleObj("_history_verses_loaded");
   return ret.jstrn;
 }
 BibleObj.prototype.search_cliObj = function (cliObj, searchFile, searchStrn, cb) {
