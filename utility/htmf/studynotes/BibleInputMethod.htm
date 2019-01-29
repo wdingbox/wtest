@@ -65,6 +65,13 @@
 .hili{
     background-color: red; 
 }
+.mat{
+    background-color: chartreuse;
+    color:black;
+}
+.matIndex{
+    border: 5px solid red;
+}
 .searchFile{
     color:blue;
 }
@@ -640,18 +647,38 @@ div[contenteditable]{
         function regex_match_next() {
             var str = $("#out").val();
             var reg = new RegExp(str, "g");
-            $("a[vid]").each(function () {
+
+            var matSize=$(".mat").length;
+            if(matSize>0 && str === document.g_matchStrin){
+                if( document.g_matchIndex>=matSize){
+                    document.g_matchIndex=0;
+                }
+                var elm=".mat:eq("+document.g_matchIndex+")";
+                //$(elm).parentsUntil("tr").addClass ("hili");
+                $(".mat.matIndex").removeClass("matIndex");
+                $(elm).addClass ("matIndex");
+                $(elm)[0].scrollIntoViewIfNeeded();
+                $("#searchResult").text("hili:"+document.g_matchIndex + "/"+document.g_matchCount );   
+                document.g_matchIndex++;
+                return;
+            }
+            document.g_matchStrin=str;
+            document.g_matchCount=0;
+            document.g_matchIndex=0;
+            $("a[vid]").each(function (idx) {
                 var ss = $(this).text();
                 var mat = ss.match(reg);
                 if (mat) {
                     $.each(mat, function (i, v) {
                         if (0 == i) {
-                            ss = ss.replace(v, "<font color='red'>" + v + "</font>");
+                            ss = ss.replace(v, "<font class='mat'>" + v + "</font>");
                         }
                     });
                     $(this).html(ss).prev().attr("checked", true);
+                    document.g_matchCount++;
                 };
             });
+            $("#searchResult").text("tot:"+document.g_matchCount);    
         };
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
@@ -744,8 +771,10 @@ div[contenteditable]{
         }
         function restapi_loadBibVolChpVrs() {
             var inp = gBim.get_chap_by_selected();
+            inp.dat.searchFile="";//disable search
             if (!inp.validateBibleLoad()) return;
             console.log(inp);
+        
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
             par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
 
@@ -816,12 +845,12 @@ div[contenteditable]{
                     });
                 });
 
-                if (bSortByTime) {
+                //if (bSortByTime) {
                     ops.sort().reverse();
-                }
-                else {
-                    ops.sort();
-                }
+                //}
+                //else {
+                //    ops.sort();
+                //}
 
                 $("#regex_history_lst").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text().trim();
