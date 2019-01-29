@@ -418,8 +418,8 @@ div[contenteditable]{
                 alert("Err: no bookname selected.");
             }
             //
-            var searchFileName=$(".cbkn.hili.searchFile").text();
-            var searchStrn=$("#out").val();
+            var searchFileName = $(".cbkn.hili.searchFile").text();
+            var searchStrn = $("#out").val();
 
             var vol = $(".v3.hili").text();
 
@@ -433,9 +433,9 @@ div[contenteditable]{
             arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
             arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
 
-            
 
-            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join(""), searchFile: searchFileName, searchStrn:searchStrn };
+
+            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join(""), searchFile: searchFileName, searchStrn: searchStrn };
             var ret = { fname: fnamesArr, dat: dat };
             ret.validateBibleLoad = function () {
                 if (this.fname.length === 0) {
@@ -449,12 +449,12 @@ div[contenteditable]{
                 s += "\n\n no vol,chp,vrs. Load whole Bible?";
                 return confirm(s);
             };
-            ret.validateSearch=function(){
-                if(!this.dat.searchFile) {
+            ret.validateSearch = function () {
+                if (!this.dat.searchFile) {
                     alert("no searchFile");
                     return false;
                 }
-                if(this.dat.searchStrn.length==0) {
+                if (this.dat.searchStrn.length == 0) {
                     alert("no searchStrn");
                     return false;
                 }
@@ -637,21 +637,20 @@ div[contenteditable]{
             "Jud": "Jud",
             "Rev": "Rev",
         };//BookChapterVerseMax
-        function regex_match_next(){
-            var str=$("#out").val();
-            var reg=new RegExp(str,"g");
-            $("a[vid]").each(function(){
-                var ss=$(this).text();
-                var mat=ss.match(reg);
-                if(mat){
-                    $.each(mat,function(i,v){
-                        if(0==i){
-                            ss=ss.replace(v,"<font color='red'>"+v+"</font>");
+        function regex_match_next() {
+            var str = $("#out").val();
+            var reg = new RegExp(str, "g");
+            $("a[vid]").each(function () {
+                var ss = $(this).text();
+                var mat = ss.match(reg);
+                if (mat) {
+                    $.each(mat, function (i, v) {
+                        if (0 == i) {
+                            ss = ss.replace(v, "<font color='red'>" + v + "</font>");
                         }
                     });
-                    $(this).html(ss).prev().attr("checked",true);
-                }
-                
+                    $(this).html(ss).prev().attr("checked", true);
+                };
             });
         };
 
@@ -675,13 +674,13 @@ div[contenteditable]{
             };
             function gen_table(ret) {
                 var s = "<table border='1'>";
-                var idx=0;
+                var idx = 0;
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, val) {
                             //console.log("typeof val=", typeof val);
                             var vid = vol + "<br>" + chp + ":" + vrs;
-                            s += "<tr><td>"+(++idx)+"</td><td class='vid'>" + vid + "</td><td>";
+                            s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
                             if ("object" == typeof val) {
                                 $.each(val, function (key, str) {
                                     var vid = vol + chp + ":" + vrs;
@@ -696,14 +695,14 @@ div[contenteditable]{
                     });
                 });
                 s += "</table>";
-                return {htm:s,size:idx};
+                return { htm: s, size: idx };
             }
             var inpobj = gBim.get_chap_by_selected();
             var fnamAr = inpobj.fname;
             const cidx = fnamAr.indexOf("_notes");
             console.log(ret);
-            var tb=gen_table(ret);
-            $("#searchResult").text("size="+tb.size);
+            var tb = gen_table(ret);
+            $("#searchResult").text("size=" + tb.size);
             $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
                 var vid = $(this).text();
@@ -733,7 +732,7 @@ div[contenteditable]{
         function BibleObj_search() {
             var s = $("#out").val().trim();
             var inp = gBim.get_chap_by_selected();
-            if(!inp.validateSearch()) return;
+            if (!inp.validateSearch()) return;
             console.log(inp);
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
             par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
@@ -810,9 +809,9 @@ div[contenteditable]{
                 $.each(ret, function (vol, chobj) {
                     $.each(chobj, function (chp, vrsObj) {
                         $.each(vrsObj, function (vrs, ob) {
-                            $.each(ob,function(searchStr,tm){
+                            $.each(ob, function (searchStr, tm) {
                                 ops.push("<option time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
-                            });   
+                            });
                         });
                     });
                 });
@@ -840,7 +839,7 @@ div[contenteditable]{
             if (s.length > 10) s = "";
             $("#texta").val(s + ".");
         }
-        
+
     </script>
 
 </HEAD>
