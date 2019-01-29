@@ -425,6 +425,9 @@ console.log("port:", app.g_iPort);
 // client site:
 // open restapi_tester.htm
 // then click index button.
-
-
+//
+// load htm file for webpage js file issues.
+// https://stackoverflow.com/questions/48050666/node-js-serve-html-but-cant-load-script-files-in-served-page
+//
+//
 
