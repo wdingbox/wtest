@@ -285,7 +285,9 @@ div[contenteditable]{
         
         <textarea id="out" cols='50'></textarea><br>
         
-        <button onclick="BibleObj_search();">search</button>
+        <button onclick="BibleObj_search();" title="search on svr">search</button>
+        <button onclick="regex_match_next();" title="find on page">match</button>
+        <br>
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
         <select id="regex_history_lst" size='15'><option/></select>
         
@@ -635,6 +637,23 @@ div[contenteditable]{
             "Jud": "Jud",
             "Rev": "Rev",
         };//BookChapterVerseMax
+        function regex_match_next(){
+            var str=$("#out").val();
+            var reg=new RegExp(str,"g");
+            $("a[vid]").each(function(){
+                var ss=$(this).text();
+                var mat=ss.match(reg);
+                if(mat){
+                    $.each(mat,function(i,v){
+                        if(0==i){
+                            ss=ss.replace(v,"<font color='red'>"+v+"</font>");
+                        }
+                    });
+                    $(this).html(ss).prev().attr("checked",true);
+                }
+                
+            });
+        };
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
             function on_editing() {
