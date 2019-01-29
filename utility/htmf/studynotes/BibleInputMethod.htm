@@ -100,6 +100,9 @@ div[contenteditable]{
 #vrs_tab{
     background-color:rgb(149, 97, 29);
 }
+#oBiblex table{width:10000px; }
+#oBible table thead tr{ display:block; }
+#oBible table tbody { height:1500px; overflow-y:scroll; display:block; }
 
 </style>
 
@@ -701,6 +704,8 @@ div[contenteditable]{
             };
             function gen_table(ret) {
                 var s = "<table border='1'>";
+                s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
+                s+="<tbody>";
                 var idx = 0;
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
@@ -721,7 +726,7 @@ div[contenteditable]{
                         });
                     });
                 });
-                s += "</table>";
+                s += "</tbody></table>";
                 return { htm: s, size: idx };
             }
             var inpobj = gBim.get_chap_by_selected();
@@ -731,6 +736,7 @@ div[contenteditable]{
             var tb = gen_table(ret);
             $("#searchResult").text("size=" + tb.size);
             $("#oBible").html(tb.htm);
+            table_sort();
             $("#oBible").find(".vid").bind("click", function () {
                 var vid = $(this).text();
                 var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
