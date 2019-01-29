@@ -1,7 +1,8 @@
+var _notes=
 {
     "Gen": {
         "1": {
-            "1": "@test",
+            "1": "@test is ok&nbsp;",
             "2": "",
             "3": "",
             "4": "",
@@ -294,7 +295,7 @@
             "4": "",
             "5": "",
             "6": "",
-            "7": "",
+            "7": "The beginning of multiple languages is the beginning of different culutres. God's remedy to prolong the life of race, to prepare for the 1st coming of Jesus Christ to glory Him. Cross reference language is to serve as mirror to know selves.&nbsp;&nbsp;",
             "8": "",
             "9": "",
             "10": "",
@@ -14941,7 +14942,7 @@
             "6": ""
         },
         "2": {
-            "1": "",
+            "1": "@kk",
             "2": "",
             "3": "",
             "4": "",
@@ -14950,7 +14951,7 @@
             "7": "",
             "8": "",
             "9": "",
-            "10": "",
+            "10": "@",
             "11": "",
             "12": ""
         },
@@ -28218,7 +28219,7 @@
             "13": "",
             "14": "",
             "15": "",
-            "16": "",
+            "16": "God's Purpose, Remedy . Thoroughly convinced in mind<br>Man's Problem, Response.&nbsp; &nbsp;Totally convinced in heart.&nbsp;<br>",
             "17": "",
             "18": "",
             "19": "",
@@ -33114,10 +33115,10 @@
     },
     "3Jn": {
         "1": {
-            "1": "",
+            "1": "sfdddccsxxd",
             "2": "",
-            "3": "",
-            "4": "",
+            "3": "@The only joy is Jesus and His people.&nbsp;",
+            "4": "@if my loved ones follow Him, i was very happy. it is not about Law virtual but joy.&nbsp;",
             "5": "",
             "6": "",
             "7": "",
@@ -33125,10 +33126,10 @@
             "9": "",
             "10": "",
             "11": "",
-            "12": "",
+            "12": "@there are four types of evidence most important: Truth, They, We and you.&nbsp;",
             "13": "",
-            "14": "",
-            "15": ""
+            "14": "@relationship btw them.",
+            "15": "@seeming worldly relationship, but inside is different!"
         }
     },
     "Jud": {
