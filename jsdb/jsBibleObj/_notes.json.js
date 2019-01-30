@@ -295,7 +295,7 @@ var _notes=
             "4": "",
             "5": "",
             "6": "",
-            "7": "The beginning of multiple languages is the beginning of different culutres. God's remedy to prolong the life of race, to prepare for the 1st coming of Jesus Christ to glory Him. Cross reference language is to serve as mirror to know selves.&nbsp;&nbsp;",
+            "7": "The beginning of multiple languages is the beginning of different culutres. God's remedy to prolong the life of race, to prepare for the 1st coming of Jesus Christ to glory Him, prepare for the OT and NT with two more languages. Cross reference language is to serve as mirror to know selves.&nbsp;&nbsp;",
             "8": "",
             "9": "",
             "10": "",
