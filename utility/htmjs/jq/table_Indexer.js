@@ -1,5 +1,8 @@
-function table_sort(){
-    $("table").tablesorter({
+function table_sort(tbid){
+	if(!tbid){
+		tbid="table";
+	}
+    $(tbid).tablesorter({
     //  theme: 'blue',
         usNumberFormat : false,
         sortReset      : true,
