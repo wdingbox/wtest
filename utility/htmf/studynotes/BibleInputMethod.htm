@@ -43,7 +43,7 @@
 
 
 
-
+    c
 
 
 
@@ -243,7 +243,7 @@ div[contenteditable]{
         </table>
 
         <table id='chp_tab' border="1" style="float:left;">
-            <caption class='vcvCap' id='chp_cap'>0</caption>
+            <caption class='vcvCap' id='chp_cap'>~</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
                 <tr>
@@ -254,7 +254,7 @@ div[contenteditable]{
         <a style="float:left;">:</a>
 
         <table id="vrs_tab" border="1" style="float:left;">
-            <caption class='vcvCap' id='vrs_cap'>0</caption>
+            <caption class='vcvCap' id='vrs_cap'>~</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
                 <tr>
@@ -338,13 +338,13 @@ div[contenteditable]{
             }
             var trarr = [];
             var volarr = get_vol_arr(this.m_structObj, ch);
-            var cls = " class='v3' ";
-            if (volarr.length == 1) cls = " class='v3 hili' ";
+            var cls = " class='v3 hili' ";
             volarr.forEach(function (vol) {
                 //<td align='right'>"+BibVolName[vol][0]+"</td>
                 trarr.push("<tr><td/><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
+                cls = " class='v3' ";
             });
-            return trarr;
+            return { volarr: volarr, trs: trarr.join("") };
         };
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = this.get_cha_arr_after_str(this.m_structObj, "");
@@ -352,9 +352,9 @@ div[contenteditable]{
             var s = "<tr id='vitr'>";
             var _This = this;
             $.each(ks, function (i, c) {
-                var trs = _This.get_vol_trs_match_str(c);
-                var ssb = "<sub>" + trs.length + "</sub>";
-                if (trs.length === 1) ssb = "";
+                var ret = _This.get_vol_trs_match_str(c);
+                var ssb = "<sub>" + ret.volarr.length + "</sub>";
+                if (ret.volarr.length === 1) ssb = "";
                 c = c + ssb;
                 s += "<td><button class='vin'>" + c + "</button></td>";
                 if (9 == i) s += "</tr><tr>";
@@ -367,7 +367,8 @@ div[contenteditable]{
                 var ch = $(this).text();
 
                 var ret = _This.get_vol_trs_match_str(ch[0]);
-                $(_This.m_voltbid).html(ret.join("")).find(".v3").bind("click", function () {
+                $("#vol_cap").text(ret.volarr[0]);
+                $(_This.m_voltbid).html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
@@ -407,10 +408,41 @@ div[contenteditable]{
             var searchStrn = $("#out").val();
 
             var vol = $(".v3.hili").text();
+            var chp = $("#chp_cap").text();
+            var vrs = $("#vrs_cap").text();
+            function validate_vcv(vol, chp, vrs) {
+                if (undefined == H_G_struct[vol]) return alert("fatal err");
+                else if (undefined == H_G_struct[vol][chp]) {
+                    var ichp = parseInt(chp);
+                    if (Number.isInteger(ichp)) {
+                        var max = Object.keys(H_G_struct[vol]).length;
+                        if (parseInt(chp) > max) {
+                            return alert(vol + " max chapter is " + max);
+                        }
+                    }
 
-            var dat = { vol: vol, chp: $("#chp_cap").text(), vrs: $("#vrs_cap").text(), searchFile: searchFileName, searchStrn: searchStrn };
+                }
+                else if (undefined == H_G_struct[vol][chp][vrs]) {
+                    var ivrs = parseInt(vrs);
+                    if (Number.isInteger(ivrs)) {
+                        var max = Object.keys(H_G_struct[vol][chp]).length;
+                        if (parseInt(chp) >= max) {
+                            return alert(vol + " " + chp + " max verse is " + max);
+                        }
+                    }
+
+                }
+                return true;
+            }
+
+
+            var dat = { vol: vol, chp: chp, vrs: vrs, searchFile: searchFileName, searchStrn: searchStrn };
             var ret = { fname: fnamesArr, dat: dat };
+
             ret.validateBibleLoad = function () {
+                if (!validate_vcv(this.dat.vol, this.dat.chp, this.dat.vrs)) {
+                    return false;
+                }
                 if (this.fname.length === 0) {
                     alert("Please select a biblical BooK Name.");
                     return false;
@@ -475,6 +507,18 @@ div[contenteditable]{
             $(tid).find(".clear").bind("click", function () {
                 var cap = $(this).parentsUntil("table").parent().find("caption");
                 cap.text("~");
+            });
+            $(tid).find(".undo").bind("click", function () {
+                var cap = $(this).parentsUntil("table").parent().find("caption");
+                var str = cap.text();
+                if(str.length==1){
+                    cap.text("~");
+                }
+                else{
+                    str=str.substr(0,str.length-1);
+                    cap.text(str);
+                }
+                
             });
             return;
         };
@@ -760,14 +804,7 @@ div[contenteditable]{
                         });
                     });
                 });
-
-                //if (bSortByTime) {
                 ops.sort().reverse();
-                //}
-                //else {
-                //    ops.sort();
-                //}
-
                 $("#regex_history_lst").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text().trim();
                     $("#out").val(s);
