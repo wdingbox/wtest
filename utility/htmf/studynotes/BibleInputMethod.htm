@@ -104,6 +104,9 @@ div[contenteditable]{
 #oBible table thead tr{ display:block; }
 #oBible table tbody { height:1500px; overflow-y:scroll; display:block; }
 
+#tmpsel2ref thead{ display:block; }
+#tmpsel2ref tbody { height:180px; overflow-y:scroll; display:block; }
+
 </style>
 
 
@@ -115,6 +118,7 @@ div[contenteditable]{
             gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
 
             gBim.init();
+            gBim.initCat();
             gBim.Gen_Keys_Menu();
             gBim.digi_table_init("#chp_bdy");
             gBim.digi_table_init("#vrs_tbd");
@@ -144,8 +148,11 @@ div[contenteditable]{
             this.m_chptbid = "#chp_bdy";
             this.m_vrstbid = "#vrs_tbd";
 
+            this.m_cattbid = "#cat_bdy";
+
             this.m_structObj = Obj;
             this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "_notes"];
+            this.m_catArr = ["Tora","History","Lite","MajorP","MinorP","Gospel","Pauline","Epistles"];
         }
         BibleInputMenu.prototype.init = function () {
             if ("undefined" === typeof Jsonpster) {
@@ -167,6 +174,15 @@ div[contenteditable]{
                 $(this).toggleClass("searchFile");
 
                 $("#searchFile").text($(this).text());
+            });
+        };
+        BibleInputMenu.prototype.initCat = function () {
+            var s="";
+            $.each(this.m_catArr,function(i,v){
+                s+="<tr><td class='cat'>"+v+"</td></tr>";
+            });
+            $(this.m_cattbid).html(s).find(".cat").bind("click",function(){
+                $(this).toggleClass("hili");
             });
         };
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
@@ -478,7 +494,9 @@ div[contenteditable]{
                 var vers = mat[3];
 
                 $(this).toggleClass("hili");
-                $("#selvcv").text(vid).toggleClass("hili");
+                //$("#selvcv").text(vid).toggleClass("hili");
+
+                
 
 
                 //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
@@ -488,11 +506,21 @@ div[contenteditable]{
                 var srf = "<a href='" + url + "'>blb</a> | ";
 
 
+                ///
                 var bkidx = BookID2IdxCode[volm];
                 var file = bkidx[0] + volm + "_" + chap + ".htm#" + vers;
                 var url = "../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" + file;
                 srf += "<a href='" + url + "'>h_g</a>";
-                $("#refpop").html(srf);
+                
+
+                var tr="<tr><td/><td>"+vid+"</td><td>"+srf+"</td></tr>";
+                if(undefined === document.m_tmp_tr_arr){
+                    document.m_tmp_tr_arr=[];
+                }
+                if(document.m_tmp_tr_arr.indexOf(tr)<0){
+                    document.m_tmp_tr_arr.push(tr);
+                    $("#tmpsel2ref tbody").prepend(tr);
+                }
                 //alert(vid);
             });
             $("#oBible").find("[type=checkbox]").bind("click", function () {
@@ -667,6 +695,15 @@ div[contenteditable]{
                 </tr>
             </tbody>
         </table>
+        <table border="1" style="float:left;">
+            <caption class='' id='' title='Volumns Catagory'>Cat</caption>
+            <thead id="cat_hdr"></thead>
+            <tbody id='cat_bdy'>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
 
         <table border="1" style="float:left;">
             <caption class='vcvCap' id='vol_cap'>Vol</caption>
@@ -714,31 +751,25 @@ div[contenteditable]{
                 </tr>
             </tbody>
         </table>
+        <br>
 
-
-        <table border="1" style="float:left;">
-            <caption id='selvcv'>-
-        </caption>
-            <thead></thead>
-            <tbody>
-                <tr>
-                    <td id='refpop'>
-                       
-                       
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        </div>
         
-        <textarea id="out" cols='50'></textarea><br>
+        
+        <textarea id="out" cols='60'></textarea><br>
         
         <button onclick="BibleObj_search();" title="search on svr">search</button>
         <button onclick="regex_match_next();" title="find on page">match</button>
         <br>
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
-        <select id="regex_history_lst" size='15'><option/></select>
-        
+        <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
+        <table id='tmpsel2ref' border="1">
+            <caption id='selvcv'></caption>
+            <thead><th>#</th><th>vcv</th><th>refs</th></thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        </div>
         <br>`;
     const BibVolName = {
         "Gen": ['Genesis', '创世纪'],
