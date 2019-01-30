@@ -120,8 +120,8 @@ div[contenteditable]{
             gBim.init();
             gBim.initCat();
             gBim.Gen_Keys_Menu();
-            gBim.digi_table_init("#chp_bdy");
-            gBim.digi_table_init("#vrs_tbd");
+            gBim.digi_table_init("#chp_bdy",150);
+            gBim.digi_table_init("#vrs_tbd",176);
             $("#menuToggler").click(function () {
                 $("#menuContainer").slideToggle();
             });
@@ -331,9 +331,9 @@ div[contenteditable]{
             }
             return ret;
         };
-        BibleInputMenu.prototype.digi_table_init = function (tid, zero) {
+        BibleInputMenu.prototype.digi_table_init = function (tid, imaxNum) {
             function _td(num) {
-                var s = "<td><button class='chpnum' num='" + num + "'>" + (num) + "</button></td>";
+                var s = "<td><button class='digit' num='" + num + "'>" + (num) + "</button></td>";
                 return s;
             }
 
@@ -351,7 +351,7 @@ div[contenteditable]{
             };
 
             $(tid).html(s).find("button:contains('0')").attr("disabled",true);
-            $(tid).find(".chpnum").bind("click", function () {
+            $(tid).find(".digit").bind("click", function () {
                 var num = $(this).text();
 
                 var cap = $(this).parentsUntil("table").parent().find("caption");
@@ -361,15 +361,25 @@ div[contenteditable]{
                 if (!Number.isInteger(icap)) {
                     icap = 0;
                 }
-                icap = icap * 10 + parseInt(num);
-                cap.text(icap);
+                
+                var updateCap = icap * 10 + parseInt(num);
+                if(updateCap>imaxNum)updateCap=imaxNum;
+                cap.text(updateCap);
                 console.log(num);
+                
+                var inextbase=icap*100;
+                if(inextbase>imaxNum){
+                    $(tid).find(".digit").attr("disabled",true);
+                    return;
+                }
                 $(tid).find("button[disabled]").attr("disabled",null);
             });
             $(tid).find(".clear").bind("click", function () {
                 var cap = $(this).parentsUntil("table").parent().find("caption");
                 cap.text("*");
+                $(tid).find(".digit").attr("disabled",null);
                 $(tid).find("button:contains('0')").attr("disabled",true);
+
             });
             $(tid).find(".undo").bind("click", function () {
                 var cap = $(this).parentsUntil("table").parent().find("caption");
@@ -381,6 +391,7 @@ div[contenteditable]{
                     str = str.substr(0, str.length - 1);
                     cap.text(str);
                 }
+                $(tid).find(".digit").attr("disabled",null);
 
             });
             return;
