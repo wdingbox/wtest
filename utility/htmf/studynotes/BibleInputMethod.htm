@@ -116,6 +116,8 @@ div[contenteditable]{
 
             gBim.init();
             gBim.Gen_Keys_Menu();
+            gBim.digi_table_init("#chp_bdy");
+            gBim.digi_table_init("#vrs_tbd");
             $("#menuToggler").click(function () {
                 $("#menuContainer").slideToggle();
             });
@@ -241,7 +243,7 @@ div[contenteditable]{
         </table>
 
         <table id='chp_tab' border="1" style="float:left;">
-            <caption class='vcvCap' id='chp_cap'>__chapters__</caption>
+            <caption class='vcvCap' id='chp_cap'>0</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
                 <tr>
@@ -252,7 +254,7 @@ div[contenteditable]{
         <a style="float:left;">:</a>
 
         <table id="vrs_tab" border="1" style="float:left;">
-            <caption class='vcvCap' id='vrs_cap'>Verses</caption>
+            <caption class='vcvCap' id='vrs_cap'>0</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
                 <tr>
@@ -323,12 +325,7 @@ div[contenteditable]{
 
                 $("#searchFile").text($(this).text());
             });
-
-
-
-
-
-        }
+        };
         BibleInputMenu.prototype.get_vol_trs_match_str = function (ch) {
             function get_vol_arr(bbObj, ch) {
                 var arr = [];
@@ -349,18 +346,6 @@ div[contenteditable]{
             });
             return trarr;
         };
-
-        BibleInputMenu.prototype.Fresh_Caption_Txt = function () {
-            var inp = this.get_chap_by_selected();
-            var ret = inp.dat;
-            if (!ret.vol) ret.vol = "-";
-            if (!ret.chp) ret.chp = "-";
-            if (!ret.vrs) ret.vrs = "-";
-            $("#vol_cap").text(ret.vol);
-            $("#chp_cap").text(ret.chp);
-            $("#vrs_cap").text(ret.vrs);
-        }
-
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = this.get_cha_arr_after_str(this.m_structObj, "");
 
@@ -381,26 +366,16 @@ div[contenteditable]{
                 $(this).addClass("hili");
                 var ch = $(this).text();
 
-                $(_This.m_chptbid).html("");
-                $(_This.m_vrstbid).html("");
-                $(".vcvCap").text(".");
-
                 var ret = _This.get_vol_trs_match_str(ch[0]);
                 $(_This.m_voltbid).html(ret.join("")).find(".v3").bind("click", function () {
                     var vol = $(this).text();
                     $(".v3").removeClass("hili");
                     $(this).addClass("hili");
-                    _This.Fresh_Caption_Txt();
-                    //$("#out").val(vol);
-                    $(_This.m_vrstbid).html("");
-                    _This.gen_Chap_Menu(_This.m_structObj[vol]);
+                    $("#vol_cap").text(vol);
                 });
-                if (ret.length === 1) {
-                    restapi_loadBibVolChpVrs();
-                }
             });
             return ks;
-        }
+        };
 
         BibleInputMenu.prototype.get_cha_arr_after_str = function (obj, str) {
             if (!obj) return [];
@@ -433,19 +408,7 @@ div[contenteditable]{
 
             var vol = $(".v3.hili").text();
 
-            var chparr = ["", "", ""];
-            chparr[0] = $(this.m_chptbid).find(".chpos0.hili").text().charAt(0);
-            chparr[1] = $(this.m_chptbid).find(".chpos1.hili").text().charAt(0);
-            chparr[2] = $(this.m_chptbid).find(".chpos2.hili").text().charAt(0);
-
-            var arr = ["", "", ""];
-            arr[0] = $(this.m_vrstbid).find(".chpos0.hili").text().charAt(0);
-            arr[1] = $(this.m_vrstbid).find(".chpos1.hili").text().charAt(0);
-            arr[2] = $(this.m_vrstbid).find(".chpos2.hili").text().charAt(0);
-
-
-
-            var dat = { vol: vol, chp: chparr.join(""), vrs: arr.join(""), searchFile: searchFileName, searchStrn: searchStrn };
+            var dat = { vol: vol, chp: $("#chp_cap").text(), vrs: $("#vrs_cap").text(), searchFile: searchFileName, searchStrn: searchStrn };
             var ret = { fname: fnamesArr, dat: dat };
             ret.validateBibleLoad = function () {
                 if (this.fname.length === 0) {
@@ -474,94 +437,46 @@ div[contenteditable]{
                 return { api: sApiName, inp: this };
             }
             return ret;
-        }
+        };
+        BibleInputMenu.prototype.digi_table_init = function (tid, zero) {
+            function _td(num) {
+                var s = "<td><button class='chpnum' num='" + num + "'>" + (num) + "</button></td>";
+                return s;
+            }
 
-
-
-
-        BibleInputMenu.prototype.digi_table_init = function (tid) {
-            var maxchp = "000";// + Object.keys(uobj).length;
-            var n = maxchp.length;
-
-            var s = "";
-            for (var i = 0; i < 10; i++) {
+            var s = "", num = 1;
+            s += "<tr>" + _td(0);
+            s += "<th><button class='clear'  title='clear'>c</button></th>";
+            s += "<th><button class='undo'  title='undo'>u</button></th>";
+            s += "</tr>";
+            for (var i = 0; i < 3; i++) {
                 s += "<tr>";
-                for (var k = 0; k < n; k++) {
-                    s += "<td class='chpos" + k + "' chprow='" + i + "' chpcol='" + k + "'>" + "</td>";
+                for (var k = 0; k < 3; k++) {
+                    s += _td(num++);
                 }
                 s += "</tr>";
             };
-            var chpTab = $(tid).html(s);
-            return chpTab;
-        };
 
+            $(tid).html(s);
+            $(tid).find(".chpnum").bind("click", function () {
+                var num = $(this).text();
 
-        BibleInputMenu.prototype.digi_table_fill_col = function (tid, uobj, icol, prevStrn) {
-            var _This = this;
-            var curAr = _This.get_cha_arr_after_str(uobj, prevStrn);
-            $(tid).find(".chpos" + icol).each(function (i) {
-                var row = $(this).attr("chprow");
-                var irow = parseInt(row);
-                if (curAr[irow]) {
-                    var ch = curAr[irow];
-                    var nexAr = _This.get_cha_arr_after_str(uobj, prevStrn + ch);
-                    var ssub = "" + nexAr.length;
-                    if (nexAr.length === 0) ssub = "&nbsp;&nbsp;&nbsp;";
-                    $(this).html(ch + "<sub>" + ssub + "</sub>");
-                } else {
-                    $(this).text("");
+                var cap = $(this).parentsUntil("table").parent().find("caption");
+                var scap = cap.text();
+                if (scap.length >= 3) scap = scap.substr(1);
+                var icap = parseInt(scap);
+                if (!Number.isInteger(icap)) {
+                    icap = 0;
                 }
+                icap = icap * 10 + parseInt(num);
+                cap.text(icap);
+                console.log(num);
             });
-        };
-        BibleInputMenu.prototype.chp_table_bind_col = function (tid, uobj, icol, cbfunc) {
-            var _This = this;
-            $(tid).find(".chpos" + icol).bind("click", function () {
-                var ss = $(this).text();
-                if (ss.length === 0) return;
-
-                for (var i = icol; i < 3; i++) {
-                    $(tid).find(".chpos" + i).removeClass("hili");
-                }
-
-                $(this).addClass("hili");
-                _This.Fresh_Caption_Txt();
-
-
-                var ssrch = cbfunc();
-                _This.digi_table_fill_col(tid, uobj, 1 + icol, ssrch);
-
-                if (Object.keys(uobj[ssrch]).length == 0) return;
-                _This.gen_verse_Menu(uobj[ssrch]);
+            $(tid).find(".clear").bind("click", function () {
+                var cap = $(this).parentsUntil("table").parent().find("caption");
+                cap.text("~");
             });
-        }
-        BibleInputMenu.prototype.gen_Chap_Menu = function (vobj) {
-            var _This = this;
-            function get_search_str_by_hili() {
-                var ret = _This.get_chap_by_selected();
-                return ret.dat.chp;
-            }
-            //var vobj = BsObj[Vol];
-            this.digi_table_init(this.m_chptbid);
-            this.digi_table_fill_col(this.m_chptbid, vobj, 0, "");
-            this.chp_table_bind_col(this.m_chptbid, vobj, 0, get_search_str_by_hili);
-            this.chp_table_bind_col(this.m_chptbid, vobj, 1, get_search_str_by_hili);
-            this.chp_table_bind_col(this.m_chptbid, vobj, 2, get_search_str_by_hili);
-
-        };
-
-        BibleInputMenu.prototype.gen_verse_Menu = function (vobj) {
-            var _This = this;
-            function get_search_str_by_hili() {
-                var ret = _This.get_chap_by_selected();
-                console.log(ret);
-                return ret.dat.vrs;
-            }
-            //var vobj = BsObj[Vol];
-            this.digi_table_init(this.m_vrstbid);
-            this.digi_table_fill_col(this.m_vrstbid, vobj, 0, "");
-            this.chp_table_bind_col(this.m_vrstbid, vobj, 0, get_search_str_by_hili);
-            this.chp_table_bind_col(this.m_vrstbid, vobj, 1, get_search_str_by_hili);
-            this.chp_table_bind_col(this.m_vrstbid, vobj, 2, get_search_str_by_hili);
+            return;
         };
 
         ///////////
@@ -569,11 +484,6 @@ div[contenteditable]{
         //////////
         //////////
         /////////
-        var VerseRefMenu = function () {
-
-        }
-
-
         ///////////
         //////////
         //////////
@@ -651,23 +561,23 @@ div[contenteditable]{
             var str = $("#out").val();
             var reg = new RegExp(str, "g");
 
-            var matSize=$(".mat").length;
-            if(matSize>0 && str === document.g_matchStrin){
-                if( document.g_matchIndex>=matSize){
-                    document.g_matchIndex=0;
+            var matSize = $(".mat").length;
+            if (matSize > 0 && str === document.g_matchStrin) {
+                if (document.g_matchIndex >= matSize) {
+                    document.g_matchIndex = 0;
                 }
-                var elm=".mat:eq("+document.g_matchIndex+")";
+                var elm = ".mat:eq(" + document.g_matchIndex + ")";
                 //$(elm).parentsUntil("tr").addClass ("hili");
                 $(".mat.matIndex").removeClass("matIndex");
-                $(elm).addClass ("matIndex");
+                $(elm).addClass("matIndex");
                 $(elm)[0].scrollIntoViewIfNeeded();
-                $("#searchResult").text("hili:"+document.g_matchIndex + "/"+document.g_matchCount );   
+                $("#searchResult").text("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
                 document.g_matchIndex++;
                 return;
             }
-            document.g_matchStrin=str;
-            document.g_matchCount=0;
-            document.g_matchIndex=0;
+            document.g_matchStrin = str;
+            document.g_matchCount = 0;
+            document.g_matchIndex = 0;
             $("a[vid]").each(function (idx) {
                 var ss = $(this).text();
                 var mat = ss.match(reg);
@@ -681,7 +591,7 @@ div[contenteditable]{
                     document.g_matchCount++;
                 };
             });
-            $("#searchResult").text("tot:"+document.g_matchCount);    
+            $("#searchResult").text("tot:" + document.g_matchCount);
         };
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
@@ -705,7 +615,7 @@ div[contenteditable]{
             function gen_table(ret) {
                 var s = "<table border='1'>";
                 s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
-                s+="<tbody>";
+                s += "<tbody>";
                 var idx = 0;
                 $.each(ret, function (vol, chpObj) {
                     $.each(chpObj, function (chp, vrsObj) {
@@ -777,10 +687,10 @@ div[contenteditable]{
         }
         function restapi_loadBibVolChpVrs() {
             var inp = gBim.get_chap_by_selected();
-            inp.dat.searchFile="";//disable search
+            inp.dat.searchFile = "";//disable search
             if (!inp.validateBibleLoad()) return;
             console.log(inp);
-        
+
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
             par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
 
@@ -852,7 +762,7 @@ div[contenteditable]{
                 });
 
                 //if (bSortByTime) {
-                    ops.sort().reverse();
+                ops.sort().reverse();
                 //}
                 //else {
                 //    ops.sort();
