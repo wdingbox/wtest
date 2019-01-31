@@ -120,8 +120,8 @@ div[contenteditable]{
             gBim.init();
             gBim.initCat();
             gBim.Gen_Keys_Menu();
-            gBim.digi_table_init("#chp_bdy",150);
-            gBim.digi_table_init("#vrs_tbd",176);
+            gBim.digi_table_init("#chp_bdy", 150);
+            gBim.digi_table_init("#vrs_tbd", 176);
             $("#menuToggler").click(function () {
                 $("#menuContainer").slideToggle();
             });
@@ -152,7 +152,7 @@ div[contenteditable]{
 
             this.m_structObj = Obj;
             this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "_notes"];
-            this.m_catArr = ["Tora","History","Lite","MajorP","MinorP","Gospel","Pauline","Epistles"];
+            this.m_catArr = ["Tora", "History", "Lite", "MajorP", "MinorP", "Gospel", "Pauline", "Epistles"];
         }
         BibleInputMenu.prototype.init = function () {
             if ("undefined" === typeof Jsonpster) {
@@ -177,11 +177,11 @@ div[contenteditable]{
             });
         };
         BibleInputMenu.prototype.initCat = function () {
-            var s="";
-            $.each(this.m_catArr,function(i,v){
-                s+="<tr><td class='cat'>"+v+"</td></tr>";
+            var s = "";
+            $.each(this.m_catArr, function (i, v) {
+                s += "<tr><td class='cat'>" + v + "</td></tr>";
             });
-            $(this.m_cattbid).html(s).find(".cat").bind("click",function(){
+            $(this.m_cattbid).html(s).find(".cat").bind("click", function () {
                 $(this).toggleClass("hili");
             });
         };
@@ -272,13 +272,13 @@ div[contenteditable]{
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
             function validate_vcv(vol, chp, vrs) {
-                if (undefined == H_G_struct[vol]) return alert("fatal err");
+                if (undefined == H_G_struct[vol]) return alert("fatal err vol="+vol);
                 else if (undefined == H_G_struct[vol][chp]) {
                     var ichp = parseInt(chp);
                     if (Number.isInteger(ichp)) {
                         var max = Object.keys(H_G_struct[vol]).length;
                         if (parseInt(chp) > max) {
-                            return alert("input chp="+chp+":\n"+vol + " max chapter is " + max);
+                            return alert("input chp=" + chp + ":\n" + vol + " max chapter is " + max);
                         }
                     }
 
@@ -288,7 +288,7 @@ div[contenteditable]{
                     if (Number.isInteger(ivrs)) {
                         var max = Object.keys(H_G_struct[vol][chp]).length;
                         if (parseInt(vrs) >= max) {
-                            return alert("input vrs="+vrs+":\n"+vol + " " + chp + " max verse is " + max);
+                            return alert("input vrs=" + vrs + ":\n" + vol + " " + chp + " max verse is " + max);
                         }
                     }
 
@@ -296,19 +296,64 @@ div[contenteditable]{
                 return true;
             }
 
+            function get_bibOj(vol, chp, vrs) {
+                var bibOj = {};
+                if (vol.length > 0) {
+                    bibOj[vol] = {};
+                    if (chp.length > 0) {
+                        bibOj[vol][chp] = {};
+                        if (vrs.length > 0) {
+                            bibOj[vol][chp][vrs] = "";
+                        }
+                    }
+                }
+                bibOj.validate=function(StdBibObj){
+                    var b=true;
+                    var ss=JSON.stringify(this);
+                    var _This=JSON.parse(ss);
+                    Object.keys(_This).forEach(function(vol){
+                        if(undefined == StdBibObj[vol]){
+                            b=false;
+                            alert("fatal err: vol="+vol);
+                        }else{
+                            var chpobj=_This[vol];
+                            Object.keys(chpobj).forEach(function(chp){
+                                if(undefined == StdBibObj[vol][chp]){
+                                    alert("fatal err: chp="+chp);
+                                    b=false;
+                                }
+                                else{
+                                    var vrsobj=chpobj[chp];
+                                    Object.keys(vrsobj).forEach(function(vrs){
+                                        if(undefined==StdBibObj[vol][chp][vrs]){
+                                            alert("err: vrs="+vrs);
+                                            b=false;
+                                        }
+                                    })
+                                }
+                            })
 
-            var dat = { vol: vol, chp: chp, vrs: vrs, searchFile: searchFileName, searchStrn: searchStrn };
-            var ret = { fname: fnamesArr, dat: dat };
+                        }
+                    });
 
+                    return b;
+                }
+                return bibOj;
+            }
+            var bibOj=get_bibOj(vol,chp,vrs);
+            var search = {  File: searchFileName, Strn: searchStrn };
+            var ret = { fname: fnamesArr, bibOj:bibOj, Search: search };
+            Object.assign(ret.bibOj,bibOj);
             ret.validateBibleLoad = function () {
-                if (!validate_vcv(this.dat.vol, this.dat.chp, this.dat.vrs)) {
+                //var b=this.bibOj.validate(H_G_struct);
+                if (!this.bibOj.validate(H_G_struct)) {
                     return false;
                 }
-                if (this.fname.length === 0) {
+                if (ret.fname.length === 0) {
                     alert("Please select a biblical BooK Name.");
                     return false;
                 }
-                if ((this.dat.vol && this.dat.vol.length > 0)) {
+                if ((Object.keys(ret.bibOj).length > 0)) {
                     return true;
                 }
                 var s = JSON.stringify(this);
@@ -316,11 +361,11 @@ div[contenteditable]{
                 return confirm(s);
             };
             ret.validateSearch = function () {
-                if (!this.dat.searchFile) {
+                if (!this.Search.File) {
                     alert("no searchFile");
                     return false;
                 }
-                if (this.dat.searchStrn.length == 0) {
+                if (this.Search.Strn.length == 0) {
                     alert("no searchStrn");
                     return false;
                 }
@@ -350,7 +395,7 @@ div[contenteditable]{
                 s += "</tr>";
             };
 
-            $(tid).html(s).find("button:contains('0')").attr("disabled",true);
+            $(tid).html(s).find("button:contains('0')").attr("disabled", true);
             $(tid).find(".digit").bind("click", function () {
                 var num = $(this).text();
 
@@ -361,24 +406,24 @@ div[contenteditable]{
                 if (!Number.isInteger(icap)) {
                     icap = 0;
                 }
-                
+
                 var updateCap = icap * 10 + parseInt(num);
-                if(updateCap>imaxNum)updateCap=imaxNum;
+                if (updateCap > imaxNum) updateCap = imaxNum;
                 cap.text(updateCap);
                 console.log(num);
-                
-                var inextbase=icap*100;
-                if(inextbase>imaxNum){
-                    $(tid).find(".digit").attr("disabled",true);
+
+                var inextbase = icap * 100;
+                if (inextbase > imaxNum) {
+                    $(tid).find(".digit").attr("disabled", true);
                     return;
                 }
-                $(tid).find("button[disabled]").attr("disabled",null);
+                $(tid).find("button[disabled]").attr("disabled", null);
             });
             $(tid).find(".clear").bind("click", function () {
                 var cap = $(this).parentsUntil("table").parent().find("caption");
                 cap.text("*");
-                $(tid).find(".digit").attr("disabled",null);
-                $(tid).find("button:contains('0')").attr("disabled",true);
+                $(tid).find(".digit").attr("disabled", null);
+                $(tid).find("button:contains('0')").attr("disabled", true);
 
             });
             $(tid).find(".undo").bind("click", function () {
@@ -391,7 +436,7 @@ div[contenteditable]{
                     str = str.substr(0, str.length - 1);
                     cap.text(str);
                 }
-                $(tid).find(".digit").attr("disabled",null);
+                $(tid).find(".digit").attr("disabled", null);
 
             });
             return;
@@ -509,7 +554,7 @@ div[contenteditable]{
                 $(this).toggleClass("hili");
                 //$("#selvcv").text(vid).toggleClass("hili");
 
-                
+
 
 
                 //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
@@ -524,13 +569,13 @@ div[contenteditable]{
                 var file = bkidx[0] + volm + "_" + chap + ".htm#" + vers;
                 var url = "../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" + file;
                 srf += "<a href='" + url + "'>h_g</a>";
-                
 
-                var tr="<tr><td/><td>"+vid+"</td><td>"+srf+"</td></tr>";
-                if(undefined === document.m_tmp_tr_arr){
-                    document.m_tmp_tr_arr=[];
+
+                var tr = "<tr><td/><td>" + vid + "</td><td>" + srf + "</td></tr>";
+                if (undefined === document.m_tmp_tr_arr) {
+                    document.m_tmp_tr_arr = [];
                 }
-                if(document.m_tmp_tr_arr.indexOf(tr)<0){
+                if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
                     document.m_tmp_tr_arr.push(tr);
                     $("#tmpsel2ref tbody").prepend(tr);
                 }
@@ -561,7 +606,7 @@ div[contenteditable]{
         }
         function restapi_loadBibVolChpVrs() {
             var inp = gBim.get_selected_parm();
-            inp.dat.searchFile = "";//disable search
+            inp.Search.File = "";//disable search
             if (!inp.validateBibleLoad()) return;
             console.log(inp);
 

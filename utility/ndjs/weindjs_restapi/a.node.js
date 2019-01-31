@@ -210,8 +210,62 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
+BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
+  console.error("_bOj=",_bOj);
+  var retObj = {}, patBibObj={};
+  var volArr = Object.keys(_bOj);
+  if (volArr.length === 0) {
+    Object.assign(patBibObj, srcObj);
+    return { part: "whole", patBibObj: patBibObj };
+  }
+
+  var totNode={ivol:0,ichp:0,ivrs:0};
+  var totPass={ivol:0,ichp:0,ivrs:0};
+  volArr.forEach(function (vol) {
+    var chpObj = _bOj[vol];
+    var chpArr = Object.keys(chpObj);
+    if(undefined===patBibObj[vol]){
+      patBibObj[vol]={};
+    }
+    if (chpArr.length === 0) {
+      Object.assign(patBibObj[vol], srcObj[vol]);
+      totNode.ivol++;
+      //return;// { part: "vol", retObj: retObj };
+    };
+    totPass.ivol++;
+    chpArr.forEach(function (chp) {
+      var vrsObj = _bOj[vol][chp];
+      var vrsArr = Object.keys(vrsObj);
+      if(undefined===patBibObj[vol][chp]){
+        patBibObj[vol][chp]={};
+      }
+      if (vrsArr.length === 0) {
+        Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);
+        totNode.ichp++;
+        //return; { part: "chp", retObj: retObj };
+      };
+      totPass.ichp++;
+      vrsArr.forEach(function (vrs) {
+        var txt = _bOj[vol][chp][vrs];
+        patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
+        totNode.ivrs++;
+        totPass.ivs++;
+        if ("string"!=typeof txt) {
+          patBibObj[vol][chp][vrs] = "";
+          console.error("****** fatal error *****");
+        };
+      });
+    });
+  });
+  if(totNode.ivol===0&&totNode.ichp===0&&totNode.ivirs==1 && totPass.ivol==1,totPass.ichp==1&&totPass.ivrs==1){
+    return { part: "vrs", patObj: patBibObj };
+  }
+  return { part: "mixed", patObj: patBibObj };
+};
+
 BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
-  //SrcDat{Srcefilename : SrcObj}, can be server obj or client obj. 
+  //SrcDat{Srcefilename : SrcObj}, can be server obj or client obj.
+  console.log("SrcDat=",SrcDat); 
   Object.keys(SrcDat).forEach(function (name) {
     var SrcObj = SrcDat[name];
     Object.keys(SrcObj).forEach(function (vol) {
@@ -318,9 +372,9 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
     for (var i = 0; i < inpObj.fname.length; i++) {
       var fnm = inpObj.fname[i];
       var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
-      var pat = this.Get_PartialBibleObj_by_VolChpVrs(bib.obj, inpObj.dat);
+      var pat = this.Get_PartialBibleObj_by_bibOj(bib.obj, inpObj.bibOj);
       var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
-      bvcvObj[fnm] = pat.retObj;
+      bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
       if ("vrs" === pat.part) {//save to history.
         this.loadBible_write_history(pat.retObj);
@@ -328,11 +382,12 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       //console.log("client RetsObj222 *************",RetsObj)
     }
   }
-  if (inpObj.dat.searchFile && inpObj.dat.searchFile.length > 0 && inpObj.dat.searchStrn && inpObj.dat.searchStrn.length > 0) {
-    var ret2Obj = this.search_cliObj(RetObj, inpObj.dat.searchFile, inpObj.dat.searchStrn);
+  var srch=inpObj.Search;
+  if (srch.File && srch.File.length > 0 && srch.Strn && srch.Strn.length > 0) {
+    var ret2Obj = this.search_cliObj(RetObj, srch.File, srch.Strn);
     if (Object.keys(ret2Obj).length > 0) {
-      var ret = this.loadBible_read_regex_search_history(inpObj.dat.searchStrn);
-      ret.obj["Gen"]["1"]["1"][inpObj.dat.searchStrn] = Uti.getDateTime();
+      var ret = this.loadBible_read_regex_search_history(srch.Strn);
+      ret.obj["Gen"]["1"]["1"][srch.Strn] = Uti.getDateTime();
       ret.writeback();
     }
     ss = JSON.stringify(ret2Obj);
@@ -357,12 +412,18 @@ var SvrApi = {
     console.log("inpObj=", inpObj);
     return inpObj;
   },
+
+  /////HebrewBuf
+
   updateVocabHebrewBuf: function (inpObj) {
     return hbrq.updateVocabHebrewBuf(inpObj);
   },
   updateVocabHebrewDat: function (inpObj) {
 
   },
+
+  //////BibleObj
+
   loadBibleObj: function (inpObj) {
     console.log("... loadBibleObj ...");
     var bo = new BibleObj();
