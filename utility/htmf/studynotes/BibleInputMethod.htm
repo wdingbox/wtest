@@ -271,79 +271,11 @@ div[contenteditable]{
             var vol = $(".v3.hili").text();
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
-            function validate_vcv(vol, chp, vrs) {
-                if (undefined == H_G_struct[vol]) return alert("fatal err vol="+vol);
-                else if (undefined == H_G_struct[vol][chp]) {
-                    var ichp = parseInt(chp);
-                    if (Number.isInteger(ichp)) {
-                        var max = Object.keys(H_G_struct[vol]).length;
-                        if (parseInt(chp) > max) {
-                            return alert("input chp=" + chp + ":\n" + vol + " max chapter is " + max);
-                        }
-                    }
 
-                }
-                else if (undefined == H_G_struct[vol][chp][vrs]) {
-                    var ivrs = parseInt(vrs);
-                    if (Number.isInteger(ivrs)) {
-                        var max = Object.keys(H_G_struct[vol][chp]).length;
-                        if (parseInt(vrs) >= max) {
-                            return alert("input vrs=" + vrs + ":\n" + vol + " " + chp + " max verse is " + max);
-                        }
-                    }
-
-                }
-                return true;
-            }
-
-            function get_bibOj(vol, chp, vrs) {
-                var bibOj = {};
-                if (vol.length > 0) {
-                    bibOj[vol] = {};
-                    if (chp.length > 0) {
-                        bibOj[vol][chp] = {};
-                        if (vrs.length > 0) {
-                            bibOj[vol][chp][vrs] = "";
-                        }
-                    }
-                }
-                bibOj.validate=function(StdBibObj){
-                    var b=true;
-                    var ss=JSON.stringify(this);
-                    var _This=JSON.parse(ss);
-                    Object.keys(_This).forEach(function(vol){
-                        if(undefined == StdBibObj[vol]){
-                            b=false;
-                            alert("fatal err: vol="+vol);
-                        }else{
-                            var chpobj=_This[vol];
-                            Object.keys(chpobj).forEach(function(chp){
-                                if(undefined == StdBibObj[vol][chp]){
-                                    alert("fatal err: chp="+chp);
-                                    b=false;
-                                }
-                                else{
-                                    var vrsobj=chpobj[chp];
-                                    Object.keys(vrsobj).forEach(function(vrs){
-                                        if(undefined==StdBibObj[vol][chp][vrs]){
-                                            alert("err: vrs="+vrs);
-                                            b=false;
-                                        }
-                                    })
-                                }
-                            })
-
-                        }
-                    });
-
-                    return b;
-                }
-                return bibOj;
-            }
-            var bibOj=get_bibOj(vol,chp,vrs);
-            var search = {  File: searchFileName, Strn: searchStrn };
-            var ret = { fname: fnamesArr, bibOj:bibOj, Search: search };
-            Object.assign(ret.bibOj,bibOj);
+            var bibOj = Uti.get_bibOj(vol, chp, vrs);
+            var search = { File: searchFileName, Strn: searchStrn };
+            var ret = { fname: fnamesArr, bibOj: bibOj, Search: search };
+            //Object.assign(ret.bibOj,bibOj);
             ret.validateBibleLoad = function () {
                 //var b=this.bibOj.validate(H_G_struct);
                 if (!this.bibOj.validate(H_G_struct)) {
@@ -737,6 +669,78 @@ div[contenteditable]{
 
 </HTML>
 <script type="text/javascript">
+    var Uti = {
+        validate_vcv: function (vol, chp, vrs) {
+            if (undefined == H_G_struct[vol]) return alert("fatal err vol=" + vol);
+            else if (undefined == H_G_struct[vol][chp]) {
+                var ichp = parseInt(chp);
+                if (Number.isInteger(ichp)) {
+                    var max = Object.keys(H_G_struct[vol]).length;
+                    if (parseInt(chp) > max) {
+                        return alert("input chp=" + chp + ":\n" + vol + " max chapter is " + max);
+                    }
+                }
+
+            }
+            else if (undefined == H_G_struct[vol][chp][vrs]) {
+                var ivrs = parseInt(vrs);
+                if (Number.isInteger(ivrs)) {
+                    var max = Object.keys(H_G_struct[vol][chp]).length;
+                    if (parseInt(vrs) >= max) {
+                        return alert("input vrs=" + vrs + ":\n" + vol + " " + chp + " max verse is " + max);
+                    }
+                }
+
+            }
+            return true;
+        },
+
+        get_bibOj: function (vol, chp, vrs) {
+            var b = Uti.validate_vcv(vol, chp, vrs);
+            var bibOj = {};
+            if (vol.length > 0) {
+                bibOj[vol] = {};
+                if (chp.length > 0) {
+                    bibOj[vol][chp] = {};
+                    if (vrs.length > 0) {
+                        bibOj[vol][chp][vrs] = "";
+                    }
+                }
+            }
+            bibOj.validate = function (StdBibObj) {
+                var b = true;
+                var ss = JSON.stringify(this);
+                var _This = JSON.parse(ss);
+                Object.keys(_This).forEach(function (vol) {
+                    if (undefined == StdBibObj[vol]) {
+                        //b=false;
+                        alert("fatal err: vol=" + vol);
+                    } else {
+                        var chpobj = _This[vol];
+                        Object.keys(chpobj).forEach(function (chp) {
+                            if (undefined == StdBibObj[vol][chp]) {
+                                alert("fatal err: chp=" + chp);
+                                //b=false;
+                            }
+                            else {
+                                var vrsobj = chpobj[chp];
+                                Object.keys(vrsobj).forEach(function (vrs) {
+                                    if (undefined == StdBibObj[vol][chp][vrs]) {
+                                        alert("err: vrs=" + vrs);
+                                        //b=false;
+                                    }
+                                })
+                            }
+                        })
+
+                    }
+                });
+
+                return b;
+            }
+            return bibOj;
+        }
+    };
     var BibleInputMenuContainer = `
         <div id="BibleInputMenuContainer">   
         <table border="0">
