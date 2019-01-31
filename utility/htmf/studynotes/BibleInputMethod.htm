@@ -499,34 +499,9 @@ div[contenteditable]{
             $("#oBible").html(tb.htm);
             table_sort();
             $("#oBible").find(".vid").bind("click", function () {
-
-                var vid = $(this).text();
-                var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
-                var volm = "_" + mat[1];
-                var chap = mat[2]; while (chap.length < 3) chap = "0" + chap;
-                var vers = mat[3];
-
                 $(this).toggleClass("hili");
-                //$("#selvcv").text(vid).toggleClass("hili");
-
-
-
-
-                //https://www.blueletterbible.org/kjv/gen/1/1/s_1001
-                var blb = BlueLetterBibleCode[mat[1]];
-                var url = "https://www.blueletterbible.org/kjv/";
-                url += blb + "/" + mat[2] + "/" + mat[3];
-                var srf = "<a href='" + url + "'>blb</a> | ";
-
-
-                ///
-                var bkidx = BookID2IdxCode[volm];
-                var file = bkidx[0] + volm + "_" + chap + ".htm#" + vers;
-                var url = "../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" + file;
-                srf += "<a href='" + url + "'>h_g</a>";
-
-
-                var tr = "<tr><td/><td class='tmp2ref'>" + vid + "</td><td>" + srf + "</td></tr>";
+                var vid=$(this).text();
+                var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
                 if (undefined === document.m_tmp_tr_arr) {
                     document.m_tmp_tr_arr = [];
                 }
@@ -701,13 +676,18 @@ div[contenteditable]{
 
     var Uti = {
         vcv_parser: function (vid) {
+            vid=vid.replace(/\s/g,"");
             var ret = { vol: "", chp: "", vrs: "" };
+            var mat = vid.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
+            var mat = vid.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
             var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
             if (mat) {
                 ret.vol = mat[1];
                 ret.chp = mat[2];
                 ret.vrs = mat[3];
-            };
+            }else{
+                alert("vid="+vid+","+JSON.stringify(ret));
+            }
             ret.chp3 = ret.chp.padStart(3, "0");
             ret._vol = "_" + ret.vol;
             return ret;
@@ -920,19 +900,19 @@ div[contenteditable]{
         <button onclick="BibleObj_search();" title="search on svr">search</button>
         <button onclick="regex_match_next(1);" title="find on page">Next</button>
         <button onclick="regex_match_next(-1);" title="find on page">Prev</button>
-        <br>
+   
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
-        <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
-        <table id='tmpsel2ref' border="1">
+        
+        <table id='tmpsel2ref' border="1" align="left">
             <caption id='refCap'>
                 <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>|
                 <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/">h_g</a>|
                 <a id="gtw" ref="">gtw</a></caption>
-            <thead><th>#</th><th>vcv</th><th>refs</th></thead>
+            <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
             <tbody>
-                
             </tbody>
         </table>
+        <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
         </div>
         <br>`;
     const BibVolName = {
