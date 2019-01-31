@@ -244,12 +244,12 @@ BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
     });
   });
   var part="vrs";
-  Object.keys(totPass).forEach(function(ikey){
-    if(ikey!=1){
+  Object.keys(totPass).forEach(function(key){
+    if(totPass[key]!=1){
       part="mixed";
     }
   });
-  //console.log("patBibObj=",patBibObj)
+  console.log("patBibObj=",totPass, patBibObj);
   return { part: part, patObj: patBibObj };
 };
 
@@ -290,6 +290,7 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
 }
 
 BibleObj.prototype.loadBible_write_history = function (aobj) {
+  console.log("loadBible_write_history",aobj);
   var his = this.load_BibleObj("_history_verses_loaded");
   this.merge_clientBibleObj(his.obj, { "dtime": aobj }, function (srcval) {
     return Uti.getDateTime();
@@ -366,8 +367,9 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
+      console.log("pat=",pat)
       if ("vrs" === pat.part) {//save to history.
-        this.loadBible_write_history(pat.retObj);
+        this.loadBible_write_history(pat.patObj);
       }
       //console.log("client RetsObj222 *************",RetsObj)
     }
