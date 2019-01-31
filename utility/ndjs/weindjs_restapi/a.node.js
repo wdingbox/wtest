@@ -211,38 +211,38 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   return { part: "vrs", retObj: retObj };
 };
 BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
-  console.error("_bOj=",_bOj);
-  var retObj = {}, patBibObj={};
+  console.error("_bOj=", _bOj);
+  var retObj = {}, patBibObj = {};
   var volArr = Object.keys(_bOj);
   if (volArr.length === 0) {
     Object.assign(patBibObj, srcObj);
     return { part: "whole", patBibObj: patBibObj };
   }
 
-  var totNode={ivol:0,ichp:0,ivrs:0};
-  var totPass={ivol:0,ichp:0,ivrs:0};
+  var totNode = { ivol: 0, ichp: 0, ivrs: 0 };
+  var totPass = { ivol: 0, ichp: 0, ivrs: 0 };
   volArr.forEach(function (vol) {
     var chpObj = _bOj[vol];
     var chpArr = Object.keys(chpObj);
-    if(undefined===patBibObj[vol]){
-      patBibObj[vol]={};
-    }
-    if (chpArr.length === 0) {
+    if (undefined === patBibObj[vol]) {
+      patBibObj[vol] = {};
+    };
+    if (chpArr.length === 0 || undefined === srcObj[vol]) {
       Object.assign(patBibObj[vol], srcObj[vol]);
       totNode.ivol++;
-      //return;// { part: "vol", retObj: retObj };
+      return;// { part: "vol", retObj: retObj };
     };
     totPass.ivol++;
     chpArr.forEach(function (chp) {
       var vrsObj = _bOj[vol][chp];
       var vrsArr = Object.keys(vrsObj);
-      if(undefined===patBibObj[vol][chp]){
-        patBibObj[vol][chp]={};
+      if (undefined === patBibObj[vol][chp]) {
+        patBibObj[vol][chp] = {};
       }
-      if (vrsArr.length === 0) {
+      if (vrsArr.length === 0 || undefined === srcObj[vol][chp]) {
         Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);
         totNode.ichp++;
-        //return; { part: "chp", retObj: retObj };
+        return;// { part: "chp", retObj: retObj };
       };
       totPass.ichp++;
       vrsArr.forEach(function (vrs) {
@@ -250,14 +250,14 @@ BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
         patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
         totNode.ivrs++;
         totPass.ivs++;
-        if ("string"!=typeof txt) {
+        if ("string" != typeof txt) {
           patBibObj[vol][chp][vrs] = "";
           console.error("****** fatal error *****");
         };
       });
     });
   });
-  if(totNode.ivol===0&&totNode.ichp===0&&totNode.ivirs==1 && totPass.ivol==1,totPass.ichp==1&&totPass.ivrs==1){
+  if (totNode.ivol === 0 && totNode.ichp === 0 && totNode.ivirs == 1 && totPass.ivol == 1, totPass.ichp == 1 && totPass.ivrs == 1) {
     return { part: "vrs", patObj: patBibObj };
   }
   return { part: "mixed", patObj: patBibObj };
@@ -265,7 +265,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
 
 BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
   //SrcDat{Srcefilename : SrcObj}, can be server obj or client obj.
-  console.log("SrcDat=",SrcDat); 
+  console.log("SrcDat=", SrcDat);
   Object.keys(SrcDat).forEach(function (name) {
     var SrcObj = SrcDat[name];
     Object.keys(SrcObj).forEach(function (vol) {
@@ -382,7 +382,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       //console.log("client RetsObj222 *************",RetsObj)
     }
   }
-  var srch=inpObj.Search;
+  var srch = inpObj.Search;
   if (srch.File && srch.File.length > 0 && srch.Strn && srch.Strn.length > 0) {
     var ret2Obj = this.search_cliObj(RetObj, srch.File, srch.Strn);
     if (Object.keys(ret2Obj).length > 0) {
