@@ -28161,7 +28161,7 @@ var _notes=
             "35": "",
             "36": "",
             "37": "",
-            "38": "",
+            "38": "Jesus's First Question==God's First Question in Gen.&nbsp;",
             "39": "",
             "40": "",
             "41": "",
@@ -33115,7 +33115,7 @@ var _notes=
     },
     "3Jn": {
         "1": {
-            "1": "sfdddccsxxd",
+            "1": "sfd",
             "2": "",
             "3": "@The only joy is Jesus and His people.&nbsp;",
             "4": "@if my loved ones follow Him, i was very happy. it is not about Law virtual but joy.&nbsp;",
