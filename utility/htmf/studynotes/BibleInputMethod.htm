@@ -118,10 +118,7 @@ div[contenteditable]{
             gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
 
             gBim.init();
-            gBim.initCat();
-            gBim.Gen_Keys_Menu();
-            gBim.digi_table_init("#chp_bdy", 150);
-            gBim.digi_table_init("#vrs_tbd", 176);
+
             $("#menuToggler").click(function () {
                 $("#menuContainer").slideToggle();
             });
@@ -156,17 +153,23 @@ div[contenteditable]{
         }
         BibleInputMenu.prototype.init = function () {
             if ("undefined" === typeof Jsonpster) {
-                alert("Jsonpster server failed.");
+                alert("Jsonpster server down.");
             }
             $(this.m_menuHolderId).prepend(BibleInputMenuContainer);
-
+            this.Gen_Keys_Menu();
+            this.Gen_BKN_Table("#bkn_bdy", this.m_bknArr);
+            this.Gen_Cat_Table();
+            this.Gen_Digit_Table("#chp_bdy", 150);
+            this.Gen_Digit_Table("#vrs_tbd", 176);
+        };
+        BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
-            $.each(this.m_bknArr, function (i, v) {
+            $.each(bknArr, function (i, v) {
                 var hil = "";
                 if (i == 2) hil = "hili";
                 str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
             });
-            $("#bkn_bdy").html(str).find(".cbkn").bind("click", function () {
+            $(tid).html(str).find(".cbkn").bind("click", function () {
                 //$(".cbkn").removeClass("hili");
                 $(this).toggleClass("hili");
 
@@ -175,8 +178,8 @@ div[contenteditable]{
 
                 $("#searchFile").text($(this).text());
             });
-        };
-        BibleInputMenu.prototype.initCat = function () {
+        }
+        BibleInputMenu.prototype.Gen_Cat_Table = function () {
             var s = "";
             $.each(this.m_catArr, function (i, v) {
                 s += "<tr><td class='cat'>" + v + "</td></tr>";
@@ -187,7 +190,7 @@ div[contenteditable]{
         };
 
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
-            var ks = Uti.get_cha_arr_after_str("",this.m_structObj);
+            var ks = Uti.get_cha_arr_after_str("", this.m_structObj);
 
             var s = "<tr id='vitr'>";
             var _This = this;
@@ -283,7 +286,7 @@ div[contenteditable]{
             }
             return ret;
         };
-        BibleInputMenu.prototype.digi_table_init = function (tid, imaxNum) {
+        BibleInputMenu.prototype.Gen_Digit_Table = function (tid, imaxNum) {
             function _td(num) {
                 var s = "<td><button class='digit' num='" + num + "'>" + (num) + "</button></td>";
                 return s;
