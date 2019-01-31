@@ -149,7 +149,7 @@ div[contenteditable]{
 
             this.m_structObj = Obj;
             this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV", "NIV", "PINYIN", "STUS", "WLVS", "_notes"];
-            this.m_catArr = ["Tora", "History", "Lite", "MajorP", "MinorP", "Gospel", "Pauline", "Epistles"];
+            this.m_catArr = Object.keys(Cat2VolArr);
         }
         BibleInputMenu.prototype.init = function () {
             if ("undefined" === typeof Jsonpster) {
@@ -180,12 +180,15 @@ div[contenteditable]{
             });
         }
         BibleInputMenu.prototype.Gen_Cat_Table = function () {
+            var _This = this;
             var s = "";
             $.each(this.m_catArr, function (i, v) {
                 s += "<tr><td class='cat'>" + v + "</td></tr>";
             });
             $(this.m_cattbid).html(s).find(".cat").bind("click", function () {
-                var str = $(this).toggleClass("hili").text();
+                var scat = $(this).toggleClass("hili").text();
+                var vol_arr = Cat2VolArr[scat];
+                _This.Gen_Vol_Table(_This.m_voltbid, vol_arr);
             });
         };
 
@@ -775,7 +778,8 @@ div[contenteditable]{
             bibOj[vol][chp][vrs] = "";
             return bibOj;
         }
-    };
+    };////  Uti
+    ////////////////////////////////////
     var BibleInputMenuContainer = `
         <div id="BibleInputMenuContainer">   
         <table border="0">
@@ -1072,6 +1076,30 @@ div[contenteditable]{
         _3Jn: ['64', 'b'],
         _Jud: ['65', 'b'],
         _Rev: ['66', 'b'],
+    };
+    const Cat2VolArr = {
+        "Moses": ["Gen", "Exo","Lev","Num","Deu"],
+        "History": ["Jos", "Jug","Rut","1Sa","2Sa","1Ki","2Ki","1Ch","2Ch","Ezr","Neh","Est"],
+        "Literature": ["Job", "Psm","Pro","Ecc","Son"],
+        "MajorProph": ["Isa", "Jer","Lam","Eze","Dan"],
+        "MinorProph": ["Joe", "Amo","Oba","Jon","Mic","Nah","Hab","Zep","Hag","Zec","Mal"],
+        "Gospels": ["Mat", "Mak","Luk","Jhn"],
+        "Paulines": ["Rom", "1Co","2Co","Gal","Eph","Phl","Col","1Ts","2Ts","1Ti","2Ti","Tit","Phm"],
+        "Epistles": ["Heb", "Jas","1Pe","2Pe","1Jn","2Jn","3Jn","Jud"]
+    };
+    var BookJsFlavor = {
+        OTNT: ['#510000', 'wholistic Bible', '圣经全书'],
+        OT: ['#001040', 'O.T.', '旧约全书'],
+        Moses: ['#002E63', 'Moses', '摩西五经'],
+        History: ['#002E63', 'History', '历史'],
+        Literature: ['#002E63', 'Literature', '文学'],
+        Major_Prophets: ['#002E63', 'Major_Prophets', '大先知'],
+        Minor_Prophets: ['#002E63', 'Minor_Prophets', '小先知'],
+        NT: ['#4053A9', 'N.T.', '新约全书'],
+        Gospels: ['#003399', 'Gospels', '四福音书'],
+        HisSayings: ['#003399', 'HisSayings', '耶稣话语'],
+        Pauls: ['#003399', 'Pauls', '保罗书信'],
+        Other_Epistles: ['#003399', 'OtherEpistles', '其他书信'],
     };
 
 </script>
