@@ -176,23 +176,34 @@ div[contenteditable]{
             $("#blb").click(function () {
                 var vid = $(".tmp2ref.hili").text();
                 var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if(!ret)return;
 
                 var blbvol = BlueLetterBibleCode[ret.vol];
-                var url = $(this).attr("ref");
-                url += blbvol + "/" + ret.chp + "/" + ret.vrs;
-                $(this).attr("href", url);
+                var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
+                $(this).attr("href", url+file);
             });
             $("#h_g").click(function () {
                 var vid = $(".tmp2ref.hili").text();
                 var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if(!ret)return;
 
                 var volm = ret._vol;
                 var bkidx = BookID2IdxCode[volm];
                 var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
+                $(this).attr("href", url+file);
+            });
+            $("#gtw").click(function () {
+                var vid = $(".tmp2ref.hili").text();
+                var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
-                url+=file;
-                $(this).attr("href", url);
-            })
+                if(!ret)return;
+
+                var vol2 = BibVolName[ret.vol][0];
+                var file = vol2 + ret.chp + ":" + ret.vrs+"&version=NIV;CUV;KJV;NKJV;ESV";
+                $(this).attr("href", url+file);
+            });
         };
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
@@ -511,6 +522,15 @@ div[contenteditable]{
                     etr.find(".tmp2ref").bind("click",function(){
                         $(".tmp2ref").removeClass("hili");
                         $(this).addClass("hili");
+                        var vid=$(this).text().trim();
+                        $("#oBible").find(".vid").each(function(){
+                            var vid2=$(this).text().trim();
+                            if(vid===vid2){
+                                $(this)[0].scrollIntoViewIfNeeded();
+                                $(this).addClass("hili");
+                            }
+                            
+                        });
                     })
                     $("#tmpsel2ref tbody").prepend(etr);
                 }
@@ -677,6 +697,7 @@ div[contenteditable]{
     var Uti = {
         vcv_parser: function (vid) {
             vid=vid.replace(/\s/g,"");
+            if(vid.length===0)return alert("please select an item first.");
             var ret = { vol: "", chp: "", vrs: "" };
             var mat = vid.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
             var mat = vid.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
@@ -907,7 +928,7 @@ div[contenteditable]{
             <caption id='refCap'>
                 <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>|
                 <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/">h_g</a>|
-                <a id="gtw" ref="">gtw</a></caption>
+                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=">gtw</a></caption>
             <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
             <tbody>
             </tbody>
