@@ -552,7 +552,7 @@ div[contenteditable]{
         };
 
         function loadBible_history(bSortByTime) {
-            var inp = { fname: [], dat: {} };
+            var inp = { fname: [], bibOj: {},Search:{} };
             var prm = { api: "loadBible_read_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
@@ -583,9 +583,10 @@ div[contenteditable]{
                     var mat = s.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
                     if (mat) {
                         console.log(mat);
-                        var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
+                        //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
+                        var bibOj=Uti.get_bibOj(mat[1], mat[2], mat[3]);
                         var ret = gBim.get_selected_parm();
-                        var inp = { fname: ret.fname, dat: dat };
+                        var inp = { fname: ret.fname, bibOj: bibOj,Search:{File:"",Strn:""} };
                         console.log(inp);
 
                         var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };

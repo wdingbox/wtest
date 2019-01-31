@@ -211,7 +211,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   return { part: "vrs", retObj: retObj };
 };
 BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
-  //console.error("_bOj=", _bOj);
+  console.error("_bOj=", _bOj);
   var patBibObj = {};
   var totPass = { ivol: 0, ichp: 0, ivrs: 0 };
   Object.keys(_bOj).forEach(function (vol) {
