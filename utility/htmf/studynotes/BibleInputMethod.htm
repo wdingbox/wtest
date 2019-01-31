@@ -392,7 +392,7 @@ div[contenteditable]{
         //////////
         /////////
 
-        function regex_match_next() {
+        function regex_match_next(incrs) {
             var str = $("#out").val();
             var reg = new RegExp(str, "g");
 
@@ -407,7 +407,7 @@ div[contenteditable]{
                 $(elm).addClass("matIndex");
                 $(elm)[0].scrollIntoViewIfNeeded();
                 $("#searchResult").text("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
-                document.g_matchIndex++;
+                document.g_matchIndex+=incrs;
                 return;
             }
             document.g_matchStrin = str;
@@ -849,7 +849,8 @@ div[contenteditable]{
         <textarea id="out" cols='60'></textarea><br>
         
         <button onclick="BibleObj_search();" title="search on svr">search</button>
-        <button onclick="regex_match_next();" title="find on page">match</button>
+        <button onclick="regex_match_next(1);" title="find on page">Next</button>
+        <button onclick="regex_match_next(-1);" title="find on page">Prev</button>
         <br>
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
         <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
