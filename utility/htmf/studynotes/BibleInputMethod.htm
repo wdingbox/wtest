@@ -230,8 +230,8 @@ div[contenteditable]{
                 $("#BibleInput").text(BibVolName[ret.volarr[0]]);
                 $(_This.m_voltbid).html(ret.trs).find(".v3").bind("click", function () {
                     var vol = $(this).text();
-                    $(".v3").removeClass("hili");
-                    $(this).addClass("hili");
+                    //$(".v3").removeClass("hili");
+                    $(this).toggleClass("hili");
                     $("#vol_cap").text(vol);
                     $("#BibleInput").text(BibVolName[vol]);
                 });
@@ -268,25 +268,31 @@ div[contenteditable]{
             var searchFileName = $(".cbkn.hili.searchFile").text();
             var searchStrn = $("#out").val();
 
-            var vol = $(".v3.hili").text();
+            var vol_arr = [];
+            $(".v3.hili").each(function () {
+                var svol = $(this).text();
+                vol_arr.push(svol);
+            });
+
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
 
-            var bibOj = Uti.get_bibOj(vol, chp, vrs);
+            var bibOj = Uti.get_bibOj(vol_arr, chp, vrs);
             var search = { File: searchFileName, Strn: searchStrn };
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: search };
             //Object.assign(ret.bibOj,bibOj);
             ret.validateBibleLoad = function () {
                 //var b=this.bibOj.validate(H_G_struct);
-                if (null===this.bibOj) {
+                if (null === this.bibOj) {
+                    alert("bibOj=null");
                     return false;
                 }
                 if (ret.fname.length === 0) {
                     alert("Please select a biblical BooK Name.");
                     return false;
                 }
-                var volArr=Object.keys(this.bibOj);
-                if (volArr.length > 0 && volArr[0]==="*") {
+                var volArr = Object.keys(this.bibOj);
+                if (volArr.length > 0 && volArr[0] === "*") {
                     var s = JSON.stringify(this);
                     s += "\n\n no vol,chp,vrs. Load whole Bible?";
                     return confirm(s);
@@ -552,7 +558,7 @@ div[contenteditable]{
         };
 
         function loadBible_history(bSortByTime) {
-            var inp = { fname: [], bibOj: {},Search:{} };
+            var inp = { fname: [], bibOj: {}, Search: {} };
             var prm = { api: "loadBible_read_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
@@ -584,9 +590,9 @@ div[contenteditable]{
                     if (mat) {
                         console.log(mat);
                         //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                        var bibOj=Uti.get_bibOj(mat[1], mat[2], mat[3]);
+                        var bibOj = Uti.get_bibOj(mat[1], mat[2], mat[3]);
                         var ret = gBim.get_selected_parm();
-                        var inp = { fname: ret.fname, bibOj: bibOj,Search:{File:"",Strn:""} };
+                        var inp = { fname: ret.fname, bibOj: bibOj, Search: { File: "", Strn: "" } };
                         console.log(inp);
 
                         var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
@@ -697,19 +703,40 @@ div[contenteditable]{
             return true;
         },
 
-        get_bibOj: function (vol, chp, vrs) {
-            ////vol
+        get_bibOj: function (vol_arr, chp, vrs) {
             var bibOj = {};
+            ////vol
+            var vol = "";
+            if ("object" === typeof vol_arr) {
+                for (var i = 0; i < vol_arr.length; i++) {
+                    vol = vol_arr[i];
+                    if (undefined === H_G_struct[vol]) {
+                        if("*"==vol){
+                            break;
+                        }
+                        else{//add Cat here.
+                            return null;
+                        }
+                    }
+                    bibOj[vol] = {};
+                }
+                if (vol_arr.length > 1) {//for cat.
+                    return bibOj;
+                };
+            } else {
+                alert("assertion failed.");
+                return null;
+            }
+
             if (vol.length == 0) {
-                bibOj["*"]={};
-                return bibOj;
+                vol="*";
             }
             if ("*" === vol) {
                 bibOj[vol] = {};
-                return bibOj;
+                return bibOj;//load whole bible.
             }
             if (undefined == H_G_struct[vol]) {
-                alert("invalide vol=" + vol);
+                alert("invalide bible vol=" + vol);
                 return null;
             }
             bibOj[vol] = {};
@@ -718,12 +745,12 @@ div[contenteditable]{
             //
             if (chp.length == 0) { return bibOj; }
 
-            if ("*" == chp) {
+            if ("*" === chp) {
                 bibOj[vol][chp] = {};
                 return bibOj;
             }
             if (undefined === H_G_struct[vol][chp]) {
-                alert(vol + "_" + chp + " not exist.")
+                alert("ERR:\n"+vol + "_" + chp + "\n not exist.")
                 return null;
             }
             bibOj[vol][chp] = {};
@@ -736,7 +763,7 @@ div[contenteditable]{
                 return bibOj;
             }
             if (undefined === H_G_struct[vol][chp][vrs]) {
-                alert(vol + "_" + chp + ":" + vrs + " not exist.")
+                alert("ERR:\n"+vol + "_" + chp + ":" + vrs + " not exist.")
                 return null;
             }
             bibOj[vol][chp][vrs] = "";

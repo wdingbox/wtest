@@ -211,45 +211,59 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   return { part: "vrs", retObj: retObj };
 };
 BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
-  console.error("_bOj=", _bOj);
+  console.error("input _bOj=", _bOj);
   var patBibObj = {};
   var totPass = { ivol: 0, ichp: 0, ivrs: 0 };
   Object.keys(_bOj).forEach(function (vol) {
-    if(undefined === srcObj[vol]){
-      Object.assign(patBibObj,srcObj);
+    if (undefined === srcObj[vol]) {//vol='*'
+      Object.assign(patBibObj, srcObj);//load whole bible.
       return;
     }
-    if(undefined==patBibObj[vol]){
-      patBibObj[vol]={};
+    if (undefined == patBibObj[vol]) {
+      patBibObj[vol] = {};
     }
     totPass.ivol++;
-    Object.keys(_bOj[vol]).forEach(function(chp){
-      if(undefined === srcObj[vol][chp]){
-        Object.assign(patBibObj[vol],srcObj[vol]);
+    var chp_arr=Object.keys(_bOj[vol]);
+    if (chp_arr.length === 0) {//[vol]={} exit. cpy vol obj,
+      Object.assign(patBibObj[vol], srcObj[vol]);
+    }
+    chp_arr.forEach(function (chp) {
+      if (undefined === srcObj[vol][chp]) {//chp=*
+        Object.assign(patBibObj[vol], srcObj[vol]);
         return;
       }
-      if(undefined==patBibObj[vol][chp]){
-        patBibObj[vol][chp]={};
+      if (undefined == patBibObj[vol][chp]) {
+        patBibObj[vol][chp] = {};
       }
       totPass.ichp++;
-      Object.keys(_bOj[vol][chp]).forEach(function(vrs){
-        if(undefined === srcObj[vol][chp][vrs]){
-          Object.assign(patBibObj[vol][chp],srcObj[vol][chp]);
-          return;
-        }else{
-          totPass.ivrs++;
-          patBibObj[vol][chp][vrs]=srcObj[vol][chp][vrs];
+      var vrs_arr=Object.keys(_bOj[vol][chp]);
+      if (vrs_arr.length === 0) {//[vol][chp]={} exit. cpy chp obj,
+        Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);//whole chapter
+      }
+      vrs_arr.forEach(function (vrs) {
+        if (undefined === srcObj[vol][chp][vrs]) {
+          if("*"===vrs){//vrs=*
+            Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);//cp chapter
+            return;
+          }
+          else{
+            patBibObj[vol][chp]="@";// srcObj[vol][chp] maybe not exist. 
+          }
+        } else {//copy single verse. 
+          
+          patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
         }
+        totPass.ivrs++;
       });
     });
   });
-  var part="vrs";
-  Object.keys(totPass).forEach(function(key){
-    if(totPass[key]!=1){
-      part="mixed";
+  var part = "vrs";
+  Object.keys(totPass).forEach(function (key) {
+    if (totPass[key] != 1) {
+      part = "mixed";
     }
   });
-  console.log("patBibObj=",totPass, patBibObj);
+  console.log("output patBibObj=", totPass, patBibObj);
   return { part: part, patObj: patBibObj };
 };
 
@@ -290,7 +304,7 @@ BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
 }
 
 BibleObj.prototype.loadBible_write_history = function (aobj) {
-  console.log("loadBible_write_history",aobj);
+  console.log("loadBible_write_history", aobj);
   var his = this.load_BibleObj("_history_verses_loaded");
   this.merge_clientBibleObj(his.obj, { "dtime": aobj }, function (srcval) {
     return Uti.getDateTime();
@@ -367,7 +381,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
       var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
-      console.log("pat=",pat)
+      console.log("pat=", pat)
       if ("vrs" === pat.part) {//save to history.
         this.loadBible_write_history(pat.patObj);
       }
