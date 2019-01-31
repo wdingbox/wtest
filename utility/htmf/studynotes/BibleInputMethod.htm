@@ -36,7 +36,7 @@
 
 
     <script src="http://localhost:7778/Jsonpster/"></script>
-   
+
 
 
 
@@ -163,13 +163,36 @@ div[contenteditable]{
                 var m = $(_This.m_voltbid).find(".v3.hili").length;
                 if (m > 0) {
                     $(_This.m_voltbid).find(".v3").removeClass("hili");
-                }else{
+                } else {
                     $(_This.m_voltbid).find(".v3").addClass("hili");
                 }
                 m = $(_This.m_voltbid).find(".v3.hili").length;
                 $("#vol_cap_sub").text(m);
-
             });
+
+
+
+
+            $("#blb").click(function () {
+                var vid = $(".tmp2ref.hili").text();
+                var ret = Uti.vcv_parser(vid);
+
+                var blbvol = BlueLetterBibleCode[ret.vol];
+                var url = $(this).attr("ref");
+                url += blbvol + "/" + ret.chp + "/" + ret.vrs;
+                $(this).attr("href", url);
+            });
+            $("#h_g").click(function () {
+                var vid = $(".tmp2ref.hili").text();
+                var ret = Uti.vcv_parser(vid);
+
+                var volm = ret._vol;
+                var bkidx = BookID2IdxCode[volm];
+                var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
+                var url = $(this).attr("ref");
+                url+=file;
+                $(this).attr("href", url);
+            })
         };
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
@@ -227,16 +250,16 @@ div[contenteditable]{
             return ks;
         };
         BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
-            function update_digit_cap(tid){
+            function update_digit_cap(tid) {
                 var m = $(tid).find(".v3.hili").length;
                 $("#vol_cap_sub").text(m);
-                if(m>1){
+                if (m > 1) {
                     $(".digiCap").addClass("grayout");
-                }else{
+                } else {
                     $(".digiCap").removeClass("grayout");
                 }
             };
-            var _This=this;
+            var _This = this;
             var trs = Uti.Gen_Vom_trs(vol_arr);
             $("#vol_cap_sub").text("1");
             $("#BibleInputCap").text(BibVolName[vol_arr[0]]);
@@ -503,13 +526,18 @@ div[contenteditable]{
                 srf += "<a href='" + url + "'>h_g</a>";
 
 
-                var tr = "<tr><td/><td>" + vid + "</td><td>" + srf + "</td></tr>";
+                var tr = "<tr><td/><td class='tmp2ref'>" + vid + "</td><td>" + srf + "</td></tr>";
                 if (undefined === document.m_tmp_tr_arr) {
                     document.m_tmp_tr_arr = [];
                 }
                 if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
                     document.m_tmp_tr_arr.push(tr);
-                    $("#tmpsel2ref tbody").prepend(tr);
+                    var etr=$(tr);
+                    etr.find(".tmp2ref").bind("click",function(){
+                        $(".tmp2ref").removeClass("hili");
+                        $(this).addClass("hili");
+                    })
+                    $("#tmpsel2ref tbody").prepend(etr);
                 }
                 //alert(vid);
             });
@@ -672,6 +700,18 @@ div[contenteditable]{
 <script type="text/javascript">
 
     var Uti = {
+        vcv_parser: function (vid) {
+            var ret = { vol: "", chp: "", vrs: "" };
+            var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+            if (mat) {
+                ret.vol = mat[1];
+                ret.chp = mat[2];
+                ret.vrs = mat[3];
+            };
+            ret.chp3 = ret.chp.padStart(3, "0");
+            ret._vol = "_" + ret.vol;
+            return ret;
+        },
         get_cha_arr_after_str: function (str, BibleObjStruct) {
             if (!BibleObjStruct) return [];
             var ret = {};
@@ -884,7 +924,10 @@ div[contenteditable]{
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
         <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
         <table id='tmpsel2ref' border="1">
-            <caption id='selvcv'></caption>
+            <caption id='refCap'>
+                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>|
+                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/">h_g</a>|
+                <a id="gtw" ref="">gtw</a></caption>
             <thead><th>#</th><th>vcv</th><th>refs</th></thead>
             <tbody>
                 
