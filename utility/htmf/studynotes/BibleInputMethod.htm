@@ -590,7 +590,7 @@ div[contenteditable]{
                     if (mat) {
                         console.log(mat);
                         //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                        var bibOj = Uti.get_bibOj(mat[1], mat[2], mat[3]);
+                        var bibOj = Uti.get_bibOj([mat[1]], mat[2], mat[3]);
                         var ret = gBim.get_selected_parm();
                         var inp = { fname: ret.fname, bibOj: bibOj, Search: { File: "", Strn: "" } };
                         console.log(inp);
@@ -724,7 +724,7 @@ div[contenteditable]{
                     return bibOj;
                 };
             } else {
-                alert("assertion failed.");
+                alert("assertion failed: vol is string");
                 return null;
             }
 
