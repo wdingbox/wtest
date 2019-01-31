@@ -78,6 +78,9 @@
 sub{
     font-size: 8px;
 }
+.grayout{
+    color:gray;
+}
 
 
 #menuContainer, #menuToggler{
@@ -161,6 +164,19 @@ div[contenteditable]{
             this.Gen_Cat_Table();
             this.Gen_Digit_Table("#chp_bdy", 150);
             this.Gen_Digit_Table("#vrs_tbd", 176);
+
+            var _This = this;
+            $("#vol_capx").click(function () {
+                var m = $(_This.m_voltbid).find(".v3.hili").length;
+                if (m > 0) {
+                    $(_This.m_voltbid).find(".v3").removeClass("hili");
+                }else{
+                    $(_This.m_voltbid).find(".v3").addClass("hili");
+                }
+                m = $(_This.m_voltbid).find(".v3.hili").length;
+                $("#vol_cap_sub").text(m);
+
+            });
         };
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
@@ -211,8 +227,6 @@ div[contenteditable]{
                 $(".vin").removeClass("hili");
                 $(this).addClass("hili");
                 var ch = $(this).text();
-
-
                 var volarr = Uti.Get_Vol_Arr_from_KeyChar(ch[0], _This.m_structObj);
                 _This.Gen_Vol_Table(_This.m_voltbid, volarr);
 
@@ -220,6 +234,16 @@ div[contenteditable]{
             return ks;
         };
         BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
+            function update_digit_cap(tid){
+                var m = $(tid).find(".v3.hili").length;
+                $("#vol_cap_sub").text(m);
+                if(m>1){
+                    $(".digiCap").addClass("grayout");
+                }else{
+                    $(".digiCap").removeClass("grayout");
+                }
+            };
+            var _This=this;
             var trs = Uti.Gen_Vom_trs(vol_arr);
             $("#vol_cap_sub").text("1");
             $("#BibleInputCap").text(BibVolName[vol_arr[0]]);
@@ -227,7 +251,9 @@ div[contenteditable]{
                 var vol = $(this).text();
                 $(this).toggleClass("hili");
                 $("#BibleInputCap").text(BibVolName[vol]);
+                update_digit_cap(tid);
             });
+            update_digit_cap(tid);
         };
         BibleInputMenu.prototype.get_selected_parm = function () {
             var fnamesArr = [];
@@ -817,7 +843,7 @@ div[contenteditable]{
         </table>
 
         <table id='chp_tab' border="1" style="float:left;">
-            <caption class='vcvCap' id='chp_cap'>*</caption>
+            <caption class='digiCap' id='chp_cap'>*</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
                 <tr>
@@ -828,7 +854,7 @@ div[contenteditable]{
         <a style="float:left;">:</a>
 
         <table id="vrs_tab" border="1" style="float:left;">
-            <caption class='vcvCap' id='vrs_cap'>*</caption>
+            <caption class='digiCap' id='vrs_cap'>*</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
                 <tr>
@@ -1078,14 +1104,14 @@ div[contenteditable]{
         _Rev: ['66', 'b'],
     };
     const Cat2VolArr = {
-        "Moses": ["Gen", "Exo","Lev","Num","Deu"],
-        "History": ["Jos", "Jug","Rut","1Sa","2Sa","1Ki","2Ki","1Ch","2Ch","Ezr","Neh","Est"],
-        "Literature": ["Job", "Psm","Pro","Ecc","Son"],
-        "MajorProph": ["Isa", "Jer","Lam","Eze","Dan"],
-        "MinorProph": ["Joe", "Amo","Oba","Jon","Mic","Nah","Hab","Zep","Hag","Zec","Mal"],
-        "Gospels": ["Mat", "Mak","Luk","Jhn"],
-        "Paulines": ["Rom", "1Co","2Co","Gal","Eph","Phl","Col","1Ts","2Ts","1Ti","2Ti","Tit","Phm"],
-        "Epistles": ["Heb", "Jas","1Pe","2Pe","1Jn","2Jn","3Jn","Jud"]
+        "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
+        "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
+        "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
+        "MajorProph": ["Isa", "Jer", "Lam", "Eze", "Dan"],
+        "MinorProph": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
+        "Gospels": ["Mat", "Mak", "Luk", "Jhn"],
+        "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
+        "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
     };
     var BookJsFlavor = {
         OTNT: ['#510000', 'wholistic Bible', '圣经全书'],
