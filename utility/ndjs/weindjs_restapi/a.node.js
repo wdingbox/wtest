@@ -225,8 +225,8 @@ BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _xOj) {
     totPass.ivol++;
     var chp_arr = Object.keys(_xOj[vol]);
     if (chp_arr.length === 0) {//[vol]={} exit. cpy vol obj,
-    Object.assign(patBibObj[vol], srcObj[vol]);
-    return;
+      Object.assign(patBibObj[vol], srcObj[vol]);
+      return;
     }
     chp_arr.forEach(function (chp) {
       if (undefined === srcObj[vol][chp]) {////////chp=*
@@ -244,7 +244,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _xOj) {
       }
       vrs_arr.forEach(function (vrs) {
         if (undefined === srcObj[vol][chp][vrs]) {
-          patBibObj[vol][chp] = "@";// srcObj[vol][chp] maybe not exist. 
+          patBibObj[vol][chp][vrs] = "@";// srcObj[vol][chp] maybe not exist. 
         } else {//copy single verse. 
           patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
         }
