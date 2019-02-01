@@ -169,7 +169,7 @@ div[contenteditable]{
                 } else {
                     $(_This.m_voltbid).find(".v3").addClass("hili");
                 }
-                m = $(_This.m_voltbid).find(".v3.hili").length;
+                var m = $(_This.m_voltbid).find(".v3.hili").length;
                 $("#vol_cap_sub").text(m);
             });
 
@@ -870,7 +870,7 @@ div[contenteditable]{
         </table>
 
         <table border="1" style="float:left;">
-            <caption class='vcvCap' id='vol_capx'>V<sub id="vol_cap_sub">0</sub></caption>
+            <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
             <thead id="vol_hdr"></thead>
             <tbody id='vol_bdy'>
                 <tr>
@@ -880,7 +880,7 @@ div[contenteditable]{
         </table>
 
         <table id='chp_tab' border="1" style="float:left;">
-            <caption class='digiCap' id='chp_cap'>*</caption>
+            <caption class='digiCap' id='chp_cap' title='chapter'>*</caption>
             <thead id="chp_hdr"></thead>
             <tbody id='chp_bdy'>
                 <tr>
@@ -891,7 +891,7 @@ div[contenteditable]{
         <a style="float:left;">:</a>
 
         <table id="vrs_tab" border="1" style="float:left;">
-            <caption class='digiCap' id='vrs_cap'>*</caption>
+            <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
                 <tr>
@@ -928,10 +928,10 @@ div[contenteditable]{
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
         
         <table id='tmpsel2ref' border="1" align="left">
-            <caption id='refCap'>
+            <caption id='refCap' title='BlueLetterBible.org'>
                 <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>|
-                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/">h_g</a>|
-                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=">gtw</a></caption>
+                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>|
+                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gtw</a></caption>
             <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
             <tbody>
             </tbody>
