@@ -32,6 +32,7 @@
     <script language="javascript" src="../../../jsdb/jsBibleStruct/PINYIN.json.js"></script>
     <script language="javascript" src="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
     <script language="javascript" src="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
+    <script language="javascript" src="../../../jsdb/jsBibleStruct/_Max.json.js"></script>
 
 
 
@@ -117,7 +118,7 @@ div[contenteditable]{
         var gBim = null;//
 
         $(document).ready(function () {
-            gBim = new BibleInputMenu("#BibInputMenuHolder", H_G_struct);
+            gBim = new BibleInputMenu("#BibInputMenuHolder", _Max_struct);
 
             gBim.init();
 
@@ -320,7 +321,7 @@ div[contenteditable]{
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: search };
             //Object.assign(ret.bibOj,bibOj);
             ret.validateBibleLoad = function () {
-                //var b=this.bibOj.validate(H_G_struct);
+                //var b=this.bibOj.validate(_Max_struct);
                 if (null === this.bibOj) {
                     alert("bibOj=null");
                     return false;
@@ -765,21 +766,21 @@ div[contenteditable]{
             return trarr.join("");
         },
         validate_vcv_xxxxxx: function (vol, chp, vrs) {
-            if (undefined == H_G_struct[vol]) return alert("fatal err vol=" + vol);
-            else if (undefined == H_G_struct[vol][chp]) {
+            if (undefined == _Max_struct[vol]) return alert("fatal err vol=" + vol);
+            else if (undefined == _Max_struct[vol][chp]) {
                 var ichp = parseInt(chp);
                 if (Number.isInteger(ichp)) {
-                    var max = Object.keys(H_G_struct[vol]).length;
+                    var max = Object.keys(_Max_struct[vol]).length;
                     if (parseInt(chp) > max) {
                         return alert("input chp=" + chp + ":\n" + vol + " max chapter is " + max);
                     }
                 }
 
             }
-            else if (undefined == H_G_struct[vol][chp][vrs]) {
+            else if (undefined == _Max_struct[vol][chp][vrs]) {
                 var ivrs = parseInt(vrs);
                 if (Number.isInteger(ivrs)) {
-                    var max = Object.keys(H_G_struct[vol][chp]).length;
+                    var max = Object.keys(_Max_struct[vol][chp]).length;
                     if (parseInt(vrs) >= max) {
                         return alert("input vrs=" + vrs + ":\n" + vol + " " + chp + " max verse is " + max);
                     }
@@ -802,7 +803,7 @@ div[contenteditable]{
             var vol = "";
             for (var i = 0; i < vol_arr.length; i++) {
                 vol = vol_arr[i];
-                if (undefined === H_G_struct[vol]) {
+                if (undefined === _Max_struct[vol]) {
                     alert("invalide vol=" + vol);
                     return null;
                 }
@@ -819,7 +820,7 @@ div[contenteditable]{
                 console.log("chp isNaN:",chp);
                 return bibOj;
             }
-            if (undefined === H_G_struct[vol][chp]) {
+            if (undefined === _Max_struct[vol][chp]) {
                 alert("ERR:\n" + vol + "_" + chp + "\n not exist.")
                 return null;
             }
@@ -832,7 +833,7 @@ div[contenteditable]{
                 console.log("vrs isNaN:",vrs);
                 return bibOj;
             }
-            if (undefined === H_G_struct[vol][chp][vrs]) {
+            if (undefined === _Max_struct[vol][chp][vrs]) {
                 alert("ERR:\n" + vol + "_" + chp + ":" + vrs + " not exist.")
                 return null;
             }
