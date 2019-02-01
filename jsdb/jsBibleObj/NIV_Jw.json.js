@@ -655,7 +655,7 @@ var NIV_RJWOj=
             "13": "<a class=\"jw\">I tell you the truth, wherever this gospel is preached throughout the world, what she has done will also be told, in memory of her.\"</a>",
             "18": "He replied,<a class=\"jw\"> \"Go into the city to a certain man and tell him, 'The Teacher says: My appointed time is near. I am going to celebrate the Passover with my disciples at your house.' \" </a>",
             "21": "And while they were eating, he said,<a class=\"jw\"> \"I tell you the truth, one of you will betray me.\" </a>",
-            "23": "<a class=\"jw\"> </a>Jesus replied,<a class=\"jw\"> \"The one who has dipped his hand into the bowl with me will betray me.</a>",
+            "23": "Jesus replied,<a class=\"jw\"> \"The one who has dipped his hand into the bowl with me will betray me.</a>",
             "24": "<a class=\"jw\">The Son of Man will go just as it is written about him. But woe to that man who betrays the Son of Man! It would be better for him if he had not been born.\"</a>",
             "25": "Then Judas, the one who would betray him, said, \"Surely not I, Rabbi?\" Jesus answered, <a class=\"jw\">\"Yes, it is you.\" </a>",
             "26": "While they were eating, Jesus took bread, gave thanks and broke it, and gave it to his disciples, saying, <a class=\"jw\">\"Take and eat; this is my body.\" </a>",
