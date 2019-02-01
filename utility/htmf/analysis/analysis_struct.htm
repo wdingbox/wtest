@@ -106,6 +106,14 @@
             });////////////// 
             return MaxKeyObj;
         }
+        function MaxObjContrastAllObjs(MaxObj, NameOfObj) {
+            var idx = -1;
+            $.each(NameOfObj, function (name, Obj) {
+                idx++;
+                MaxObjContrastOneObj(MaxObj, Obj, name, idx);
+            });
+            return g_DiffObj;
+        }
         function MaxObjContrastOneObj(MaxObj, OneObj, ObjName, ObjNameIdx) {
 
             function assign_missingOne(gobj, VolChp, ObjName) {
@@ -137,14 +145,7 @@
                 });
             });
         };
-        function MaxObjContrastAllObjs(MaxObj, NameOfObj) {
-            var idx = -1;
-            $.each(NameOfObj, function (name, Obj) {
-                idx++;
-                MaxObjContrastOneObj(MaxObj, Obj, name, idx);
-            });
-            return g_DiffObj;
-        }
+        
         function gen_ths(thdID, NameOfObject) {
             var ths = "<tr><th>#</th><th title='vol idx'>vidx</th><th title='Vol-Chp-Vrs'>vcv</th>";
             $.each(NameOfObject, function (skey, obj) {
@@ -170,7 +171,6 @@
             var keyArr = Object.keys(NIV_struct);
             var idx = keyArr.indexOf(vol.substring(0, 3));
             return (1 + idx).toString(10).padStart(2, "0");
-            c;//1based
         };
 
         function GetObj_max_vol_chp_vrs(maxObj) {
@@ -211,22 +211,29 @@
         $(document).ready(function () {
 
                 var maxObj = GetMaxKeyObj(NameOfBibleObject);
-                var maxDat = GetObj_max_vol_chp_vrs(maxObj);
-                console.log(maxDat);
+
+                ///////////////////////////////////////
+                var maxSize = GetObj_max_vol_chp_vrs(maxObj);
+                console.log("maxDat",maxSize);
+                //////////////////////////////////////
                 var difObj = MaxObjContrastAllObjs(maxObj, NameOfBibleObject);
 
-                var sout = JSON.stringify(g_missingVolChpObj, null, 4);
-                sout += "\n===difObj===\n" + JSON.stringify(difObj, null, 4);
-                sout += "\n===g_missingVolChpVerses===\n" + JSON.stringify(g_missingVolChpVerses, null, 4);
-                $("#out").html(sout);
+                var sout ="var maxSize="+ JSON.stringify(maxSize, null, 4);
+                sout +="\nvar maxObj="+ JSON.stringify(maxObj, null, 4);
+                sout += "\nvar g_missingVolChpObj=\n"+JSON.stringify(g_missingVolChpObj, null, 4);
+                sout += "\nvar difObj=\n" + JSON.stringify(difObj, null, 4);
+                sout += "\nvar g_missingVolChpVerses=\n" + JSON.stringify(g_missingVolChpVerses, null, 4);
+                $("#out").val(sout);
 
                 gen_ths("missingVolChpObj", NameOfBibleObject);
                 gen_ths("missingVolChpVerses", NameOfBibleObject);
                 gen_trs("g_missingVolChpObj", g_missingVolChpObj);
                 gen_trs("g_missingVolChpVerses", g_missingVolChpVerses);
 
+                ////////////////////////////
 
-                gen_table_StructAna(H_G_struct);
+
+                //gen_table_StructAna(H_G_struct);
 
                 table_sort();
                 //table_col_index();
@@ -323,6 +330,7 @@
     <button id="indxer">indxer</button>
 
     <table border="1">
+        <caption>StructAna</caption>
         <thead>
             <tr>
                 <td>#</td>
@@ -336,12 +344,12 @@
 
 
     <table border="1">
-        <caption id="indxer">missed chapters</caption>
+        <caption id="indxer">MaxObj missed chapters</caption>
         <thead id="missingVolChpObj"></thead>
         <tbody id='g_missingVolChpObj'></tbody>
     </table>
     <table border="1">
-        <caption>missed versers</caption>
+        <caption>MaxObj missed versers</caption>
         <thead id="missingVolChpVerses"></thead>
         <tbody id='g_missingVolChpVerses'></tbody>
     </table>
