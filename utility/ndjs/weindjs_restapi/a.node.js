@@ -210,47 +210,42 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _bOj) {
-  console.error("input _bOj=", _bOj);
+BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _xOj) {
+  console.error("input _bOj=", _xOj);
   var patBibObj = {};
   var totPass = { ivol: 0, ichp: 0, ivrs: 0 };
-  Object.keys(_bOj).forEach(function (vol) {
+  Object.keys(_xOj).forEach(function (vol) {
     if (undefined === srcObj[vol]) {//vol='*'
-      Object.assign(patBibObj, srcObj);//load whole bible.
+      //Object.assign(patBibObj, srcObj);//load whole bible.
       return;
     }
     if (undefined == patBibObj[vol]) {
       patBibObj[vol] = {};
     }
     totPass.ivol++;
-    var chp_arr=Object.keys(_bOj[vol]);
+    var chp_arr = Object.keys(_xOj[vol]);
     if (chp_arr.length === 0) {//[vol]={} exit. cpy vol obj,
-      Object.assign(patBibObj[vol], srcObj[vol]);
+    Object.assign(patBibObj[vol], srcObj[vol]);
+    return;
     }
     chp_arr.forEach(function (chp) {
-      if (undefined === srcObj[vol][chp]) {//chp=*
-        Object.assign(patBibObj[vol], srcObj[vol]);
+      if (undefined === srcObj[vol][chp]) {////////chp=*
+        //Object.assign(patBibObj[vol], srcObj[vol]);
         return;
       }
       if (undefined == patBibObj[vol][chp]) {
         patBibObj[vol][chp] = {};
       }
       totPass.ichp++;
-      var vrs_arr=Object.keys(_bOj[vol][chp]);
+      var vrs_arr = Object.keys(_xOj[vol][chp]);
       if (vrs_arr.length === 0) {//[vol][chp]={} exit. cpy chp obj,
         Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);//whole chapter
+        return;
       }
       vrs_arr.forEach(function (vrs) {
         if (undefined === srcObj[vol][chp][vrs]) {
-          if("*"===vrs){//vrs=*
-            Object.assign(patBibObj[vol][chp], srcObj[vol][chp]);//cp chapter
-            return;
-          }
-          else{
-            patBibObj[vol][chp]="@";// srcObj[vol][chp] maybe not exist. 
-          }
+          patBibObj[vol][chp] = "@";// srcObj[vol][chp] maybe not exist. 
         } else {//copy single verse. 
-          
           patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
         }
         totPass.ivrs++;

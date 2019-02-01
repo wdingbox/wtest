@@ -11,8 +11,9 @@ function table_sort(tbid){
     }); 
 }
 
-function table_col_index(){
-	$("table").each(function(){
+function table_col_index(tid){
+	if(!tid)tid="table";
+	$(tid).each(function(){
     	$(this).find("tbody tr").each(function(i,v){
     	    $(this).find("td:eq(0)").text(1+i);
     	});

@@ -58,6 +58,9 @@
 .hili{
     background-color: red; 
 }
+.editing{
+    border:2px solid gold;
+}
 .mat{
     background-color: chartreuse;
     color:black;
@@ -122,14 +125,19 @@ div[contenteditable]{
                 $("#menuContainer").slideToggle();
             });
 
-            $("#load").click(function () {
-                var ret = gBim.get_selected_parm();
-                $("#out").val(JSON.stringify(ret, null, 4));
-
-                restapi_loadBibleObj("test", ret.dat);
+            $("#Compare_vcv").click(function () {
+                $("#oBible table").find("tr").each(function () {
+                    var len = $(this).find("td:eq(2)").find("[type=checkbox]").length;
+                    $(this).find("td:eq(0)").text(len);
+                });
+                table_sort("#oBible table");
+            });
+            $("#oBible_indxer").click(function(){
+                table_col_index("#oBible table");
+                table_sort("#oBible table");
             });
 
-            table_sort();
+            //table_sort();
             //table_col_index();
         });/////////////
 
@@ -511,7 +519,7 @@ div[contenteditable]{
             var tb = gen_table(ret);
             $("#searchResult").text("size=" + tb.size);
             $("#oBible").html(tb.htm);
-            table_sort();
+            //table_sort("#oBible table");
             $("#oBible").find(".vid").bind("click", function () {
                 $(this).toggleClass("hili");
                 var vid = $(this).text();
@@ -540,12 +548,17 @@ div[contenteditable]{
                 //alert(vid);
             });
             $("#oBible").find("[type=checkbox]").bind("click", function () {
-                if ($(this).attr("title") === "_notes") {
-                    if ($(this).prop("checked"))
-                        $(this).next().attr("contenteditable", "true").addClass("hili").bind("keyup", on_editing);
-                    else {
-                        $(this).next().removeClass("hili").attr("contenteditable", null);
+                if ($(this).attr("title") != "_notes") {
+                    if ($(this).prop("checked")) {
+                        if (!confirm("Only Authorized people can edit it. \n To Edit?")) {
+                            return;
+                        };
                     }
+                }
+                if ($(this).prop("checked"))
+                    $(this).next().attr("contenteditable", "true").addClass("editing").bind("keyup", on_editing);
+                else {
+                    $(this).next().removeClass("editing").attr("contenteditable", null);
                 }
             });
         }
@@ -672,8 +685,8 @@ div[contenteditable]{
 
 
 
-        <button id="indxer">indxer</button>
-        <button id="load">load</button>
+        <button id="oBible_indxer">indxer</button>
+        <button id="Compare_vcv">Compare_vcv</button>
 
         <table border="1">
             <thead>
@@ -776,49 +789,34 @@ div[contenteditable]{
         },
 
         get_bibOj: function (vol_arr, chp, vrs) {
+            if ("object" != typeof vol_arr) {
+                alert("assertion failed: vol must be arry");
+                return null;
+            }
+            if (vol_arr.length === 0) {
+                alert("vol_arr is empty");
+                return null;
+            }
             var bibOj = {};
             ////vol
             var vol = "";
-            if ("object" === typeof vol_arr) {
-                for (var i = 0; i < vol_arr.length; i++) {
-                    vol = vol_arr[i];
-                    if (undefined === H_G_struct[vol]) {
-                        if ("*" == vol) {
-                            break;
-                        }
-                        else {//add Cat here.
-                            return null;
-                        }
-                    }
-                    bibOj[vol] = {};
+            for (var i = 0; i < vol_arr.length; i++) {
+                vol = vol_arr[i];
+                if (undefined === H_G_struct[vol]) {
+                    alert("invalide vol=" + vol);
+                    return null;
                 }
-                if (vol_arr.length > 1) {//for cat.
-                    return bibOj;
-                };
-            } else {
-                alert("assertion failed: vol is string");
-                return null;
-            }
-
-            if (vol.length == 0) {
-                vol = "*";
-            }
-            if ("*" === vol) {
                 bibOj[vol] = {};
-                return bibOj;//load whole bible.
             }
-            if (undefined == H_G_struct[vol]) {
-                alert("invalide bible vol=" + vol);
-                return null;
-            }
-            bibOj[vol] = {};
+            if (vol_arr.length > 1) {//for cat or multiple vol names.
+                return bibOj;
+            };////////////////////////////////////////////////
             ////////
-            //chp
+            //vol 1, chp
             //
             if (chp.length == 0) { return bibOj; }
-
-            if ("*" === chp) {
-                bibOj[vol][chp] = {};
+            if (isNaN(chp)) {
+                console.log("chp isNaN:",chp);
                 return bibOj;
             }
             if (undefined === H_G_struct[vol][chp]) {
@@ -830,8 +828,8 @@ div[contenteditable]{
             //vrs
             if (vrs.length === 0) { return bibOj; }
 
-            if ("*" === vrs) {
-                bibOj[vol][chp][vrs] = "";
+            if (isNaN(vrs)) {
+                console.log("vrs isNaN:",vrs);
                 return bibOj;
             }
             if (undefined === H_G_struct[vol][chp][vrs]) {
