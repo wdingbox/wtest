@@ -673,7 +673,7 @@ var NIV_RJWOj=
             "42": "He went away a second time and prayed, <a class=\"jw\">\"My Father, if it is not possible for this cup to be taken away unless I drink it, may your will be done.\" </a>",
             "45": "Then he returned to the disciples and said to them, <a class=\"jw\">\"Are you still sleeping and resting? Look, the hour is near, and the Son of Man is betrayed into the hands of sinners. </a>",
             "46": "<a class=\"jw\">Rise, let us go! Here comes my betrayer!\" </a>",
-            "50": "<a class=\"jw\">\" </a>Jesus replied,<a class=\"jw\"> \"Friend, do what you came for.\" </a>",
+            "50": "Jesus replied,<a class=\"jw\"> \"Friend, do what you came for.\" </a>",
             "52": "<a class=\"jw\">\"Put your sword back in its place,\" </a>Jesus said to him,<a class=\"jw\"> \"for all who draw the sword will die by the sword. </a>",
             "53": "<a class=\"jw\">Do you think I cannot call on my Father, and he will at once put at my disposal more than twelve legions of angels?</a>",
             "54": "<a class=\"jw\">But how then would the Scriptures be fulfilled that say it must happen in this way?\"</a>",
