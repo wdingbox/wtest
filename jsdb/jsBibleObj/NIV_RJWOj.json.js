@@ -1,4 +1,4 @@
-var NIV=
+var NIV_RJWOj=
 {
     "Mat": {
         "3": {
@@ -2127,4 +2127,4 @@ var NIV=
             "16": "<a class=\"jw\">I will show him how much he must suffer for my name.\" </a>"
         }
     }
-};
+}
