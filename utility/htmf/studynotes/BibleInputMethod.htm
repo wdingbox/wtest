@@ -147,7 +147,7 @@ div[contenteditable]{
             this.m_cattbid = "#cat_bdy";
 
             this.m_structObj = Obj;
-            this.m_bknArr = ["BBE", "CUVS", "H_G", "KJV","KJV_Jw", "NIV","NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
+            this.m_bknArr = FnameOfBibleObj;
             this.m_catArr = Object.keys(Cat2VolArr);
         }
         BibleInputMenu.prototype.init = function () {
@@ -180,32 +180,32 @@ div[contenteditable]{
                 var vid = $(".tmp2ref.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
-                if(!ret)return;
+                if (!ret) return;
 
                 var blbvol = BlueLetterBibleCode[ret.vol];
                 var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
-                $(this).attr("href", url+file);
+                $(this).attr("href", url + file);
             });
             $("#h_g").click(function () {
                 var vid = $(".tmp2ref.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
-                if(!ret)return;
+                if (!ret) return;
 
                 var volm = ret._vol;
                 var bkidx = BookID2IdxCode[volm];
                 var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
-                $(this).attr("href", url+file);
+                $(this).attr("href", url + file);
             });
             $("#gtw").click(function () {
                 var vid = $(".tmp2ref.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
-                if(!ret)return;
+                if (!ret) return;
 
                 var vol2 = BibVolName[ret.vol][0];
-                var file = vol2 + ret.chp + ":" + ret.vrs+"&version=NIV;CUV;KJV;NKJV;ESV";
-                $(this).attr("href", url+file);
+                var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
+                $(this).attr("href", url + file);
             });
         };
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
@@ -514,25 +514,25 @@ div[contenteditable]{
             table_sort();
             $("#oBible").find(".vid").bind("click", function () {
                 $(this).toggleClass("hili");
-                var vid=$(this).text();
+                var vid = $(this).text();
                 var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
                 if (undefined === document.m_tmp_tr_arr) {
                     document.m_tmp_tr_arr = [];
                 }
                 if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
                     document.m_tmp_tr_arr.push(tr);
-                    var etr=$(tr);
-                    etr.find(".tmp2ref").bind("click",function(){
+                    var etr = $(tr);
+                    etr.find(".tmp2ref").bind("click", function () {
                         $(".tmp2ref").removeClass("hili");
                         $(this).addClass("hili");
-                        var vid=$(this).text().trim();
-                        $("#oBible").find(".vid").each(function(){
-                            var vid2=$(this).text().trim();
-                            if(vid===vid2){
+                        var vid = $(this).text().trim();
+                        $("#oBible").find(".vid").each(function () {
+                            var vid2 = $(this).text().trim();
+                            if (vid === vid2) {
                                 $(this)[0].scrollIntoViewIfNeeded();
                                 $(this).addClass("hili");
                             }
-                            
+
                         });
                     })
                     $("#tmpsel2ref tbody").prepend(etr);
@@ -699,8 +699,8 @@ div[contenteditable]{
 
     var Uti = {
         vcv_parser: function (vid) {
-            vid=vid.replace(/\s/g,"");
-            if(vid.length===0)return alert("please select an item first.");
+            vid = vid.replace(/\s/g, "");
+            if (vid.length === 0) return alert("please select an item first.");
             var ret = { vol: "", chp: "", vrs: "" };
             var mat = vid.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
             var mat = vid.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
@@ -709,8 +709,8 @@ div[contenteditable]{
                 ret.vol = mat[1];
                 ret.chp = mat[2];
                 ret.vrs = mat[3];
-            }else{
-                alert("vid="+vid+","+JSON.stringify(ret));
+            } else {
+                alert("vid=" + vid + "," + JSON.stringify(ret));
             }
             ret.chp3 = ret.chp.padStart(3, "0");
             ret._vol = "_" + ret.vol;
@@ -939,6 +939,9 @@ div[contenteditable]{
         <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
         </div>
         <br>`;
+    const FnameOfBibleObj =
+        ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
+
     const BibVolName = {
         "Gen": ['Genesis', '创世纪'],
         "Exo": ['Exodus', '出埃及记'],
@@ -1147,8 +1150,8 @@ div[contenteditable]{
         "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
         "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
         "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
-        "MajorProph": ["Isa", "Jer", "Lam", "Eze", "Dan"],
-        "MinorProph": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
+        "MajorPr": ["Isa", "Jer", "Lam", "Eze", "Dan"],
+        "MinorPr": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
         "Gospels": ["Mat", "Mak", "Luk", "Jhn"],
         "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
         "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
