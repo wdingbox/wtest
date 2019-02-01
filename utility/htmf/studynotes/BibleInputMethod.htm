@@ -241,7 +241,8 @@ div[contenteditable]{
                 s += "<tr><td class='cat'>" + v + "</td></tr>";
             });
             $(this.m_cattbid).html(s).find(".cat").bind("click", function () {
-                var scat = $(this).toggleClass("hili").text();
+                $(".cat").removeClass("hili");
+                var scat = $(this).addClass("hili").text();
                 var vol_arr = Cat2VolArr[scat];
                 _This.Gen_Vol_Table(_This.m_voltbid, vol_arr);
             });
