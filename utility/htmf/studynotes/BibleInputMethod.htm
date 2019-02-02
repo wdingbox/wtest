@@ -108,6 +108,12 @@ div[contenteditable]{
 #vrs_tab{
     background-color:rgb(149, 97, 29);
 }
+#vol_Tab thead{ display:block; }
+#vol_Tab tbody{ height:260px; overflow-y:scroll; display:block; }
+
+#load_vcv_history{
+    background-color:rgb(29, 105, 149);
+}
 #oBiblex table{width:10000px; }
 #oBible table thead tr{ display:block; }
 #oBible table tbody { height:1500px; overflow-y:scroll; display:block; }
@@ -228,6 +234,32 @@ div[contenteditable]{
 
             });
         };
+        BibleInputMenu.prototype.Gen_Keys_Menu = function () {
+            var ks = Uti.get_cha_arr_after_str("", this.m_structObj);
+
+            var s = "<tr id='vitr'>";
+            var _This = this;
+            $.each(ks, function (i, c) {
+                var volarr = Uti.Get_Vol_Arr_from_KeyChar(c, _This.m_structObj);
+                var ssb = "<sub>" + volarr.length + "</sub>";
+                if (volarr.length === 1) ssb = "";
+                c = c + ssb;
+                s += "<td><button class='vin'>" + c + "</button></td>";
+                if (9 == i) s += "</tr><tr>";
+            });
+            s += "</tr>";
+
+            $(_This.m_keytbid).html(s).find(".vin").bind("click", function () {
+                $(".vin").removeClass("hili");
+                $(this).addClass("hili");
+                var ch = $(this).text();
+                var volarr = Uti.Get_Vol_Arr_from_KeyChar(ch[0], _This.m_structObj);
+                _This.Gen_Vol_Table(_This.m_voltbid, volarr);
+
+            });
+            return ks;
+        };
+        
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
             $.each(bknArr, function (i, v) {
@@ -259,31 +291,6 @@ div[contenteditable]{
             });
         };
 
-        BibleInputMenu.prototype.Gen_Keys_Menu = function () {
-            var ks = Uti.get_cha_arr_after_str("", this.m_structObj);
-
-            var s = "<tr id='vitr'>";
-            var _This = this;
-            $.each(ks, function (i, c) {
-                var volarr = Uti.Get_Vol_Arr_from_KeyChar(c, _This.m_structObj);
-                var ssb = "<sub>" + volarr.length + "</sub>";
-                if (volarr.length === 1) ssb = "";
-                c = c + ssb;
-                s += "<td><button class='vin'>" + c + "</button></td>";
-                if (9 == i) s += "</tr><tr>";
-            });
-            s += "</tr>";
-
-            $(_This.m_keytbid).html(s).find(".vin").bind("click", function () {
-                $(".vin").removeClass("hili");
-                $(this).addClass("hili");
-                var ch = $(this).text();
-                var volarr = Uti.Get_Vol_Arr_from_KeyChar(ch[0], _This.m_structObj);
-                _This.Gen_Vol_Table(_This.m_voltbid, volarr);
-
-            });
-            return ks;
-        };
         BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
             function update_digit_cap(tid) {
                 var m = $(tid).find(".v3.hili").length;
@@ -826,7 +833,7 @@ div[contenteditable]{
             var trarr = [];
             vol_arr.forEach(function (vol) {
                 //<td align='right'>"+BibVolName[vol][0]+"</td>
-                trarr.push("<tr><td/><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
+                trarr.push("<tr><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
                 cls = " class='v3' ";
             });
             return trarr.join("");
@@ -934,13 +941,11 @@ div[contenteditable]{
             </tbody>
         </table>
 
-        <table border="1" style="float:left;">
+        <table id="vol_Tab" border="1" style="float:left;">
             <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
             <thead id="vol_hdr"></thead>
             <tbody id='vol_bdy'>
-                <tr>
-                    <td></td>
-                </tr>
+                
             </tbody>
         </table>
 
@@ -955,7 +960,7 @@ div[contenteditable]{
         </table>
         <a style="float:left;">:</a>
 
-        <table id="vrs_tab" border="1" style="float:left;">
+        <table id="vrs_tab" border="1" >
             <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
             <thead id="vrs_hdr"></thead>
             <tbody id='vrs_tbd'>
@@ -966,21 +971,26 @@ div[contenteditable]{
         </table>
 
 
-        <table border="1" style="float:left;">
-            <caption><button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
+        <table id="load_vcv_history" border="1" >
+            <caption><span id=''>
+                <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
+                <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
+                <button id="sort_history_by_vcvID"  onclick='loadBible_history(0);' title='sort by str'>^</button>
+            <span>
         </caption>
             <thead></thead>
             <tbody>
                 <tr>
                     <td>
-                       <select id="sel_load_history" multiple size='15'><option/></select><br>
-                       <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
-                       <button id="sort_history_by_vcvID"  onclick='loadBible_history(0);' title='sort by str'>^</button>
-                    </td>
+                       <select id="sel_load_history" multiple cols="100" size='10'>
+                        <option>Pleas click H button for history.</option>
+                        <option>Pleas click ^ button sort by str.</option>
+                        </select>
+                     </td>
                 </tr>
             </tbody>
         </table>
-        <br>
+       
 
         
         
