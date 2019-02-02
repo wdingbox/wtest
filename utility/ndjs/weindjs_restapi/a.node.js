@@ -310,7 +310,7 @@ BibleObj.prototype.loadBible_write_history = function (aobj) {
   his.writeback();
   console.log("*** save to history.");
 }
-BibleObj.prototype.loadBible_read_history = function (inpObj) {
+BibleObj.prototype.loadBible_read_loading_history = function (inpObj) {
   var ret = this.load_BibleObj("__history_verses_loaded");
   return ret.jstrn;
 }
@@ -439,10 +439,10 @@ var SvrApi = {
     var ss = bo.loadBible_Bkns_VolChpVrs(inpObj);
     return ss;
   },
-  loadBible_read_history: function (inpObj) {
+  loadBible_read_loading_history: function (inpObj) {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
-    var ss = bo.loadBible_read_history(inpObj);
+    var ss = bo.loadBible_read_loading_history(inpObj);
     return ss;
   },
   loadBible_read_regex_search_history: function (inpObj) {

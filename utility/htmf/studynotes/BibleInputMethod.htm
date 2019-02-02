@@ -658,7 +658,7 @@ div[contenteditable]{
 
         function loadBible_history(bSortByTime) {
             var inp = { fname: [], bibOj: {}, Search: {} };
-            var prm = { api: "loadBible_read_history", inp: inp };
+            var prm = { api: "loadBible_read_loading_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
