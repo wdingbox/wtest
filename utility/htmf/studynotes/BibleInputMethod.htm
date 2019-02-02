@@ -60,7 +60,12 @@
     background-color: red; 
 }
 .editing{
-    border:2px solid gold;
+    border:3px solid gold;
+    color:black;
+    background-color:cornsilk;
+}
+.edit_keydown{
+    border:3px solid yellow;
 }
 .mat{
     background-color: chartreuse;
@@ -482,7 +487,7 @@ div[contenteditable]{
 
             var matSize = $(".mat").length;
             if (matSize > 0 && str === document.g_matchStrin) {
-                if (document.g_matchIndex >= matSize) {
+                if (Math.abs(document.g_matchIndex) >= matSize) {
                     document.g_matchIndex = 0;
                 }
                 var elm = ".mat:eq(" + document.g_matchIndex + ")";
@@ -490,7 +495,7 @@ div[contenteditable]{
                 $(".mat.matIndex").removeClass("matIndex");
                 $(elm).addClass("matIndex");
                 $(elm)[0].scrollIntoViewIfNeeded();
-                $("#searchResult").text("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
+                SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
                 document.g_matchIndex += incrs;
                 return;
             }
@@ -510,7 +515,7 @@ div[contenteditable]{
                     document.g_matchCount++;
                 };
             });
-            $("#searchResult").text("tot:" + document.g_matchCount);
+            SearchResultsPrepend("tot:" + document.g_matchCount);
         };
 
         function restapi_loadBibVolChpVrs_genTable(ret) {
@@ -524,11 +529,13 @@ div[contenteditable]{
                     dat.chp = mat[2];
                     dat.vrs = mat[3];
                 };
+                var _This=this;
                 dat.txt = txt;
                 var inp = { fname: ["_notes"], dat: dat };
                 var par = { api: "BibleObj_update_notes", inp: inp };
                 Jsonpster.Run(par, function () {
                     jsonpsvr_ok();
+                    $(_This).removeClass("edit_keydown");
                 });
             };
             function gen_table(ret) {
@@ -560,9 +567,7 @@ div[contenteditable]{
             }
 
             var tb = gen_table(ret);
-            var results="tot=" + tb.size+","+$("#searchResult").text();
-            results=results.substr(0,40);
-            $("#searchResult").text(results);
+            SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
             //table_sort("#oBible table");
             $("#oBible").find(".vid").bind("click", function () {
@@ -592,6 +597,10 @@ div[contenteditable]{
                 }
                 //alert(vid);
             });
+            $("#oBible").find(".tx").bind("keyup", on_editing);
+            $("#oBible").find(".tx").bind("keydown", function(){
+                $(this).addClass("edit_keydown");
+            });
             $("#oBible").find("[type=checkbox]").bind("click", function () {
                 if ($(this).attr("title") != "_notes") {
                     if ($(this).prop("checked")) {
@@ -601,7 +610,7 @@ div[contenteditable]{
                     }
                 }
                 if ($(this).prop("checked"))
-                    $(this).next().attr("contenteditable", "true").addClass("editing").bind("keyup", on_editing);
+                    $(this).next().attr("contenteditable", "true").addClass("editing");
                 else {
                     $(this).next().removeClass("editing").attr("contenteditable", null);
                 }
@@ -720,6 +729,11 @@ div[contenteditable]{
             var s = $("#out").val();
             if (s.length > 10) s = "";
             $("#texta").val(s + ".");
+        }
+        function SearchResultsPrepend(str){
+            var results=str+", "+$("#searchResult").text();
+            results=results.substr(0,50);
+            $("#searchResult").text(results);
         }
 
     </script>
