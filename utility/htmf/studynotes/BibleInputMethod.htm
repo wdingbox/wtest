@@ -539,7 +539,7 @@ div[contenteditable]{
                 var _This=this;
                 dat.txt = txt;
                 var inp = { fname: ["_notes"], dat: dat };
-                var par = { api: "BibleObj_update_notes", inp: inp };
+                var par = { api: "ApiBibleObj_update_notes", inp: inp };
                 Jsonpster.Run(par, function () {
                     jsonpsvr_ok();
                     $(_This).removeClass("edit_keydown");
@@ -634,8 +634,8 @@ div[contenteditable]{
             inp.Search = gBim.get_selected_Search_Parm();
             if (!inp.validateSearch()) return;
             console.log(inp);
-            var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
-            par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
+            var par = { api: "ApiBibleObj_load_Bkns_Vols_Chp_Vrs", inp: inp };
+            par = inp.getApiParam("ApiBibleObj_load_Bkns_Vols_Chp_Vrs");
 
             Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
 
@@ -648,8 +648,8 @@ div[contenteditable]{
             if (!inp.validateBibleLoad()) return;
             console.log(inp);
 
-            var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
-            par = inp.getApiParam("loadBible_Bkns_VolChpVrs");
+            var par = { api: "ApiBibleObj_load_Bkns_Vols_Chp_Vrs", inp: inp };
+            par = inp.getApiParam("ApiBibleObj_load_Bkns_Vols_Chp_Vrs");
 
             Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
 
@@ -658,7 +658,7 @@ div[contenteditable]{
 
         function loadBible_history(bSortByTime) {
             var inp = { fname: [], bibOj: {}, Search: {} };
-            var prm = { api: "loadBible_read_loading_history", inp: inp };
+            var prm = { api: "ApiBibleObj_read_loading_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
@@ -694,7 +694,7 @@ div[contenteditable]{
                         var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
                         console.log(inp);
 
-                        var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
+                        var par = { api: "ApiBibleObj_load_Bkns_Vols_Chp_Vrs", inp: inp };
 
                         Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
                     }
@@ -706,7 +706,7 @@ div[contenteditable]{
 
         function load_search_string_history(bSortByTime) {
             var inp = { fname: ["search_history"], dat: {} };
-            var prm = { api: "loadBible_read_regex_search_history", inp: inp };
+            var prm = { api: "ApiBibleObj_read_regex_search_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
