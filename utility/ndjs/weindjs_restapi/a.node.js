@@ -150,7 +150,10 @@ var hbrq = new HebrewQ();
 
 
 
-
+const ValideBibleObjFiles={
+  __history_verses_loaded:"__history_verses_loaded",
+  __history_regex_search:"__history_regex_search"
+} 
 var BibleObj = function () {
 };
 
@@ -367,7 +370,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
         //this.loadBible_write_history(pat.patObj);
         var _inp = {}
         _inp.Search = {};
-        _inp.Search.File = "__history_verses_loaded";
+        _inp.Search.File = ValideBibleObjFiles.__history_verses_loaded;
         _inp.Search.Strn = pat.vcv;
         this.ApiBibleObj_access_regex_search_history(_inp);
       }
@@ -380,7 +383,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
     if (Object.keys(retFoundObj).length > 0) {
       var _inp = {}
       _inp.Search = {};
-      _inp.Search.File = "__history_regex_search";
+      _inp.Search.File = ValideBibleObjFiles.__history_regex_search;
       _inp.Search.Strn = srch.Strn;
       this.ApiBibleObj_access_regex_search_history(_inp);
     }
@@ -395,10 +398,10 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
   if (!inpObj || !inpObj.Search || !inpObj.Search.File || 0 === inpObj.Search.File.length) {
     return null;
   }
-  const ValideFiels = ["__history_regex_search", "__history_verses_loaded"];
   var fname = inpObj.Search.File;//
-  if (ValideFiels.indexOf(fname) < 0) {
+  if (undefined===ValideBibleObjFiles[fname]) {
     console.log("Invalide Filename to save ************* inpObj", inpObj);
+    console.log("ValideBibleObjFiles=", ValideBibleObjFile);
     return null;
   }
 
