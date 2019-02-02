@@ -408,9 +408,12 @@ div[contenteditable]{
                     vol_arr=vol_arr.concat(NT_Vols_Ary);
                     if(vol_arr.length!=66){
                         alert("err concat len="+vol_arr.length)
-                    }
+                    };
                 }
             };
+            if (0 === vol_arr.length) {
+                vol_arr=null;
+            }
 
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
@@ -426,17 +429,22 @@ div[contenteditable]{
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
             ret.validateBibleLoad = function () {
                 if (null === this.bibOj) {
-                    alert("bibOj=null");
+                    //alert("bibOj=null");
                     return false;
+                    if (confirm("load the whole Bible?")){
+                        this.bibOj={};
+                    }else{
+                        return false;
+                    }
                 }
                 if (ret.fname.length === 0) {
                     alert("Please select a biblical BooK Name.");
                     return false;
                 }
                 var volArr = Object.keys(this.bibOj);
-                if (volArr.length > 0 && volArr[0] === "*") {
+                if (volArr.length >= 66 ) {
                     var s = JSON.stringify(this);
-                    s += "\n\n no vol,chp,vrs. Load whole Bible?";
+                    s += "\n\nLoad whole Bible vol="+volArr.length+"\nContinue?";
                     return confirm(s);
                 }
                 return true;
@@ -552,7 +560,9 @@ div[contenteditable]{
             }
 
             var tb = gen_table(ret);
-            $("#searchResult").text("size=" + tb.size);
+            var results="tot=" + tb.size+","+$("#searchResult").text();
+            results=results.substr(0,40);
+            $("#searchResult").text(results);
             $("#oBible").html(tb.htm);
             //table_sort("#oBible table");
             $("#oBible").find(".vid").bind("click", function () {
