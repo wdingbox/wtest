@@ -112,8 +112,8 @@ div[contenteditable]{
 #oBible table thead tr{ display:block; }
 #oBible table tbody { height:1500px; overflow-y:scroll; display:block; }
 
-#tmpsel2ref thead{ display:block; }
-#tmpsel2ref tbody { height:180px; overflow-y:scroll; display:block; }
+#tmpsel2ref thead, #refslist thead{ display:block; }
+#tmpsel2ref tbody, #refslist tbody{ height:210px; overflow-y:scroll; display:block; }
 
 </style>
 
@@ -993,12 +993,22 @@ div[contenteditable]{
         <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
         
         <table id='tmpsel2ref' border="1" align="left">
-            <caption id='refCap' title='BlueLetterBible.org'>
-                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>|
-                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>|
-                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gtw</a></caption>
-            <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
+            <thead></thead>
             <tbody>
+            </tbody>
+        </table>
+        <table id='refslist' border="1" align="left">
+           <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
+            <tbody>
+                <tr><td>
+                    <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>
+                </td></tr>
+                <tr><td>
+                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
+                </td></tr>
+                <tr><td>
+                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gtw</a></caption>
+            </td></tr>
             </tbody>
         </table>
         <select id="regex_history_lst" size='15'  style="float:left;"><option/></select>
