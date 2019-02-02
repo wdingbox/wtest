@@ -260,7 +260,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
       });
     });
   });
-  console.log("output patBibObj=", patBibObj, totPass);
+  //console.log("output patBibObj=", patBibObj, totPass);
   return { vcv: str_vcv, patObj: patBibObj, totPass: totPass };
 };
 
@@ -365,7 +365,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
       var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
-      console.log("pat=", pat)
+      //console.log("pat=", pat)
       if (pat.vcv.length > 0) {//save to history.
         //this.loadBible_write_history(pat.patObj);
         var _inp = {}
