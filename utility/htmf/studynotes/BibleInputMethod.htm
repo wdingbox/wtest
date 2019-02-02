@@ -385,6 +385,19 @@ div[contenteditable]{
                 var svol = $(this).text();
                 vol_arr.push(svol);
             });
+            if (0 === vol_arr.length) {
+                var items_arr = [];
+                $(".v3").each(function () {
+                    var svol = $(this).text();
+                    items_arr.push(svol);
+                });
+                if (items_arr.indexOf("Gen") >= 0) {
+                    vol_arr = OT_Vols_Ary;
+                }
+                if (items_arr.indexOf("Mat") >= 0) {
+                    vol_arr = NT_Vols_Ary;
+                };
+            };
 
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
@@ -574,7 +587,7 @@ div[contenteditable]{
         function BibleObj_search() {
             var s = $("#out").val().trim();
             var inp = gBim.get_selected_load_parm();
-            inp.Search= gBim.get_selected_Search_Parm();
+            inp.Search = gBim.get_selected_Search_Parm();
             if (!inp.validateSearch()) return;
             console.log(inp);
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
@@ -1156,6 +1169,76 @@ div[contenteditable]{
         _Jud: ['65', 'b'],
         _Rev: ['66', 'b'],
     };
+    const OT_Vols_Ary = [
+        "Gen",
+        "Exo",
+        "Lev",
+        "Num",
+        "Deu",
+        "Jos",
+        "Jug",
+        "Rut",
+        "1Sa",
+        "2Sa",
+        "1Ki",
+        "2Ki",
+        "1Ch",
+        "2Ch",
+        "Ezr",
+        "Neh",
+        "Est",
+        "Job",
+        "Psm",
+        "Pro",
+        "Ecc",
+        "Son",
+        "Isa",
+        "Jer",
+        "Lam",
+        "Eze",
+        "Dan",
+        "Hos",
+        "Joe",
+        "Amo",
+        "Oba",
+        "Jon",
+        "Mic",
+        "Nah",
+        "Hab",
+        "Zep",
+        "Hag",
+        "Zec",
+        "Mal"
+    ];
+    const NT_Vols_Ary = [
+        "Mat",
+        "Mak",
+        "Luk",
+        "Jhn",
+        "Act",
+        "Rom",
+        "1Co",
+        "2Co",
+        "Gal",
+        "Eph",
+        "Phl",
+        "Col",
+        "1Ts",
+        "2Ts",
+        "1Ti",
+        "2Ti",
+        "Tit",
+        "Phm",
+        "Heb",
+        "Jas",
+        "1Pe",
+        "2Pe",
+        "1Jn",
+        "2Jn",
+        "3Jn",
+        "Jud",
+        "Rev"
+    ];
     const Cat2VolArr = {
         "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
         "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
