@@ -537,7 +537,7 @@ div[contenteditable]{
                             if ("object" == typeof val) {
                                 $.each(val, function (key, str) {
                                     var vid = vol + chp + ":" + vrs;
-                                    s += "<div><input type='checkbox' title='" + key + "'/><a vid='" + vid + "'>" + str + "</a></div>";
+                                    s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
                                 });
                             }
                             if ("string" == typeof val) {
@@ -595,6 +595,11 @@ div[contenteditable]{
                 else {
                     $(this).next().removeClass("editing").attr("contenteditable", null);
                 }
+            });
+            $("#oBible").find(".tx").bind("click", function () {
+                var txt=$(this).text();
+                var vcv=$(this).parentsUntil("tbody").find("td:eq(1)").text();
+                $("#out").val(txt+" ("+vcv+")");
             });
         }
         function BibleObj_search() {
