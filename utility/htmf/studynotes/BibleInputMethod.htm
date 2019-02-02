@@ -295,7 +295,7 @@ div[contenteditable]{
             });
             update_digit_cap(tid);
         };
-        BibleInputMenu.prototype.get_selected_parm = function () {
+        BibleInputMenu.prototype.get_selected_bkn_fnamesArr = function () {
             var fnamesArr = [];
             $(".cbkn.hili").each(function () {
                 var ss = $(this).text();
@@ -304,10 +304,14 @@ div[contenteditable]{
             if (fnamesArr.length == 0) {
                 alert("Err: no bookname selected.");
             }
-            //
+            return fnamesArr;
+        };///
+        BibleInputMenu.prototype.get_selected_Search_Parm = function () {
             var searchFileName = $(".cbkn.hili.searchFile").text();
             var searchStrn = $("#out").val();
-
+            return { File: searchFileName, Strn: searchStrn };
+        };///
+        BibleInputMenu.prototype.get_selected_xOj_Parm = function () {
             var vol_arr = [];
             $(".v3.hili").each(function () {
                 var svol = $(this).text();
@@ -318,7 +322,16 @@ div[contenteditable]{
             var vrs = $("#vrs_cap").text();
 
             var bibOj = Uti.get_bibOj(vol_arr, chp, vrs);
-            var search = { File: searchFileName, Strn: searchStrn };
+            return bibOj;
+        };///
+        BibleInputMenu.prototype.get_selected_parm = function () {
+            //
+            var fnamesArr = this.get_selected_bkn_fnamesArr();
+
+            var search = this.get_selected_Search_Parm();
+
+            var bibOj = this.get_selected_xOj_Parm();
+            
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: search };
             //Object.assign(ret.bibOj,bibOj);
             ret.validateBibleLoad = function () {
@@ -514,10 +527,7 @@ div[contenteditable]{
                 s += "</tbody></table>";
                 return { htm: s, size: idx };
             }
-            var inpobj = gBim.get_selected_parm();
-            var fnamAr = inpobj.fname;
-            const cidx = fnamAr.indexOf("_notes");
-            console.log(ret);
+
             var tb = gen_table(ret);
             $("#searchResult").text("size=" + tb.size);
             $("#oBible").html(tb.htm);
@@ -618,15 +628,15 @@ div[contenteditable]{
                     ops.sort();
                 }
 
-                $("#sel_history").html(ops.join("")).find("option").bind("click", function () {
+                $("#sel_load_history").html(ops.join("")).find("option").bind("click", function () {
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
                     if (mat) {
                         console.log(mat);
                         //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
                         var bibOj = Uti.get_bibOj([mat[1]], mat[2], mat[3]);
-                        var ret = gBim.get_selected_parm();
-                        var inp = { fname: ret.fname, bibOj: bibOj, Search: { File: "", Strn: "" } };
+                        var fnamesArr = gBim.get_selected_bkn_fnamesArr();
+                        var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
                         console.log(inp);
 
                         var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
@@ -636,7 +646,9 @@ div[contenteditable]{
                 });
 
             });
-        }
+        };///
+
+
         function load_search_string_history(bSortByTime) {
             var inp = { fname: ["search_history"], dat: {} };
             var prm = { api: "loadBible_read_regex_search_history", inp: inp };
@@ -908,7 +920,7 @@ div[contenteditable]{
             <tbody>
                 <tr>
                     <td>
-                       <select id="sel_history" multiple size='15'><option/></select><br>
+                       <select id="sel_load_history" multiple size='15'><option/></select><br>
                        <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
                        <button id="sort_history_by_vcvID"  onclick='loadBible_history(0);' title='sort by str'>^</button>
                     </td>
