@@ -384,7 +384,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
     }
   }
   var srch = inpObj.Search;
-  if (srch.File && srch.File.length > 0 && srch.Strn && srch.Strn.length > 0) {
+  if (srch && srch.File && srch.File.length > 0 && srch.Strn && srch.Strn.length > 0) {
     var ret2Obj = this.search_cliObj(RetObj, srch.File, srch.Strn);
     if (Object.keys(ret2Obj).length > 0) {
       var ret = this.loadBible_read_regex_search_history(srch.Strn);

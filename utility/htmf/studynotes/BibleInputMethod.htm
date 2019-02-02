@@ -392,18 +392,13 @@ div[contenteditable]{
             var bibOj = Uti.get_bibOj(vol_arr, chp, vrs);
             return bibOj;
         };///
-        BibleInputMenu.prototype.get_selected_parm = function () {
+        BibleInputMenu.prototype.get_selected_load_parm = function () {
             //
             var fnamesArr = this.get_selected_bkn_fnamesArr();
-
-            var search = this.get_selected_Search_Parm();
-
+            //var search = this.get_selected_Search_Parm();
             var bibOj = this.get_selected_xOj_Parm();
-
-            var ret = { fname: fnamesArr, bibOj: bibOj, Search: search };
-            //Object.assign(ret.bibOj,bibOj);
+            var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
             ret.validateBibleLoad = function () {
-                //var b=this.bibOj.validate(_Max_struct);
                 if (null === this.bibOj) {
                     alert("bibOj=null");
                     return false;
@@ -578,7 +573,8 @@ div[contenteditable]{
         }
         function BibleObj_search() {
             var s = $("#out").val().trim();
-            var inp = gBim.get_selected_parm();
+            var inp = gBim.get_selected_load_parm();
+            inp.Search= gBim.get_selected_Search_Parm();
             if (!inp.validateSearch()) return;
             console.log(inp);
             var par = { api: "loadBible_Bkns_VolChpVrs", inp: inp };
@@ -590,8 +586,8 @@ div[contenteditable]{
 
         }
         function restapi_loadBibVolChpVrs() {
-            var inp = gBim.get_selected_parm();
-            inp.Search.File = "";//disable search
+            var inp = gBim.get_selected_load_parm();
+            //inp.Search.File = "";//disable search
             if (!inp.validateBibleLoad()) return;
             console.log(inp);
 
