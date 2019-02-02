@@ -2,7 +2,7 @@ var _notes=
 {
     "Gen": {
         "1": {
-            "1": "@test is ok&nbsp;",
+            "1": "@test is ok22&nbsp;",
             "2": "",
             "3": "",
             "4": "",
@@ -297,7 +297,7 @@ var _notes=
             "6": "",
             "7": "The beginning of multiple languages is the beginning of different culutres. God's remedy to prolong the life of race, to prepare for the 1st coming of Jesus Christ to glory Him, prepare for the OT and NT with two more languages. Cross reference language is to serve as mirror to know selves.&nbsp;&nbsp;",
             "8": "",
-            "9": "The change of languages is the Beginning of cultures and nations. Since then man was born from culture, served and died for his culture. Culture is an integrated outlooking concept for love and hope and faith of peoples' life associated with their minds and hearts and strengths. God gave freedom for man to freely develope their loved culture and nation. But history proved that none of man developed culture and nation is perfect. The church is the only and final culture and kingdom for reunion of various cultures and nations. The church is the biblical culture associated with the kingdom of heaven. Culture and nation and worldview and language can be studied separately but in practice they are not dividable.&nbsp;",
+            "9": "The change of languages is the Beginning of cultures and nations. Since then man was born from culture, served and died for his culture. Culture is an integrated outlooking concept for love and hope and faith of peoples' life associated with their minds and hearts and strengths. God gave freedom for man to freely develope their loved culture and nation. But history proved that none of man developed culture and nation is perfect. The church is the only and final culture and kingdom for reunion of various cultures and nations. The church is the biblical culture associated with the kingdom of heaven. Culture and nation and worldview and language can be studied separately but in practice they are not dividable.ccc&nbsp;",
             "10": "",
             "11": "",
             "12": "",
