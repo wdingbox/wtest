@@ -216,6 +216,12 @@ div[contenteditable]{
                 var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
                 $(this).attr("href", url + file);
             });
+
+            $("#Cat_Tab caption").click(function(){
+                $(".cat").removeClass("hili");
+                $(".v3").remove();
+
+            });
         };
         BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknArr) {
             var str = "";
@@ -397,6 +403,13 @@ div[contenteditable]{
                 if (items_arr.indexOf("Mat") >= 0) {
                     vol_arr = NT_Vols_Ary;
                 };
+                if(0===items_arr.length){
+                    vol_arr=vol_arr.concat(OT_Vols_Ary);
+                    vol_arr=vol_arr.concat(NT_Vols_Ary);
+                    if(vol_arr.length!=66){
+                        alert("err concat len="+vol_arr.length)
+                    }
+                }
             };
 
             var chp = $("#chp_cap").text();
@@ -882,7 +895,7 @@ div[contenteditable]{
                 </tr>
             </tbody>
         </table>
-        <table border="1" style="float:left;">
+        <table border="1" style="float:left;" id="Cat_Tab">
             <caption class='' id='' title='Volumns Catagory'>Cat</caption>
             <thead id="cat_hdr"></thead>
             <tbody id='cat_bdy'>
@@ -1240,12 +1253,12 @@ div[contenteditable]{
         "Rev"
     ];
     const Cat2VolArr = {
-        "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
+        "Moses-ot": ["Gen", "Exo", "Lev", "Num", "Deu"],
         "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
         "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
         "MajorPr": ["Isa", "Jer", "Lam", "Eze", "Dan"],
         "MinorPr": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
-        "Gospels": ["Mat", "Mak", "Luk", "Jhn"],
+        "Gospel-nt": ["Mat", "Mak", "Luk", "Jhn"],
         "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
         "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
     };
