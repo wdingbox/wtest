@@ -121,6 +121,9 @@ div[contenteditable]{
 #tmpsel2ref thead, #refslist thead{ display:block; }
 #tmpsel2ref tbody, #refslist tbody{ height:210px; overflow-y:scroll; display:block; }
 
+#loads_buttons{
+    white-space: nowrap;
+}
 </style>
 
 
@@ -970,7 +973,7 @@ div[contenteditable]{
 
 
         <table id="load_vcv_history" border="1" >
-            <caption><span id=''>
+            <caption><span id='loads_buttons'>
                 <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
                 <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
                 <button id="sort_history_by_vcvID"  onclick='loadBible_history(0);' title='sort by str'>^</button>
