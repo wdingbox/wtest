@@ -210,8 +210,11 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   retObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
   return { part: "vrs", retObj: retObj };
 };
-BibleObj.prototype.Get_PartialBibleObj_by_bibOj = function (srcObj, _xOj) {
+BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
   console.error("input _bOj=", _xOj);
+  if(!_xOj || Object.keys(_xOj).length===0){
+    return { part: "whole", patObj: srcObj };
+  }
   var patBibObj = {};
   var totPass = { ivol: 0, ichp: 0, ivrs: 0 };
   Object.keys(_xOj).forEach(function (vol) {
@@ -372,7 +375,7 @@ BibleObj.prototype.loadBible_Bkns_VolChpVrs = function (inpObj) {
     for (var i = 0; i < inpObj.fname.length; i++) {
       var fnm = inpObj.fname[i];
       var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
-      var pat = this.Get_PartialBibleObj_by_bibOj(bib.obj, inpObj.bibOj);
+      var pat = this.Get_PartialBibleObj_by_xOj(bib.obj, inpObj.bibOj);
       var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
