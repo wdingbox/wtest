@@ -538,15 +538,18 @@ div[contenteditable]{
                 var txt = $(this).html();
                 var vid = $(this).attr("vid");
                 var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+                if (!mat) {
+                    alert("edi save err:"+vid+":"+txt);
+                    return;
+                }
                 var dat = {}
-                if (mat) {
-                    dat.vol = mat[1];
-                    dat.chp = mat[2];
-                    dat.vrs = mat[3];
-                };
-                var _This=this;
+                dat.vol = mat[1];
+                dat.chp = mat[2];
+                dat.vrs = mat[3];
                 dat.txt = txt;
-                var inp = { fname: ["_notes"], dat: dat };
+
+                var _This=this;
+                var inp = { fname:[], vcvx: dat };
                 var par = { api: "ApiBibleObj_update_notes", inp: inp };
                 Jsonpster.Run(par, function () {
                     jsonpsvr_ok();
