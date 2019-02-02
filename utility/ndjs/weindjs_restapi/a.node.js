@@ -216,7 +216,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
     return { part: "whole", patObj: srcObj };
   }
   var patBibObj = {};
-  var str_vcv=""; totPass = { ivol: 0, ichp: 0, ivrs: 0 };
+  var str_vcv = ""; totPass = { ivol: 0, ichp: 0, ivrs: 0 };
   Object.keys(_xOj).forEach(function (vol) {
     if (undefined === srcObj[vol]) {//vol='*'
       //Object.assign(patBibObj, srcObj);//load whole bible.
@@ -250,7 +250,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
           patBibObj[vol][chp][vrs] = "@";// srcObj[vol][chp] maybe not exist. 
         } else {//copy single verse. 
           patBibObj[vol][chp][vrs] = srcObj[vol][chp][vrs];
-          str_vcv=vol+chp+":"+vrs;
+          str_vcv = vol + chp + ":" + vrs;
 
         }
         totPass.ivrs++;
@@ -258,7 +258,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
     });
   });
   console.log("output patBibObj=", patBibObj, totPass);
-  return { vcv: str_vcv, patObj: patBibObj , totPass: totPass};
+  return { vcv: str_vcv, patObj: patBibObj, totPass: totPass };
 };
 
 BibleObj.prototype.merge_clientBibleObj = function (clientObj, SrcDat, cb) {
@@ -376,7 +376,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
       console.log("pat=", pat)
-      if ( pat.vcv.length>0) {//save to history.
+      if (pat.vcv.length > 0) {//save to history.
         this.loadBible_write_history(pat.patObj);
       }
       //console.log("client RetsObj222 *************",RetsObj)
@@ -395,13 +395,23 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
   return ss;
 };
 BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
-  var ret = this.load_BibleObj("__history_regex_search");
-  if (inpObj && inpObj.Search && inpObj.Search.Strn) {//only read no write.
-    var srchstr = inpObj.Search.Strn;
-    if (srchstr.length > 0) {//write to history.
-      ret.obj["Gen"]["1"]["1"][srchstr] = Uti.getDateTime();
-      ret.writeback();
-    }
+  if (!inpObj || !inpObj.Search || !inpObj.Search.File || 0 === inpObj.Search.File.length) {
+    return null;
+  }
+  var valideFiels = ["__history_regex_search", "__history_verses_loaded"];
+  var fname = inpObj.Search.File;//
+  if (valideFiels.indexOf(fname) < 0) {
+    return null;
+  }
+
+  var ret = this.load_BibleObj(fname);
+  if (!inpObj.Search.Strn) {//only read no write.
+    return ret;
+  }
+  var srchstr = inpObj.Search.Strn;
+  if (srchstr.length > 0) {//write to history.
+    ret.obj["Gen"]["1"]["1"][srchstr] = Uti.getDateTime();
+    ret.writeback();
   }
   return ret;
 };
