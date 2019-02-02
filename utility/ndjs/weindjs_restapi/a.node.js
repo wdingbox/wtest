@@ -391,8 +391,6 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
     var retFoundObj = this.search_cliObj(RetObj, srch.File, srch.Strn);
     if (Object.keys(retFoundObj).length > 0) {
       var ret = this.ApiBibleObj_access_regex_search_history(inpObj);
-      //ret.obj["Gen"]["1"]["1"][srch.Strn] = Uti.getDateTime();
-      //ret.writeback();
     }
     ss = JSON.stringify(retFoundObj);
   } else {
@@ -402,7 +400,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
 };
 BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
   var ret = this.load_BibleObj("__history_regex_search");
-  if(!inpObj || !inpObj.Search || !inpObj.Search.File || !inpObj.Search.Strn  ){//only read no write.
+  if(!inpObj || !inpObj.Search || !inpObj.Search.Strn  ){//only read no write.
     return ret;    
   }
   var srchstr=inpObj.Search.Strn;
