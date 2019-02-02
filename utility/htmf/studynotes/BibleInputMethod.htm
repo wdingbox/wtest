@@ -706,7 +706,7 @@ div[contenteditable]{
 
         function load_search_string_history(bSortByTime) {
             var inp = { fname: ["search_history"], dat: {} };
-            var prm = { api: "ApiBibleObj_read_regex_search_history", inp: inp };
+            var prm = { api: "ApiBibleObj_access_regex_search_history", inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);

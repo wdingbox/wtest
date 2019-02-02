@@ -388,20 +388,28 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
   }
   var srch = inpObj.Search;
   if (srch && srch.File && srch.File.length > 0 && srch.Strn && srch.Strn.length > 0) {
-    var ret2Obj = this.search_cliObj(RetObj, srch.File, srch.Strn);
-    if (Object.keys(ret2Obj).length > 0) {
-      var ret = this.ApiBibleObj_read_regex_search_history(srch.Strn);
-      ret.obj["Gen"]["1"]["1"][srch.Strn] = Uti.getDateTime();
-      ret.writeback();
+    var retFoundObj = this.search_cliObj(RetObj, srch.File, srch.Strn);
+    if (Object.keys(retFoundObj).length > 0) {
+      var ret = this.ApiBibleObj_access_regex_search_history(inpObj);
+      //ret.obj["Gen"]["1"]["1"][srch.Strn] = Uti.getDateTime();
+      //ret.writeback();
     }
-    ss = JSON.stringify(ret2Obj);
+    ss = JSON.stringify(retFoundObj);
   } else {
     ss = JSON.stringify(RetObj);
   }
   return ss;
 };
-BibleObj.prototype.ApiBibleObj_read_regex_search_history = function (searchStrn) {
+BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
   var ret = this.load_BibleObj("__history_regex_search");
+  if(!inpObj || !inpObj.Search || !inpObj.Search.File || !inpObj.Search.Strn  ){//only read no write.
+    return ret;    
+  }
+  var srchstr=inpObj.Search.Strn;
+  if(srchstr.length>0){//write to history.
+    ret.obj["Gen"]["1"]["1"][srchstr] = Uti.getDateTime();
+    ret.writeback();
+  }
   return ret;
 };
 
@@ -445,10 +453,10 @@ var SvrApi = {
     var ss = bo.ApiBibleObj_read_loading_history(inpObj);
     return ss;
   },
-  ApiBibleObj_read_regex_search_history: function (inpObj) {
+  ApiBibleObj_access_regex_search_history: function (inpObj) {
     console.log("... loadBible_Bkn_VolChpVrs ...");
     var bo = new BibleObj();
-    var ret = bo.ApiBibleObj_read_regex_search_history(inpObj);
+    var ret = bo.ApiBibleObj_access_regex_search_history(inpObj);
     return ret.jstrn;
   },
   ApiBibleObj_update_notes: function (inpObj) {
