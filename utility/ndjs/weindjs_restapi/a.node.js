@@ -12,36 +12,9 @@ var path = require('path');
 var cheerio = require("cheerio"); //>> npm install cheerio
 
 
-app.g_iPort = 7778;
-app.get("/", (req, res) => {
-  console.log("root ok");
-  console.log("res.req.headers.host=", res.req.headers.host);
-  //res.send("<script>alert(\'ss\');</script>");
-  var obj = { samp: 'ffa' };
-  var s = JSON.stringify(res.req.headers);
-  res.send("restapi Jsonpster. clientSite:" + s);
-});
-app.get("/Jsonpster", (req, res) => {
-  console.log();
-  console.log("res.req.headers.host=", res.req.headers.host);
-  Object.keys(res.req.headers).forEach(function (v) {
-    console.log(v);
-  })
 
-  var q = url.parse(req.url, true).query;
-  q.test = function (i) {
-    alert(i);
-  }
-  console.log(JSON.stringify(q));
 
-  //
-  var s = "var Jsonpster={};";
-  s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
-  s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
-  console.log(s);
-  res.send(s);
-  res.end();
-});
+
 
 
 
@@ -150,10 +123,10 @@ var hbrq = new HebrewQ();
 
 
 
-const ValideBibleObjFiles={
-  __history_verses_loaded:"__history_verses_loaded",
-  __history_regex_search:"__history_regex_search"
-} 
+const ValideBibleObjFiles = {
+  __history_verses_loaded: "__history_verses_loaded",
+  __history_regex_search: "__history_regex_search"
+}
 var BibleObj = function () {
 };
 
@@ -399,7 +372,7 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
     return null;
   }
   var fname = inpObj.Search.File;//
-  if (undefined===ValideBibleObjFiles[fname]) {
+  if (undefined === ValideBibleObjFiles[fname]) {
     console.log("Invalide Filename to save ************* inpObj", inpObj);
     console.log("ValideBibleObjFiles=", ValideBibleObjFile);
     return null;
@@ -464,7 +437,9 @@ var SvrApi = {
     return ss;
   }
 };//////SvrApi///////////////////////////////////
+var RestApi={}//clientSite usage.
 Object.keys(SvrApi).forEach(function (api) {
+  RestApi[api]=api;
   app.get("/" + api, (req, res) => {
     var inpObj = SvrApi.GetApiInputParamObj(req, res);
     var ret = SvrApi[api](inpObj);
@@ -475,9 +450,49 @@ Object.keys(SvrApi).forEach(function (api) {
 });
 ////////////////////////////////////////////////
 
+//for BibleObj clientSite Usage. 
+RestApi["HistFile"]=ValideBibleObjFiles;
 
 
 
+
+app.g_iPort = 7778;
+app.get("/", (req, res) => {
+  console.log("root ok");
+  console.log("res.req.headers.host=", res.req.headers.host);
+  //res.send("<script>alert(\'ss\');</script>");
+  var obj = { samp: 'ffa' };
+  var s = JSON.stringify(res.req.headers);
+  res.send("restapi Jsonpster. clientSite:" + s);
+});
+
+
+
+app.get("/Jsonpster", (req, res) => {
+  console.log();
+  console.log("res.req.headers.host=", res.req.headers.host);
+  Object.keys(res.req.headers).forEach(function (v) {
+    console.log(v);
+  })
+
+  var q = url.parse(req.url, true).query;
+  q.test = function (i) {
+    alert(i);
+  }
+  console.log(JSON.stringify(q));
+
+  var jstr_RestApi = JSON.stringify(RestApi);
+  //////////////
+  var s = "var Jsonpster={};";
+  s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
+  s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
+  s += "\n const RestApi=JSON.parse('" + jstr_RestApi + "');";
+
+
+  console.log(s);
+  res.send(s);
+  res.end();
+});
 app.listen(app.g_iPort, () => {
   console.log("app listern port:7778...");
   hbrq.get_VocabHebrewBufObj();
