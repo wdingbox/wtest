@@ -84,7 +84,6 @@
 
         var BibleInputMenu = function () {
 
-            this.m_cattbid = "#cat_bdy";
 
 
             this.m_bknArr = FnameOfBibleObj;
@@ -97,7 +96,7 @@
             $("body").prepend(BibleInputMenuContainer);
 
             this.Gen_Keys_Menu();
-            this.Gen_BKN_Table("#bkn_bdy", this.m_bknArr);
+            this.Gen_BKN_Table("#Tab_bkn tbody", this.m_bknArr);
             this.Gen_Cat_Table();
             this.Gen_Digit_Table("#Tab_chp tbody", 150);
             this.Gen_Digit_Table("#Tab_vrs tbody", 176);
@@ -149,7 +148,7 @@
                 $(this).attr("href", url + file);
             });
 
-            $("#Cat_Tab caption").click(function () {
+            $("#Tab_cat caption").click(function () {
                 $(".cat").removeClass("hili");
                 $(".v3").remove();
 
@@ -204,7 +203,7 @@
             $.each(this.m_catArr, function (i, v) {
                 s += "<tr><td class='cat'>" + v + "</td></tr>";
             });
-            $(this.m_cattbid).html(s).find(".cat").bind("click", function () {
+            $("#Tab_cat tbody").html(s).find(".cat").bind("click", function () {
                 $(".cat").removeClass("hili");
                 var scat = $(this).addClass("hili").text();
                 var vol_arr = Cat2VolArr[scat];
@@ -941,19 +940,19 @@
                 <thead id=""></thead>
                 <tbody id=""></tbody>
             </table>
-            <table border="1" style="float:left;">
+            <table id="Tab_bkn" border="1" style="float:left;">
                 <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
-                <thead id="bkn_hdr"></thead>
-                <tbody id='bkn_bdy'>
+                <thead id=""></thead>
+                <tbody id=''>
                     <tr>
                         <td></td>
                     </tr>
                 </tbody>
             </table>
-            <table border="1" style="float:left;" id="Cat_Tab">
+            <table border="1" style="float:left;" id="Tab_cat">
                 <caption class='' id='' title='Volumns Catagory'>Cat</caption>
-                <thead id="cat_hdr"></thead>
-                <tbody id='cat_bdy'>
+                <thead id=""></thead>
+                <tbody id=''>
                     <tr>
                         <td></td>
                     </tr>
