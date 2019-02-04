@@ -85,7 +85,7 @@
         var BibleInputMenu = function () {
          
             
-            this.m_chptbid = "#chp_bdy";
+            
             this.m_vrstbid = "#vrs_tbd";
 
             this.m_cattbid = "#cat_bdy";
@@ -103,7 +103,7 @@
             this.Gen_Keys_Menu();
             this.Gen_BKN_Table("#bkn_bdy", this.m_bknArr);
             this.Gen_Cat_Table();
-            this.Gen_Digit_Table("#chp_bdy", 150);
+            this.Gen_Digit_Table("#Tab_chp tbody", 150);
             this.Gen_Digit_Table("#vrs_tbd", 176);
 
             var _This = this;
@@ -884,7 +884,7 @@
 
     #BibInputMenuHolder {}
 
-    #chp_tab {
+    #Tab_chp {
         background-color: green;
     }
 
@@ -972,10 +972,10 @@
                 </tbody>
             </table>
 
-            <table id='chp_tab' border="1" style="float:left;">
+            <table id='Tab_chp' border="1" style="float:left;">
                 <caption class='digiCap' id='chp_cap' title='chapter'>*</caption>
-                <thead id="chp_hdr"></thead>
-                <tbody id='chp_bdy'>
+                <thead id=""></thead>
+                <tbody id=''>
                     <tr>
                         <td></td>
                     </tr>
