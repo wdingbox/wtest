@@ -452,7 +452,7 @@
             };
         };
 
-        function restapi_loadBibVolChpVrs_genTable(ret) {
+        function apiCallback_Gen_clientBibleObj_table(ret) {
             function on_editing() {
                 var txt = $(this).html();
                 var vid = $(this).attr("vid");
@@ -480,7 +480,6 @@
             var tb = Uti.gen_clientBibleObj_table(ret);
             SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
-           
             $("#oBible").find(".vid").bind("click", function () {
                 $(this).toggleClass("hili");
                 var vid = $(this).text();
@@ -541,7 +540,7 @@
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
             par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
 
-            Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
+            Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
 
@@ -555,18 +554,18 @@
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
             par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
 
-            Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
+            Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
         };
 
-        function loadBible_history(bSortByTime) {
+        function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
-                var ops = read_history_to_opt(ret,bSortByTime);
+                var ops = Uti.read_history_to_opt(ret,bSortByTime);
                 $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
@@ -580,39 +579,22 @@
 
                         var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
 
-                        Jsonpster.Run(par, restapi_loadBibVolChpVrs_genTable);
+                        Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
                     }else{alert("vcv err:"+s)}
                 });
 
             });
         };///
 
-        function read_history_to_opt(ret,bSortByTime) {
-            var ops = [];
-            $.each(ret, function (vol, chobj) {
-                $.each(chobj, function (chp, vrsObj) {
-                    $.each(vrsObj, function (vrs, ob) {
-                        $.each(ob, function (searchStr, tm) {
-                            if (!bSortByTime) tm = "";
-                            ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
-                        });
-                    });
-                });
-            });
-            ops.sort();
-            if(bSortByTime){
-                ops.reverse();
-            }
-            return ops;
-        }
+        
 
-        function load_search_string_history(bSortByTime) {
+        function onclick_load_search_string_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
-                var ops=read_history_to_opt(ret,true);
+                var ops=Uti.read_history_to_opt(ret,true);
                 $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
                     var s = $(this).text().trim();
                     $("#out").val(s);
@@ -648,6 +630,24 @@
 <script type="text/javascript">
 
     var Uti = {
+        read_history_to_opt:function (ret,bSortByTime) {
+            var ops = [];
+            $.each(ret, function (vol, chobj) {
+                $.each(chobj, function (chp, vrsObj) {
+                    $.each(vrsObj, function (vrs, ob) {
+                        $.each(ob, function (searchStr, tm) {
+                            if (!bSortByTime) tm = "";
+                            ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+                        });
+                    });
+                });
+            });
+            ops.sort();
+            if(bSortByTime){
+                ops.reverse();
+            }
+            return ops;
+        },
         vcv_parser: function (vid) {
             vid = vid.replace(/\s/g, "");
             if (vid.length === 0) return alert("please select an item first.");
@@ -1010,8 +1010,8 @@
             <table id="Tab_load_vcv_history" border="1">
                 <caption><span id='loads_buttons'>
                         <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
-                        <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
-                        <button id="sort_history_by_vcvID" onclick='loadBible_history(0);' title='sort by str'>^</button>
+                        <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>H</button>
+                        <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
                         <span>
                 </caption>
                 <thead></thead>
@@ -1036,7 +1036,7 @@
             <button onclick="regex_match_next(1);" title="find on page">Next</button>
             <button onclick="regex_match_next(-1);" title="find on page">Prev</button>
 
-            <a id="searchResult" onclick="load_search_string_history();" title='load search history.'>search result...<a><br>
+            <a id="searchResult" onclick="onclick_load_search_string_history();" title='load search history.'>search result...<a><br>
 
                     <table id='tmpsel2ref' border="1" align="left">
                         <thead></thead>
