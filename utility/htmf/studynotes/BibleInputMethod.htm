@@ -59,21 +59,7 @@
 
             gBim.init();
 
-            $("#menuToggler").click(function () {
-                $("#menuContainer").slideToggle();
-            });
-
-            $("#Compare_vcv").click(function () {
-                $("#oBible table").find("tr").each(function () {
-                    var len = $(this).find("td:eq(2)").find("[type=checkbox]").length;
-                    $(this).find("td:eq(0)").text(len);
-                });
-                table_sort("#oBible table");
-            });
-            $("#oBible_indxer").click(function () {
-                table_col_index("#oBible table");
-                table_sort("#oBible table");
-            });
+            
 
             //table_sort();
             //table_col_index();
@@ -83,9 +69,6 @@
 
 
         var BibleInputMenu = function () {
-
-
-
             this.m_bknArr = FnameOfBibleObj;
             this.m_catArr = Object.keys(Cat2VolArr);
         }
@@ -102,6 +85,25 @@
             this.Gen_Digit_Table("#Tab_vrs tbody", 176);
 
             var _This = this;
+
+            $("#menuToggler").click(function () {
+                $("#menuContainer").slideToggle();
+            });
+
+            $("#Compare_vcv").click(function () {
+                $("#oBible table").find("tr").each(function () {
+                    var len = $(this).find("td:eq(2)").find("[type=checkbox]").length;
+                    $(this).find("td:eq(0)").text(len);
+                });
+                table_sort("#oBible table");
+            });
+            $("#oBible_indxer").click(function () {
+                table_col_index("#oBible table");
+                table_sort("#oBible table");
+            });
+
+
+            
             $("#vol_capx").click(function () {
                 var m = $("#Tab_vol tbody").find(".v3.hili").length;
                 if (m > 0) {
