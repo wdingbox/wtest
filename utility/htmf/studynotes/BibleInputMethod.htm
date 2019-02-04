@@ -447,7 +447,6 @@
                 var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function () {
-                    jsonpsvr_ok();
                     SearchResultsPrepend("found");
                 });
             };
@@ -476,35 +475,9 @@
                     $(_This).removeClass("edit_keydown");
                 });
             };
-            function gen_table(ret) {
-                var s = "<table border='1'>";
-                s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
-                s += "<tbody>";
-                var idx = 0;
-                $.each(ret, function (vol, chpObj) {
-                    $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, val) {
-                            //console.log("typeof val=", typeof val);
-                            var vid = vol + "<br>" + chp + ":" + vrs;
-                            s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
-                            if ("object" == typeof val) {
-                                $.each(val, function (key, str) {
-                                    var vid = vol + chp + ":" + vrs;
-                                    s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
-                                });
-                            }
-                            if ("string" == typeof val) {
-                                s += "<div>" + val + "</iv>";
-                            }
-                            s += "</td></tr>";
-                        });
-                    });
-                });
-                s += "</tbody></table>";
-                return { htm: s, size: idx };
-            }
+            
 
-            var tb = gen_table(ret);
+            var tb = Uti.gen_clientBibleObj_table(ret);
             SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
             //table_sort("#oBible table");
@@ -802,7 +775,35 @@
             }
             bibOj[vol][chp][vrs] = "";
             return bibOj;
-        }
+        },
+    
+        gen_clientBibleObj_table : function(ret) {
+                var s = "<table border='1'>";
+                s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
+                s += "<tbody>";
+                var idx = 0;
+                $.each(ret, function (vol, chpObj) {
+                    $.each(chpObj, function (chp, vrsObj) {
+                        $.each(vrsObj, function (vrs, val) {
+                            //console.log("typeof val=", typeof val);
+                            var vid = vol + "<br>" + chp + ":" + vrs;
+                            s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
+                            if ("object" == typeof val) {
+                                $.each(val, function (key, str) {
+                                    var vid = vol + chp + ":" + vrs;
+                                    s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
+                                });
+                            }
+                            if ("string" == typeof val) {
+                                s += "<div>" + val + "</iv>";
+                            }
+                            s += "</td></tr>";
+                        });
+                    });
+                });
+                s += "</tbody></table>";
+                return { htm: s, size: idx };
+            },
     };////  Uti
     ////////////////////////////////////
     const CNST={
@@ -1099,15 +1100,7 @@
         `;//////backtick for multiple lines. 
 
 
-    const xxxRestApi={
-        HistFile:{
-            __history_regex_search:"__history_regex_search",
-            __history_verses_loaded:"__history_verses_loaded",
-        },
-        ApiBibleObj_load_Bkns_Vols_Chp_Vrs:"ApiBibleObj_load_Bkns_Vols_Chp_Vrs",
-        ApiBibleObj_access_regex_search_history:"ApiBibleObj_access_regex_search_history",
-        ApiBibleObj_update_notes:"ApiBibleObj_update_notes",
-    };
+ 
     CNST.FnameOfBibleObj =
         ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
 
