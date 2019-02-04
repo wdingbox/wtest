@@ -242,8 +242,8 @@
 
             var s = "", num = 1;
             s += "<tr>" + _td(0);
-            s += "<th><button class='clear'  title='clear'>c</button></th>";
-            s += "<th><button class='undo'  title='undo'>u</button></th>";
+            s += "<th title='clear'><button title='clear' class='clear' >c</button></th>";
+            s += "<th title='undo'><button title='clear'  class='undo' >u</button></th>";
             s += "</tr>";
             for (var i = 0; i < 3; i++) {
                 s += "<tr>";
@@ -806,7 +806,7 @@
         }
     } 
     var BibleInputMenuContainer = `
-    
+
     <style>
     body {
         background-color: black;
@@ -944,8 +944,8 @@
         white-space: nowrap;
     }
 
-    button[title='clear'],button[title='undo']{
-        background-color:rgb(74, 155, 202);
+    *[title='clear'],*[title='undo']{
+        background-color:rgb(74, 155, 202);*/
     }
 </style>
 
