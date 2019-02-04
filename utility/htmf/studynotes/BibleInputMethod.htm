@@ -614,7 +614,7 @@
         }
         function SearchResultsPrepend(str) {
             var results = str + ", " + $("#searchResult").text();
-            results = results.substr(0, 50);
+            results = results.substr(0, 60);
             $("#searchResult").text(results);
         }
 
@@ -969,8 +969,8 @@
     #searchResult{
         
         background-color:green;
-        overflow:hide;
-        font-size: 12px;
+        
+ 
     }
 
 
@@ -1060,6 +1060,7 @@
             <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
             <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
 
+            <br>
             <a id="searchResult" onclick="onclick_load_search_string_history();" title='load search history.'>search
                 result...</a><br>
 
