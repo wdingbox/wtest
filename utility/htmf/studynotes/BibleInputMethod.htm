@@ -2,7 +2,7 @@
 <HTML manifest___xxx="BiblePad-2015.appcache">
 
 <HEAD>
-    <TITLE>cuvs</TITLE>
+    <TITLE>Bii</TITLE>
     <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
@@ -407,51 +407,6 @@
         //////////
         //////////
         /////////
-
-        function regex_match_next(incrs) {
-            var str = $("#out").val();
-            var reg = new RegExp(str, "g");
-
-            var matSize = $(".mat").length;
-            if (matSize > 0 && str === document.g_matchStrin) {
-                if (Math.abs(document.g_matchIndex) >= matSize) {
-                    document.g_matchIndex = 0;
-                }
-                var elm = ".mat:eq(" + document.g_matchIndex + ")";
-                //$(elm).parentsUntil("tr").addClass ("hili");
-                $(".mat.matIndex").removeClass("matIndex");
-                $(elm).addClass("matIndex");
-                $(elm)[0].scrollIntoViewIfNeeded();
-                SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
-                document.g_matchIndex += incrs;
-                return;
-            }
-            document.g_matchStrin = str;
-            document.g_matchCount = 0;
-            document.g_matchIndex = 0;
-            $("a[vid]").each(function (idx) {
-                var ss = $(this).text();
-                var mat = ss.match(reg);
-                if (mat) {
-                    $.each(mat, function (i, v) {
-                        if (0 == i) {
-                            ss = ss.replace(v, "<font class='mat'>" + v + "</font>");
-                        }
-                    });
-                    $(this).html(ss).prev().attr("checked", true);
-                    document.g_matchCount++;
-                };
-            });
-            SearchResultsPrepend("tot:" + document.g_matchCount);
-            if (document.g_matchCount > 0) {//save to history.
-                var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
-                var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-                Jsonpster.Run(prm, function () {
-                    SearchResultsPrepend("found");
-                });
-            };
-        };
-
         function apiCallback_Gen_clientBibleObj_table(ret) {
             function on_editing() {
                 var txt = $(this).html();
@@ -531,7 +486,50 @@
                 $("#out").val(txt + " (" + vcv + ")");
             });
         }
-        function BibleObj_search() {
+        function onclick_regex_match_next(incrs) {
+            var str = $("#out").val();
+            var reg = new RegExp(str, "g");
+
+            var matSize = $(".mat").length;
+            if (matSize > 0 && str === document.g_matchStrin) {
+                if (Math.abs(document.g_matchIndex) >= matSize) {
+                    document.g_matchIndex = 0;
+                }
+                var elm = ".mat:eq(" + document.g_matchIndex + ")";
+                //$(elm).parentsUntil("tr").addClass ("hili");
+                $(".mat.matIndex").removeClass("matIndex");
+                $(elm).addClass("matIndex");
+                $(elm)[0].scrollIntoViewIfNeeded();
+                SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
+                document.g_matchIndex += incrs;
+                return;
+            }
+            document.g_matchStrin = str;
+            document.g_matchCount = 0;
+            document.g_matchIndex = 0;
+            $("a[vid]").each(function (idx) {
+                var ss = $(this).text();
+                var mat = ss.match(reg);
+                if (mat) {
+                    $.each(mat, function (i, v) {
+                        if (0 == i) {
+                            ss = ss.replace(v, "<font class='mat'>" + v + "</font>");
+                        }
+                    });
+                    $(this).html(ss).prev().attr("checked", true);
+                    document.g_matchCount++;
+                };
+            });
+            SearchResultsPrepend("tot:" + document.g_matchCount);
+            if (document.g_matchCount > 0) {//save to history.
+                var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
+                var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+                Jsonpster.Run(prm, function () {
+                    SearchResultsPrepend("found");
+                });
+            };
+        };
+        function onclick_BibleObj_search_str() {
             var s = $("#out").val().trim();
             var inp = gBim.get_selected_load_parm();
             inp.Search = gBim.get_selected_Search_Parm();
@@ -545,7 +543,7 @@
             console.log(Jsonpster);
 
         }
-        function restapi_loadBibVolChpVrs() {
+        function onclick_load_BknVolChpVrs() {
             var inp = gBim.get_selected_load_parm();
             //inp.Search.File = "";//disable search
             if (!inp.validateBibleLoad()) return;
@@ -558,7 +556,6 @@
 
             console.log(Jsonpster);
         };
-
         function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -585,9 +582,6 @@
 
             });
         };///
-
-        
-
         function onclick_load_search_string_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -812,7 +806,8 @@
         }
     } 
     var BibleInputMenuContainer = `
-<style>
+    
+    <style>
     body {
         background-color: black;
         color: white;
@@ -948,6 +943,10 @@
     #loads_buttons {
         white-space: nowrap;
     }
+
+    button[title='clear'],button[title='undo']{
+        background-color:rgb(74, 155, 202);
+    }
 </style>
 
 <div id="menuContainer">
@@ -1009,7 +1008,7 @@
 
             <table id="Tab_load_vcv_history" border="1">
                 <caption><span id='loads_buttons'>
-                        <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
+                        <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>Load</button>
                         <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>H</button>
                         <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
                         <span>
@@ -1032,9 +1031,9 @@
 
             <textarea id="out" cols='60'></textarea><br>
 
-            <button onclick="BibleObj_search();" title="search on svr">search</button>
-            <button onclick="regex_match_next(1);" title="find on page">Next</button>
-            <button onclick="regex_match_next(-1);" title="find on page">Prev</button>
+            <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
+            <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
+            <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
 
             <a id="searchResult" onclick="onclick_load_search_string_history();" title='load search history.'>search result...<a><br>
 

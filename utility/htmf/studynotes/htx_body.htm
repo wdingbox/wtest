@@ -1,0 +1,288 @@
+<style>
+    body {
+        background-color: black;
+        color: white;
+        width: 100%;
+        font-size: 100%;
+
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+
+        font-family: 'Times New Roman';
+    }
+
+    .hili {
+        background-color: red;
+    }
+
+    .editing {
+        border: 3px solid gold;
+        color: black;
+        background-color: cornsilk;
+    }
+
+    .edit_keydown {
+        border: 3px solid yellow;
+    }
+
+    .mat {
+        background-color: chartreuse;
+        color: black;
+    }
+
+    .matIndex {
+        border: 5px solid red;
+    }
+
+    .searchFile {
+        color: black;
+    }
+
+    sub {
+        font-size: 8px;
+    }
+
+    .grayout {
+        color: gray;
+    }
+
+    .jw {
+        background-color: brown;
+    }
+
+
+    #menuContainer,
+    #menuToggler {
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        opacity: 100;
+        background-color: rgb(51, 158, 158);
+    }
+
+    div[contenteditable] {
+        background-color: rgb(40, 49, 70);
+    }
+
+    #BibInputMenuHolder {}
+
+    #Tab_chp {
+        background-color: green;
+    }
+
+    #Tab_vrs {
+        background-color: rgb(149, 97, 29);
+    }
+
+    #Tab_vol thead {
+        display: block;
+    }
+
+    #Tab_vol tbody {
+        height: 260px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+    #Tab_load_vcv_history {
+        background-color: rgb(29, 105, 149);
+    }
+    #Tab_load_vcv_history thead {
+        display: block;
+    }
+    #Tab_load_vcv_history tbody {
+        height: 140px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+    #Tab_regex_history_lst thead {
+        display: block;
+    }
+    #Tab_regex_history_lst tbody {
+        height: 210px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+    #oBiblex table {
+        width: 10000px;
+    }
+
+    #oBible table thead tr {
+        display: block;
+    }
+
+    #oBible table tbody {
+        height: 1500px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+    #tmpsel2ref thead,
+    #refslist thead {
+        display: block;
+    }
+
+    #tmpsel2ref tbody,
+    #refslist tbody {
+        height: 210px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+    #loads_buttons {
+        white-space: nowrap;
+    }
+
+    button[title='clear'],button[title='undo']{
+        background-color:rgb(74, 155, 202);
+    }
+</style>
+
+<div id="menuContainer">
+    <div id="BibInputMenuHolder" height="100%">
+        <div id="${CNST.ID_BibleInputMenuContainer}">
+            <table border="0" id="Tab_BibleSingleInputKey">
+                <caption id="BibleInputCap">Bible Input Keys<a id='vname'></a></caption>
+                <thead id=""></thead>
+                <tbody id=""></tbody>
+            </table>
+            <table id="Tab_bkn" border="1" style="float:left;">
+                <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table border="1" style="float:left;" id="Tab_cat">
+                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="Tab_vol" border="1" style="float:left;">
+                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
+                <thead id=""></thead>
+                <tbody id=''>
+
+                </tbody>
+            </table>
+
+            <table id='Tab_chp' border="1" style="float:left;">
+                <caption class='digiCap' id='chp_cap' title='chapter'>*</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <a style="float:left;">:</a>
+
+            <table id="Tab_vrs" border="1">
+                <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
+                <thead id=""></thead>
+                <tbody id="">
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table id="Tab_load_vcv_history" border="1">
+                <caption><span id='loads_buttons'>
+                        <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>Load</button>
+                        <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>H</button>
+                        <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
+                        <span>
+                </caption>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Pleas click H button <br>for History.<br>
+                            <br>
+                            Pleas click ^ button <br>sort by str.<br>
+                           
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+
+            <textarea id="out" cols='60'></textarea><br>
+
+            <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
+            <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
+            <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
+
+            <a id="searchResult" onclick="onclick_load_search_string_history();" title='load search history.'>search result...<a><br>
+
+                    <table id='tmpsel2ref' border="1" align="left">
+                        <thead></thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table id='refslist' border="1" align="left">
+                        <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a id="blb" ref="https://www.blueletterbible.org/kjv/">blb</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/"
+                                        title='Hebrew_Greek'>h_g</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gtw</a></caption>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                        <tbody>
+                            </tbody>
+                    </table>
+        </div>
+        <br>
+
+
+
+    </div>
+
+
+
+    <button id="oBible_indxer">indxer</button>
+    <button id="Compare_vcv">Compare_vcv</button>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Vol</td>
+                <td>Chp</td>
+                <td>Ver</td>
+            </tr>
+        </thead>
+        <tbody id="StructAna"></tbody>
+    </table>
+</div>
+<hr />
+<button id='menuToggler'>-</button>
+<span id='oBible'>----</span>
+        
