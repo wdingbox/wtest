@@ -480,7 +480,7 @@
             var tb = Uti.gen_clientBibleObj_table(ret);
             SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
-            //table_sort("#oBible table");
+           
             $("#oBible").find(".vid").bind("click", function () {
                 $(this).toggleClass("hili");
                 var vid = $(this).text();
