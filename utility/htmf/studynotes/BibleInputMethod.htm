@@ -122,7 +122,7 @@
                 var url = $(this).attr("ref");
                 if (!ret) return;
 
-                var blbvol = BlueLetterBibleCode[ret.vol];
+                var blbvol = CNST.BlueLetterBibleCode[ret.vol];
                 var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
                 $(this).attr("href", url + file);
             });
@@ -133,7 +133,7 @@
                 if (!ret) return;
 
                 var volm = ret._vol;
-                var bkidx = BookID2IdxCode[volm];
+                var bkidx = CNST.BookID2IdxCode[volm];
                 var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
                 $(this).attr("href", url + file);
             });
@@ -143,7 +143,7 @@
                 var url = $(this).attr("ref");
                 if (!ret) return;
 
-                var vol2 = BibVolName[ret.vol][0];
+                var vol2 = CNST.BibVolName[ret.vol][0];
                 var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
                 $(this).attr("href", url + file);
             });
@@ -224,11 +224,11 @@
             var _This = this;
             var trs = Uti.Gen_Vom_trs(vol_arr);
             $("#vol_cap_sub").text("1");
-            $("#BibleInputCap").text(BibVolName[vol_arr[0]]);
+            $("#BibleInputCap").text(CNST.BibVolName[vol_arr[0]]);
             $(tid).html(trs).find(".v3").bind("click", function () {
                 var vol = $(this).text();
                 $(this).toggleClass("hili");
-                $("#BibleInputCap").text(BibVolName[vol]);
+                $("#BibleInputCap").text(CNST.BibVolName[vol]);
                 update_digit_cap(tid);
             });
             update_digit_cap(tid);
@@ -330,14 +330,14 @@
                     items_arr.push(svol);
                 });
                 if (items_arr.indexOf("Gen") >= 0) {
-                    vol_arr = OT_Vols_Ary;
+                    vol_arr = CNST.OT_Vols_Ary;
                 }
                 if (items_arr.indexOf("Mat") >= 0) {
-                    vol_arr = NT_Vols_Ary;
+                    vol_arr = CNST.NT_Vols_Ary;
                 };
                 if (0 === items_arr.length) {
-                    vol_arr = vol_arr.concat(OT_Vols_Ary);
-                    vol_arr = vol_arr.concat(NT_Vols_Ary);
+                    vol_arr = vol_arr.concat(CNST.OT_Vols_Ary);
+                    vol_arr = vol_arr.concat(CNST.NT_Vols_Ary);
                     if (vol_arr.length != 66) {
                         alert("err concat len=" + vol_arr.length)
                     };
@@ -723,7 +723,7 @@
             var trarr = [];
             vol_arr.forEach(function (vol) {
                 //<td align='right'>"+BibVolName[vol][0]+"</td>
-                trarr.push("<tr><td" + cls + "title='" + BibVolName[vol] + "'>" + vol + "</td></tr>");
+                trarr.push("<tr><td" + cls + "title='" + CNST.BibVolName[vol] + "'>" + vol + "</td></tr>");
                 cls = " class='v3' ";
             });
             return trarr.join("");
@@ -1111,7 +1111,7 @@
     CNST.FnameOfBibleObj =
         ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
 
-    const BibVolName = {
+    CNST.BibVolName = {
         "Gen": ['Genesis', '创世纪'],
         "Exo": ['Exodus', '出埃及记'],
         "Lev": ['Leviticus', '利未记'],
@@ -1179,7 +1179,7 @@
         "Jud": ['Jude', '犹大书'],
         "Rev": ['Revelation', '启示录'],
     };
-    var BlueLetterBibleCode = {
+    CNST.BlueLetterBibleCode = {
         "Gen": "Gen",
         "Exo": "Exo",
         "Lev": "Lev",
@@ -1247,7 +1247,7 @@
         "Jud": "Jud",
         "Rev": "Rev",
     };//BookChapterVerseMax
-    var BookID2IdxCode = {
+    CNST.BookID2IdxCode = {
         _Gen: ['01', 'h'],
         _Exo: ['02', 'h'],
         _Lev: ['03', 'h'],
@@ -1315,7 +1315,7 @@
         _Jud: ['65', 'b'],
         _Rev: ['66', 'b'],
     };
-    const OT_Vols_Ary = [
+    CNST.OT_Vols_Ary = [
         "Gen",
         "Exo",
         "Lev",
@@ -1356,7 +1356,7 @@
         "Zec",
         "Mal"
     ];
-    const NT_Vols_Ary = [
+    CNST.NT_Vols_Ary = [
         "Mat",
         "Mak",
         "Luk",
