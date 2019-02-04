@@ -640,7 +640,7 @@
                 //history
                 console.log(ret);
                 var ops=read_history_to_opt(ret,true);
-                $("#regex_history_lst").html(ops.join("")).find("option").bind("click", function () {
+                $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
                     var s = $(this).text().trim();
                     $("#out").val(s);
                 });
@@ -909,6 +909,15 @@
         display: block;
     }
 
+    #Tab_regex_history_lst thead {
+        display: block;
+    }
+    #Tab_regex_history_lst tbody {
+        height: 210px;
+        overflow-y: scroll;
+        display: block;
+    }
+
     #oBiblex table {
         width: 10000px;
     }
@@ -1054,8 +1063,10 @@
                             </tr>
                         </tbody>
                     </table>
-                    <select id="regex_history_lst" size='15' style="float:left;">
-                        <option /></select>
+                    <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                        <tbody>
+                            </tbody>
+                    </table>
         </div>
         <br>
 
