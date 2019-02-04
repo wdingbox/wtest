@@ -594,7 +594,7 @@
                 //history
                 console.log(ret);
                 var ops = read_history_to_opt(ret,bSortByTime);
-                $("#sel_load_history").html(ops.join("")).find("option").bind("click", function () {
+                $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
                     if (mat) {
@@ -621,7 +621,7 @@
                     $.each(vrsObj, function (vrs, ob) {
                         $.each(ob, function (searchStr, tm) {
                             if (!bSortByTime) tm = "";
-                            ops.push("<option time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</option>");
+                            ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
                         });
                     });
                 });
@@ -897,8 +897,16 @@
         display: block;
     }
 
-    #load_vcv_history {
+    #Tab_load_vcv_history {
         background-color: rgb(29, 105, 149);
+    }
+    #Tab_load_vcv_history thead {
+        display: block;
+    }
+    #Tab_load_vcv_history tbody {
+        height: 140px;
+        overflow-y: scroll;
+        display: block;
     }
 
     #oBiblex table {
@@ -989,7 +997,7 @@
             </table>
 
 
-            <table id="load_vcv_history" border="1">
+            <table id="Tab_load_vcv_history" border="1">
                 <caption><span id='loads_buttons'>
                         <button id="loadVolChpVrs" onclick='restapi_loadBibVolChpVrs();' title='Load Bible'>Load</button>
                         <button id="loadhistory" onclick='loadBible_history(1);' title='load history sort by time'>H</button>
@@ -1000,10 +1008,10 @@
                 <tbody>
                     <tr>
                         <td>
-                            <select id="sel_load_history" multiple cols="100" size='10'>
-                                <option>Pleas click H button for history.</option>
-                                <option>Pleas click ^ button sort by str.</option>
-                            </select>
+                            Pleas click H button <br>for History.<br>
+                            <br>
+                            Pleas click ^ button <br>sort by str.<br>
+                           
                         </td>
                     </tr>
                 </tbody>
