@@ -570,6 +570,7 @@
                 console.log(ret);
                 var ops = Uti.read_history_to_opt(ret,bSortByTime);
                 $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
+                    $(this).toggleClass("hili");
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
                     if (mat) {
@@ -596,6 +597,7 @@
                 console.log(ret);
                 var ops=Uti.read_history_to_opt(ret,true);
                 $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
+                    $(this).toggleClass("hili");
                     var s = $(this).text().trim();
                     $("#out").val(s);
                 });
@@ -964,6 +966,12 @@
         height: px;
     }
 
+    #searchResult{
+        
+        background-color:green;
+        overflow:hide;
+        font-size: 12px;
+    }
 
 
     #oBible table thead {
