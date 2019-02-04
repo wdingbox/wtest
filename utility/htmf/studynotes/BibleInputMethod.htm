@@ -83,10 +83,6 @@
 
 
         var BibleInputMenu = function () {
-         
-            
-            
-            this.m_vrstbid = "#vrs_tbd";
 
             this.m_cattbid = "#cat_bdy";
 
@@ -104,7 +100,7 @@
             this.Gen_BKN_Table("#bkn_bdy", this.m_bknArr);
             this.Gen_Cat_Table();
             this.Gen_Digit_Table("#Tab_chp tbody", 150);
-            this.Gen_Digit_Table("#vrs_tbd", 176);
+            this.Gen_Digit_Table("#Tab_vrs tbody", 176);
 
             var _This = this;
             $("#vol_capx").click(function () {
@@ -888,7 +884,7 @@
         background-color: green;
     }
 
-    #vrs_tab {
+    #Tab_vrs {
         background-color: rgb(149, 97, 29);
     }
 
@@ -983,10 +979,10 @@
             </table>
             <a style="float:left;">:</a>
 
-            <table id="vrs_tab" border="1">
+            <table id="Tab_vrs" border="1">
                 <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
-                <thead id="vrs_hdr"></thead>
-                <tbody id='vrs_tbd'>
+                <thead id=""></thead>
+                <tbody id="">
                     <tr>
                         <td></td>
                     </tr>
