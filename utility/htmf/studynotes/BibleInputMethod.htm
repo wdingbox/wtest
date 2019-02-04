@@ -157,17 +157,17 @@
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = Uti.get_cha_arr_after_str("", _Max_struct);
 
-            var s = "<tr id='vitr'>";
+            var s = "<tr id='vitr'><td>";
             var _This = this;
             $.each(ks, function (i, c) {
                 var volarr = Uti.Get_Vol_Arr_from_KeyChar(c, _Max_struct);
                 var ssb = "<sub>" + volarr.length + "</sub>";
                 if (volarr.length === 1) ssb = "";
                 c = c + ssb;
-                s += "<td><button class='vin'>" + c + "</button></td>";
-                if (9 == i) s += "</tr><tr>";
+                s += "<button class='vin'>" + c + "</button>";
+                if (9 == i) s += "</td></tr><tr><td>";
             });
-            s += "</tr>";
+            s += "</td></tr>";
 
             $("#Tab_BibleSingleInputKey tbody").html(s).find(".vin").bind("click", function () {
                 $(".vin").removeClass("hili");
@@ -947,6 +947,9 @@
     *[title='clear'],*[title='undo']{
         background-color:rgb(74, 155, 202);*/
     }
+    .vin{
+        height:px;
+    }
 </style>
 
 <div id="menuContainer">
@@ -984,7 +987,7 @@
                 </tbody>
             </table>
 
-            <table id='Tab_chp' border="1" style="float:left;">
+            <table id='Tab_chp' border="1" style="float:;">
                 <caption class='digiCap' id='chp_cap' title='chapter'>*</caption>
                 <thead id=""></thead>
                 <tbody id=''>
@@ -993,7 +996,7 @@
                     </tr>
                 </tbody>
             </table>
-            <a style="float:left;">:</a>
+            <a style="float:;"></a>
 
             <table id="Tab_vrs" border="1">
                 <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
@@ -1004,27 +1007,11 @@
                     </tr>
                 </tbody>
             </table>
+            <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>Load</button>
+                        
 
 
-            <table id="Tab_load_vcv_history" border="1">
-                <caption><span id='loads_buttons'>
-                        <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>Load</button>
-                        <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>H</button>
-                        <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
-                        <span>
-                </caption>
-                <thead></thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Pleas click H button <br>for History.<br>
-                            <br>
-                            Pleas click ^ button <br>sort by str.<br>
-                           
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            
 
 
 
@@ -1042,6 +1029,7 @@
                         <tbody>
                         </tbody>
                     </table>
+
                     <table id='refslist' border="1" align="left">
                         <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
                         <tbody>
@@ -1067,6 +1055,24 @@
                         <tbody>
                             </tbody>
                     </table>
+                    <table id="Tab_load_vcv_history" border="1">
+                <caption><span id='loads_buttons'>
+                        <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>H</button>
+                        <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
+                        <span>
+                </caption>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Pleas click H button <br>for History.<br>
+                            <br>
+                            Pleas click ^ button <br>sort by str.<br>
+                           
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <br>
 
