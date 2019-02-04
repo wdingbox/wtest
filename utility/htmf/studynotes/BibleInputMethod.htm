@@ -69,8 +69,6 @@
 
 
         var BibleInputMenu = function () {
-            this.m_bknArr = FnameOfBibleObj;
-            this.m_catArr = Object.keys(Cat2VolArr);
         }
         BibleInputMenu.prototype.init = function () {
             if ("undefined" === typeof Jsonpster) {
@@ -79,7 +77,7 @@
             $("body").prepend(BibleInputMenuContainer);
 
             this.Gen_Keys_Menu();
-            this.Gen_BKN_Table("#Tab_bkn tbody", this.m_bknArr);
+            this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
             this.Gen_Cat_Table();
             this.Gen_Digit_Table("#Tab_chp tbody", 150);
             this.Gen_Digit_Table("#Tab_vrs tbody", 176);
@@ -202,13 +200,13 @@
         BibleInputMenu.prototype.Gen_Cat_Table = function () {
             var _This = this;
             var s = "";
-            $.each(this.m_catArr, function (i, v) {
+            $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
                 s += "<tr><td class='cat'>" + v + "</td></tr>";
             });
             $("#Tab_cat tbody").html(s).find(".cat").bind("click", function () {
                 $(".cat").removeClass("hili");
                 var scat = $(this).addClass("hili").text();
-                var vol_arr = Cat2VolArr[scat];
+                var vol_arr = CNST.Cat2VolArr[scat];
                 _This.Gen_Vol_Table("#Tab_vol tbody", vol_arr);
             });
         };
@@ -1110,7 +1108,7 @@
         ApiBibleObj_access_regex_search_history:"ApiBibleObj_access_regex_search_history",
         ApiBibleObj_update_notes:"ApiBibleObj_update_notes",
     };
-    const FnameOfBibleObj =
+    CNST.FnameOfBibleObj =
         ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
 
     const BibVolName = {
@@ -1387,7 +1385,7 @@
         "Jud",
         "Rev"
     ];
-    const Cat2VolArr = {
+    CNST.Cat2VolArr = {
         "Moses-ot": ["Gen", "Exo", "Lev", "Num", "Deu"],
         "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
         "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
