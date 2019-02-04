@@ -257,7 +257,7 @@
             $(tid).find(".digit").bind("click", function () {
                 var num = $(this).text();
 
-                var cap = $(this).parentsUntil("table").parent().find("caption");
+                var cap = $(this).parentsUntil("table").parent().find(".digiCap");
                 var scap = cap.text();
                 if (scap.length >= 3) scap = scap.substr(1);
                 var icap = parseInt(scap);
@@ -278,14 +278,14 @@
                 $(tid).find("button[disabled]").attr("disabled", null);
             });
             $(tid).find(".clear").bind("click", function () {
-                var cap = $(this).parentsUntil("table").parent().find("caption");
+                var cap = $(this).parentsUntil("table").parent().find(".digiCap");
                 cap.text("*");
                 $(tid).find(".digit").attr("disabled", null);
                 $(tid).find("button:contains('0')").attr("disabled", true);
 
             });
             $(tid).find(".undo").bind("click", function () {
-                var cap = $(this).parentsUntil("table").parent().find("caption");
+                var cap = $(this).parentsUntil("table").parent().find(".digiCap");
                 var str = cap.text();
                 if (str.length == 1) {
                     cap.text("*");
@@ -988,7 +988,7 @@
             </table>
 
             <table id='Tab_chp' border="1" style="float:;">
-                <caption class='digiCap' id='chp_cap' title='chapter'>*</caption>
+                <caption><a class='digiCap' id='chp_cap' title='chapter'>*</a></caption>
                 <thead id=""></thead>
                 <tbody id=''>
                     <tr>
@@ -998,8 +998,8 @@
             </table>
             <a style="float:;"></a>
 
-            <table id="Tab_vrs" border="1">
-                <caption class='digiCap' id='vrs_cap' title='verse'>*</caption>
+            <table id="Tab_vrs" border="1" style="float:;">
+                <caption><a class='digiCap' id='vrs_cap' title='verse'>*</a></caption>
                 <thead id=""></thead>
                 <tbody id="">
                     <tr>
