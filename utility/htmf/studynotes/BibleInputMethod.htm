@@ -85,11 +85,18 @@
             var _This = this;
 
             $("#menuToggler").click(function () {
-                $("#menuContainer").slideToggle();
+                
                 var s=$(this).text();
                 if("-"===s){
+                    $(this).text("=");
+                    $("#BibInputMenuHolder").slideToggle();
+                }else if("="==s){
+                    $("#others").slideToggle();
                     $(this).text("+");
-                }else{
+                }
+                else if("+"==s){
+                    $("#BibInputMenuHolder").slideToggle();
+                    $("#others").slideToggle();
                     $(this).text("-");
                 }
             });
@@ -834,7 +841,7 @@
     #menuToggler {
         position: fixed;
         top: 10px;
-        right: 0px;
+        right: 5px;
         opacity: 100;
 
     }
@@ -845,7 +852,10 @@
         overflow-y: scroll;
         display: block;
 
-        height: 700px
+        height: 500px
+        width:400px;
+        
+
     }
 
     #menuToggler {
@@ -927,6 +937,12 @@
     }
 
 
+    #Tab_regex_history_lst td {
+        width: 100px;
+        overflow: hidden;
+        display: inline-block;
+        white-space: nowrap;
+    }
 
     #Tab_regex_history_lst thead,
     #Tab_load_vcv_history thead {
@@ -974,11 +990,11 @@
     }
 
 
-    #oBible table thead {
+    #oBiblexx table thead {
         display: block;
     }
 
-    #oBible table tbody {
+    #oBiblexx table tbody {
         height: 1500px;
         overflow-y: scroll;
         display: block;
@@ -1064,6 +1080,44 @@
             <a id="searchResult" onclick="onclick_load_search_string_history();" title='load search history.'>search
                 result...</a><br>
 
+            
+
+            <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                <tbody>
+                    <tr>
+                        <td>
+                            click search results<br>
+                            to show history serch<br>                           
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="Tab_load_vcv_history" border="1" style="float:left;">
+                <caption><span id='loads_buttons'>
+                        <span>
+                </caption>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Pleas click H button <br>for History.<br>
+                            <br>
+                            Pleas click ^ button <br>sort by str.<br>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
+            <br>
+            <br>
+            <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
+
+        </div>
+    </div>
+    <div id="others">
             <table id='tmpsel2ref' border="1" align="left">
                 <thead></thead>
                 <tbody>
@@ -1091,37 +1145,7 @@
                 </tbody>
             </table>
 
-            <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                <tbody>
-                </tbody>
-            </table>
-
-            <table id="Tab_load_vcv_history" border="1" style="float:left;">
-                <caption><span id='loads_buttons'>
-                        <span>
-                </caption>
-                <thead></thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Pleas click H button <br>for History.<br>
-                            <br>
-                            Pleas click ^ button <br>sort by str.<br>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
-            <br>
-            <br>
-            <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
-
-        </div>
-    </div>
-    <div id="others"></div>
-
-    <div id="othersx">
+            <div id="othersx">
         <button id="oBible_indxer">indxer</button>
         <button id="Compare_vcv">Compare_vcv</button>
 
@@ -1137,6 +1161,10 @@
             <tbody id="StructAna"></tbody>
         </table>
     </div>
+    
+        </div>
+
+    
 
 </div>
 <hr />
