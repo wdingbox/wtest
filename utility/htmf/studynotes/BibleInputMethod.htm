@@ -171,6 +171,11 @@
             $("#chp_cap").click(function () {
                 var parm = _This.get_selected_vcv_parm();
                 parm.vrs = "*";
+                if(parm.vol_arr.length>=66){
+                    if(!confirm("load the whole bible of 66?")){
+                        return;
+                    }
+                }
                 var bibOj = Uti.get_xOj(parm);
                 console.log("111111bbObj=", bibOj);
                 var fnamesArr = _This.get_selected_bkn_fnamesArr();
@@ -521,7 +526,7 @@
             });
             $("#oBible").find(".tx").bind("click", function () {
                 var txt = $(this).text();
-                var vcv = $(this).parentsUntil("tbody").find("td:eq(1)").text();
+                var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
                 $("#out").val(txt + " (" + vcv + ")");
             });
         }
@@ -828,15 +833,16 @@
 
         gen_clientBibleObj_table: function (ret) {
             var s = "<table border='1'>";
-            s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
+            s += "<thead><th>cvc</th><th>scripts</th></thead>";
             s += "<tbody>";
             var idx = 0;
             $.each(ret, function (vol, chpObj) {
                 $.each(chpObj, function (chp, vrsObj) {
                     $.each(vrsObj, function (vrs, val) {
                         //console.log("typeof val=", typeof val);
+                        idx++;
                         var vid = vol + "<br>" + chp + ":" + vrs;
-                        s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
+                        s += "<tr><td class='vid'>" + vid + "</td><td>";
                         if ("object" == typeof val) {
                             $.each(val, function (key, str) {
                                 var vid = vol + chp + ":" + vrs;
