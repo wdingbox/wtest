@@ -45,8 +45,8 @@
         console.log((new Date()).toString());//
     </script>
     <style>
- 
-</style>
+
+    </style>
 
 
 
@@ -59,7 +59,7 @@
 
             gBim.init();
 
-            
+
 
             //table_sort();
             //table_col_index();
@@ -79,22 +79,22 @@
             this.Gen_Keys_Menu();
             this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
             this.Gen_Cat_Table();
-            this.Gen_Digit_Table("#Tab_chp tbody", 150);
-            this.Gen_Digit_Table("#Tab_vrs tbody", 176);
+            this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
+            this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
 
             var _This = this;
 
             $("#menuToggler").click(function () {
-                
-                var s=$(this).text();
-                if("-"===s){
+
+                var s = $(this).text();
+                if ("-" === s) {
                     $(this).text("=");
                     $("#BibInputMenuHolder").slideToggle();
-                }else if("="==s){
+                } else if ("=" == s) {
                     $("#others").slideToggle();
                     $(this).text("+");
                 }
-                else if("+"==s){
+                else if ("+" == s) {
                     $("#BibInputMenuHolder").slideToggle();
                     $("#others").slideToggle();
                     $(this).text("-");
@@ -114,7 +114,7 @@
             });
 
 
-            
+
             $("#vol_capx").click(function () {
                 var m = $("#Tab_vol tbody").find(".v3.hili").length;
                 if (m > 0) {
@@ -247,25 +247,30 @@
             update_digit_cap(tid);
         };
 
-        BibleInputMenu.prototype.Gen_Digit_Table = function (tid, imaxNum) {
-            function _td(num) {
-                var s = "<td><button class='digit' num='" + num + "'>" + (num) + "</button></td>";
+        BibleInputMenu.prototype.Gen_Digit_Table = function (tid, clsname, imaxNum) {
+            function _td(num, clsname) {
+                var s = "<td><button class='digit " + clsname + "'>" + num + "</button></td>";
                 return s;
             }
-
-            var s = "", num = 1;
-            s += "<tr>" + _td(0);
-            s += "<th title='clear'><button title='clear' class='clear' >c</button></th>";
-            s += "<th title='undo'><button title='clear'  class='undo' >u</button></th>";
-            s += "</tr>";
-            for (var i = 0; i < 3; i++) {
-                s += "<tr>";
-                for (var k = 0; k < 3; k++) {
-                    s += _td(num++);
-                }
+            function gen_trs() {
+                var s = "", num = 1;
+                s += "<tr>" + _td(0, clsname);
+                s += "<th title='clear'><button title='clear' class='clear' >c</button></th>";
+                s += "<th title='undo'><button title='clear'  class='undo' >u</button></th>";
                 s += "</tr>";
+                for (var i = 0; i < 3; i++) {
+                    s += "<tr>";
+                    for (var k = 0; k < 3; k++) {
+                        s += _td(num++, clsname);
+                    }
+                    s += "</tr>";
+                };
+                return s;
             };
+            var s=gen_trs();
 
+
+            var _This=this;
             $(tid).html(s).find("button:contains('0')").attr("disabled", true);
             $(tid).find(".digit").bind("click", function () {
                 var num = $(this).text();
@@ -282,6 +287,20 @@
                 if (updateCap > imaxNum) updateCap = imaxNum;
                 cap.text(updateCap);
                 console.log(num);
+
+                ///////////////////////////////////
+                if ($(cap).attr("id") === "vrs_cap") {
+                    //grayout
+                    if (false == $(cap).hasClass('grayout')) {
+                        var ret = _This.get_selected_xOj_Parm();
+                        if (ret.vrs) {
+                            var vid = ret.vrs;
+                            Uti.scrollIntoViewIfNeeded_to_vid(vid);
+                        }
+                    };
+                };////////////////////////////////
+
+
 
                 var inextbase = icap * 100;
                 if (inextbase > imaxNum) {
@@ -360,10 +379,17 @@
                 vol_arr = null;
             }
 
+
             var chp = $("#chp_cap").text();
             var vrs = $("#vrs_cap").text();
 
             var bibOj = Uti.get_bibOj(vol_arr, chp, vrs);
+
+
+            if (1 === vol_arr.length) {
+                var vol = vol_arr[0];
+                bibOj.vrs = vol + chp + ":" + vrs;
+            }
             return bibOj;
         };///
         BibleInputMenu.prototype.get_selected_load_parm = function () {
@@ -443,7 +469,7 @@
                     $(_This).removeClass("edit_keydown");
                 });
             };
-            
+
 
             var tb = Uti.gen_clientBibleObj_table(ret);
             SearchResultsPrepend("tot=" + tb.size);
@@ -462,14 +488,7 @@
                         $(".tmp2ref").removeClass("hili");
                         $(this).addClass("hili");
                         var vid = $(this).text().trim();
-                        $("#oBible").find(".vid").each(function () {
-                            var vid2 = $(this).text().trim();
-                            if (vid === vid2) {
-                                $(this)[0].scrollIntoViewIfNeeded();
-                                $(this).addClass("hili");
-                            }
-
-                        });
+                        Uti.scrollIntoViewIfNeeded_to_vid(vid);
                     })
                     $("#tmpsel2ref tbody").prepend(etr);
                 }
@@ -499,6 +518,20 @@
                 $("#out").val(txt + " (" + vcv + ")");
             });
         }
+        function onclick_load_BknVolChpVrs() {
+            var inp = gBim.get_selected_load_parm();
+            //inp.Search.File = "";//disable search
+            if (!inp.validateBibleLoad()) return;
+            console.log(inp);
+
+            var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
+            par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
+
+            Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+
+            console.log(Jsonpster);
+        };
+
         function onclick_regex_match_next(incrs) {
             var str = $("#out").val();
             var reg = new RegExp(str, "g");
@@ -556,26 +589,14 @@
             console.log(Jsonpster);
 
         }
-        function onclick_load_BknVolChpVrs() {
-            var inp = gBim.get_selected_load_parm();
-            //inp.Search.File = "";//disable search
-            if (!inp.validateBibleLoad()) return;
-            console.log(inp);
 
-            var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
-
-            Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
-
-            console.log(Jsonpster);
-        };
         function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
-                var ops = Uti.read_history_to_opt(ret,bSortByTime);
+                var ops = Uti.read_history_to_opt(ret, bSortByTime);
                 $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
                     $(this).toggleClass("hili");
                     var s = $(this).text();
@@ -591,7 +612,7 @@
                         var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
 
                         Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
-                    }else{alert("vcv err:"+s)}
+                    } else { alert("vcv err:" + s) }
                 });
 
             });
@@ -602,7 +623,7 @@
             Jsonpster.Run(prm, function (ret) {
                 //history
                 console.log(ret);
-                var ops=Uti.read_history_to_opt(ret,true);
+                var ops = Uti.read_history_to_opt(ret, true);
                 $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
                     $(this).toggleClass("hili");
                     var s = $(this).text().trim();
@@ -639,7 +660,17 @@
 <script type="text/javascript">
 
     var Uti = {
-        read_history_to_opt:function (ret,bSortByTime) {
+        scrollIntoViewIfNeeded_to_vid(vid) {
+            //var vid = $(this).text().trim();
+            $("#oBible").find(".vid").each(function () {
+                var vid2 = $(this).text().trim();
+                if (vid === vid2) {
+                    $(this)[0].scrollIntoViewIfNeeded();
+                    $(this).addClass("hili");
+                }
+            });
+        },
+        read_history_to_opt: function (ret, bSortByTime) {
             var ops = [];
             $.each(ret, function (vol, chobj) {
                 $.each(chobj, function (chp, vrsObj) {
@@ -652,7 +683,7 @@
                 });
             });
             ops.sort();
-            if(bSortByTime){
+            if (bSortByTime) {
                 ops.reverse();
             }
             return ops;
@@ -785,41 +816,41 @@
             bibOj[vol][chp][vrs] = "";
             return bibOj;
         },
-    
-        gen_clientBibleObj_table : function(ret) {
-                var s = "<table border='1'>";
-                s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
-                s += "<tbody>";
-                var idx = 0;
-                $.each(ret, function (vol, chpObj) {
-                    $.each(chpObj, function (chp, vrsObj) {
-                        $.each(vrsObj, function (vrs, val) {
-                            //console.log("typeof val=", typeof val);
-                            var vid = vol + "<br>" + chp + ":" + vrs;
-                            s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
-                            if ("object" == typeof val) {
-                                $.each(val, function (key, str) {
-                                    var vid = vol + chp + ":" + vrs;
-                                    s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
-                                });
-                            }
-                            if ("string" == typeof val) {
-                                s += "<div>" + val + "</iv>";
-                            }
-                            s += "</td></tr>";
-                        });
+
+        gen_clientBibleObj_table: function (ret) {
+            var s = "<table border='1'>";
+            s += "<thead><th>#</th><th>cvc</th><th>scripts</th></thead>";
+            s += "<tbody>";
+            var idx = 0;
+            $.each(ret, function (vol, chpObj) {
+                $.each(chpObj, function (chp, vrsObj) {
+                    $.each(vrsObj, function (vrs, val) {
+                        //console.log("typeof val=", typeof val);
+                        var vid = vol + "<br>" + chp + ":" + vrs;
+                        s += "<tr><td>" + (++idx) + "</td><td class='vid'>" + vid + "</td><td>";
+                        if ("object" == typeof val) {
+                            $.each(val, function (key, str) {
+                                var vid = vol + chp + ":" + vrs;
+                                s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
+                            });
+                        }
+                        if ("string" == typeof val) {
+                            s += "<div>" + val + "</iv>";
+                        }
+                        s += "</td></tr>";
                     });
                 });
-                s += "</tbody></table>";
-                return { htm: s, size: idx };
-            },
+            });
+            s += "</tbody></table>";
+            return { htm: s, size: idx };
+        },
     };////  Uti
     ////////////////////////////////////
-    const CNST={
-        ID:{
-            BibleInputMenuContainer:"BibleInputMenuContainer",
+    const CNST = {
+        ID: {
+            BibleInputMenuContainer: "BibleInputMenuContainer",
         }
-    } 
+    }
     var BibleInputMenuContainer = `
 
 
@@ -1054,7 +1085,7 @@
             <a style="float:;"></a>
 
             <table id="Tab_vrs" border="1" style="float:;">
-                <caption>vrs <a class='digiCap' id='vrs_cap' title='verse'>*</a></caption>
+                <caption onclick='onclick_load_BknVolChpVrs();'>vrs <a class='digiCap' id='vrs_cap' title='verse'>*</a></caption>
                 <thead id=""></thead>
                 <tbody id="">
                     <tr>
@@ -1161,7 +1192,7 @@
             <tbody id="StructAna"></tbody>
         </table>
     </div>
-    
+
         </div>
 
     
@@ -1174,7 +1205,7 @@
         `;//////backtick for multiple lines. 
 
 
- 
+
     CNST.FnameOfBibleObj =
         ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
 
