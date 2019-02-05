@@ -166,6 +166,27 @@
                 $(".v3").remove();
 
             });
+
+
+            $("#chp_cap").click(function () {
+                var parm = _This.get_selected_vcv_parm();
+                parm.vrs = "*";
+                var bibOj = Uti.get_xOj(parm);
+                console.log("111111bbObj=", bibOj);
+                var fnamesArr = _This.get_selected_bkn_fnamesArr();
+                var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
+                var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
+                Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+            });
+            $("#vrs_cap").click(function () {
+                var parm = _This.get_selected_vcv_parm();
+                console.log(parm)
+                if(parm.vrs === "*"){
+                    return;
+                };
+                var vcv=parm.vol_arr[0]+parm.chp+":"+parm.vrs;
+                Uti.scrollIntoViewIfNeeded_to_vid(vcv);
+            });
         };
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = Uti.get_cha_arr_after_str("", _Max_struct);
@@ -267,10 +288,10 @@
                 };
                 return s;
             };
-            var s=gen_trs();
+            var s = gen_trs();
 
 
-            var _This=this;
+            var _This = this;
             $(tid).html(s).find("button:contains('0')").attr("disabled", true);
             $(tid).find(".digit").bind("click", function () {
                 var num = $(this).text();
@@ -289,16 +310,16 @@
                 console.log(num);
 
                 ///////////////////////////////////
-                if ($(cap).attr("id") === "vrs_cap") {
-                    //grayout
-                    if (false == $(cap).hasClass('grayout')) {
-                        var ret = _This.get_selected_xOj_Parm();
-                        if (ret.vrs) {
-                            var vid = ret.vrs;
-                            Uti.scrollIntoViewIfNeeded_to_vid(vid);
-                        }
-                    };
-                };////////////////////////////////
+                // if ($(cap).attr("id") === "vrs_cap") {
+                //     //grayout
+                //     if (false == $(cap).hasClass('grayout')) {
+                //         var ret = _This.get_selected_xOj_Parm();
+                //         if (ret.vrs) {
+                //             var vid = ret.vrs;
+                //             Uti.scrollIntoViewIfNeeded_to_vid(vid);
+                //         }
+                //     };
+                // };////////////////////////////////
 
 
 
@@ -329,6 +350,8 @@
                 $(tid).find(".digit").attr("disabled", null);
 
             });
+
+
             return;
         };
 
@@ -349,7 +372,7 @@
             var searchStrn = $("#out").val();
             return { File: searchFileName, Strn: searchStrn };
         };///
-        BibleInputMenu.prototype.get_selected_xOj_Parm = function () {
+        BibleInputMenu.prototype.get_selected_vcv_parm = function () {
             var vol_arr = [];
             $(".v3.hili").each(function () {
                 var svol = $(this).text();
@@ -379,17 +402,15 @@
                 vol_arr = null;
             }
 
-
-            var chp = $("#chp_cap").text();
-            var vrs = $("#vrs_cap").text();
-
-            var bibOj = Uti.get_bibOj(vol_arr, chp, vrs);
-
-
-            if (1 === vol_arr.length) {
-                var vol = vol_arr[0];
-                bibOj.vrs = vol + chp + ":" + vrs;
-            }
+            var parm = {};
+            parm.chp = $("#chp_cap").text();
+            parm.vrs = $("#vrs_cap").text();
+            parm.vol_arr = vol_arr;
+            return parm;
+        };
+        BibleInputMenu.prototype.get_selected_xOj_Parm = function () {
+            var ret=this.get_selected_vcv_parm();
+            var bibOj = Uti.get_bibOj(ret.vol_arr, ret.chp, ret.vrs);
             return bibOj;
         };///
         BibleInputMenu.prototype.get_selected_load_parm = function () {
@@ -764,7 +785,9 @@
             }
             return true;
         },
-
+        get_xOj: function (par) {
+            return Uti.get_bibOj(par.vol_arr, par.chp, par.vrs);
+        },
         get_bibOj: function (vol_arr, chp, vrs) {
             if ("object" != typeof vol_arr) {
                 alert("assertion failed: vol must be arry");
@@ -1085,7 +1108,7 @@
             <a style="float:;"></a>
 
             <table id="Tab_vrs" border="1" style="float:;">
-                <caption onclick='onclick_load_BknVolChpVrs();'>vrs <a class='digiCap' id='vrs_cap' title='verse'>*</a></caption>
+                <caption>vrs <a class='digiCap' id='vrs_cap' title='verse'>*</a></caption>
                 <thead id=""></thead>
                 <tbody id="">
                     <tr>
