@@ -171,8 +171,8 @@
             $("#chp_cap").click(function () {
                 var parm = _This.get_selected_vcv_parm();
                 parm.vrs = "*";
-                if(parm.vol_arr.length>=66){
-                    if(!confirm("load the whole bible of 66?")){
+                if (parm.vol_arr.length >= 66) {
+                    if (!confirm("load the whole bible of 66?")) {
                         return;
                     }
                 }
@@ -186,10 +186,10 @@
             $("#vrs_cap").click(function () {
                 var parm = _This.get_selected_vcv_parm();
                 console.log(parm)
-                if(parm.vrs === "*"){
+                if (parm.vrs === "*") {
                     return;
                 };
-                var vcv=parm.vol_arr[0]+parm.chp+":"+parm.vrs;
+                var vcv = parm.vol_arr[0] + parm.chp + ":" + parm.vrs;
                 Uti.scrollIntoViewIfNeeded_to_vid(vcv);
             });
         };
@@ -400,7 +400,7 @@
             return parm;
         };
         BibleInputMenu.prototype.get_selected_xOj_Parm = function () {
-            var ret=this.get_selected_vcv_parm();
+            var ret = this.get_selected_vcv_parm();
             var bibOj = Uti.get_bibOj(ret.vol_arr, ret.chp, ret.vrs);
             return bibOj;
         };///
@@ -487,23 +487,32 @@
             SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
-                $(this).toggleClass("hili");
+                var _This=this;
                 var vid = $(this).text();
-                var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
-                if (undefined === document.m_tmp_tr_arr) {
-                    document.m_tmp_tr_arr = [];
-                }
-                if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
-                    document.m_tmp_tr_arr.push(tr);
-                    var etr = $(tr);
-                    etr.find(".tmp2ref").bind("click", function () {
-                        $(".tmp2ref").removeClass("hili");
-                        $(this).addClass("hili");
-                        var vid = $(this).text().trim();
-                        Uti.scrollIntoViewIfNeeded_to_vid(vid);
-                    })
-                    $("#tmpsel2ref tbody").prepend(etr);
-                }
+                var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn:vid } };
+                var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+                Jsonpster.Run(prm, function (ret) {
+                    $(_This).toggleClass("hili");
+                });
+
+
+                
+                
+                // var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
+                // if (undefined === document.m_tmp_tr_arr) {
+                //     document.m_tmp_tr_arr = [];
+                // }
+                // if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
+                //     document.m_tmp_tr_arr.push(tr);
+                //     var etr = $(tr);
+                //     etr.find(".tmp2ref").bind("click", function () {
+                //         $(".tmp2ref").removeClass("hili");
+                //         $(this).addClass("hili");
+                //         var vid = $(this).text().trim();
+                //         Uti.scrollIntoViewIfNeeded_to_vid(vid);
+                //     })
+                //     $("#tmpsel2ref tbody").prepend(etr);
+                // }
                 //alert(vid);
             });
             $("#oBible").find(".tx").bind("keyup", on_editing);
