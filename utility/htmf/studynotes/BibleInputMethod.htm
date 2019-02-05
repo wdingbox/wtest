@@ -190,7 +190,13 @@
                     return;
                 };
                 var vcv = parm.vol_arr[0] + parm.chp + ":" + parm.vrs;
-                Uti.scrollIntoViewIfNeeded_to_vid(vcv);
+                if (Uti.scrollIntoViewIfNeeded_to_vid(vcv)) {
+                    var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vcv } };
+                    var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+                    Jsonpster.Run(prm, function (ret) {
+                        Uti.SearchResultsPrepend(vcv);
+                    });
+                };
             });
         };
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
@@ -484,20 +490,20 @@
 
 
             var tb = Uti.gen_clientBibleObj_table(ret);
-            SearchResultsPrepend("tot=" + tb.size);
+            Uti.SearchResultsPrepend("tot=" + tb.size);
             $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
-                var _This=this;
+                var _This = this;
                 var vid = $(this).text();
-                var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn:vid } };
+                var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function (ret) {
                     $(_This).toggleClass("hili");
                 });
 
 
-                
-                
+
+
                 // var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
                 // if (undefined === document.m_tmp_tr_arr) {
                 //     document.m_tmp_tr_arr = [];
@@ -567,7 +573,7 @@
                 $(".mat.matIndex").removeClass("matIndex");
                 $(elm).addClass("matIndex");
                 $(elm)[0].scrollIntoViewIfNeeded();
-                SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
+                Uti.SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
                 document.g_matchIndex += incrs;
                 return;
             }
@@ -587,12 +593,12 @@
                     document.g_matchCount++;
                 };
             });
-            SearchResultsPrepend("tot:" + document.g_matchCount);
+            Uti.SearchResultsPrepend("tot:" + document.g_matchCount);
             if (document.g_matchCount > 0) {//save to history.
                 var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function () {
-                    SearchResultsPrepend("found");
+                    Uti.SearchResultsPrepend("found");
                 });
             };
         };
@@ -619,20 +625,23 @@
                 console.log(ret);
                 var ops = Uti.read_history_to_opt(ret, bSortByTime);
                 $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
-                    $(this).toggleClass("hili");
+                    $(".option").removeClass("hili");
+                    $(this).addClass("hili");
                     var s = $(this).text();
                     var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
                     if (mat) {
                         console.log(mat);
                         //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                        var bibOj = Uti.get_bibOj([mat[1]], mat[2], mat[3]);
+                        var vid=mat[1]+ mat[2]+":"+ mat[3];
+                        var bibOj = Uti.get_bibOj([mat[1]], mat[2], "*");
                         var fnamesArr = gBim.get_selected_bkn_fnamesArr();
                         var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
                         console.log(inp);
-
                         var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-
-                        Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+                        Jsonpster.Run(par, function(ret){
+                            apiCallback_Gen_clientBibleObj_table(ret);
+                            Uti.scrollIntoViewIfNeeded_to_vid(vid);
+                        });
                     } else { alert("vcv err:" + s) }
                 });
 
@@ -655,17 +664,7 @@
 
 
 
-        function jsonpsvr_ok() {
-            //https://www.w3schools.com/js/js_json_jsonp.asp
-            var s = $("#out").val();
-            if (s.length > 10) s = "";
-            $("#texta").val(s + ".");
-        }
-        function SearchResultsPrepend(str) {
-            var results = str + ", " + $("#searchResult").text();
-            results = results.substr(0, 60);
-            $("#searchResult").text(results);
-        }
+ 
 
     </script>
 
@@ -681,15 +680,29 @@
 <script type="text/javascript">
 
     var Uti = {
+        jsonpsvr_ok:function() {
+            //https://www.w3schools.com/js/js_json_jsonp.asp
+            var s = $("#out").val();
+            if (s.length > 10) s = "";
+            $("#texta").val(s + ".");
+        },
+        SearchResultsPrepend:function(str) {
+            var results = str + ", " + $("#searchResult").text();
+            results = results.substr(0, 60);
+            $("#searchResult").text(results);
+        },
         scrollIntoViewIfNeeded_to_vid(vid) {
             //var vid = $(this).text().trim();
+            var bfind = false;
             $("#oBible").find(".vid").each(function () {
                 var vid2 = $(this).text().trim();
                 if (vid === vid2) {
                     $(this)[0].scrollIntoViewIfNeeded();
                     $(this).addClass("hili");
+                    bfind = true;
                 }
             });
+            return bfind;
         },
         read_history_to_opt: function (ret, bSortByTime) {
             var ops = [];
