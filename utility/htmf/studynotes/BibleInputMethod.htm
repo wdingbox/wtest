@@ -45,7 +45,11 @@
         console.log((new Date()).toString());//
     </script>
     <style>
-
+#Tab_cat tbody tr:nth-child(6),
+#Tab_cat tbody tr:nth-child(7),
+#Tab_cat tbody tr:nth-child(8){
+    background-color: rgb(24, 117, 117);
+}
     </style>
 
 
@@ -501,25 +505,6 @@
                     $(_This).toggleClass("hili");
                 });
 
-
-
-
-                // var tr = "<tr><td class='tmp2ref'>" + vid + "&nbsp;&nbsp;&nbsp;</td></tr>";
-                // if (undefined === document.m_tmp_tr_arr) {
-                //     document.m_tmp_tr_arr = [];
-                // }
-                // if (document.m_tmp_tr_arr.indexOf(tr) < 0) {
-                //     document.m_tmp_tr_arr.push(tr);
-                //     var etr = $(tr);
-                //     etr.find(".tmp2ref").bind("click", function () {
-                //         $(".tmp2ref").removeClass("hili");
-                //         $(this).addClass("hili");
-                //         var vid = $(this).text().trim();
-                //         Uti.scrollIntoViewIfNeeded_to_vid(vid);
-                //     })
-                //     $("#tmpsel2ref tbody").prepend(etr);
-                // }
-                //alert(vid);
             });
             $("#oBible").find(".tx").bind("keyup", on_editing);
             $("#oBible").find(".tx").bind("keydown", function () {
@@ -884,10 +869,10 @@
     };////  Uti
     ////////////////////////////////////
     const CNST = {
-        ID: {
-            BibleInputMenuContainer: "BibleInputMenuContainer",
-        }
     }
+
+
+    
     var BibleInputMenuContainer = `
 
 
