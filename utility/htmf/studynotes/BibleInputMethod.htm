@@ -602,9 +602,9 @@
 
         }
 
-        function LoadBible_HiliVerse_by_vol_chp_vrs(vol, chp, vrs) {
-            var vid = vol + chp + ":" + vrs;
-            var bibOj = Uti.get_bibOj([vol], chp, "*");
+        function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
+            var vid = prm.vol + prm.chp + ":" + prm.vrs;
+            var bibOj = Uti.get_bibOj([prm.vol], prm.chp, "*");
             var fnamesArr = gBim.get_selected_bkn_fnamesArr();
             var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
             console.log(inp);
@@ -628,8 +628,8 @@
                     var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
                     if (mat) {
                         console.log(mat);
-                        //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                        LoadBible_HiliVerse_by_vol_chp_vrs(mat[1], mat[2], mat[3]);
+                        var vcv = { vol: mat[1], chp: mat[2], vrs: mat[3] };
+                        LoadBible_HiliVerse_by_vol_chp_vrs(vcv);
 
                     } else { alert("vcv err:" + s) }
                 });
@@ -1105,7 +1105,11 @@
             </table>
 
             <table id='Tab_chp' border="1" style="float:;">
-                <caption>chp <button class='digiCap' id='chp_cap' title='chapter'>*</button></caption>
+                <caption>
+                    <a id='prevChp'>chp</a>
+                    <button class='digiCap' id='chp_cap' title='chapter'>*</button>
+                    <a id='nextChp'> - </a>
+                    </caption>
                 <thead id=""></thead>
                 <tbody id=''>
                     <tr>
