@@ -45,7 +45,7 @@
         console.log((new Date()).toString());//
     </script>
     <style>
-#Tab_cat tbody tr:nth-child(6),
+        #Tab_cat tbody tr:nth-child(6),
 #Tab_cat tbody tr:nth-child(7),
 #Tab_cat tbody tr:nth-child(8){
     background-color: rgb(24, 117, 117);
@@ -602,6 +602,18 @@
 
         }
 
+        function LoadBible_HiliVerse_by_vol_chp_vrs(vol, chp, vrs) {
+            var vid = vol + chp + ":" + vrs;
+            var bibOj = Uti.get_bibOj([vol], chp, "*");
+            var fnamesArr = gBim.get_selected_bkn_fnamesArr();
+            var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
+            console.log(inp);
+            var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
+            Jsonpster.Run(par, function (ret) {
+                apiCallback_Gen_clientBibleObj_table(ret);
+                Uti.scrollIntoViewIfNeeded_to_vid(vid);
+            });
+        }
         function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -617,16 +629,8 @@
                     if (mat) {
                         console.log(mat);
                         //var dat = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                        var vid=mat[1]+ mat[2]+":"+ mat[3];
-                        var bibOj = Uti.get_bibOj([mat[1]], mat[2], "*");
-                        var fnamesArr = gBim.get_selected_bkn_fnamesArr();
-                        var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
-                        console.log(inp);
-                        var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-                        Jsonpster.Run(par, function(ret){
-                            apiCallback_Gen_clientBibleObj_table(ret);
-                            Uti.scrollIntoViewIfNeeded_to_vid(vid);
-                        });
+                        LoadBible_HiliVerse_by_vol_chp_vrs(mat[1], mat[2], mat[3]);
+
                     } else { alert("vcv err:" + s) }
                 });
 
@@ -649,7 +653,7 @@
 
 
 
- 
+
 
     </script>
 
@@ -665,13 +669,13 @@
 <script type="text/javascript">
 
     var Uti = {
-        jsonpsvr_ok:function() {
+        jsonpsvr_ok: function () {
             //https://www.w3schools.com/js/js_json_jsonp.asp
             var s = $("#out").val();
             if (s.length > 10) s = "";
             $("#texta").val(s + ".");
         },
-        SearchResultsPrepend:function(str) {
+        SearchResultsPrepend: function (str) {
             var results = str + ", " + $("#searchResult").text();
             results = results.substr(0, 60);
             $("#searchResult").text(results);
@@ -872,7 +876,7 @@
     }
 
 
-    
+
     var BibleInputMenuContainer = `
 
 
