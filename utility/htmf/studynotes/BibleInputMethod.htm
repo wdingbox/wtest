@@ -619,6 +619,14 @@
             $("#Tab_vol tbody").html(s);
             $("#chp_cap").text(prm.chp);
         }
+        function onclick_NextChp(i){
+            var chp=$("#chp_cap").text();
+            if(chp==="*")return;
+            var ichp=parseInt(chp)+i;
+            if(ichp<1||ichp>150) return;
+            $("#chp_cap").text(ichp);
+
+        }
         function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -1112,9 +1120,9 @@
 
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
-                    <a id='prevChp'>chp</a>
+                    <a onclick='onclick_NextChp(-1)'>chp</a>
                     <button class='digiCap' id='chp_cap' title='chapter'>*</button>
-                    <a id='nextChp'> - </a>
+                    <a onclick='onclick_NextChp(1)'> - </a>
                     </caption>
                 <thead id=""></thead>
                 <tbody id=''>
