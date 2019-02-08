@@ -614,6 +614,11 @@
                 Uti.scrollIntoViewIfNeeded_to_vid(vid);
             });
         }
+        function Set_BibleIpnut_UI(prm){
+            var s="<tr><td class='v3 hili'>"+prm.vol+"</td></tr>";
+            $("#Tab_vol tbody").html(s);
+            $("#chp_cap").text(prm.chp);
+        }
         function onclick_load_vcv_history(bSortByTime) {
             var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
             var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -630,6 +635,7 @@
                         console.log(mat);
                         var vcv = { vol: mat[1], chp: mat[2], vrs: mat[3] };
                         LoadBible_HiliVerse_by_vol_chp_vrs(vcv);
+                        Set_BibleIpnut_UI(vcv);
 
                     } else { alert("vcv err:" + s) }
                 });
