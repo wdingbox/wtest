@@ -395,53 +395,18 @@
             parm.vol_arr = vol_arr;
             return parm;
         };
-        BibleInputMenu.prototype.get_selected_xOj_Parm = function () {
+        BibleInputMenu.prototype.get_selected_xOj_Parm_____________ = function () {
             var ret = this.get_selected_vcv_parm();
-            var bibOj = Uti.get_bibOj(ret.vol_arr, ret.chp, ret.vrs);
+            var bibOj = Uti.get_xOj(ret);
             return bibOj;
         };///
         BibleInputMenu.prototype.get_selected_load_parm = function () {
             //
             var fnamesArr = this.get_selected_bkn_fnamesArr();
-            //var search = this.get_selected_Search_Parm();
-            var bibOj = this.get_selected_xOj_Parm();
+            var vcvpar = this.get_selected_vcv_parm();
+            var bibOj = Uti.get_xOj(vcvpar);
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
-            ret.validateBibleLoad = function () {
-                if (null === this.bibOj) {
-                    //alert("bibOj=null");
-                    return false;
-                    if (confirm("load the whole Bible?")) {
-                        this.bibOj = {};
-                    } else {
-                        return false;
-                    }
-                }
-                if (ret.fname.length === 0) {
-                    alert("Please select a biblical BooK Name.");
-                    return false;
-                }
-                var volArr = Object.keys(this.bibOj);
-                if (volArr.length >= 66) {
-                    var s = JSON.stringify(this);
-                    s += "\n\nLoad whole Bible vol=" + volArr.length + "\nContinue?";
-                    return confirm(s);
-                }
-                return true;
-            };
-            ret.validateSearch = function () {
-                if (!this.Search.File) {
-                    alert("no searchFile");
-                    return false;
-                }
-                if (this.Search.Strn.length == 0) {
-                    alert("no searchStrn");
-                    return false;
-                }
-                return true;
-            }
-            ret.getApiParam = function (sApiName) {
-                return { api: sApiName, inp: this };
-            }
+            
             return ret;
         };
         ///////////
@@ -519,12 +484,11 @@
         function onclick_load_BknVolChpVrs() {
             var inp = gBim.get_selected_load_parm();
             //inp.Search.File = "";//disable search
-            if (!inp.validateBibleLoad()) return;
+            if (!Uti.validateBibleLoad(inp)) return;
             console.log(inp);
 
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
-
+            
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
@@ -577,11 +541,10 @@
             var s = $("#out").val().trim();
             var inp = gBim.get_selected_load_parm();
             inp.Search = gBim.get_selected_Search_Parm();
-            if (!inp.validateSearch()) return;
+            if (!Uti.validateSearch(inp)) return;
             console.log(inp);
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            par = inp.getApiParam(RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs);
-
+            
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
@@ -590,7 +553,9 @@
 
         function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
             var vid = prm.vol + prm.chp + ":" + prm.vrs;
-            var bibOj = Uti.get_bibOj([prm.vol], prm.chp, "*");
+            prm.vrs="*";
+            prm.vol_arr=[prm.vol];
+            var bibOj = Uti.get_xOj(prm);
             var fnamesArr = gBim.get_selected_bkn_fnamesArr();
             var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
             console.log(inp);
@@ -687,6 +652,40 @@
 <script type="text/javascript">
 
     var Uti = {
+        validateBibleLoad : function (inp) {
+                if (null === inp.bibOj) {
+                    //alert("bibOj=null");
+                    return false;
+                    if (confirm("load the whole Bible?")) {
+                        inp.bibOj = {};
+                    } else {
+                        return false;
+                    }
+                }
+                if (inp.fname.length === 0) {
+                    alert("Please select a biblical BooK Name.");
+                    return false;
+                }
+                var volArr = Object.keys(inp.bibOj);
+                if (volArr.length >= 66) {
+                    var s = JSON.stringify(inp);
+                    s += "\n\nLoad whole Bible vol=" + volArr.length + "\nContinue?";
+                    return confirm(s);
+                }
+                return true;
+            },
+            validateSearch : function (inp) {
+                if (!inp.Search.File) {
+                    alert("no searchFile");
+                    return false;
+                }
+                if (inp.Search.Strn.length == 0) {
+                    alert("no searchStrn");
+                    return false;
+                }
+                return true;
+            },
+            
         jsonpsvr_ok: function () {
             //https://www.w3schools.com/js/js_json_jsonp.asp
             var s = $("#out").val();
@@ -813,7 +812,7 @@
                 alert("assertion failed: vol must be arry");
                 return null;
             }
-            if (vol_arr.length === 0) {
+            if ( !vol_arr === 0) {
                 //alert("vol_arr is empty");
                 return {};
             }
@@ -964,6 +963,7 @@
 
     .searchFile {
         color: black;
+        border: 1px solid black;
     }
 
     sub {
