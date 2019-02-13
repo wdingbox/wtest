@@ -177,12 +177,14 @@
                 var parm = _This.get_selected_vcv_parm();
                 console.log(parm)
                 if (parm.vrs === "*") {
+                    Uti.SearchResultsPrepend("no op");
                     return;
                 };
                 var vcv = parm.vol_arr[0] + parm.chp + ":" + parm.vrs;
                 if (Uti.scrollIntoViewIfNeeded_to_vid(vcv)) {
                     var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vcv } };
                     var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+                    Uti.SearchResultsPrepend(prm);
                     Jsonpster.Run(prm, function (ret) {
                         Uti.SearchResultsPrepend(vcv);
                     });
@@ -356,7 +358,7 @@
         };///
         BibleInputMenu.prototype.get_selected_Search_Parm = function () {
             var searchFileName = $(".cbkn.hili.searchFile").text();
-            var searchStrn = $("#out").val();
+            var searchStrn = $("#sinput").val();
             return { File: searchFileName, Strn: searchStrn };
         };///
         BibleInputMenu.prototype.get_selected_vcv_parm = function () {
@@ -438,7 +440,7 @@
                 var inp = { fname: [], vcvx: dat };
                 var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                 Jsonpster.Run(par, function () {
-                    jsonpsvr_ok();
+                    SearchResultsPrepend(par);
                     $(_This).removeClass("edit_keydown");
                 });
             };
@@ -478,7 +480,7 @@
             $("#oBible").find(".tx").bind("click", function () {
                 var txt = $(this).text();
                 var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
-                $("#out").val(txt + " (" + vcv + ")");
+                Uti.SearchResultsPrepend(txt + " (" + vcv + ")");
             });
         }
         function onclick_load_BknVolChpVrs() {
@@ -495,7 +497,7 @@
         };
 
         function onclick_regex_match_next(incrs) {
-            var str = $("#out").val();
+            var str = $("#sinput").val();
             var reg = new RegExp(str, "g");
 
             var matSize = $(".mat").length;
@@ -538,13 +540,13 @@
             };
         };
         function onclick_BibleObj_search_str() {
-            var s = $("#out").val().trim();
+            var s = $("#sinput").val().trim();
             var inp = gBim.get_selected_load_parm();
             inp.Search = gBim.get_selected_Search_Parm();
             if (!Uti.validateSearch(inp)) return;
             console.log(inp);
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            
+            Uti.SearchResultsPrepend(par);
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
@@ -590,10 +592,11 @@
                 }
             }
             var bibOj = Uti.get_xOj(parm);
-            console.log("111111bbObj=", bibOj);
+            console.log("Obj=", bibOj);
             var fnamesArr = gBim.get_selected_bkn_fnamesArr();
             var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
+            Uti.SearchResultsPrepend(par);
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
         };
         function onclick_load_vcv_history(bSortByTime) {
@@ -629,7 +632,7 @@
                 $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
                     $(this).toggleClass("hili");
                     var s = $(this).text().trim();
-                    $("#out").val(s);
+                    $("#sinput").val(s);
                 });
             });
         }
@@ -686,15 +689,14 @@
                 return true;
             },
             
-        jsonpsvr_ok: function () {
-            //https://www.w3schools.com/js/js_json_jsonp.asp
-            var s = $("#out").val();
-            if (s.length > 10) s = "";
-            $("#texta").val(s + ".");
-        },
-        SearchResultsPrepend: function (str) {
-            var results = str + ", " + $("#searchResult").val();
-            results = results.substr(0, 60);
+
+        SearchResultsPrepend: function (dat) {
+            var str=dat;
+            if("object" === typeof dat){
+                str=JSON.stringify(dat,null,4);
+            }
+            var results = str + "\n" + $("#searchResult").val();
+            //results = results.substr(0, 60);
             $("#searchResult").val(results);
         },
         scrollIntoViewIfNeeded_to_vid(vid) {
@@ -1061,8 +1063,10 @@
         height: px;
     }
 
+    #sinput,#searchResult{
+        width:280px;
+    }
     #searchResult{
-        width:305px;
         readonly;
         background-color:#f0f0f0;
         
@@ -1159,7 +1163,7 @@
         </div>
         <div id="ID_Explore">
 
-            <textarea id="out" cols='50'></textarea><br>
+            <input id="sinput" cols='50'></input><br>
 
             <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
             <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
@@ -1169,8 +1173,8 @@
             <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
 
             <br>
-            <input id="searchResult" readonly value='search results...' onclick="onclick_load_search_string_history();" title='load search history.'>
-                </input><br>
+            <textarea id="searchResult" cols="50" readonly value='search results...' onclick="onclick_load_search_string_history();" title='load search history.'>
+                </textarea><br>
 
             
 
