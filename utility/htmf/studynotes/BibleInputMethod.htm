@@ -45,11 +45,10 @@
         console.log((new Date()).toString());//
     </script>
     <style>
-        #Tab_cat tbody tr:nth-child(6),
-#Tab_cat tbody tr:nth-child(7),
-#Tab_cat tbody tr:nth-child(8){
-    background-color: rgb(24, 117, 117);
-}
+        #Tab_cat tbody tr:nth-child(1),
+        #Tab_cat tbody tr:nth-child(7) {
+            background-color: rgb(24, 117, 117);
+        }
     </style>
 
 
@@ -368,27 +367,14 @@
                 vol_arr.push(svol);
             });
             if (0 === vol_arr.length) {
-                var items_arr = [];
-                $(".v3").each(function () {
-                    var svol = $(this).text();
-                    items_arr.push(svol);
-                });
-                if (items_arr.indexOf("Gen") >= 0) {
-                    vol_arr = CNST.OT_Vols_Ary;
-                }
-                if (items_arr.indexOf("Mat") >= 0) {
-                    vol_arr = CNST.NT_Vols_Ary;
+                vol_arr = vol_arr.concat(CNST.OT_Vols_Ary);
+                vol_arr = vol_arr.concat(CNST.NT_Vols_Ary);
+                if (vol_arr.length != 66) {
+                    alert("fatal err concat len=" + vol_arr.length)
                 };
-                if (0 === items_arr.length) {
-                    vol_arr = vol_arr.concat(CNST.OT_Vols_Ary);
-                    vol_arr = vol_arr.concat(CNST.NT_Vols_Ary);
-                    if (vol_arr.length != 66) {
-                        alert("err concat len=" + vol_arr.length)
-                    };
-                }
             };
             if (0 === vol_arr.length) {
-                vol_arr = null;
+                alert("fatal err vol_arr.len=0");
             }
 
             var parm = {};
@@ -408,7 +394,7 @@
             var vcvpar = this.get_selected_vcv_parm();
             var bibOj = Uti.get_xOj(vcvpar);
             var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
-            
+
             return ret;
         };
         ///////////
@@ -490,7 +476,7 @@
             console.log(inp);
 
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            
+
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
@@ -555,8 +541,8 @@
 
         function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
             var vid = prm.vol + prm.chp + ":" + prm.vrs;
-            prm.vrs="*";
-            prm.vol_arr=[prm.vol];
+            prm.vrs = "*";
+            prm.vol_arr = [prm.vol];
             var bibOj = Uti.get_xOj(prm);
             var fnamesArr = gBim.get_selected_bkn_fnamesArr();
             var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
@@ -577,10 +563,10 @@
             if (chp === "*") return;
             var ichp = parseInt(chp) + i;
             if (ichp < 1 || ichp > 150) return;
-            var vol=$(".v3.hili").text();
-            if(undefined == _Max_struct[vol][""+ichp]) return alert("no more.");
+            var vol = $(".v3.hili").text();
+            if (undefined == _Max_struct[vol]["" + ichp]) return alert("no more.");
             $("#chp_cap").text(ichp);
-            
+
             onclick_chp_loadBible();
         }
         function onclick_chp_loadBible() {
@@ -655,45 +641,45 @@
 <script type="text/javascript">
 
     var Uti = {
-        validateBibleLoad : function (inp) {
-                if (null === inp.bibOj) {
-                    //alert("bibOj=null");
-                    return false;
-                    if (confirm("load the whole Bible?")) {
-                        inp.bibOj = {};
-                    } else {
-                        return false;
-                    }
-                }
-                if (inp.fname.length === 0) {
-                    alert("Please select a biblical BooK Name.");
+        validateBibleLoad: function (inp) {
+            if (null === inp.bibOj) {
+                //alert("bibOj=null");
+                return false;
+                if (confirm("load the whole Bible?")) {
+                    inp.bibOj = {};
+                } else {
                     return false;
                 }
-                var volArr = Object.keys(inp.bibOj);
-                if (volArr.length >= 66) {
-                    var s = JSON.stringify(inp);
-                    s += "\n\nLoad whole Bible vol=" + volArr.length + "\nContinue?";
-                    return confirm(s);
-                }
-                return true;
-            },
-            validateSearch : function (inp) {
-                if (!inp.Search.File) {
-                    alert("no searchFile");
-                    return false;
-                }
-                if (inp.Search.Strn.length == 0) {
-                    alert("no searchStrn");
-                    return false;
-                }
-                return true;
-            },
-            
+            }
+            if (inp.fname.length === 0) {
+                alert("Please select a biblical BooK Name.");
+                return false;
+            }
+            var volArr = Object.keys(inp.bibOj);
+            if (volArr.length >= 66) {
+                var s = JSON.stringify(inp);
+                s += "\n\nLoad whole Bible vol=" + volArr.length + "\nContinue?";
+                return confirm(s);
+            }
+            return true;
+        },
+        validateSearch: function (inp) {
+            if (!inp.Search.File) {
+                alert("no searchFile");
+                return false;
+            }
+            if (inp.Search.Strn.length == 0) {
+                alert("no searchStrn");
+                return false;
+            }
+            return true;
+        },
+
 
         SearchResultsPrepend: function (dat) {
-            var str=dat;
-            if("object" === typeof dat){
-                str=JSON.stringify(dat,null,4);
+            var str = dat;
+            if ("object" === typeof dat) {
+                str = JSON.stringify(dat, null, 4);
             }
             var results = str + "\n" + $("#searchResult").val();
             //results = results.substr(0, 60);
@@ -814,7 +800,7 @@
                 alert("assertion failed: vol must be arry");
                 return null;
             }
-            if ( !vol_arr === 0) {
+            if (!vol_arr === 0) {
                 //alert("vol_arr is empty");
                 return {};
             }
@@ -1545,12 +1531,14 @@
         "Rev"
     ];
     CNST.Cat2VolArr = {
-        "Moses-ot": ["Gen", "Exo", "Lev", "Num", "Deu"],
+        "OT": CNST.OT_Vols_Ary,
+        "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
         "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
         "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
         "MajorPr": ["Isa", "Jer", "Lam", "Eze", "Dan"],
         "MinorPr": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
-        "Gospel-nt": ["Mat", "Mak", "Luk", "Jhn"],
+        "NT": CNST.NT_Vols_Ary,
+        "Gospel": ["Mat", "Mak", "Luk", "Jhn"],
         "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
         "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
     };
