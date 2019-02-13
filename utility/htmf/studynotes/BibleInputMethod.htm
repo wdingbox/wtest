@@ -192,15 +192,15 @@
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
             var ks = Uti.get_cha_arr_after_str("", _Max_struct);
 
-            var s = "<tr id='vitr'><td>";
+            var s = "<tr id='vitr'>";
             var _This = this;
             $.each(ks, function (i, c) {
                 var volarr = Uti.Get_Vol_Arr_from_KeyChar(c, _Max_struct);
                 var ssb = "<sub>" + volarr.length + "</sub>";
                 if (volarr.length === 1) ssb = "";
                 c = c + ssb;
-                s += "<button class='vin'>" + c + "</button>";
-                if (9 == i) s += "</td></tr><tr><td>";
+                s += "<th><div class='vin'>" + c + "</div></th>";
+                if (9 == i) s += "</tr><tr>";
             });
             s += "</td></tr>";
 
@@ -978,6 +978,10 @@
         background-color: brown;
     }
 
+    .vin{
+        width:20px;
+    }
+
 
     div[contenteditable] {
         background-color: rgb(40, 49, 70);
@@ -1091,7 +1095,7 @@
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
         <div id="ID_BibleInputMenuContainer">
-            <table border="0" id="Tab_BibleSingleInputKey">
+            <table border="1" id="Tab_BibleSingleInputKey">
                 <caption id="BibleInputCap">Bible Input Keys</caption>
                 <thead id=""></thead>
                 <tbody id=""></tbody>
