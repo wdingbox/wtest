@@ -451,6 +451,7 @@
                 }
             });
             $("#oBible").find(".tx").bind("click", function () {
+                $(this).toggleClass("hili2");
                 var txt = $(this).text();
                 var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
                 Uti.Msg(txt + " (" + vcv + ")");
@@ -917,6 +918,10 @@
 
     .hili {
         background-color: red;
+    }
+    .hili2 {
+        background-color: #a00000;
+        padding-bottom:2px;
     }
 
     .editing {
