@@ -161,16 +161,16 @@
                 var parm = _This.get_selected_vcv_parm();
                 console.log(parm)
                 if (parm.vrs === "*") {
-                    Uti.SearchResultsPrepend("no op");
+                    Uti.Msg("no op");
                     return;
                 };
                 var vcv = parm.vol_arr[0] + parm.chp + ":" + parm.vrs;
                 if (Uti.scrollIntoViewIfNeeded_to_vid(vcv)) {
                     var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vcv } };
                     var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-                    Uti.SearchResultsPrepend(prm);
+                    Uti.Msg(prm);
                     Jsonpster.Run(prm, function (ret) {
-                        Uti.SearchResultsPrepend(vcv);
+                        Uti.Msg(vcv);
                     });
                 };
             });
@@ -411,14 +411,14 @@
                 var inp = { fname: [], vcvx: dat };
                 var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                 Jsonpster.Run(par, function () {
-                    SearchResultsPrepend(par);
+                    Msg(par);
                     $(_This).removeClass("edit_keydown");
                 });
             };
 
 
             var tb = Uti.gen_clientBibleObj_table(ret);
-            Uti.SearchResultsPrepend("tot=" + tb.size);
+            Uti.Msg("tot=" + tb.size);
             $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
                 var _This = this;
@@ -451,7 +451,7 @@
             $("#oBible").find(".tx").bind("click", function () {
                 var txt = $(this).text();
                 var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
-                Uti.SearchResultsPrepend(txt + " (" + vcv + ")");
+                Uti.Msg(txt + " (" + vcv + ")");
             });
         }
         function onclick_load_BknVolChpVrs() {
@@ -481,7 +481,7 @@
                 $(".mat.matIndex").removeClass("matIndex");
                 $(elm).addClass("matIndex");
                 $(elm)[0].scrollIntoViewIfNeeded();
-                Uti.SearchResultsPrepend("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
+                Uti.Msg("hili:" + document.g_matchIndex + "/" + document.g_matchCount);
                 document.g_matchIndex += incrs;
                 return;
             }
@@ -501,12 +501,12 @@
                     document.g_matchCount++;
                 };
             });
-            Uti.SearchResultsPrepend("tot:" + document.g_matchCount);
+            Uti.Msg("tot:" + document.g_matchCount);
             if (document.g_matchCount > 0) {//save to history.
                 var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function () {
-                    Uti.SearchResultsPrepend("found");
+                    Uti.Msg("found");
                 });
             };
         };
@@ -517,7 +517,7 @@
             if (!Uti.validateSearch(inp)) return;
             console.log(inp);
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            Uti.SearchResultsPrepend(par);
+            Uti.Msg(par);
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
@@ -545,10 +545,12 @@
         }
         function onclick_NextChp(i) {
             var chp = $("#chp_cap").text();
-            if (chp === "*") return;
+            if (chp === "*") return Uti.Msg("*");
             var ichp = parseInt(chp) + i;
-            if (ichp < 1 || ichp > 150) return;
+            if (ichp < 1 || ichp > 150) return Uti.Msg("ichp out of range");
+            if($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1") ;
             var vol = $(".v3.hili").text();
+            if(vol.length===0) return Uti.Msg("no vol");
             if (undefined == _Max_struct[vol]["" + ichp]) return alert("no more.");
             $("#chp_cap").text(ichp);
 
@@ -567,7 +569,7 @@
             var fnamesArr = gBim.get_selected_bkn_fnamesArr();
             var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
             var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-            Uti.SearchResultsPrepend(par);
+            Uti.Msg(par);
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
         };
         function onclick_load_vcv_history(bSortByTime) {
@@ -661,7 +663,7 @@
         },
 
 
-        SearchResultsPrepend: function (dat) {
+        Msg: function (dat) {
             var str = dat;
             if ("object" === typeof dat) {
                 str = JSON.stringify(dat, null, 4);
@@ -900,7 +902,7 @@
         display: block;
 
         height: 500px;
-        width:300px;
+        width:330px;
         
 
     }
@@ -1104,9 +1106,9 @@
 
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
-                    <a onclick='onclick_NextChp(-1)'>chp</a>
+                    <a onclick='onclick_NextChp(1)'>chp+</a>
                     <button class='digiCap' id='chp_cap' onclick='onclick_chp_loadBible()' title='chapter'>*</button>
-                    <a onclick='onclick_NextChp(1)'> - </a>
+                    <a onclick='onclick_NextChp(-1)'> - &nbsp; </a>
                     </caption>
                 <thead id=""></thead>
                 <tbody id=''>
