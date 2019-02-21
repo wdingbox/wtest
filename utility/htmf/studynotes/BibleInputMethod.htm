@@ -1149,7 +1149,7 @@
         </div>
         <div id="ID_Explore">
 
-            <input id="sinput" cols='50'></input><br>
+            <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
 
             <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
             <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
@@ -1159,7 +1159,7 @@
             <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
             <button onclick="$('#searchResult').val('');" title='clearout txt'></button>
             <br>
-            <textarea id="searchResult" cols="50"  value='search results...' onclick="onclick_load_search_string_history();" title='load search history.'>
+            <textarea id="searchResult" cols="50"  value='search results...' title='load search history.'>
                 </textarea><br>
 
             
