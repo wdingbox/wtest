@@ -172,7 +172,9 @@
                     Jsonpster.Run(prm, function (ret) {
                         Uti.Msg(vcv);
                     });
-                };
+                }else{
+                    Uti.Msg(vcv+" not found.")
+                }
             });
         };
         BibleInputMenu.prototype.Gen_Keys_Menu = function () {
@@ -1106,9 +1108,9 @@
 
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
-                    <a onclick='onclick_NextChp(1)'>chp+</a>
+                    <a onclick='onclick_NextChp(-1)'>chp-</a>
                     <button class='digiCap' id='chp_cap' onclick='onclick_chp_loadBible()' title='chapter'>*</button>
-                    <a onclick='onclick_NextChp(-1)'> - &nbsp; </a>
+                    <a onclick='onclick_NextChp(+1)'> + &nbsp; </a>
                     </caption>
                 <thead id=""></thead>
                 <tbody id=''>
@@ -1119,8 +1121,10 @@
             </table>
             <a style="float:;"></a>
 
-            <table id="Tab_vrs" border="1" style="float:;">
-                <caption>vrs <button class='digiCap' id='vrs_cap' title='verse'>*</button></caption>
+            <table id="Tab_vrs" border="1" style="float;">
+                <caption>vrs <button class='digiCap' id='vrs_cap' title='verse'>*</button>
+                    <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>.</button>
+                    </caption>
                 <thead id=""></thead>
                 <tbody id="">
                     <tr>
@@ -1128,8 +1132,7 @@
                     </tr>
                 </tbody>
             </table>
-            <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>Load</button>
-
+            
 
 
 
