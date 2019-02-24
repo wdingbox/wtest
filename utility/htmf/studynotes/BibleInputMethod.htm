@@ -243,6 +243,7 @@
                 } else {
                     $(".digiCap").removeClass("grayout");
                 }
+                $(".digiCap").text("*");
             };
             var _This = this;
             var trs = Uti.Gen_Vom_trs(vol_arr);
@@ -296,6 +297,7 @@
                 var updateCap = icap * 10 + parseInt(num);
                 if (updateCap > imaxNum) updateCap = imaxNum;
                 cap.text(updateCap);
+                onclick_chp_loadBible();
                 console.log(num);
 
                 var inextbase = icap * 100;
