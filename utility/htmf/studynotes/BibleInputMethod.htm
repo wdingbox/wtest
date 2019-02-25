@@ -296,6 +296,7 @@
                 $(tid).find(".digit").attr("disabled", null);
                 //$(tid).find("button:contains('0')").attr("disabled", true);
                 reset_chp_num(eTab);
+                reset_rse_num(eTab);
             });
             $(tid).find(".undo").bind("click", function () {
                 var eTab = $(this).parentsUntil("table").parent();
@@ -310,6 +311,7 @@
                     cap.text(str);
                 }
                 reset_chp_num(eTab);
+                reset_rse_num(eTab);
             });
             return;
         };
@@ -621,6 +623,31 @@
                 }
             });
         }
+        function reset_rse_num(eTab) {
+            var clnam=".vrs_num";
+            var nVol = $(".v3.hili").length;
+            if (nVol != 1) {
+                $(eTab).find(clnam).attr("disabled", true);
+                return;
+            }
+            var vol = $(".v3.hili").text();
+            var cap = $("#vrs_cap").text();
+            var icap = parseInt(cap);
+            if (!Number.isInteger(icap)) {
+                icap = 0;
+            }
+            var chp=$("#chp_cap").text();
+
+            $(eTab).find(clnam).attr("disabled", null);
+
+            $(eTab).find(clnam).each(function () {
+                var idn = parseInt($(this).text());
+                var rse = icap * 10 + idn;
+                if (undefined === _Max_struct[vol][chp][rse]) {
+                    $(this).attr("disabled", true);
+                }
+            });
+        }
         function onclick_chp_digi(_this) {
             var dici = $(_this).text();
 
@@ -690,6 +717,8 @@
             Uti.scrollIntoViewIfNeeded_to_vid(vcr);
 
             //prepare for next available digits.
+            reset_rse_num(eTab);
+            return;
             $(eTab).find("button[disabled]").attr("disabled", null);
             $(eTab).find(".digit").each(function () {
                 var iDig = parseInt($(this).text());
