@@ -278,92 +278,6 @@
                 };
                 return s;
             };
-            function onclick_chp_digi(_this) {
-                var dici = $(_this).text();
-
-                var eTab=$(_this).parentsUntil("table").parent();
-
-                var eCap = eTab.find(".digiCap");
-                var scap = eCap.text();
-                var icap = parseInt(scap);
-                if (!Number.isInteger(icap)) {
-                    icap = 0;
-                }
-                var updateCap = icap * 10 + parseInt(dici);
-
-                var nVol = $(".v3.hili").length;
-                if (nVol != 1) {
-                    return alert("vol != 1");
-                }
-                var vol = $(".v3.hili").text();
-                if (undefined === _Max_struct[vol]) {
-                    return alert(vol + " not exist!");
-                }
-                var maxchp = Object.keys(_Max_struct[vol]).length;
-                if (undefined === _Max_struct[vol][updateCap]) {
-                    return alert(vol + "_" + updateCap + " not exist!\nMax=" + maxchp);
-                }
-
-                eCap.text(updateCap);
-                onclick_chp_loadBible();
-
-                //prepare for next available digits.
-                $(eTab).find("button[disabled]").attr("disabled", null);
-                $(eTab).find(".digit").each(function () {
-                    var iDig = parseInt($(this).text());
-                    var nextChp = 10 * updateCap + iDig;
-                    if (undefined === _Max_struct[vol][nextChp]) {
-                        $(this).attr("disabled", true);
-                    }
-                });
-            }
-            function onclick_rse_digi(_this) {
-                var dici = $(_this).text();
-
-                var eTab=$(_this).parentsUntil("table").parent();
-
-                var eCap = eTab.find(".digiCap");
-                var scap = eCap.text();
-                var icap = parseInt(scap);
-                if (!Number.isInteger(icap)) {
-                    icap = 0;
-                }
-                var updateCap = icap * 10 + parseInt(dici);
-
-                var nVol = $(".v3.hili").length;
-                if (nVol != 1) {
-                    return alert("vol != 1");
-                }
-                var vol = $(".v3.hili").text();
-                if (undefined === _Max_struct[vol]) {
-                    return alert(vol + " not exist!");
-                }
-                var maxchp = Object.keys(_Max_struct[vol]).length;
-                var chp=$("#chp_cap").text();
-                if (undefined === _Max_struct[vol][chp]) {
-                    return alert(vol + "_" + chp + " not exist!\n chp Max=" + maxchp);
-                }
-                var maxrse = Object.keys(_Max_struct[vol][chp]).length;
-                var chp=$("#chp_cap").text();
-                if (undefined === _Max_struct[vol][chp][updateCap]) {
-                    return alert(vol + "_" + chp + ":"+updateCap+" not exist!\n rse Max=" + maxrse);
-                }
-
-                eCap.text(updateCap);
-                var vcr=vol+chp+":"+updateCap;
-                Uti.scrollIntoViewIfNeeded_to_vid(vcr);
-
-                //prepare for next available digits.
-                $(eTab).find("button[disabled]").attr("disabled", null);
-                $(eTab).find(".digit").each(function () {
-                    var iDig = parseInt($(this).text());
-                    var nextChp = 10 * updateCap + iDig;
-                    if (undefined === _Max_struct[vol][chp][nextChp]) {
-                        $(this).attr("disabled", true);
-                    }
-                });
-            }
-
 
             var s = gen_trs();
             var _This = this;
@@ -678,7 +592,93 @@
                     $("#sinput").val(s);
                 });
             });
-        }
+        };
+
+        function onclick_chp_digi(_this) {
+                var dici = $(_this).text();
+
+                var eTab=$(_this).parentsUntil("table").parent();
+
+                var eCap = eTab.find(".digiCap");
+                var scap = eCap.text();
+                var icap = parseInt(scap);
+                if (!Number.isInteger(icap)) {
+                    icap = 0;
+                }
+                var updateCap = icap * 10 + parseInt(dici);
+
+                var nVol = $(".v3.hili").length;
+                if (nVol != 1) {
+                    return alert("vol != 1");
+                }
+                var vol = $(".v3.hili").text();
+                if (undefined === _Max_struct[vol]) {
+                    return alert(vol + " not exist!");
+                }
+                var maxchp = Object.keys(_Max_struct[vol]).length;
+                if (undefined === _Max_struct[vol][updateCap]) {
+                    return alert(vol + "_" + updateCap + " not exist!\n chpMax=" + maxchp);
+                }
+
+                eCap.text(updateCap);
+                onclick_chp_loadBible();
+
+                //prepare for next available digits.
+                $(eTab).find("button[disabled]").attr("disabled", null);
+                $(eTab).find(".digit").each(function () {
+                    var iDig = parseInt($(this).text());
+                    var nextChp = 10 * updateCap + iDig;
+                    if (undefined === _Max_struct[vol][nextChp]) {
+                        $(this).attr("disabled", true);
+                    }
+                });
+            }
+            function onclick_rse_digi(_this) {
+                var dici = $(_this).text();
+
+                var eTab=$(_this).parentsUntil("table").parent();
+
+                var eCap = eTab.find(".digiCap");
+                var scap = eCap.text();
+                var icap = parseInt(scap);
+                if (!Number.isInteger(icap)) {
+                    icap = 0;
+                }
+                var updateCap = icap * 10 + parseInt(dici);
+
+                var nVol = $(".v3.hili").length;
+                if (nVol != 1) {
+                    return alert("vol != 1");
+                }
+                var vol = $(".v3.hili").text();
+                if (undefined === _Max_struct[vol]) {
+                    return alert(vol + " not exist!");
+                }
+                var maxchp = Object.keys(_Max_struct[vol]).length;
+                var chp=$("#chp_cap").text();
+                if (undefined === _Max_struct[vol][chp]) {
+                    return alert(vol + "_" + chp + " not exist!\n chp Max=" + maxchp);
+                }
+                var maxrse = Object.keys(_Max_struct[vol][chp]).length;
+                var chp=$("#chp_cap").text();
+                if (undefined === _Max_struct[vol][chp][updateCap]) {
+                    return alert(vol + "_" + chp + ":"+updateCap+" not exist!\n rse Max=" + maxrse);
+                }
+
+                eCap.text(updateCap);
+                var vcr=vol+chp+":"+updateCap;
+                Uti.scrollIntoViewIfNeeded_to_vid(vcr);
+
+                //prepare for next available digits.
+                $(eTab).find("button[disabled]").attr("disabled", null);
+                $(eTab).find(".digit").each(function () {
+                    var iDig = parseInt($(this).text());
+                    var nextChp = 10 * updateCap + iDig;
+                    if (undefined === _Max_struct[vol][chp][nextChp]) {
+                        $(this).attr("disabled", true);
+                    }
+                });
+            };
 
 
 
