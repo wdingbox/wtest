@@ -399,7 +399,7 @@
                 var inp = { fname: [], vcvx: dat };
                 var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                 Jsonpster.Run(par, function () {
-                    Msg(par);
+                    Uti.Msg(par);
                     $(_This).removeClass("edit_keydown");
                 });
             };
@@ -533,14 +533,26 @@
             $("#chp_cap").text(prm.chp);
         }
         function onclick_NextChp(i) {
-            var chp = $("#chp_cap").text();
-            if (chp === "*") return Uti.Msg("*");
-            var ichp = parseInt(chp) + i;
-            if (ichp < 1 || ichp > 150) return Uti.Msg("ichp out of range");
+            if(null===i || 0===i){
+                onclick_chp_loadBible();
+                return;
+            }
+            
             if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
             var vol = $(".v3.hili").text();
-            if (vol.length === 0) return Uti.Msg("no vol");
-            if (undefined == _Max_struct[vol]["" + ichp]) return alert("no more.");
+            if (vol.length === 0) return alert("Fatal err vol=null");
+
+            var chp = $("#chp_cap").text();
+            if (chp === "*") {
+                if(1===i) chp=0;
+                if(-1===i){
+                    chp=1+Object.keys(_Max_struct[vol]).length;
+                }
+            };
+            var ichp = parseInt(chp) + i;
+            if (ichp < 1 || ichp > 150) return alert(ichp+" ichp out of range.");
+
+            if (undefined == _Max_struct[vol]["" + ichp]) return alert(vol+" has no:"+ichp);
             $("#chp_cap").text(ichp);
 
             reset_chp_num($("#Tab_chp"));
@@ -643,7 +655,7 @@
             $(eTab).find(clnam).each(function () {
                 var idn = parseInt($(this).text());
                 var rse = icap * 10 + idn;
-                if (undefined === _Max_struct[vol][chp][rse]) {
+                if (undefined === _Max_struct[vol][chp]||undefined === _Max_struct[vol][chp][rse]) {
                     $(this).attr("disabled", true);
                 }
             });
@@ -1234,7 +1246,7 @@
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
                     <a onclick='onclick_NextChp(-1)'>chp-</a>
-                    <button class='digiCap' id='chp_cap' onclick='onclick_chp_loadBible()' title='chapter'>*</button>
+                    <button class='digiCap' id='chp_cap' onclick='onclick_NextChp(0)' title='chapter'>*</button>
                     <a onclick='onclick_NextChp(+1)'> + &nbsp; </a>
                     </caption>
                 <thead id=""></thead>

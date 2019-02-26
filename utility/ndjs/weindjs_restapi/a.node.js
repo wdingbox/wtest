@@ -187,7 +187,7 @@ BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) 
   return { part: "vrs", retObj: retObj };
 };
 BibleObj.prototype.Get_PartialBibleObj_by_xOj = function (srcObj, _xOj) {
-  console.error("input _bOj=", _xOj);
+  console.error("input _xOj=", _xOj);
   if (!_xOj || Object.keys(_xOj).length === 0) {
     return { part: "whole", patObj: srcObj };
   }
@@ -339,7 +339,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
       bvcvObj[fnm] = pat.patObj;
       this.merge_clientBibleObj(RetObj, bvcvObj);//{vol:{chp:{vrs:{bkn:txt,},},},}
       //console.log("pat=", pat)
-      if (pat.vcv.length > 0) {//save to history.
+      if ( pat.vcv && pat.vcv.length > 0) {//save to history.
         //this.loadBible_write_history(pat.patObj);
         var _inp = {}
         _inp.Search = {};
