@@ -65,8 +65,18 @@
             float: top;
         }
 
-        .iodat {
-            background-color: #eeee00;
+        .hili {
+            background-color: #ee0000;
+        }
+
+        table thead {
+            display: block;
+        }
+
+        table tbody {
+            height: 310px;
+            overflow-y: scroll;
+            display: block;
         }
 
         #out1,
@@ -99,8 +109,12 @@
             var t = $("#inptxt").val();
             var CharGrpLen = $("#CharGrpLen").val();
             if (t.length === 0) return alert("please paste your test in textarea");
-            var cps = new ChinesePhraseStats(t, CharGrpLen);
-            $("#outview").html(cps.gen_table());
+            var charFilter = $("#charFilter").val().trim();
+            var cps = new ChinesePhraseStats(t, CharGrpLen, charFilter);
+            var etb = $(cps.gen_table()).on("click", "td", function () {
+                $(this).toggleClass("hili");
+            })
+            $("#outview").append(etb);
             table_sorter();
         }
 
@@ -123,7 +137,7 @@
 <body>
     <!------Menu-->
     <div id='menu'>
-        <select id='DoFreq' size='7'>
+        <select size='7'>
             <option value=''></option>
             <option onclick='cn_frq(this);'>cnfrq</option>
             <option value='English_Words_NIV_dictionary_generating'>English_Words_NIV_dictionary_generating</option>
@@ -147,7 +161,8 @@
             <option value='Hebrew_Chars'>Hebrew</option>
             <option value='Hebrew_Chars'>Hebrew</option>
         </select><br />
-        <input type="text" name="n" id="CharGrpLen" value='1' title="CharGrpLen"></div>
+        <input type="text" name="n" id="CharGrpLen" value='1' title="CharGrpLen"></input>
+        <input type="text" name="n" id="charFilter" value='' title="charFilter"></input>
     </div>
     <!-------->
 

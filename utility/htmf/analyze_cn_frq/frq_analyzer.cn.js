@@ -1,15 +1,18 @@
 
 
 
-var ChinesePhraseStats=function(sTxt, PhraseLen){
+var ChinesePhraseStats=function(sTxt, PhraseLen, ChaFilter){
     //this.purifyChars(sTxt);
     this.m_sTxt=sTxt.replace(/[\n|\r]{1,3}/g, "");
+    
+    if(!ChaFilter)ChaFilter="";
+    this.m_ChaFilter=ChaFilter;
     this.m_PhraseLen=PhraseLen;
     this.calcStats();
 };
 
 ChinesePhraseStats.prototype.calcStats=function(){
-    var PhraseStats={};
+    var PhraseStats={}, filterObj={};
     var sTxt=this.m_sTxt;
     for(var i=0;i<sTxt.length-this.m_PhraseLen;i++){
         var phrase="";
@@ -19,20 +22,25 @@ ChinesePhraseStats.prototype.calcStats=function(){
             var chcod=sTxt.charCodeAt(i+n);
             if(chcod < 19968 || chcod > 65110 ){//filted marks. NoneZi
                 phrase="";
-                console.log("filtered cn,code",cha,chcod);
+                if(undefined===filterObj[cha]) filterObj[cha]=0;
+                filterObj[cha]++;
                 break;
             }
         } 
         if(0===phrase.length)continue;
+        if(this.m_ChaFilter.length>0 && phrase.indexOf(this.m_ChaFilter)<0)continue;
         if(!PhraseStats[phrase]){
             PhraseStats[phrase]=0;
         }
         PhraseStats[phrase]++;
     }
+    console.log("filtered cn",filterObj);
     this.m_PhraseStats=PhraseStats;
 }
 ChinesePhraseStats.prototype.gen_table=function(){
-    var txa="<textarea>"+JSON.stringify(this.m_PhraseStats,null,4)+"</textarea>";
+    var jsn=JSON.stringify(this.m_PhraseStats,null,4);
+    var tot_distinct=Object.keys(this.m_PhraseStats).length;
+    var txa=`<textarea>${this.m_ChaFilter}\ntot_distinct=${tot_distinct}\n${jsn}</textarea>`;
 
     var stb=`<table border='1' align='left'><caption>${txa}</caption>`;
     stb+="<thead><tr><th>#</th><th>Phrase</th><th>reverse</th><th>frq</th></tr></thead>";
@@ -49,17 +57,7 @@ ChinesePhraseStats.prototype.gen_table=function(){
 
 
 
-function Remove_Prounce_Hebrew(phword){
-        var sword='';
-        for(var k=0;k<phword.length;k++){
-            var code=phword.charCodeAt(k);
-            if(code>=1488 && code<=1514){
-                var ch=phword.charAt(k);
-                sword+=ch;
-            }                
-        }  
-        return sword;
-}
+
 
 
 
