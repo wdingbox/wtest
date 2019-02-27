@@ -33,6 +33,7 @@
 
     <script language="javascript" src="analysis_ChineseCharsFrqObj_Bible.json.js"></script>
     <script language="javascript" src="analysis_ChineseCharsFrqObj_PreQin.json.js"></script>
+    <script language="javascript" src="analysis_ChineseCharsFrqObj_PostQin.json.js"></script>
 
 
 
@@ -135,7 +136,7 @@
         var arr=Object.keys(frqObj);
         //$.each(frqObj, function (k, frq) {
         for(var i=0;i<arr.length;i++){
-            if(i>5000)break;//jquery.js:4 Uncaught RangeError: Maximum call stack size exceeded
+            if(i>3000)break;//jquery.js:4 Uncaught RangeError: Maximum call stack size exceeded
             var k=arr[i];
             var frq=frqObj[k];
             trs += "<tr><td/>";
@@ -184,6 +185,8 @@
         gen_tab(Quran_FrqObj, "Quran_FrqObj");
 
         gen_tab(PreQinChar_FrqObj, "PreQin_FrqObj");
+        gen_tab(PostQinChar_FrqObj, "PostQin_FrqObj");
+        
         
 
 
