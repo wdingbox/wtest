@@ -17,7 +17,9 @@
 
 
 
-    <script language="javascript" src="../../htmjs/jq/jquery.js">
+    <scriptxx language="javascript" src="../../htmjs/jq/jquery.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
     </script>
     <script language="javascript" src="../../htmjs/jq/table_Indexer.js">
     </script>
@@ -510,6 +512,16 @@
             Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
             console.log(Jsonpster);
+            var unicds="";
+            for(var i=0;i<s.length;i++){
+                var ch=s.charCodeAt(i);
+                if(ch>512){
+                    unicds+="\\u"+ch.toString(16);
+                }
+                
+            }
+            Uti.Msg(s);
+            Uti.Msg(unicds);
 
         }
 
@@ -1353,6 +1365,7 @@
             <div id="othersx">
         <button id="oBible_indxer">indxer</button>
         <button id="Compare_vcv">Compare_vcv</button>
+        <a href='../index.htm'>ref</a>
 
         <table border="1">
             <thead>
