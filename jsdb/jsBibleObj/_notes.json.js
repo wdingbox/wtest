@@ -32723,7 +32723,7 @@ var _notes=
             "17": "",
             "18": "",
             "19": "",
-            "20": "",
+            "20": "any one as long as he is alive, he has action. the action is either glory God or against Him. There is no middle ground.&nbsp;",
             "21": "",
             "22": "",
             "23": "",
