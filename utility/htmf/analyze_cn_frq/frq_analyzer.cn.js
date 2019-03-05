@@ -3,6 +3,14 @@
 
 var ChinesePhraseStats=function(sTxt, PhraseLen, ChaFilter){
     //this.purifyChars(sTxt);
+    this.m_CharsSize=0;
+    for(var i=0;i<sTxt.length;i++){
+        var chcod=sTxt.charCodeAt(i);
+        if(chcod < 19968 || chcod > 65110 ){//filted marks. NoneZi
+            continue;
+        }
+        this.m_CharsSize++;
+    }
     this.m_sTxt=sTxt.replace(/[\n|\r]{1,3}/g, "");
     
     if(!ChaFilter)ChaFilter="";
@@ -40,7 +48,7 @@ ChinesePhraseStats.prototype.calcStats=function(){
 ChinesePhraseStats.prototype.gen_table=function(){
     var jsn=JSON.stringify(this.m_PhraseStats,null,4);
     var tot_distinct=Object.keys(this.m_PhraseStats).length;
-    var txa=`<textarea>${this.m_ChaFilter}\ntot_distinct=${tot_distinct}\n${jsn}</textarea>`;
+    var txa=`<textarea>text.size=${this.m_CharsSize}\ntot_distinct=${tot_distinct}\n${this.m_ChaFilter}\n${jsn}</textarea>`;
 
     var stb=`<table border='1' align='left'><caption>${txa}</caption>`;
     stb+="<thead><tr><th>#</th><th>Phrase</th><th>reverse</th><th>frq</th></tr></thead>";
