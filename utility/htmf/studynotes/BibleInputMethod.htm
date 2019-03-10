@@ -120,7 +120,7 @@
 
 
             $("#blb").click(function () {
-                var vid = $(".option.hili").text();
+                var vid = $(".vid.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
                 if (!ret) return;
@@ -130,7 +130,7 @@
                 $(this).attr("href", url + file);
             });
             $("#h_g").click(function () {
-                var vid = $(".option.hili").text();
+                var vid = $(".vid.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
                 if (!ret) return;
@@ -141,7 +141,7 @@
                 $(this).attr("href", url + file);
             });
             $("#gtw").click(function () {
-                var vid = $(".option.hili").text();
+                var vid = $(".vid.hili").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
                 if (!ret) return;
@@ -412,11 +412,13 @@
             $("#oBible").html(tb.htm);
             $("#oBible").find(".vid").bind("click", function () {
                 var _This = this;
+                $(".vid.hili").removeClass("hili");
+                $(_This).toggleClass("hili");
                 var vid = $(this).text();
                 var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function (ret) {
-                    $(_This).toggleClass("hili");
+                    Uti.Msg(vid+" is stored in history.");
                 });
 
             });
