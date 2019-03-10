@@ -418,7 +418,7 @@
                 var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
                 var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
                 Jsonpster.Run(prm, function (ret) {
-                    Uti.Msg(vid+" is stored in history.");
+                    Uti.Msg(vid+" is stored in history; and ref is available.");
                 });
 
             });
