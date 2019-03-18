@@ -1,4 +1,4 @@
-var PINYIN_struct=
+var CUVpy_struct=
 {
   "Gen": {
     "1": {
