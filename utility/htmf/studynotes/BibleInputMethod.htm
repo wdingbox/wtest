@@ -209,7 +209,7 @@
             var str = "";
             $.each(bknArr, function (i, v) {
                 var hil = "";
-                if (i == 2) hil = "hili";
+                if (i == 1) hil = "hili";
                 str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
             });
             $(tid).html(str).find(".cbkn").bind("click", function () {
@@ -1398,7 +1398,7 @@
 
 
     CNST.FnameOfBibleObj =
-        ["BBE", "CUVS", "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "PINYIN", "STUS", "WLVS", "_notes"];
+        ["BBE", "CUVS","CUVpy",  "H_G", "KJV", "KJV_Jw", "NIV", "NIV_Jw", "STUS", "WLVS", "_notes"];
 
     CNST.BibVolName = {
         "Gen": ['Genesis', '创世纪'],
