@@ -993,30 +993,34 @@
         },
 
         gen_clientBibleObj_table: function (ret) {
-            var s = "<table border='1'>";
-            s += "<thead><th>vcv</th><th>scripts</th></thead>";
-            s += "<tbody>";
-            var idx = 0;
+            var idx = 0, st="";
             $.each(ret, function (vol, chpObj) {
                 $.each(chpObj, function (chp, vrsObj) {
                     $.each(vrsObj, function (vrs, val) {
                         //console.log("typeof val=", typeof val);
                         idx++;
                         var vid = vol + "<br>" + chp + ":" + vrs;
-                        s += "<tr><td class='vid'>" + vid + "</td><td>";
+                        st += "<tr><td class='vid'>" + vid + "</td><td>";
                         if ("object" == typeof val) {
                             $.each(val, function (key, str) {
                                 var vid = vol + chp + ":" + vrs;
-                                s += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
+                                st += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
                             });
                         }
                         if ("string" == typeof val) {
-                            s += "<div>" + val + "</iv>";
+                            st += "<div>" + val + "</iv>";
                         }
-                        s += "</td></tr>";
+                        st += "</td></tr>";
                     });
                 });
             });
+
+            var s = "<table border='1'>";
+            s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
+            s += "<thead><th>vcv</th><th>scripts</th></thead>";
+            s += "<tbody>";
+            s+=st;
+
             s += "</tbody></table>";
             return { htm: s, size: idx };
         },
@@ -1309,7 +1313,7 @@
             <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
             
             <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
-            <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='sort by str'>^</button>
+            <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='load history sort by str'>^</button>
             <button onclick="$('#searchResult').val('');" title='clearout txt'></button>
             <br>
             <textarea id="searchResult" cols="50"  value='search results...' title='load search history.'>
