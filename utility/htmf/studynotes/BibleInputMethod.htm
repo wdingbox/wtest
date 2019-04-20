@@ -444,12 +444,12 @@
                             };
                         }
                     }
-                    if ($(this).prop("checked"))
+                    if ($(this).prop("checked")) {
                         $(this).next().attr("contenteditable", "true").addClass("editing");
-                        if($(this).next().text().trim().length===0){
-                            $(this).next().text(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .").focus();
+                        if ($(this).next().text().trim().length === 0) {
+                            $(this).next().text(" . ").focus();
                         }
-                    else {
+                    } else {
                         $(this).next().removeClass("editing").attr("contenteditable", null);
                     }
                 });
@@ -996,7 +996,7 @@
         },
 
         gen_clientBibleObj_table: function (ret) {
-            var idx = 0, st="";
+            var idx = 0, st = "";
             $.each(ret, function (vol, chpObj) {
                 $.each(chpObj, function (chp, vrsObj) {
                     $.each(vrsObj, function (vrs, val) {
@@ -1022,7 +1022,7 @@
             s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
             s += "<thead><th>vcv</th><th>scripts</th></thead>";
             s += "<tbody>";
-            s+=st;
+            s += st;
 
             s += "</tbody></table>";
             return { htm: s, size: idx };
