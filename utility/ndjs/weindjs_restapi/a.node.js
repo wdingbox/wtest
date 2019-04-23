@@ -131,7 +131,7 @@ var BibleObj = function () {
 };
 
 BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
-  var fil = inpObj.filename[0];
+  var fil = inpObj.fname[0];
   var vol = inpObj.vcvx.vol;
   var chp = inpObj.vcvx.chp;
   var vrs = inpObj.vcvx.vrs;
