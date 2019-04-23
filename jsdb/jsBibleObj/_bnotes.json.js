@@ -1,4 +1,4 @@
-var _notes=
+var _bnotes=
 {
     "Gen": {
         "1": {
