@@ -28126,7 +28126,7 @@ var _bnotes=
         "1": {
             "1": "[馬殊曼(Joshua Marshman) 1822]原始已有言, 而其言偕神, (<a href=\"https://bible.fhl.net/ob/nob.html?book=16\">https://bible.fhl.net/ob/nob.html?book=16</a>)&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<br>&nbsp;&nbsp;",
             "2": "",
-            "3": "",
+            "3": "d",
             "4": "",
             "5": "",
             "6": "",
