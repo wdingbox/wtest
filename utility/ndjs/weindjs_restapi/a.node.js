@@ -131,11 +131,12 @@ var BibleObj = function () {
 };
 
 BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
+  var fil = inpObj.filename[0];
   var vol = inpObj.vcvx.vol;
   var chp = inpObj.vcvx.chp;
   var vrs = inpObj.vcvx.vrs;
   var txt = inpObj.vcvx.txt;
-  var ret = this.load_BibleObj("_notes");
+  var ret = this.load_BibleObj(fil);//"_notes");
   ret.obj[vol][chp][vrs] = txt;
   var sss = JSON.stringify(ret.obj, null, 4);
   //fs.writeFileSync(ret.fname, sss, "utf8");
