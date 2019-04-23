@@ -438,8 +438,8 @@
                     $(this).addClass("edit_keydown");
                 });
                 $("#oBible").find("[type=checkbox]").bind("click", function () {
-                    var stit=$(this).attr("title");
-                    if (stit != "_bnotes") {
+                    var stit = $(this).attr("title");
+                    if (stit[0] != "_") { //"_bnotes") {
                         if ($(this).prop("checked")) {
                             if (!confirm("Only Authorized people can edit it. \n To Edit?")) {
                                 return;
@@ -447,7 +447,7 @@
                         }
                     }
                     if ($(this).prop("checked")) {
-                        $(this).next().attr("contenteditable", "true").addClass("editing").attr("title",stit);
+                        $(this).next().attr("contenteditable", "true").addClass("editing").attr("title", stit);
                         if ($(this).next().text().trim().length === 0) {
                             $(this).next().text(" ").focus();
                         }
