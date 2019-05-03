@@ -472,6 +472,10 @@
                     var txt = $(this).text();
                     var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
                     Uti.Msg(txt + " (" + vcv + ")");
+                    //copy to clipboard.
+                    $("#CopyTextToClipboard").val(txt);
+                    $("#CopyTextToClipboard").select();
+                    document.execCommand("copy");
                 });
             }
             function onclick_load_BknVolChpVrs() {
@@ -1418,6 +1422,7 @@
             </thead>
             <tbody id="StructAna"></tbody>
         </table>
+        <input id="CopyTextToClipboard" title="CopyTextToClipboard"/>
     </div>
 
         </div>
