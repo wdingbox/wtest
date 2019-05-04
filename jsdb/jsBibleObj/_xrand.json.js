@@ -51,7 +51,7 @@ var _popups={
             "15": "-",
             "16": "-",
             "17": "-",
-            "18": "-",
+            "18": "-any job, if a woman can do, then robot can do. A man should do a job woman cannot do.",
             "19": "-",
             "20": "-",
             "21": "-",
@@ -28514,9 +28514,9 @@ var _popups={
     },
     "Jhn": {
         "1": {
-            "1": "test-",
+            "1": "W-",
             "2": "-test",
-            "3": "-",
+            "3": "-y",
             "4": "-",
             "5": "-",
             "6": "-",
