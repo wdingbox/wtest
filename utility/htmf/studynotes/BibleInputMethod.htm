@@ -407,7 +407,7 @@
             function apiCallback_Gen_clientBibleObj_table(ret) {
                 function on_editing() {
                     var fil = $(this).attr("title");
-                    var txt = $(this).html();
+                    var txt = $(this).text();
                     var vid = $(this).attr("vid");
                     var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
                     if (!mat) {
@@ -443,8 +443,8 @@
                     Jsonpster.Run(prm, function (ret) {
                         Uti.Msg(vid + " is stored in history; and ref is available.");
                     });
-
                 });
+
                 $("#oBible").find(".tx").bind("keyup", on_editing);
                 $("#oBible").find(".tx").bind("keydown", function () {
                     $(this).addClass("edit_keydown");
@@ -460,9 +460,6 @@
                     }
                     if ($(this).prop("checked")) {
                         $(this).next().attr("contenteditable", "true").addClass("editing").attr("title", stit);
-                        if ($(this).next().text().trim().length === 0) {
-                            $(this).next().text(" ").focus();
-                        }
                     } else {
                         $(this).next().removeClass("editing").attr("contenteditable", null);
                     }
@@ -480,7 +477,6 @@
                         $("#CopyTextToClipboard").select();
                         document.execCommand("copy");
                     }
-
                 });
             }
             function onclick_load_BknVolChpVrs() {
