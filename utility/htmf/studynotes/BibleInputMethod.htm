@@ -405,12 +405,19 @@
             //////////
             /////////
             function apiCallback_Gen_clientBibleObj_table(ret) {
-                function on_editing() {
-                    var fil = $(this).attr("title");
-                    var txt = $(this).text();
-                    var vid = $(this).attr("vid");
+                function editing_save(_This) {
+                    var old = $(_This).attr("oldtxt");
+                    var fil = $(_This).attr("title");
+                    var txt = $(_This).text();
+                    var vid = $(_This).attr("vid");
+
+                    if (old === txt) {
+                        Uti.Msg("no changes on text.");
+                        return;
+                    }
+
                     var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
-                    if (!mat) {
+                    if (!mat) {//Gen1:1
                         alert("edi save err:" + vid + ":" + txt);
                         return;
                     }
@@ -420,12 +427,13 @@
                     dat.vrs = mat[3];
                     dat.txt = txt;
 
-                    var _This = this;
+                    //var _This = this;
                     var inp = { fname: [fil], vcvx: dat };
                     var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                     Jsonpster.Run(par, function () {
                         Uti.Msg(par);
-                        $(_This).removeClass("edit_keydown");
+                        Uti.Msg(txt);
+                        $(_This).removeClass("edit_keydown").removeClass("editing");
                     });
                 };
 
@@ -445,7 +453,7 @@
                     });
                 });
 
-                $("#oBible").find(".tx").bind("keyup", on_editing);
+                //$("#oBible").find(".tx").bind("focusout", editing_save);
                 $("#oBible").find(".tx").bind("keydown", function () {
                     $(this).addClass("edit_keydown");
                 });
@@ -453,15 +461,18 @@
                     var stit = $(this).attr("title");
                     if (stit[0] != "_") { //"_bnotes") {
                         if ($(this).prop("checked")) {
-                            if ("password123"!=prompt("Only Authorized people can edit it. \nPlease enter password.","password")) {
+                            if ("password123" != prompt("Only Authorized people can edit it. \nPlease enter password.", "password")) {
                                 return;
                             };
                         }
                     }
                     if ($(this).prop("checked")) {
                         $(this).next().attr("contenteditable", "true").addClass("editing").attr("title", stit);
+                        var oldtxt = $(this).next().text();
+                        $(this).next().attr("oldtxt", oldtxt);
                     } else {
-                        $(this).next().removeClass("editing").attr("contenteditable", null);
+                        $(this).next().attr("contenteditable", null).removeClass("editing");
+                        editing_save($(this).next());
                     }
                 });
                 $("#oBible").find(".tx").bind("click", function () {
@@ -472,7 +483,7 @@
                     //copy to clipboard.
                     if ($(this).prop("contenteditable")) {
                         //nop
-                    }else{
+                    } else {
                         $("#CopyTextToClipboard").val(txt);
                         $("#CopyTextToClipboard").select();
                         document.execCommand("copy");
@@ -1112,6 +1123,11 @@
         border: 3px solid gold;
         color: black;
         background-color: cornsilk;
+
+        width:100%;
+        height:330px;
+        display:block;
+        overflow: scroll;
     }
 
     .edit_keydown {
@@ -1155,10 +1171,6 @@
 
     /*** For ***/
     a[contenteditable] {
-        width:100%;
-        height:30px;
-        display:block;
-        overflow: scroll;
     }
 
 
