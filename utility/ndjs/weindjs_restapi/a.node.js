@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var url = require('url');
 
 var Uti = require("./MyNodjsModules/Uti.module").Uti;
+var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
 
 ////////////////////////////////
 //server site workload.
@@ -20,67 +21,10 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 
 
 
-var Utix = {
-  getFileNamesFromDir: function (startPath, filter) {
-    function recursiveDir(startPath, filter, xx) {
-      var files = fs.readdirSync(startPath);
-      for (var i = 0; i < files.length; i++) {
-        var filename = path.join(startPath, files[i]);
-        //console.log(filename);
-        var stat = fs.lstatSync(filename);
-        if (stat.isDirectory()) {
-          recursiveDir(filename, filter); //recurse
-        }
-        else if (filename.indexOf(filter) >= 0) {
-          //console.log('-- found: ',filename);
-          outFilesArr.push(filename);
-        };
-      };
-    }
-    var outFilesArr = [];
-    recursiveDir(startPath, filter);
-    return outFilesArr;
-  },
-
-  GetJsonStringFrmFile: function (fname) {
-    var content = fs.readFileSync(fname, "utf8");
-    var idx = content.indexOf("{");
-    var shead = content.substr(0, idx);
-    console.log("shead==", shead);
-    content = content.substring(idx);
-    return { fname: fname, header: shead, jstrn: content };
-  },
-
-  getDateTime: function () {
-
-    var date = new Date();
-
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
-
-    var min = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
-
-    var sec = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-
-    var year = date.getFullYear();
-
-    var month = date.getMonth() + 1;
-    month = (month < 10 ? "0" : "") + month;
-
-    var day = date.getDate();
-    day = (day < 10 ? "0" : "") + day;
-
-    return year + "-" + month + "-" + day + "," + hour + ":" + min + ":" + sec;
-
-  }
-};//////Uti//////
 
 
 
-
-var HebrewQ = function () {
+var HebrewQxxxxxxxxx = function () {
 
 }
 HebrewQ.prototype.get_VocabHebrewBufObj = function () {
