@@ -16,7 +16,7 @@ const ValideBibleObjFiles = {
 }
 var BibleObj = function () {
 };
-BibleObj.prototype.GetValideBibleObjFiles=function(){
+BibleObj.prototype.GetValideBibleObjFiles = function () {
     return ValideBibleObjFiles;
 }
 
@@ -281,6 +281,6 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
     return ret;
 };
 
-module.exports = function(){
-        return new BibleObj();
+module.exports = function () {
+    return new BibleObj();
 }
