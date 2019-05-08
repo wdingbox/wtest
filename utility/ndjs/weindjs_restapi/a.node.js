@@ -117,9 +117,9 @@ var SvrApi = {
     return ss;
   }
 };//////SvrApi///////////////////////////////////
-var RestApi={}//clientSite usage.
+var RestApi = {}//clientSite usage.
 Object.keys(SvrApi).forEach(function (api) {
-  RestApi[api]=api;
+  RestApi[api] = api;
   app.get("/" + api, (req, res) => {
     var inpObj = SvrApi.GetApiInputParamObj(req, res);
     var ret = SvrApi[api](inpObj);
@@ -131,7 +131,8 @@ Object.keys(SvrApi).forEach(function (api) {
 ////////////////////////////////////////////////
 
 //for BibleObj clientSite Usage. 
-RestApi["HistFile"]=BibleObj.ValideBibleObjFiles;
+var bo = new BibleObj();
+RestApi["HistFile"] = bo.GetValideBibleObjFiles();
 
 
 

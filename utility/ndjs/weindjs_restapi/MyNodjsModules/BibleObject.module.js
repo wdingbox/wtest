@@ -16,7 +16,9 @@ const ValideBibleObjFiles = {
 }
 var BibleObj = function () {
 };
-BibleObj.ValideBibleObjFiles=ValideBibleObjFiles;
+BibleObj.prototype.GetValideBibleObjFiles=function(){
+    return ValideBibleObjFiles;
+}
 
 BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
     var fil = inpObj.fname[0];
