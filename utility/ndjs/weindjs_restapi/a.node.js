@@ -94,8 +94,8 @@ Object.keys(SvrApi).forEach(function (api) {
 ////////////////////////////////////////////////
 
 //for BibleObj clientSite Usage. 
-//var bo = new BibleObj();
-//RestApi["HistFile"] = bo.GetValideBibleObjFiles();
+var bo = new BibleObj();
+RestApi["HistFile"] = bo.GetValideBibleObjFiles();
 
 
 
