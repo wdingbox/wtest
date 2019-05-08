@@ -51,13 +51,14 @@ var SvrApi = {
 
   /// Upload
   upload: function (req, res) {
-    console.log("upload req.url=", req.url);
-    var q = url.parse(req.url, true).query;
-    console.log("q=", q);
+    //console.log("upload req.url=", req.url);
+    //var q = url.parse(req.url, true).query;
+    console.log("req=", req);
+    console.log("res=", res);
     //var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
     //var inpObj = JSON.parse(s);
     //console.log("inpObj=", inpObj);
-    return inpObj;
+    //return inpObj;
   },
 
   /////HebrewBuf
