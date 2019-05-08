@@ -47,5 +47,5 @@ var hbrq = new HebrewQ();
 
 
 
-modele.exports.HebrewQ = HebrewQ;
+module.exports.HebrewQ = HebrewQ;
 
