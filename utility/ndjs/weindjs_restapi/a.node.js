@@ -131,7 +131,7 @@ Object.keys(SvrApi).forEach(function (api) {
 ////////////////////////////////////////////////
 
 //for BibleObj clientSite Usage. 
-RestApi["HistFile"]=ValideBibleObjFiles;
+RestApi["HistFile"]=BibleObj.ValideBibleObjFiles;
 
 
 
