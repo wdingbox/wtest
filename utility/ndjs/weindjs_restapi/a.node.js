@@ -35,6 +35,15 @@ var hbrq = new HebrewQ();
 
 
 var SvrApi = {
+  upload: function (req, res) {
+    console.log("upload req.url=", req.url);
+    var q = url.parse(req.url, true).query;
+    console.log("q=", q);
+    var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
+    var inpObj = JSON.parse(s);
+    console.log("inpObj=", inpObj);
+    return inpObj;
+  },
   GetApiInputParamObj: function (req, res) {
     console.log("req.url=", req.url);
     var q = url.parse(req.url, true).query;
