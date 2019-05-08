@@ -6,7 +6,7 @@ var url = require('url');
 
 var Uti = require("./MyNodjsModules/Uti.module").Uti;
 var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
-var BibleObj = require("./MyNodjsModules/BibleObject.module");
+var BibleObj = require("./MyNodjsModules/BibleObject.module").BibleObj;
 
 ////////////////////////////////
 //server site workload.
