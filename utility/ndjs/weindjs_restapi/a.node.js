@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 //var stripe     = require("stripe")("CUSTOM_TEST_TOKEN");
 var url = require('url');
 
-var Uti = require("./MyNodejsModules/Uti.module").Uti;
+var Uti = require("./MyNodjsModules/Uti.module").Uti;
 
 ////////////////////////////////
 //server site workload.
