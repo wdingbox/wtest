@@ -282,5 +282,5 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
 };
 
 module.exports = {
-    BibleObj:BibleObj;
+    BibleObj:BibleObj
 }
