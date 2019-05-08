@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 //var stripe     = require("stripe")("CUSTOM_TEST_TOKEN");
 var url = require('url');
 
+var Uti = require(".MyNodejsModules/Uti.module").Uti;
 
 ////////////////////////////////
 //server site workload.
@@ -19,7 +20,7 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 
 
 
-var Uti = {
+var Utix = {
   getFileNamesFromDir: function (startPath, filter) {
     function recursiveDir(startPath, filter, xx) {
       var files = fs.readdirSync(startPath);
