@@ -72,7 +72,7 @@ var SvrApi = {
   },
 
   /// Upload
-  upload: function (req, res) {
+  uploadpage: function (req, res) {
     //console.log("upload req.url=", req.url);
     //var q = url.parse(req.url, true).query;
     console.log("req=", req);
@@ -81,6 +81,32 @@ var SvrApi = {
     //var inpObj = JSON.parse(s);
     //console.log("inpObj=", inpObj);
     //return inpObj;
+    var sweb=`
+    <html>
+  <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
+
+
+  </head>
+  <body>
+    <form ref='uploadForm' 
+      id='uploadForm' 
+      action='./upload2/
+      method='post' 
+      encType="multipart/form-data">
+        <input type="file" name="sampleFile" />
+        <input type='submit' value='Upload!' />
+    </form>     
+  </body>
+</html>
+    `;
+    resp.writeHead(200, { 'Content-Type': 'text/html' });
+    resp.write(sweb);
+    resp.end();
+  },
+  uploadpage: function (req, res) {
+    console.log("upload2 req=",req);
   },
 
   /////HebrewBuf
