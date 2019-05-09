@@ -7,10 +7,6 @@
     <base target="_blank" />
 
 
- 
-
-
-
     <script language="javascript" src="../htmjs/jq/jquery.js" />
     <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
 
@@ -20,54 +16,15 @@
     
 $(function(){
 
-    var stb="";
-    var lanArr=Object.keys(statBible);
-    $.each(lanArr,function(i,slan){
-        var dir="fullscripture/";
-        var sf1=dir+slan+"_loadjson.htm";
-        var sf2=dir+slan+"_loadjson2.htm";
-
-        var as1="<a href='"+sf1+"'>"+sf1+"</a>";
-        var as2="<a href='"+sf2+"'>"+sf2+"</a>";
-        stb+="<tr><td></td><td>"+as1+"</td><td>"+as2+"</td>";
-        stb+="<td>"+statBible[slan]+"</td>";
-        stb+="</tr>";
-    });
-    $("#tbd").html(stb);
-    var trs=trs_analist(anar);
-    $("#tbd").append(trs);
 });///////
 
 
-var anar=[
-"chnFrq.htm",
-"https://wdingbox.github.io/obi/.htm",
-"analysis/analysis_Frq_HebrewOT_grp2.htm",
-"analysis/analysis_struct.htm",
-];
-function trs_analist(ar){
-    var trs="";
-    $.each(ar,function(i,file){
-        trs+="<tr><td></td><td><a href='"+file+"'>"+file+"</a><td></td></tr>"
-    });
-    return trs;
-}
+
 </script>
 </HEAD>
 <BODY>
 
-<table border="1">
-    <thead><tr>
-        <th>#</th>
-        <th>localpath</th>
-        <th>url</th>
-        <th>size</th>
-    </tr></thead>
-    <tbody id="tbd"></tbody>
-</table>
-<br>
-
-
+<a href="./studynotes/BibleInputMethod.htm">BibleInputMethod</a><br>
 <a href="chnFrq.htm">chnFrq</a><br>
 <a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a><br>
 
