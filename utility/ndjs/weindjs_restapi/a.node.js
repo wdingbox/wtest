@@ -34,15 +34,16 @@ app.post('/upload_submit', function (req, res) {
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let sampleFile = req.files.sampleFile;
   var uploadFileNmae=req.files.sampleFile.name;
+  var uploadDestPath=req.body.destDir;
   console.log("uploadFileNmae=",uploadFileNmae);
+  console.log("uploadDestName=",uploadDestPath);
 
   // Use the mv() method to place the file somewhere on your server
-  var destDir='tmp';
-  sampleFile.mv(`/${destDir}/${uploadFileNmae}`, function (err) {
+  sampleFile.mv(`${uploadDestPath}/${uploadFileNmae}`, function (err) {
     if (err) {
       return res.status(500).send(err);
     }
-    res.send(`File ${uploadFileNmae} were uploaded to ${destDir} !`);
+    res.send(`File: ${uploadFileNmae} <br>was uploaded to: ${uploadDestPath}`);
   });
 });
 //Cannot POST - handling form POST from an external site.

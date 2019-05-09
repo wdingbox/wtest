@@ -19,6 +19,16 @@
 <script type="text/javascript">
     
 $(function(){
+    var statBible={
+        "BBE":"4,655,556 b",
+        "CUVS":"3,694,124 b",
+        "H_G":"7,561,287 b",
+        "KJV":"4,615,880 b",
+        "NIV":"4,313,234 b",
+        "PINYIN":"4,305,591 b",
+        "STUS":"3,887,835 b",
+        "WLVS":"2,866,838 b"};
+//https://wdingbox.github.io/ham12/jsdb/jsBibleTxt/BBE.json.js
 
     var stb="";
     var lanArr=Object.keys(statBible);
@@ -40,8 +50,8 @@ $(function(){
 
 
 var anar=[
-"chnFrq.htm",
-"https://wdingbox.github.io/obi/.htm",
+"analysis/analysis_Frq_HebrewOT.htm",
+"analysis/analysis_Frq_HebrewOT_NoMarker.htm",
 "analysis/analysis_Frq_HebrewOT_grp2.htm",
 "analysis/analysis_struct.htm",
 ];
@@ -66,11 +76,20 @@ function trs_analist(ar){
     <tbody id="tbd"></tbody>
 </table>
 <br>
+<a href="analysis/analysis_struct.htm">analysis_struct.htm</a><br>
+<a href="analyze_cn_frq/analysis_ChineseCharsFrqObj.htm">analysis_ChineseCharsFrqObj</a><br>
+<a href="analyze_cn_frq/frq_analyzer.cn.htm">frq_analyzer.cn</a><br>
 
 
-<a href="chnFrq.htm">chnFrq</a><br>
-<a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a><br>
+<a href="../../../../../../app/bitbucket/weinodejs/dbungee/dctext/nodjsapp/index.htm">ctext.cn.frq</a><br>
 
+
+<hr/>
+<a href="https://wdingbox.github.io/obi/">https://wdingbox.github.io/obi/</a><br>
+
+<a href="../../../../../github/wdingbox/obi/index.htm">obi/</a><br>
+<a href="../../../../../github/wdingbox/obi/index.htm">obi/</a><br>
+http://104.188.182.128:7778/Jsonpster/
 
 </BODY>
 </HTML>
