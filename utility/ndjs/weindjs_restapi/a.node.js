@@ -16,30 +16,43 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 
 
 
-
+//////////////////////////////////////////
+//
+//    Upload file
+//
 //const express = require('express');
 const fileUpload = require('express-fileupload');
 //const app = express();
 
 // default options
 app.use(fileUpload());
-
-app.post('/upload2', function(req, res) {
-  if (Object.keys(req.files).length == 0) {
+app.post('/upload_submit', function (req, res) {
+  if (!req || !req.files || Object.keys(req.files).length == 0) {
     return res.status(400).send('No files were uploaded.');
   }
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let sampleFile = req.files.sampleFile;
+  var uploadFileNmae=req.files.sampleFile.name;
+  console.log("uploadFileNmae=",uploadFileNmae);
 
   // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv('/somewhere/on/your/server/filename.jpg', function(err) {
-    if (err)
+  var destDir='tmp';
+  sampleFile.mv(`/${destDir}/${uploadFileNmae}`, function (err) {
+    if (err) {
       return res.status(500).send(err);
-
-    res.send('File uploaded!');
+    }
+    res.send(`File ${uploadFileNmae} were uploaded to ${destDir} !`);
   });
 });
+//Cannot POST - handling form POST from an external site.
+app.get('/upload_page', function (req, res) {
+  console.log("upload_page...");
+  var sweb = fs.readFileSync("./upload_page.htm", "utf8");
+  return res.send(sweb);
+});
+//
+////////////////////////////////
 
 
 
@@ -61,7 +74,7 @@ var SvrApi = {
     console.log("req.url=", req.url);
     var q = url.parse(req.url, true).query;
     console.log("q=", q);
-    if(q.inp === undefined ){
+    if (q.inp === undefined) {
       console.log("q.inp undefined. Maybe upload.");
       return q;
     }
@@ -71,43 +84,6 @@ var SvrApi = {
     return inpObj;
   },
 
-  /// Upload
-  uploadpage: function (req, res) {
-    //console.log("upload req.url=", req.url);
-    //var q = url.parse(req.url, true).query;
-    console.log("req=", req);
-    console.log("res=", res);
-    //var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-    //var inpObj = JSON.parse(s);
-    //console.log("inpObj=", inpObj);
-    //return inpObj;
-    var sweb=`
-    <html>
-  <head>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-      <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
-
-
-  </head>
-  <body>
-    <form ref='uploadForm' 
-      id='uploadForm' 
-      action='./upload2/
-      method='post' 
-      encType="multipart/form-data">
-        <input type="file" name="sampleFile" />
-        <input type='submit' value='Upload!' />
-    </form>     
-  </body>
-</html>
-    `;
-    resp.writeHead(200, { 'Content-Type': 'text/html' });
-    resp.write(sweb);
-    resp.end();
-  },
-  uploadpage: function (req, res) {
-    console.log("upload2 req=",req);
-  },
 
   /////HebrewBuf
 
