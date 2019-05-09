@@ -481,7 +481,7 @@
                     var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
                     Uti.Msg(txt + " (" + vcv + ")");
                     //copy to clipboard.
-                    if ($(this).prop("contenteditable")) {
+                    if ($(this).attr("contenteditable")) {
                         //nop
                     } else {
                         $("#CopyTextToClipboard").val(txt);
