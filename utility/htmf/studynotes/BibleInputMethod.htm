@@ -414,6 +414,10 @@
                     if (old === txt) {
                         Uti.Msg("no changes on text.");
                         return;
+                    }else{
+                        if(!confirm("Save changes?")){
+                            return ;
+                        }
                     }
 
                     var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
