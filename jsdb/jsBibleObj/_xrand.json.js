@@ -2,7 +2,7 @@ var _popups={
     "Gen": {
         "1": {
             "1": "***1) Whenever we talk culture, we always think of the food, clothing, house, ethnic colors, festival etc. People didn’t realize that the culture is a spiritual warfare. Essentially there are two types of cultures the Christian’s and none christian’s. Christian’s culture cultivates Christian people. Non-Christian culture can be divided into anti Christian and illiteracy Christian.  **2) Everyone is a child of parents. At the same time, everyone is a product of a culture. *** 3) Child must leave parent, people must also transcend his culture. The color is hard to transcend, but the language, living habits can be changed. Holy Spirit can could help us to transcend the language. to speak dialect. (Act) ****4) The kingdom of Heaven transcends all cultures in the world. ",
-            "2": "-",
+            "2": "-Past, Present and Future. ***1) The most important about the past is the predicted the Messiah. The most important about the Future is the Day of the Lord. ",
             "3": "-",
             "4": "-",
             "5": "-",
