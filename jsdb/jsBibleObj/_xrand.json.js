@@ -1,7 +1,7 @@
 var _popups={
     "Gen": {
         "1": {
-            "1": "-",
+            "1": "***1) Whenever we talk culture, we always think of the food, clothing, house, ethnic colors, festival etc. People didn’t realize that the culture is a spiritual warfare. Essentially there are two types of cultures the Christian’s and none christian’s. Christian’s culture cultivates Christian people. Non-Christian culture can be divided into anti Christian and illiteracy Christian.  **2) Everyone is a child of parents. At the same time, everyone is a product of a culture. *** 3) Child must leave parent, he must also leave his culture.! ***** 3)",
             "2": "-",
             "3": "-",
             "4": "-",
