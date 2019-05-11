@@ -256,5 +256,15 @@ input[title='_xrand']:after {
 	background: rgb(252, 171, 95);
 }
 input[title='_xrand']:checked:after {
-	background: rgb(218, 252, 95);
+	background: rgb(252, 171, 95);
+}
+
+input[title='NIV']:after {
+    -webkit-box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	-moz-box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	background: rgb(195, 206, 100);
+}
+input[title='NIV']:checked:after {
+	background: rgb(195, 206, 100);
 }
