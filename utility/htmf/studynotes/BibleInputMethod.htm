@@ -8,6 +8,7 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
+    <link rel="stylesheet" href="./BibleInputMethod.css"></link>
 
 
     <script>
@@ -413,11 +414,12 @@
 
                     if (old === txt) {
                         Uti.Msg("no changes on text.");
+                        $(_This).parent().append(`<a class='ok'> (NoChanges!)</a>`);
                         return;
                     }else{
-                        if(!confirm("Save changes?")){
-                            return ;
-                        }
+                        //if(!confirm("Save changes?")){
+                        //    return ;
+                        //}
                     }
 
                     var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
@@ -436,8 +438,10 @@
                     var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                     Jsonpster.Run(par, function () {
                         Uti.Msg(par);
-                        Uti.Msg(txt);
+                        var stx=txt.substr(0,5)+" ... "+txt.substr(txt.length-5);
+                        Uti.Msg(stx);
                         $(_This).removeClass("edit_keydown").removeClass("editing");
+                        $(_This).parent().append(`<a class='ok'> [${stx}](Saved!)</a>`);
                     });
                 };
 
@@ -462,6 +466,7 @@
                     $(this).addClass("edit_keydown");
                 });
                 $("#oBible").find("[type=checkbox]").bind("click", function () {
+                    $(".ok").remove();
                     var stit = $(this).attr("title");
                     if (stit[0] != "_") { //"_bnotes") {
                         if ($(this).prop("checked")) {
@@ -480,6 +485,7 @@
                     }
                 });
                 $("#oBible").find(".tx").bind("click", function () {
+                    $(".ok").remove();
                     $(this).toggleClass("hili2");
                     var txt = $(this).text();
                     var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
@@ -1072,7 +1078,7 @@
 
 
 
-    <style>
+<style>
     body {
         background-color: black;
         color: white;
@@ -1083,204 +1089,6 @@
         margin: 0px 0px 0px 0px;
 
         font-family: 'Times New Roman';
-    }
-
-    #menuContainer,
-    #menuToggler {
-        position: fixed;
-        top: 10px;
-        right: 5px;
-        opacity: 100;
-
-    }
-
-    #menuContainer {
-        background-color: rgb(51, 158, 158);
-
-        overflow: scroll;
-        display: block;
-
-        height: 500px;
-        width:330px;
-        
-
-    }
-
-    #menuToggler {
-        height: 30px;
-    }
-
-
-
-    .hili {
-        background-color: red;
-    }
-    .hiliScroll2View {
-        border: 3px solid yellow;
-    }
-    .hili2 {
-        background-color: #a00000;
-        padding-bottom:2px;
-    }
-
-    .editing {
-        border: 3px solid gold;
-        color: black;
-        background-color: cornsilk;
-
-        width:100%;
-        height:330px;
-        display:block;
-        overflow: scroll;
-    }
-
-    .edit_keydown {
-        border: 3px solid red;
-    }
-
-    .mat {
-        background-color: chartreuse;
-        color: black;
-    }
-
-    .matIndex {
-        border: 5px solid red;
-    }
-
-    .searchFile {
-        color: black;
-        border: 1px solid black;
-    }
-
-    sub {
-        font-size: 8px;
-    }
-
-    .grayout {
-        color: gray;
-    }
-
-    .jw {
-        background-color: brown;
-    }
-
-    .vin{
-        width:20px;
-    }
-
-
-    div[contenteditable] {
-        background-color: rgb(40, 49, 70);
-    }
-
-    /*** For ***/
-    a[contenteditable] {
-    }
-
-
-    #Tab_chp {
-        background-color: green;
-    }
-
-    #Tab_vrs {
-        background-color: rgb(149, 97, 29);
-    }
-
-
-    #Tab_vol thead,
-    #Tab_cat thead,
-    #Tab_bkn thead {
-        display: block;
-    }
-
-    #Tab_vol tbody,
-    #Tab_cat tbody,
-    #Tab_bkn tbody {
-        height: 266px;
-        overflow-y: scroll;
-        display: block;
-    }
-
-    #Tab_load_vcv_history {
-        background-color: rgb(29, 105, 149);
-    }
-
-
-    #Tab_regex_history_lst td {
-        width: 100px;
-        overflow: hidden;
-        display: inline-block;
-        white-space: nowrap;
-    }
-
-    #Tab_regex_history_lst thead,
-    #Tab_load_vcv_history thead {
-        display: block;
-    }
-
-    #Tab_regex_history_lst tbody,
-    #Tab_load_vcv_history tbody {
-        height: 210px;
-        overflow-y: scroll;
-        display: block;
-    }
-
-
-    #tmpsel2ref thead,
-    #refslist thead {
-        display: block;
-    }
-
-    #tmpsel2ref tbody,
-    #refslist tbody {
-        height: 210px;
-        overflow-y: scroll;
-        display: block;
-    }
-
-    #loads_buttons {
-        white-space: nowrap;
-    }
-
-    *[title='clear'],
-    *[title='undo'] {
-        background-color: rgb(74, 155, 202);
-    }
-
-    .vin {
-        height: px;
-    }
-
-    #sinput,#searchResult{
-        width:280px;
-    }
-    #searchResult{
- 
-        background-color:#f0f0f0;
-        
- 
-    }
-
-    #chp_cap, #vrs_cap{
-        width: 30px;
-        border:1px solid blue
-    }
-
-
-    #oBiblexx table thead {
-        display: block;
-    }
-
-    #oBiblexx table tbody {
-        height: 1500px;
-        overflow-y: scroll;
-        display: block;
-    }
-
-    #others {
-        display: inline-block;
-        /* stop float left */
-        width: 100%;
     }
 </style>
 
