@@ -200,9 +200,8 @@
     .ok{
         color:red;
     }
-    input[title='_xrand']{
-        background-color:green;
-    }
+
+/***** customed checkbox ****/
 input[type='checkbox'] {
 	margin-top: -30px;
 }
@@ -246,6 +245,26 @@ input[type='checkbox']:hover:after, input[type='checkbox']:checked:hover:after {
 
 input[type='checkbox']:checked:after {
 	background: #5F95FC;
-	content: 'x';
+	content: 'X';
 	color: #fff;
+}
+/*** overide checkbox color ***/
+input[title='_xrand']:after {
+    -webkit-box-shadow: inset 0 1px 1px rgb(252, 171, 95), 0 1px 0 rgb(252, 171, 95);
+	-moz-box-shadow: inset 0 1px 1px rgb(252, 171, 95), 0 1px 0 rgb(252, 171, 95);
+	box-shadow: inset 0 1px 1px rgb(252, 171, 95), 0 1px 0 rgb(252, 171, 95);
+	background: rgb(252, 171, 95);
+}
+input[title='_xrand']:checked:after {
+	background: rgb(252, 171, 95);
+}
+
+input[title='NIV']:after {
+    -webkit-box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	-moz-box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	box-shadow: inset 0 1px 1px rgb(195, 206, 100), 0 1px 0 rgb(195, 206, 100);
+	background: rgb(195, 206, 100);
+}
+input[title='NIV']:checked:after {
+	background: rgb(195, 206, 100);
 }
