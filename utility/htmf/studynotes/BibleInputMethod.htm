@@ -411,6 +411,9 @@
                     var fil = $(_This).attr("title");
                     var txt = $(_This).text();
                     var vid = $(_This).attr("vid");
+                    if(!fil){
+                        return;
+                    }
 
                     if (old === txt) {
                         Uti.Msg("no changes on text.");
