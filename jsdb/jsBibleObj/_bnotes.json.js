@@ -30025,7 +30025,7 @@ var _bnotes=
             "27": "",
             "28": "",
             "29": "",
-            "30": "<span style=\"color: rgb(85, 85, 85); font-family: Georgia, Arial, sans-serif; background-color: rgb(255, 255, 255);\">Berenice, daughter of King Agrippa I, younger sister of Agrippa II, queen of Chalcis,&nbsp;</span>https://jwa.org/encyclopedia/article/berenice&nbsp; &nbsp;",
+            "30": "Berenice, daughter of King Agrippa I, younger sister of Agrippa II, queen of Chalcis, https://jwa.org/encyclopedia/article/berenice ",
             "31": "",
             "32": ""
         },
