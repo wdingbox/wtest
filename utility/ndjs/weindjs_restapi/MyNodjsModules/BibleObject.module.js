@@ -9,11 +9,16 @@ var Uti = require("./Uti.module").Uti;
 
 
 
-const ValideBibleObjFiles = {
-    __history_verses_loaded: "__history_verses_loaded",
-    __history_regex_search: "__history_regex_search"
-}
+//  const ValideBibleObjFiles = {
+//      __history_verses_loaded: "__history_verses_loaded",
+//      __history_regex_search: "__history_regex_search"
+//  }
 var BibleUti={
+    ValideBibleObjFiles : {
+        __history_verses_loaded: "__history_verses_loaded",
+        __history_regex_search: "__history_regex_search"
+    },
+
     load_BibleJstrn : function (fname) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
         spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
@@ -205,7 +210,7 @@ var BibleUti={
 var BibleObj = function () {
 };
 BibleObj.prototype.GetValideBibleObjFiles = function () {
-    return ValideBibleObjFiles;
+    return BibleUti.ValideBibleObjFiles;
 }
 
 BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
@@ -247,7 +252,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
                 //this.loadBible_write_history(pat.patObj);
                 var _inp = {}
                 _inp.Search = {};
-                _inp.Search.File = ValideBibleObjFiles.__history_verses_loaded;
+                _inp.Search.File = BibleUti.ValideBibleObjFiles.__history_verses_loaded;
                 _inp.Search.Strn = pat.vcv;
                 this.ApiBibleObj_access_regex_search_history(_inp);
             }
@@ -260,7 +265,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
         if (Object.keys(retFoundObj).length > 0) {
             var _inp = {}
             _inp.Search = {};
-            _inp.Search.File = ValideBibleObjFiles.__history_regex_search;
+            _inp.Search.File = BibleUti.ValideBibleObjFiles.__history_regex_search;
             _inp.Search.Strn = srch.Strn;
             this.ApiBibleObj_access_regex_search_history(_inp);
         }
@@ -276,7 +281,7 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
         return null;
     }
     var fname = inpObj.Search.File;//
-    if (undefined === ValideBibleObjFiles[fname]) {
+    if (undefined === BibleUti.ValideBibleObjFiles[fname]) {
         console.log("Invalide Filename to save ************* inpObj", inpObj);
         console.log("ValideBibleObjFiles=", ValideBibleObjFile);
         return null;
