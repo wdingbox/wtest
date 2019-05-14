@@ -28514,7 +28514,7 @@ var _popups={
     },
     "Jhn": {
         "1": {
-            "1": "W-",
+            "1": "W-Western Culture is based on the Book of John. Which is the combination of logos to Jesus. It emphasized the might power of principles, knowledge, omnipresent, Immunel, -------------Eastern Dao emphasizes the personal characters, leadership, governing power, prophechy, . --------both of them are common in omnipotent.  The gap between Ancient Greek philosophy and Jesus was filled by John Apostle in the Book of John. The Gap between Ancient Chinese and Jesus has not been filled yet until today. ---------",
             "2": "-test",
             "3": "-y",
             "4": "-",
