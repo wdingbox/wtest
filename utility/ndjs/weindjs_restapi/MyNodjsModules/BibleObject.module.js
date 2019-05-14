@@ -9,11 +9,40 @@ var Uti = require("./Uti.module").Uti;
 
 
 
-
 const ValideBibleObjFiles = {
     __history_verses_loaded: "__history_verses_loaded",
     __history_regex_search: "__history_regex_search"
 }
+var BibleUti={
+    load_BibleJstrn : function (fname) {
+        var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
+        spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
+        var ret = Uti.GetJsonStringFrmFile(spathfile);
+        return ret;//{fname:spathfile,jstrn:content};
+    },
+    load_BibleObj : function (fname) {
+        var ret = BibleUti.load_BibleJstrn(fname);
+        var bobj = JSON.parse(ret.jstrn);
+        ret.obj = bobj;
+        ret.writeback = function () {
+            fs.writeFileSync(this.fname, this.header + JSON.stringify(this.obj, null, 4), "utf8");
+        };
+        return ret;
+    },
+
+    //// NOT USED ///////
+    save_BibleObj : function (fname) {
+        var ret = BibleUti.load_BibleJstrn(fname);
+        var bobj = JSON.parse(ret.jstrn);
+        return bobj;
+    },
+}
+
+
+
+
+
+
 var BibleObj = function () {
 };
 BibleObj.prototype.GetValideBibleObjFiles = function () {
@@ -26,33 +55,14 @@ BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
     var chp = inpObj.vcvx.chp;
     var vrs = inpObj.vcvx.vrs;
     var txt = inpObj.vcvx.txt;
-    var ret = this.load_BibleObj(fil);//"_notes");
+    var ret = BibleUti.load_BibleObj(fil);//"_notes");
     ret.obj[vol][chp][vrs] = txt;
     var sss = JSON.stringify(ret.obj, null, 4);
     //fs.writeFileSync(ret.fname, sss, "utf8");
     ret.writeback();
     return sss;
 };
-BibleObj.prototype.load_BibleJstrn = function (fname) {
-    var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
-    spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
-    var ret = Uti.GetJsonStringFrmFile(spathfile);
-    return ret;//{fname:spathfile,jstrn:content};
-};
-BibleObj.prototype.load_BibleObj = function (fname) {
-    var ret = this.load_BibleJstrn(fname);
-    var bobj = JSON.parse(ret.jstrn);
-    ret.obj = bobj;
-    ret.writeback = function () {
-        fs.writeFileSync(this.fname, this.header + JSON.stringify(this.obj, null, 4), "utf8");
-    };
-    return ret;
-};
-BibleObj.prototype.save_BibleObj = function (fname) {
-    var ret = this.load_BibleJstrn(fname);
-    var bobj = JSON.parse(ret.jstrn);
-    return bobj;
-};
+
 
 BibleObj.prototype.Get_PartialBibleObj_by_VolChpVrs = function (srcObj, keyDat) {
     var retObj = {};
@@ -214,7 +224,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
     var ss = "", RetObj = {};
 
     if ("string" === typeof inpObj.fname) {
-        var bib = this.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
+        var bib = BibleUti.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
         var ret = this.Get_PartialBibleObj_by_VolChpVrs(bib.obj, inpObj.dat);
         var srcO = {};
         srcO[inpObj.fname] = ret.retObj;
@@ -224,7 +234,7 @@ BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
     if ("object" === typeof inpObj.fname) {
         for (var i = 0; i < inpObj.fname.length; i++) {
             var fnm = inpObj.fname[i];
-            var bib = this.load_BibleObj(fnm);//.fname, inpObj.dat
+            var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
             var pat = this.Get_PartialBibleObj_by_xOj(bib.obj, inpObj.bibOj);
             var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
             bvcvObj[fnm] = pat.patObj;
@@ -269,7 +279,7 @@ BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
         return null;
     }
 
-    var ret = this.load_BibleObj(fname);
+    var ret = BibleUti.load_BibleObj(fname);
     if (!inpObj.Search.Strn) {//only read no write.
         return ret;
     }
