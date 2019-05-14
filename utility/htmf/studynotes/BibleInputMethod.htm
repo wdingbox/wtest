@@ -452,6 +452,7 @@
                 var tb = Uti.gen_clientBibleObj_table(ret);
                 Uti.Msg("tot=" + tb.size);
                 $("#oBible").html(tb.htm);
+                table_sort("#BibOut");
                 $("#oBible").find(".vid").bind("click", function () {
                     var _This = this;
                     $(".vid.hili").removeClass("hili");
@@ -1061,7 +1062,7 @@
                 });
             });
 
-            var s = "<table border='1'>";
+            var s = "<table id='BibOut' border='1'>";
             s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
             s += "<thead><th>vcv</th><th>scripts</th></thead>";
             s += "<tbody>";
