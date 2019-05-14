@@ -15,6 +15,10 @@
 <script type="text/javascript">
     
 $(function(){
+    $("a").each(function(){
+        var ref=$(this).attr("href");
+        $(this).text(ref)
+    })
 
 });///////
 
@@ -24,10 +28,10 @@ $(function(){
 </HEAD>
 <BODY>
 
-<a href="./studynotes/BibleInputMethod.htm">BibleInputMethod</a><br>
-<a href="chnFrq.htm">chnFrq</a><br>
-<a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a><br>
-
+<br/><a href="./studynotes/BibleInputMethod.htm">BibleInputMethod</a>
+<br/><a href="chnFrq.htm">chnFrq</a>
+<br/><a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a>
+<br/><a href="../../../../../bitbucket/weid/pdf2018/latx/bib_generator/authorInfo/bibDesk.htm">obi(upload_page)</a>
 
 </BODY>
 </HTML>
