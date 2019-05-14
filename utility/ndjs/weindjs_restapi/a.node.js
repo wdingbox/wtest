@@ -23,11 +23,6 @@ uploadObj.upload_page(app);
 
 
 
-
-
-
-
-
 var hbrq = new HebrewQ();
 
 
@@ -103,7 +98,7 @@ Object.keys(SvrApi).forEach(function (api) {
 
 //for BibleObj clientSite Usage. 
 var bo = new BibleObj();
-RestApi["HistFile"] = bo.GetValideBibleObjFiles();
+RestApi["HistFile"] = bo.GetValideBibleObjFiles();//used in Bii.htm input param.
 
 
 
@@ -145,6 +140,15 @@ app.get("/Jsonpster", (req, res) => {
   res.send(s);
   res.end();
 });
+
+
+
+
+
+
+
+
+
 app.listen(app.g_iPort, () => {
   console.log("app listern port:7778...");
   hbrq.get_VocabHebrewBufObj();
