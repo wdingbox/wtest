@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 var Uti = require("./Uti.module").Uti;
-
+var SvcUti = require("./SvcUti.module").SvcUti;
 
 var url = require('url');
 
@@ -18,19 +18,19 @@ var BibleUti = {
         __history_verses_loaded: "__history_verses_loaded",
         __history_regex_search: "__history_regex_search"
     },
-    GetApiInputParamObj: function (req) {
-        console.log("req.url=", req.url);
-        var q = url.parse(req.url, true).query;
-        console.log("q=", q);
-        if (q.inp === undefined) {
-            console.log("q.inp undefined. Maybe upload.");
-            return q;
-        }
-        var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-        var inpObj = JSON.parse(s);
-        console.log("inpObj=", inpObj);
-        return inpObj;
-    },
+    //  GetApiInputParamObj: function (req) {
+    //      console.log("req.url=", req.url);
+    //      var q = url.parse(req.url, true).query;
+    //      console.log("q=", q);
+    //      if (q.inp === undefined) {
+    //          console.log("q.inp undefined. Maybe upload.");
+    //          return q;
+    //      }
+    //      var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
+    //      var inpObj = JSON.parse(s);
+    //      console.log("inpObj=", inpObj);
+    //      return inpObj;
+    //  },
 
     load_BibleJstrn: function (fname) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
@@ -315,16 +315,19 @@ var BibleObj = function () {
 };
 
 BibleObj.prototype.BibleObjApi = function (app) {
+
+    SvcUti.BindApp2Api(app, BibleRestApi);
+
     var RestApi = {}//clientSite usage.
     Object.keys(BibleRestApi).forEach(function (api) {
         RestApi[api] = api;
-        app.get("/" + api, (req, res) => {
-            var inpObj = BibleUti.GetApiInputParamObj(req);
-            var ret = BibleRestApi[api](inpObj);
-            res.writeHead(200, { 'Content-Type': 'text/javascript' });
-            res.write("Jsonpster.Response(" + ret + ");");
-            res.end();
-        });
+        // app.get("/" + api, (req, res) => {
+        //     var inpObj = SvcUti.GetApiInputParamObj(req);
+        //     var ret = BibleRestApi[api](inpObj);
+        //     res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        //     res.write("Jsonpster.Response(" + ret + ");");
+        //     res.end();
+        // });
     });
 
     RestApi["HistFile"] = BibleUti.ValideBibleObjFiles;// bo.GetValideBibleObjFiles();//used in Bii.htm input param.
