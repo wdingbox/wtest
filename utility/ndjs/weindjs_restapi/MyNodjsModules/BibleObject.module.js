@@ -295,7 +295,7 @@ var BibleRestApi = {
 
         var ret = BibleUti.load_BibleObj(fname);
         if (!inpObj.Search.Strn) {//only read no write.
-            console.log("only read no write..", ret);
+            console.log("only read no write...fname=",fname);
             return ret.jstrn;
         }
         var srchstr = inpObj.Search.Strn;
@@ -313,10 +313,6 @@ var BibleRestApi = {
 var BibleObj = function () {
 
 };
-BibleObj.prototype.GetValideBibleObjFiles = function () {
-    return BibleUti.ValideBibleObjFiles;
-}
-
 
 BibleObj.prototype.BibleObjApi = function (app) {
     var RestApi = {}//clientSite usage.
@@ -363,21 +359,5 @@ BibleObj.prototype.BibleObjApi = function (app) {
 
 
 
-
-BibleObj.prototype.ApiBibleObj_update_notes = function (inpObj) {
-    return BibleRestApi.ApiBibleObj_update_notes(inpObj);
-};
-
-BibleObj.prototype.ApiBibleObj_load_Bkns_Vols_Chp_Vrs = function (inpObj) {
-    return BibleRestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs(inpObj);
-};
-
-BibleObj.prototype.ApiBibleObj_access_regex_search_history = function (inpObj) {
-    return BibleRestApi.ApiBibleObj_access_regex_search_history(inpObj);
-};
-
 module.exports.BibleObj = BibleObj;
 
-var a = function () {
-    return new BibleObj();
-}
