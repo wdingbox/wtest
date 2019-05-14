@@ -76,7 +76,7 @@ HebrewQ.prototype.HebrewRestApi = function (app) {
   Object.keys(SvcRestApi).forEach(function (api) {
     app.get("/" + api, (req, res) => {
       var inpObj = SvcUti.GetApiInputParamObj(req);
-      var ret = hbrq.updateVocabHebrewBuf(inpObj);
+      var ret = SvcRestApi[api](inpObj);
       res.writeHead(200, { 'Content-Type': 'text/javascript' });
       res.write("Jsonpster.Response(" + ret + ");");
       res.end();

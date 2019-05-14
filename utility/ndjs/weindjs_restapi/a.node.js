@@ -5,8 +5,9 @@ var bodyParser = require('body-parser');
 var url = require('url');
 
 var Uti = require("./MyNodjsModules/Uti.module").Uti;
-var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
 var BibleObj = require("./MyNodjsModules/BibleObject.module").BibleObj;
+var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
+var BibDesk = require("./MyNodjsModules/BibDesk.module").BibDesk;
 
 var Upload_Object = require("./upload/Upload_Object.module").Upload_Object;
 
@@ -16,7 +17,6 @@ const fs = require('fs');
 var path = require('path');
 var cheerio = require("cheerio"); //>> npm install cheerio
 /////////////////////////////////////////////////////////////////
-
 
 
 
@@ -32,6 +32,10 @@ bii.BibleObjApi(app);
 //// For HebrewQ study /////
 var hbrq = new HebrewQ();
 hbrq.HebrewRestApi(app);
+
+////
+var bibDesk=new BibDesk();
+bibDesk.RestApi(app);
 
 
 
