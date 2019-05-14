@@ -8,6 +8,8 @@ var Uti = require("./MyNodjsModules/Uti.module").Uti;
 var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
 var BibleObj = require("./MyNodjsModules/BibleObject.module").BibleObj;
 
+var Upload_Object = require("./upload/Upload_Object.module").Upload_Object;
+
 ////////////////////////////////
 //server site workload.
 const fs = require('fs');
@@ -15,45 +17,10 @@ var path = require('path');
 var cheerio = require("cheerio"); //>> npm install cheerio
 
 
+var uploadObj=new Upload_Object();
+uploadObj.upload_page(app);
 
-//////////////////////////////////////////
-//
-//    Upload file
-//
-//const express = require('express');
-const fileUpload = require('express-fileupload');
-//const app = express();
 
-// default options
-app.use(fileUpload());
-app.post('/upload_submit', function (req, res) {
-  if (!req || !req.files || Object.keys(req.files).length == 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let sampleFile = req.files.sampleFile;
-  var uploadFileNmae=req.files.sampleFile.name;
-  var uploadDestPath=req.body.destDir;
-  console.log("uploadFileNmae=",uploadFileNmae);
-  console.log("uploadDestName=",uploadDestPath);
-
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv(`${uploadDestPath}/${uploadFileNmae}`, function (err) {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.send(`File: ${uploadFileNmae} <br>was uploaded to: ${uploadDestPath}`);
-  });
-});
-//Cannot POST - handling form POST from an external site.
-app.get('/upload_page', function (req, res) {
-  console.log("upload_page...");
-  var sweb = fs.readFileSync("./upload_page.htm", "utf8");
-  return res.send(sweb);
-});
-//
-////////////////////////////////
 
 
 
