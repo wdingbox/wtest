@@ -420,9 +420,9 @@
                         $(_This).parent().append(`<a class='ok'> (NoChanges!)</a>`);
                         return;
                     }else{
-                        //if(!confirm("Save changes?")){
-                        //    return ;
-                        //}
+                        if(!confirm("Save changes?")){
+                            return ;
+                        }
                     }
 
                     var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
