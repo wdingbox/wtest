@@ -9,28 +9,11 @@ var url = require('url');
 
 
 
-//  const ValideBibleObjFiles = {
-//      __history_verses_loaded: "__history_verses_loaded",
-//      __history_regex_search: "__history_regex_search"
-//  }
 var BibleUti = {
     ValideBibleObjFiles: {
         __history_verses_loaded: "__history_verses_loaded",
         __history_regex_search: "__history_regex_search"
     },
-    //  GetApiInputParamObj: function (req) {
-    //      console.log("req.url=", req.url);
-    //      var q = url.parse(req.url, true).query;
-    //      console.log("q=", q);
-    //      if (q.inp === undefined) {
-    //          console.log("q.inp undefined. Maybe upload.");
-    //          return q;
-    //      }
-    //      var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-    //      var inpObj = JSON.parse(s);
-    //      console.log("inpObj=", inpObj);
-    //      return inpObj;
-    //  },
 
     load_BibleJstrn: function (fname) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
