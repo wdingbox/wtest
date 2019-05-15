@@ -318,45 +318,15 @@ BibleObj.prototype.BibleObjApi = function (app) {
 
     SvcUti.BindApp2Api(app, BibleRestApi);
 
-    var RestApi = {}//clientSite usage.
+    var restApi = JSON.parse(JSON.stringify(BibleRestApi));//dup usage.
     Object.keys(BibleRestApi).forEach(function (api) {
-        RestApi[api] = api;
-        // app.get("/" + api, (req, res) => {
-        //     var inpObj = SvcUti.GetApiInputParamObj(req);
-        //     var ret = BibleRestApi[api](inpObj);
-        //     res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        //     res.write("Jsonpster.Response(" + ret + ");");
-        //     res.end();
-        // });
+        restApi[api] = api;
     });
 
-    RestApi["HistFile"] = BibleUti.ValideBibleObjFiles;// bo.GetValideBibleObjFiles();//used in Bii.htm input param.
+    restApi["HistFile"] = BibleUti.ValideBibleObjFiles;// bo.GetValideBibleObjFiles();//used in Bii.htm input param.
 
-    app.get("/Jsonpster", (req, res) => {
-        console.log();
-        console.log("res.req.headers.host=", res.req.headers.host);
-        Object.keys(res.req.headers).forEach(function (v) {
-            console.log(v);
-        })
-
-        var q = url.parse(req.url, true).query;
-        q.test = function (i) {
-            alert(i);
-        }
-        console.log(JSON.stringify(q));
-
-        var jstr_RestApi = JSON.stringify(RestApi);
-        //////////////
-        var s = "var Jsonpster={};";
-        s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
-        s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
-        s += "\n const RestApi=JSON.parse('" + jstr_RestApi + "');";
-
-
-        console.log(s);
-        res.send(s);
-        res.end();
-    });
+    SvcUti.Jsonpster(app, restApi);
+    return;
 };
 
 
