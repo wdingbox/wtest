@@ -57,9 +57,27 @@ var SvcUti = {
 
             //////////////
             var s = "var Jsonpster={};";
-            s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
-            s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
-            s += "\n const RestApi=JSON.parse('" + jstr_RestApi + "');";
+            //s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
+            //s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
+            //s += "\n const RestApi=JSON.parse('" + jstr_RestApi + "');";
+
+            s=`
+var Jsonpster = {};
+Jsonpster.Url = function () {
+	return 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
+};
+Jsonpster.Run = function (prm, cbf) {
+    Object.assign(this, prm);
+    if(!this.api) alert('api null');
+    if(!this.inp) alert('inp null');
+	this.Response = cbf;
+	if (!cbf) alert('callback Response null');
+	var s = document.createElement('script');
+	s.src = this.Url();
+	document.body.appendChild(s);
+};
+const RestApi = JSON.parse('${jstr_RestApi}');
+`;;;;;;;;;;;;;;
 
 
             console.log(s);
