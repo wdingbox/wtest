@@ -69,6 +69,12 @@
 
                 //table_sort();
                 //table_col_index();
+                if ("undefined" === typeof Jsonpster) {
+                    alert("Jsonpster server down.");
+                }
+                Uti.Msg("start ...");
+                Uti.Msg(Jsonpster.Url());
+                //alert(Jsonpster.Url());
             });/////////////
 
 
@@ -77,9 +83,7 @@
             var BibleInputMenu = function () {
             }
             BibleInputMenu.prototype.init = function () {
-                if ("undefined" === typeof Jsonpster) {
-                    alert("Jsonpster server down.");
-                }
+
                 $("body").prepend(BibleInputMenuContainer);
 
                 this.Gen_Keys_Menu();
