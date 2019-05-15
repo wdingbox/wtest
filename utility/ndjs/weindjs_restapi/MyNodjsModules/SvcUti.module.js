@@ -24,23 +24,30 @@ var SvcUti = {
             app.get("/" + api, (req, res) => {
                 var inpObj = SvcUti.GetApiInputParamObj(req);
                 console.log(typeof svcApi[api], api);
-                //if ("function" === typeof svcApi[api]) {
-                    var ret = svcApi[api](inpObj);
-                    res.writeHead(200, { 'Content-Type': 'text/javascript' });
-                    res.write("Jsonpster.Response(" + ret + ");");
-                    res.end();
-                //}else{
-                 //   res.end();
-                //}
+
+                var ret = svcApi[api](inpObj);
+                res.writeHead(200, { 'Content-Type': 'text/javascript' });
+                res.write("Jsonpster.Response(" + ret + ");");
+                res.end();
             });
         });
     },
     Jsonpster: function (app, restApi) {
+        /////for loadfile. This is extra feature for Jsonpster.
+        app.get("/LoadJsonFile", (req, res) => {
+            var inpObj = SvcUti.GetApiInputParamObj(req);
+            var content = fs.readFileSync(inpObj.filename, "utf8");
+            var idx = content.indexOf("{");
+            var shead = content.substr(0, idx);
+            console.log("shead==", shead);
+            content = content.substring(idx);
+            res.writeHead(200, { 'Content-Type': 'text/javascript' });
+            //res.write(ret);
+            res.write(`Jsonpster.Response(${content});`);
+            res.end();
+        });
 
-        //RestApi["HistFile"] = BibleUti.ValideBibleObjFiles;// bo.GetValideBibleObjFiles();//used in Bii.htm input param.
-        var jstr_RestApi = JSON.stringify(restApi);
-        console.log("JsonpSter=", restApi);
-
+        ////////////////////////////////////////////
         app.get("/Jsonpster", (req, res) => {
             console.log();
             console.log("res.req.headers.host=", res.req.headers.host);
@@ -56,12 +63,8 @@ var SvcUti = {
 
 
             //////////////
-            var s = "var Jsonpster={};";
-            //s += "Jsonpster.Url=function(){return 'http://" + res.req.headers.host + "/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));};";
-            //s += "Jsonpster.Run=function(prm,cbf){Object.assign(this,prm);this.Response=cbf;if(!cbf)this.Response=function(){alert('cb is null');};var s=document.createElement('script');s.src=this.Url();document.body.appendChild(s);};";
-            //s += "\n const RestApi=JSON.parse('" + jstr_RestApi + "');";
-
-            s=`
+            var jstr_RestApi = JSON.stringify(restApi);
+            var s = `
 var Jsonpster = {};
 Jsonpster.Url = function () {
     return 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
@@ -78,7 +81,6 @@ Jsonpster.Run = function (prm, cbf) {
 };
 const RestApi = JSON.parse('${jstr_RestApi}');
 `;;;;;;;;;;;;;;
-
 
             console.log(s);
             res.send(s);
