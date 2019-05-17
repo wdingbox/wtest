@@ -445,7 +445,7 @@
                     var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                     Jsonpster.Run(par, function () {
                         Uti.Msg(par);
-                        var stx=txt.substr(0,5)+" ... "+txt.substr(txt.length-5);
+                        var stx=txt.substr(0,5)+" ... "+txt.substr(txt.length-15);
                         Uti.Msg(stx);
                         $(_This).removeClass("edit_keydown").removeClass("editing");
                         $(_This).parent().append(`<a class='ok'> [${stx}](Saved!)</a>`);
