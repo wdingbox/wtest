@@ -8,7 +8,8 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" href="./BibleInputMethod.css"></link>
+    <link rel="stylesheet" href="./BibleInputMethod.css">
+    </link>
 
 
     <script>
@@ -415,7 +416,7 @@
                     var fil = $(_This).attr("title");
                     var txt = $(_This).text();
                     var vid = $(_This).attr("vid");
-                    if(!fil){
+                    if (!fil) {
                         return;
                     }
 
@@ -423,9 +424,9 @@
                         Uti.Msg("no changes on text.");
                         $(_This).parent().append(`<a class='ok'> (NoChanges!)</a>`);
                         return;
-                    }else{
-                        if(!confirm("Save changes?")){
-                            return ;
+                    } else {
+                        if (!confirm("Save changes?")) {
+                            return;
                         }
                     }
 
@@ -445,7 +446,7 @@
                     var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
                     Jsonpster.Run(par, function () {
                         Uti.Msg(par);
-                        var stx=txt.substr(0,5)+" ... "+txt.substr(txt.length-15);
+                        var stx = txt.substr(0, 5) + " ... " + txt.substr(txt.length - 15);
                         Uti.Msg(stx);
                         $(_This).removeClass("edit_keydown").removeClass("editing");
                         $(_This).parent().append(`<a class='ok'> [${stx}](Saved!)</a>`);
@@ -826,9 +827,7 @@
 
 </HEAD>
 
-<BODY>
-
-
+<BODY onbeforeunload="return 'leave?';">
 
 </BODY>
 
