@@ -168,6 +168,20 @@
                     $(this).attr("href", url + file);
                     console.log(url + file);
                 });
+                
+                $("#ccel_org").click(function () {
+                    var vid = $(".vid.hili").text();
+                    var ret = Uti.vcv_parser(vid);
+                    var url = $(this).attr("ref");
+                    if (!ret) return;
+
+                    //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+                    var bok = CNST.BibVolName_ccel([ret.vol]);
+                    var file = bok + " " + ret.chp + ":" + ret.vrs + ".html";
+                    $(this).attr("href", url + file);
+                    console.log(url + file);
+                });
+
 
                 $("#Tab_cat caption").click(function () {
                     $(".cat").removeClass("hili");
@@ -1243,6 +1257,11 @@
                             <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a></caption>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a></caption>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -1367,6 +1386,9 @@
     };
     CNST.BibVolName_Studylight = function (Vid) {
         return CNST.BibVolName[Vid][1];
+    };
+    CNST.BibVolName_ccel = function (Vid) {
+        return CNST.BibVolName[Vid][0];
     };
     CNST.BlueLetterBibleCode = {
         "Gen": "Gen",
