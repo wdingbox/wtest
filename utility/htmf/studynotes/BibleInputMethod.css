@@ -182,8 +182,10 @@
     }
 
 
-    #oBiblexx table thead {
-        display: block;
+    #oBible {
+        margin-top: 500px;
+        margin-bottom: 200px;
+        overflow: auto;
     }
 
     #oBiblexx table tbody {
