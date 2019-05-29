@@ -1,7 +1,7 @@
 var _popups={
     "Gen": {
         "1": {
-            "1": "[Culture] ---------\\n1) Whenever we talk culture, we always think of the food, clothing, house, ethnic colors, festival etc. People didn’t realize that the culture is a spiritual warfare. Essentially there are two types of cultures the Christian’s and none christian’s. Christian’s culture cultivates Christian people. Non-Christian culture can be divided into anti Christian and illiteracy Christian.  ----------\\n2) Everyone is a child of parents. At the same time, everyone is a product of a culture. Culture is the father of father ------- \\n3) Child must leave parent, people must also transcend his culture. The color is hard to transcend, but the language, living habits can be changed. Holy Spirit can could help us to transcend the language. to speak dialect. (Act) ---------\\n4) The kingdom of Heaven transcends all cultures in the world. ----------- \\n5) multi-culture was orchestrated by the Lord after the Babel. One of the roles is played was to help people to realized its own culture and to transcend its culture.  Without other cultures for references, he could not transcend its culture. The purpose to transcend its culture is to enter the kingdom of heaven. ---------------\\n6)love. Culture can make people to love each other and feel comfortable in the world. Stick the world. ----------\\n7 Culture is middleware between the material of world and flesh of man. As tech keep developing, the flesh and world infiltrate each other and bound tighter and tighter. Soul must leave them all. to treat body as robotics. --------------culture divide people into different nation, distinguish themselves to others. Fundamental differences between the people is not about the race, nation and culture but the faith.----any culture has language, faith, religion, ministry, laws, etc. It's like a person who can speak, have will, hope, destiny. It lives like a person who has desire of food, sex, freedom. It has emotions like love, hatred, envy, joy, sadness, etc. ---When you talk to a people, you are talking with its culture at the same time.@",
+            "1": "[Culture] ---------\\n1) Whenever we talk culture, we always think of the food, clothing, house, ethnic colors, festival etc. People didn’t realize that the culture is a spiritual warfare. Essentially there are two types of cultures the Christian’s and none christian’s. Christian’s culture cultivates Christian people. Non-Christian culture can be divided into anti Christian and illiteracy Christian.  ----------\\n2) Everyone is a child of parents. At the same time, everyone is a product of a culture. Culture is the father of father ------- \\n3) Child must leave parent, people must also transcend his culture. The color is hard to transcend, but the language, living habits can be changed. Holy Spirit can could help us to transcend the language. to speak dialect. (Act) ---------\\n4) The kingdom of Heaven transcends all cultures in the world. ----------- \\n5) multi-culture was orchestrated by the Lord after the Babel. One of the roles is played was to help people to realized its own culture and to transcend its culture.  Without other cultures for references, he could not transcend its culture. The purpose to transcend its culture is to enter the kingdom of heaven. ---------------\\n6)love. Culture can make people to love each other and feel comfortable in the world. Stick the world. ----------\\n7 Culture is middleware between the material of world and flesh of man. As tech keep developing, the flesh and world infiltrate each other and bound tighter and tighter. Soul must leave them all. to treat body as robotics. --------------culture divide people into different nation, distinguish themselves to others. Fundamental differences between the people is not about the race, nation and culture but the faith.----any culture has language, faith, religion, ministry, laws, etc. It's like a person who can speak, have will, hope, destiny. It lives like a person who has desire of food, sex, freedom. It has emotions like love, hatred, envy, joy, sadness, etc. ---When you talk to a people, you are talking with its culture at the same time.-------culture passive adaption but devolution. cannot save himself.@",
             "2": "[Past, Present and Future] ***1) Past is not used to learn for experiences, knowledge as tools. It is impossible to apply to today. ***2) The most important about the past is the prediction of Messiah. The most important about the Future is the Day of the Lord. ",
             "3": "[good man] ***1) Those who wanted to be righteous have to count on Jesus. Without Jesus, his good will would be failed as tragedy or perverted to become evil.  ",
             "4": "-wqwerqr . qsrw 123rwqer wberryteresaAnd the church said AAAAA-MEN!!! ⛪🙏🙏🏼🙏🏾🙏🏻🙏🏿🙏🙏🏾⛪ ❤♥️❤♥️❤ AMEN, AMEN, AMEN!!!!🎙🎼🎶🎵🎤👏👏👏👏👏 💞💖💞 GOD BLESS ALL who hear this!!! 🛐🌹🌅🕊  Sending a SPECIAL PRAYER of healing out to a VERY DESERVING man, Justin H, and praising Him thru whatever comes...but having the same FAITH that can move mountains to remove the cancer that plagues a special man who is believing in the same MIRACLE!!! You got this Justin!!!! 🤗❤♥️❤♥️❤♥️❤🙋‍♀️﻿Read more1 week ago",
@@ -10,7 +10,7 @@ var _popups={
             "7": "Behind the power of Chinese culture is the Son of God, Jesus Christ, rather than Daoism, Confusius, not mentioning the Buddhism. Today, Chinese people always is proud of that its culture was broad, great, accurate and deep. Actually it is full of the syncretism which is the strongest foothold for the missionaries and evangelism. The salvation of human beings do not need the broad knowledge but only need Jesus Christ. The broaden knowledge and syncretism cannot be separated. Syncretism is the most craft way to mislead the Word. Missionaries need to understand that, to let Chinese culture to absorb the Christianity  could only strengthen the Chinese culture. Chinese culture must deny itself and fully accept the Gospel in order to be saved. Whether to enrich the Christianity or Chinese Culture is the final and weirdest spiritual warfare in the inter-culture spiritual warfare.  Worldly speaking, Christianity had separated itself from the Judaism, conquered the ancient Greek culture which became the modern western culture, eventually will conquer the Chinese culture, the giant dragon before the end of the world.     ",
             "8": "-anything can be perverted and anything can be contextualised.",
             "9": "The more you know the more responsibility for the Lord you will have. The gift you have is one of ways to find the will of God.  ",
-            "10": "",
+            "10": "More. Chinese know English   But verse verse. ",
             "11": "",
             "12": "",
             "13": "",
@@ -31,7 +31,7 @@ var _popups={
             "28": "",
             "29": "",
             "30": "",
-            "31": ""
+            "31": "The Scriptures is the fruit of the Holy Spirit. All books of the world is the fruit of their spirits. "
         },
         "2": {
             "1": "",
@@ -115,7 +115,7 @@ var _popups={
             "26": ""
         },
         "5": {
-            "1": "",
+            "1": "Two events changed my faith: 64, and Resurrection. -------Don't be cheated by your culture. ----except the Bible, there is no authentic true words in the world.",
             "2": "",
             "3": "",
             "4": "",
@@ -149,8 +149,8 @@ var _popups={
             "32": ""
         },
         "6": {
-            "1": "",
-            "2": "",
+            "1": "Buddhism has no new concept in Western world. But in China, Buddhism is the main source for new Chinese phrases, like ShiJie, DeYu, TianTang, JiDe, YuanFeng, and so on and on.  ",
+            "2": "On the other hand, Christian's spiritual immune system become stronger and stronger to resist the secular world living style.  On the one hand, the secular people becomes less and less effective for the Christian's religious rite. ",
             "3": "",
             "4": "",
             "5": "",
@@ -288,7 +288,7 @@ var _popups={
             "32": ""
         },
         "11": {
-            "1": "",
+            "1": "Chinese pre-China culture is Christ compatible culture. Post-China is Christ incompatible culture. Chinese history is history of devolved process from pro Christ to against Christ. ",
             "2": "",
             "3": "",
             "4": "-r",
@@ -5758,7 +5758,7 @@ var _popups={
             "13": "",
             "14": "",
             "15": "",
-            "16": "",
+            "16": "Christian should not go back that way again. To struggle for self and its father the chinese culture. supplication for HIM. ",
             "17": "",
             "18": "",
             "19": "",
