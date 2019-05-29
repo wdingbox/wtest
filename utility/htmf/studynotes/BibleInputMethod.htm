@@ -522,6 +522,7 @@
                         document.execCommand("copy");
                     }
                 });
+                txFontsizeIncrs(0);
             }
             function onclick_load_BknVolChpVrs() {
                 var inp = gBim.get_selected_load_parm();
@@ -1281,7 +1282,8 @@
             </thead>
             <tbody id="StructAna"></tbody>
         </table>
-        <input id="CopyTextToClipboard" title="CopyTextToClipboard"/>
+        <input id="CopyTextToClipboard" title="CopyTextToClipboard"/><br>
+        <button onclick="txFontsizeIncrs(10);" title='font-size plus'>f+</button><button onclick="txFontsizeIncrs(-10);">f-</button>
     </div>
 
         </div>
@@ -1295,7 +1297,14 @@
 
         `;//////backtick for multiple lines. 
 
-
+    function txFontsizeIncrs(n){
+        if(undefined === document.m_tx_fontSize){
+            document.m_tx_fontSize=16;
+        }
+        //var fsize=$("#oBible table .tx").css("font-size");
+        document.m_tx_fontSize+=n;
+        $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
+    }
 
     CNST.FnameOfBibleObj =
         {
