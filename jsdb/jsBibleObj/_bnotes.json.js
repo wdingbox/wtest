@@ -32839,14 +32839,14 @@ var _bnotes=
             "15": "",
             "16": "",
             "17": "",
-            "18": "",
-            "19": "",
+            "18": "Types of master. Boss, president, husband, parents, guests, friend.  Coworker  A. Good B. Bad ==========Types of submission A. True  B. False 1) due to class struggle, persecution, threat, oppression, 2) shame, face. ",
+            "19": "Types of Chinese bearing. A.好汗不吃眼前亏 B. 君子报仇十年不晚. Revenge C. 忍气吞声 passive D 吃亏是佛 fool. ================How did Jesus bear?  21-24",
             "20": "",
-            "21": "",
+            "21": "Identity of Christian. ",
             "22": "",
             "23": "",
             "24": "",
-            "25": "18-25 ——-Title: submit bear follow Jesus. ———QA. As Comparing with what we learned, where and how does it differ to Chinese culture? "
+            "25": "18-25 ——-Title: submit bear follow Jesus. ———QA. As Comparing with what we learned, where and how does it differ to Chinese culture? ==========what’s your barriers? "
         },
         "3": {
             "1": "",
