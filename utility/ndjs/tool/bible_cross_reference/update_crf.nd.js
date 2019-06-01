@@ -28,10 +28,12 @@ var CrossReferenceUpdate = {
                         if (ret.valid) {
                             console.log(ret)
                             var curBVC = `(${bkname}${chp}:${vers})`;
+                            console.log(curBVC);
                             var arr = _crf.obj[ret.book][ret.chap][ret.vers].split(";");
                             if (arr.indexOf(curBVC) < 0) {
                                 arr.push(curBVC);
                                 _crf.obj[ret.book][ret.chap][ret.vers] = arr.join(";");
+                                _crf.writeback();
                             }
                         }
                     }
