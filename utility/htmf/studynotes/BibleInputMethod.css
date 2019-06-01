@@ -1,4 +1,14 @@
+body {
+    background-color: black;
+    color: white;
+    width: 100%;
+    font-size: 100%;
 
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+
+    font-family: 'Times New Roman';
+}
 
     #menuContainer,
     #menuToggler {
@@ -101,6 +111,10 @@
         background-color: rgb(149, 97, 29);
     }
 
+    #Tab_cat tbody tr:nth-child(1),
+    #Tab_cat tbody tr:nth-child(7) {
+        background-color: rgb(24, 117, 117);
+    }
 
     #Tab_vol thead,
     #Tab_cat thead,

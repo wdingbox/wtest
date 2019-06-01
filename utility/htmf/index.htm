@@ -7,6 +7,8 @@
     <base target="_blank" />
 
 
+    <link rel="stylesheet" href="./studynotes/BibleInputMethod.css">
+
     <script language="javascript" src="../htmjs/jq/jquery.js" />
     <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
 
@@ -18,7 +20,10 @@ $(function(){
     $("a").each(function(i){
         var ref=$(this).attr("href");
         $(this).text("("+i+") "+ref);
-    })
+    });
+
+
+    $("#inc").load("./studynotes/htx_body.htm");
 
 });///////
 
@@ -34,7 +39,7 @@ $(function(){
 <br/><a href="../../../../../github/wdingbox/obilab/test1/home.htm">obilab</a>
 <br/><a href="../../../../../bitbucket/weid/pdf2018/latx/bib_generator/authorInfo/bibDesk.htm">bibDesk</a>
 <br/><a href="../../../../../bitbucket/utis/bigDatHub/bigdat_file_size_viewer.htm">bitDat</a>
-
+<div id="inc">./studynotes/htx_body.htm</div>
 </BODY>
 </HTML>
 
