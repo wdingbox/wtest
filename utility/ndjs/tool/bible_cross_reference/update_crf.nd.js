@@ -10,6 +10,24 @@ var tst = require("../../../../jsdb/jsBibleObj/_crf.json.js");
 
 
 var CrossReference = {
+    show: function (crf) {
+        var ret={};
+        Object.keys(crf.obj).forEach(function (bkname, i) {
+            var obk = crf.obj[bkname];
+            Object.keys(obk).forEach(function (chp, k) {
+                var chpObj = obk[chp];
+                Object.keys(chpObj).forEach(function (vers, k) {
+                    var txt = chpObj[vers];
+                    if (txt.length > 0) {
+                        var sbcv=`${bkname}${chp}:${vers}`;
+                        ret[sbcv]=txt;
+                        console.log(`${bkname}${chp}:${vers} : ${txt}`);
+                    }
+                });
+            });
+        });
+        fs.writeFileSync("crossRef.json.js",JSON.stringify(ret,null,4));
+    },
     update: function (crf, note) {
         //console.log(note);
         Object.keys(note.obj).forEach(function (bkname, i) {
@@ -27,6 +45,7 @@ var CrossReference = {
                 });
             });
         });
+        CrossReference.show(crf);
     },
 
     search_Ref: function (txt) {
