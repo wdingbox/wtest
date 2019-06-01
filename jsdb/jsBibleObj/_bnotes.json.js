@@ -27477,7 +27477,7 @@ var _bnotes=
             "20": "The meaning and purpose of miracles is to for the kingdom of heave. The miracle is the sign of the KOG. ",
             "21": "",
             "22": "",
-            "23": "Who is our friend and who is our enemy? this is the most important issues for every Christian. ",
+            "23": "Who is our friend and who is our enemy? this is the most important issues for every Christian. ----------Biblical Dualism. -------One God, Dualism, Three Milestones, Four Processes(Creation, Falling, Redemption,Sanctification). ",
             "24": "",
             "25": "",
             "26": "",
