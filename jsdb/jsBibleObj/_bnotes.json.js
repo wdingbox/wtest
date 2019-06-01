@@ -2,7 +2,7 @@ var _bnotes=
 {
     "Gen": {
         "1": {
-            "1": "@test is ok22&nbsp;",
+            "1": "@test is ok22&nbsp;(Jhn1:1) (Jhn1:12)",
             "2": "Tws",
             "3": "Ggtest",
             "4": "",
