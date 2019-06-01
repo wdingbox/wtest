@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <HTML manifest___xxx="BiblePad-2015.appcache">
+
 <HEAD>
     <TITLE>Ref</TITLE>
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
-	<META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0"/>
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0" />
     <base target="_blank" />
 
 
@@ -13,33 +14,46 @@
     <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
 
 
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            width: 100%;
+            font-size: 100%;
+
+            padding: 0px 0px 0px 0px;
+            margin: 0px 0px 0px 0px;
+
+            font-family: 'Times New Roman';
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function () {
+            $("a").each(function (i) {
+                var ref = $(this).attr("href");
+                $(this).text("(" + i + ") " + ref);
+            });
+
+
+            $("#inc").load("./studynotes/htx_body.htm");
+
+        });///////
+
+
+
     </script>
-<script type="text/javascript">
-    
-$(function(){
-    $("a").each(function(i){
-        var ref=$(this).attr("href");
-        $(this).text("("+i+") "+ref);
-    });
-
-
-    $("#inc").load("./studynotes/htx_body.htm");
-
-});///////
-
-
-
-</script>
 </HEAD>
+
 <BODY>
 
-<br/><a href="./studynotes/BibleInputMethod.htm">BibleInputMethod</a>
-<br/><a href="chnFrq.htm">chnFrq</a>
-<br/><a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a>
-<br/><a href="../../../../../github/wdingbox/obilab/test1/home.htm">obilab</a>
-<br/><a href="../../../../../bitbucket/weid/pdf2018/latx/bib_generator/authorInfo/bibDesk.htm">bibDesk</a>
-<br/><a href="../../../../../bitbucket/utis/bigDatHub/bigdat_file_size_viewer.htm">bitDat</a>
-<div id="inc">./studynotes/htx_body.htm</div>
+    <br /><a href="./studynotes/BibleInputMethod.htm">BibleInputMethod</a>
+    <br /><a href="chnFrq.htm">chnFrq</a>
+    <br /><a href="../../../../../github/wdingbox/obi/index.htm">obi(upload_page)</a>
+    <br /><a href="../../../../../github/wdingbox/obilab/test1/home.htm">obilab</a>
+    <br /><a href="../../../../../bitbucket/weid/pdf2018/latx/bib_generator/authorInfo/bibDesk.htm">bibDesk</a>
+    <br /><a href="../../../../../bitbucket/utis/bigDatHub/bigdat_file_size_viewer.htm">bitDat</a>
+    <div id="inc">./studynotes/htx_body.htm</div>
 </BODY>
-</HTML>
 
+</HTML>
