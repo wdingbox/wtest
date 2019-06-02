@@ -10,7 +10,7 @@ var SvcUti = require("./SvcUti.module").SvcUti;
 var SvcRestApi = {
     BibDeskApi_SaveBibSingleItem: function (inpObj) {
         console.log("api : BibDeskApi_SaveBibSingleItem");
-        var spathfile = "../../../../../../bitbucket/weid/pdf2018/latx/bib_generator/authorInfo/bibDat/BibDat_OBI.json.js";
+        var spathfile = "../../../../../../bitbucket/wdingsoft/weid/pdf2018/latx/bib_generator/authorInfo/bibDat/BibDat_OBI.json.js";
         spathfile=inpObj.filename;
         console.log(spathfile);
         var ret = Uti.LoadObj(spathfile);

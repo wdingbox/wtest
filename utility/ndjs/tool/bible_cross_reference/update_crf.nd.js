@@ -4,7 +4,7 @@ const fs = require('fs');
 var path = require('path');
 var cheerio = require("cheerio"); //>> npm install cheerio
 
-const Uti = require("../../../../../../../bitbucket/utis/zfrqCalc/Uti.Module").Uti;
+const Uti = require("../../../../../../../bitbucket/wdingsoft/utis/zfrqCalc/Uti.Module").Uti;
 
 var tst = require("../../../../jsdb/jsBibleObj/_crf.json.js");
 
