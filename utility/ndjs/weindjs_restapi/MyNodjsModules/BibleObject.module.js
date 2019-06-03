@@ -17,7 +17,7 @@ var BibleUti = {
 
     load_BibleJstrn: function (fname) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
-        spathfile = "../../../jsdb/jsBibleObj/" + fname + ".json.js";
+        spathfile = "../../../../bible_obj_lib/jsdb/jsBibleObj/" + fname + ".json.js";
         var ret = Uti.GetJsonStringFrmFile(spathfile);
         return ret;//{fname:spathfile,jstrn:content};
     },
