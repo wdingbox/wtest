@@ -1,1 +1,0 @@
-bible chinese word usage.
