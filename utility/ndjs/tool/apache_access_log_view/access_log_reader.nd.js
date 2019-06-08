@@ -7,7 +7,7 @@ var path = require('path');
 
    
 
-
+//fs.writeSync()
 
 
 function getDateTime() {
@@ -37,15 +37,72 @@ function getDateTime() {
 var dt=getDateTime();
 console.log(dt);
 //return;
-
+function sort_val(oFrq){
+  const iLEN=10;
+  var tmp=[];
+  Object.keys(oFrq).forEach(function(k,i){
+    var str=oFrq[k].toString().padStart(iLEN,"0")+k;
+    tmp.push(str);
+    console.log(str);
+  });
+  tmp.sort().reverse();
+  var ret={};
+  for(var i=0;i<tmp.length;i++){
+    var frq=tmp[i].substr(0,iLEN);
+    var key=tmp[i].substr(iLEN);
+    ret[key]=parseInt(frq);
+  }
+  return ret;
+}
 function access_log_to_json(){
-  var log=fs.readFileSync("/var/log/apache2/access_log","utf8");
+  const logfilename="/var/log/apache2/access_log";
+  var log=fs.readFileSync("access_log","utf8");
   var lnarr=log.split(/[\n|\r]/);
   console.log(lnarr.length);
-  var ret={};
+  var retArr=[], IpFrq={}, RqFrq={};
+
+  // 22.54.103.239 - - [30/Apr/2019:01:49:41 -0400] "GET /PMA2017/index.php?lang=en HTTP/1.1" 404 215
+  var reg=new RegExp(/((\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3})|(\:\:1)|(\\[\w]+\\[\w]+\\[\w]+\\[\w]+))\s+\-\s+\-\s+\[([^\]]+)\]\s+[\"]([^\"]{0,})[\"]\s(\w+)\s+([\w\-]+)$/,"");
+  
   lnarr.forEach(function(line,i){
-    var nodarr=line.split(/[\s]{1,}/);
-    console.log(nodarr);
+    var nodarr=line.split(/[\s]+/);
+    //console.log(nodarr.length);
+    if(nodarr.length!=10){
+      //console.log(line);
+    }
+ 
+    var mat=line.match(reg);
+    if(mat){
+      if(mat[1]==="::1"){
+        console.log(mat);
+      }
+      var ip=mat[1], req=mat[6];
+      retArr.push({ip:ip,dtm:mat[5],req:req,d1:mat[7],d2:mat[8]});
+      if(undefined == IpFrq[ip]){
+        IpFrq[ip]=0;
+      }
+      IpFrq[ip]++;
+      if(undefined == RqFrq[req]){
+        RqFrq[req]=0;
+      }
+      RqFrq[req]++;
+
+    }
+    else{
+      console.log(line);
+    }
+    
   });
+
+  var str="var access_log=\n"+JSON.stringify(retArr,null,4);
+  fs.writeFileSync("access_log.json.js",str);
+
+  RqFrq=sort_val(RqFrq);
+  var str="var access_fr_RqFrq=\n"+JSON.stringify(RqFrq,null,4);
+  fs.writeFileSync("access_fr_RqFrq.json.js",str);
+
+  IpFrq=sort_val(IpFrq);
+  var str="var access_fr_IpFrq=\n"+JSON.stringify(IpFrq,null,4);
+  fs.writeFileSync("access_fr_IpFrq.json.js",str);
 }
 access_log_to_json();
