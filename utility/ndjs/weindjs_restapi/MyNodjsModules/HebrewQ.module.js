@@ -6,18 +6,21 @@ var url = require('url'); //for web app.
 
 var Uti = require("./Uti.module").Uti;
 
-
+//  require("../../../../../../wdingbox/hebrew_ciu/HebrewQ/audjs/")
+const HROOT="../../../../../../wdingbox/hebrew_ciu/HebrewQ/audjs/";
 
 var HebrewUti = {
   get_VocabHebrewBufObj: function () {
     var currentPath = process.cwd();
     console.log(currentPath);
+    
 
-    var filesArr = Uti.getFileNamesFromDir("../../../../../../btool/tool/HebrewQ/audjs/", ".js");
+    var filesArr = Uti.getFileNamesFromDir(HROOT, ".js");
+    
     console.log(filesArr);
 
     //return;
-    var targf = "../../../../../../btool/tool/HebrewQ/audjs/VocabHebrewBuf.js"
+    var targf = HROOT+"VocabHebrewBuf.js"
     var content = fs.readFileSync(targf, "utf8");
     var idx = 2 + content.indexOf("=\n");
     var shead = content.substr(0, idx);
