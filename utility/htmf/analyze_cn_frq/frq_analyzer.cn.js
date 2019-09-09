@@ -48,7 +48,7 @@ ChinesePhraseStats.prototype.calcStats=function(){
 ChinesePhraseStats.prototype.gen_table=function(){
     var jsn=JSON.stringify(this.m_PhraseStats,null,4);
     var tot_distinct=Object.keys(this.m_PhraseStats).length;
-    var txa=`<textarea>text.size=${this.m_CharsSize}\ntot_distinct=${tot_distinct}\n${this.m_ChaFilter}\n${jsn}</textarea>`;
+    var txa=`<textarea>text.size=${this.m_CharsSize}\ntext.dist=${tot_distinct}\n${this.m_ChaFilter}text.freq=\n${jsn}</textarea>`;
 
     var stb=`<table border='1' align='left'><caption>${txa}</caption>`;
     stb+="<thead><tr><th>#</th><th>Phrase</th><th>reverse</th><th>frq</th></tr></thead>";
