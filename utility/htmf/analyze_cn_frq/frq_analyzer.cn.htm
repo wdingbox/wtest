@@ -106,17 +106,19 @@
 
         });//////////////////////////
         function cn_frq(_this) {
-            var t = $("#inptxt").val();
+            var txt = $("#inptxt").val();
             var CharGrpLen = $("#CharGrpLen").val();
-            if (t.length === 0) return alert("please paste your test in textarea");
+            if (txt.length === 0) return alert("please paste your test in textarea");
             var charFilter = $("#charFilter").val().trim();
-            var cps = new ChinesePhraseStats(t, CharGrpLen, charFilter);
+            var cps = new ChinesePhraseStats(txt, CharGrpLen, charFilter);
             var ret=cps.gen_table();
+            ret.stat.freq={};
             var etb = $(ret.stb).on("click", "td", function () {
                 $(this).toggleClass("hili");
             }).on("click", "caption", function () {
                 var sortedJsn = {};
-                $(this).parents().find("tbody").find("tr").each(function () {
+                $(this).parent().toggleClass("hili");
+                $(this).parent().find("tbody").find("tr").each(function () {
                     var key = $(this).find("td:eq(1)").text();
                     var frq = $(this).find("td:eq(3)").text();
                     sortedJsn[key] = frq;
