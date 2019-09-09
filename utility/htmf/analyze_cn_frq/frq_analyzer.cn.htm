@@ -111,8 +111,19 @@
             if (t.length === 0) return alert("please paste your test in textarea");
             var charFilter = $("#charFilter").val().trim();
             var cps = new ChinesePhraseStats(t, CharGrpLen, charFilter);
-            var etb = $(cps.gen_table()).on("click", "td", function () {
+            var ret=cps.gen_table();
+            var etb = $(ret.stb).on("click", "td", function () {
                 $(this).toggleClass("hili");
+            }).on("click", "caption", function () {
+                var sortedJsn = {};
+                $(this).parents().find("tbody").find("tr").each(function () {
+                    var key = $(this).find("td:eq(1)").text();
+                    var frq = $(this).find("td:eq(3)").text();
+                    sortedJsn[key] = frq;
+                });
+                ret.stat.freq=sortedJsn;
+                
+                $(this).find("textarea").val("var stat=\n"+JSON.stringify(ret.stat, null, 4));
             })
             $("#outview").append(etb);
             table_sorter();

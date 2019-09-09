@@ -59,7 +59,11 @@ ChinesePhraseStats.prototype.gen_table=function(){
         stb+="<tr><td>"+(idx++)+"</td><td class='mysel'>"+key+"</td><td>"+key.split("").reverse().join("")+"</td><td>"+frq+"</td></tr>";
     });
     stb+="</tbody></table>";
-    return stb;
+    var stat={};
+    stat.size=this.m_CharsSize;
+    stat.dist=tot_distinct;
+    stat.freq=jsn;
+    return {"stb":stb, "stat":stat};
 }
 
 
