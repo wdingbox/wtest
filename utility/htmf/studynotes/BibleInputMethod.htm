@@ -500,8 +500,10 @@
             $("#oBible").find(".tx").bind("click", function () {
                 $(".ok").remove();
                 $(this).toggleClass("hili2");
+                var rsn=$(this).prev().attr("title");
                 var txt = $(this).text();
                 var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
+                txt=`"${txt}" (${vcv} ${rsn})`;
                 Uti.Msg(txt + " (" + vcv + ")");
                 //copy to clipboard.
                 if ($(this).attr("contenteditable")) {
