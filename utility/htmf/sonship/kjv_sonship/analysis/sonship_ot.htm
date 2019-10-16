@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<HTML manifest___xxx="BiblePad-2015.appcache">
+
+<HEAD>
+    <TITLE>Bii</TITLE>
+    <base target="_blank" />
+    <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
+
+
+    <link rel="stylesheet" href="./BibleInputMethod.css">
+    </link>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script language="javascript" src="../../../../htmjs/jq/table_Indexer.js"></script>
+    <script language="javascript" src="../../../../htmjs/jq/jquery.tablesorter.js"></script>
+    <!--------->
+    <script language="javascript" src="../json/HebrewSonship.json.js"></script>
+    <script language="javascript" src="../json/GreekSonship.json.js"></script>
+
+    <style>
+    </style>
+
+
+
+    <script language="javascript">
+        console.log(window.location);
+        var gBim = null;//
+
+        $(document).ready(function () {
+            gen_table(GreekSonship);
+        });/////////////
+
+        function gen_table(Sons) {
+            var arr = Object.keys(Sons);
+            var st = "<table border='1'>";
+            st += "<thead><tr><th>#</th><th>vrs</th><th>txt</th><th>usg</th><th></th></tr></thead><tbody>"
+            for (var i = 0; i < arr.length; i++) {
+                var key = arr[i];
+                var vrs = Sons[key];
+                var idx = vrs.indexOf("G5207 of");
+                var patternOf = "";
+                if (vrs.indexOf("Son") >= 0 || vrs.indexOf("G5207 of God") >= 0) {
+                    patternOf = "Son";
+                } else {
+                    var idx = vrs.indexOf("G5207 of");
+                    if (idx >= 0) {
+                        patternOf = vrs.substr(idx, 25);
+                    } else {
+                        var mat = vrs.match(/father/ig);
+                        if (mat) {
+                            patternOf = "father";
+                        }
+                    }
+                }
+                st += `<tr><td>${i}</td><td>${key}</td><td>${vrs}</td><td>${patternOf}</td><td></td></tr>`;
+            }
+            st += "</tbody></table>";
+            $("#holder").html(st);
+
+            table_sort();
+        }
+    </script>
+
+</HEAD>
+
+<BODY onbeforeunload="return 'leave?';">
+    <div id="ctrl">
+        <button id="indxer">indxer</button>
+        <p>Strong's Number H1121 matches the Hebrew בֵּן (ben),
+            which occurs 4,906 times in 3,654 verses in the Hebrew concordance of the KJV.
+        </p>
+        <p>Strong's Number G5207 matches the Greek υἱός (huios),
+            which occurs 382 times in 348 verses in the Greek concordance of the KJV.
+            son-of-x=219,
+            so-of-God=50. so-of-living-God=2. son-of-Father=2
+            son-of-man/men=102
+        </p>
+    </div>
+    <div id="holder">-</div>
+</BODY>
+
+</HTML>
+<script type="text/javascript">
+    var patternFreq = {
+        "NT": {
+            "strongCode": "G5207",
+            "occurs": 382,
+            "verses": 348,
+            "son-of": {
+                "frq": 219,
+                "son-of-God": {
+                    "frq": 50,
+                    "son-of-living-God": {
+                        "frq": 2
+                    }
+                    "son-of-Father": {
+                        "frq": 2
+                    },
+
+                },
+                "son-of-man_men": {
+                    "frq": 102
+                }
+            }
+
+        },
+        "OT": {
+            "strongCode": "H1121",
+            "occurs": 4906,
+            "verses": 3654,
+            "son-of": {
+                "frq": 3250,
+                "son-of-God": {
+                    "frq": 5
+                }
+            }
+        }
+    }
+</script>
