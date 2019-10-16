@@ -42,12 +42,17 @@
                 var vrs = Sons[key];
                 var idx = vrs.indexOf("G5207 of");
                 var patternOf = "";
-                if (idx >= 0) {
-                    patternOf = vrs.substr(idx, 25);
-                }else{
-                    var mat=vrs.match(/father/ig);
-                    if(mat){
-                        patternOf="father";
+                if (vrs.indexOf("Son") >= 0 || vrs.indexOf("G5207 of God") >= 0) {
+                    patternOf = "Son";
+                } else {
+                    var idx = vrs.indexOf("G5207 of");
+                    if (idx >= 0) {
+                        patternOf = vrs.substr(idx, 25);
+                    } else {
+                        var mat = vrs.match(/father/ig);
+                        if (mat) {
+                            patternOf = "father";
+                        }
                     }
                 }
                 st += `<tr><td>${i}</td><td>${key}</td><td>${vrs}</td><td>${patternOf}</td><td></td></tr>`;
@@ -109,7 +114,7 @@
             "son-of": {
                 "frq": 3250,
                 "son-of-God": {
-                    "frq":5
+                    "frq": 5
                 }
             }
         }
