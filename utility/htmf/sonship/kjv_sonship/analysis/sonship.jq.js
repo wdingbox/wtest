@@ -100,19 +100,31 @@ function gen_table_ot(Sons) {
 function get_pattern3(vrs, num, frqObj) {
     var patternArr = [
         "H1121 and daughters",
+        "[Yy]oung H",
         "[Hh]is son",
         "[Hh]er son",
         "[Tt]heir son",
         "[Aa] son",
         "[Tt]he son",
         "[Tt]hy son",
+        "[Oo]wn son",
+        "[Yy]our son",
+        "[Oo]ur son",
+        "[Mm]y son",
+        "'s son",
+
         "[Hh]is child",
         "[Hh]er child",
         "[Tt]heir child",
         "[Aa] child",
         "[Tt]he child",
         "[Tt]hy child",
-        "[Oo]wn son"
+        "[Oo]wn child",
+        "[Yy]our child",
+        "[Oo]ur child",
+        "[Mm]y child",
+        "'s child"
+
     ];
     for (var i = 0; i < patternArr.length; i++) {
         var pat = patternArr[i];
@@ -131,7 +143,8 @@ function get_pattern3(vrs, num, frqObj) {
     return "";
 }
 function get_pattern_Upperxx(vrs, num, frqObj) {
-    var mat = vrs.match(/H1121\s+of\s+[A-Z]\w+[\,\.\'\"\s]+[a-zA-Z\,\.\-]+/g);
+    vrs=vrs.replace(/[\.\,\:\'\"\?\;\'\<\>\/\-\=\_\+\(\)\*\&\^\%\$\#\@\!\~]/g, " ")+" xxx";
+    var mat = vrs.match(/H1121\s+of\s+[A-Z]\w+[\,\.\'\"\:\s]+[a-zA-Z\,\.\-\:\.]+/g);
     if (mat) {
         var pattern = mat[0];
         var mat1 = pattern.match(/H1121\s+of\s+\w+/g);
@@ -146,7 +159,8 @@ function get_pattern_Upperxx(vrs, num, frqObj) {
     return "";
 }
 function get_pattern_lowerxx(vrs, num, frqObj) {
-    var mat = vrs.match(/H1121\s+of\s+[a-z]\w+[\,\.\'\"\s]+[a-zA-Z\,\.\-]+/g);
+    vrs=vrs.replace(/[\.\,\:\'\"\?\;\'\<\>\/\-\=\_\+\(\)\*\&\^\%\$\#\@\!\~]/g, " ")+" xxx";
+    var mat = vrs.match(/H1121\s+of\s+[a-z]\w+[\,\.\'\"\:\s]{0,9}[a-zA-Z\,\.\-\:\.]+/g);
     if (mat) {
         var pattern = mat[0];
         var sky = pattern;
