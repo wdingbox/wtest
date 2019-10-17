@@ -75,7 +75,7 @@ function gen_table_ot(Sons) {
     var frqObj = [{}, {}, {}];
     var arr = Object.keys(Sons);
     var st = "<table border='1'>";
-    st += "<thead><tr><th>#</th><th>vrs</th><th>txt</th><th>usg</th><th></th></tr></thead><tbody>"
+    st += "<thead><tr><th>#</th><th>vrs</th><th>txt</th><th>usg</th><th></th><th></th><th></th></tr></thead><tbody>"
     for (var i = 0; i < arr.length; i++) {
         var key = arr[i];
         var vrs = Sons[key];
@@ -100,17 +100,30 @@ function gen_table_ot(Sons) {
 function get_pattern3(vrs, num, frqObj) {
     var patternArr = [
         "H1121 and daughters",
-        "his son",
-        "her son",
-        "their son",
-        "a son",
-        "the son",
-        "thy son"
+        "[Hh]is son",
+        "[Hh]er son",
+        "[Tt]heir son",
+        "[Aa] son",
+        "[Tt]he son",
+        "[Tt]hy son",
+        "[Hh]is child",
+        "[Hh]er child",
+        "[Tt]heir child",
+        "[Aa] child",
+        "[Tt]he child",
+        "[Tt]hy child",
+        "[Oo]wn son"
     ];
     for (var i = 0; i < patternArr.length; i++) {
         var pat = patternArr[i];
         var ret = new RegExp(pat, "g");
-        if (vrs.match(ret)) {
+        var mat = vrs.match(ret);
+        if (mat) {
+            var sky = mat[0];
+            if (undefined === frqObj[sky]) {
+                frqObj[sky] = 0;
+            }
+            frqObj[sky]++;
             num[0]++;
             return pat;
         }
