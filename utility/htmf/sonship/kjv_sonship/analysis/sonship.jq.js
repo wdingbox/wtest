@@ -209,6 +209,10 @@ function get_pattern_lowerxx(vrs, num, frqObj, scod) {
 
     if (mat) {
         var pattern = mat[0];
+        var mat2=pattern.match(/of m[ae]n\s/g);
+        if(mat2){
+            pattern=scod+" of man/men";
+        }
         var sky = pattern;
         if (undefined === frqObj[sky]) {
             frqObj[sky] = 0;
