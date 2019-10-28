@@ -197,6 +197,9 @@
 
         $("td").bind("click", function () {
             $(this).toggleClass("hili");
+            var txt = $("#out").val();
+            var val = $(this).text();
+            $("#out").val(txt + "\n" + val);
         });
 
         table_sort();
