@@ -23,18 +23,19 @@
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
 
 
-    <script language="javascript" src="../../../jsdb/jsBibleObj/BBE.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/CUVS.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/KJV.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/NIV.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/PINYIN.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/STUS.json.js"></script>
-    <script language="javascript" src="../../../jsdb/jsBibleObj/WLVS.json.js"></script>
+    <script language="javascript" xxsrc="../../../../bible_obj_lib/jsdb/jsBibleObj/BBE.json.js"></script>
+    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleObj/CUVS.json.js"></script>
+    <script language="javascript" xxsrc="../../../../bible_obj_lib/jsdb/jsBibleObj/KJV.json.js"></script>
+    <script language="javascript" xxsrc="../../../../bible_obj_lib/jsdb/jsBibleObj/NIV.json.js"></script>
+    <script language="javascript" xxsrc="../../../../bible_obj_lib/jsdb/jsBibleObj/CUVpy.json.js"></script>
+    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleObj/STUS.json.js"></script>
+    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleObj/WLVS.json.js"></script>
 
     <script language="javascript" src="analysis_ChineseCharsFrqObj_Bible.json.js"></script>
     <script language="javascript" src="analysis_ChineseCharsFrqObj_PreQin.json.js"></script>
     <script language="javascript" src="analysis_ChineseCharsFrqObj_PostQin.json.js"></script>
 
+    <script language="javascript" src="analysis_quran.json.js"></script>
     <script language="javascript" src="analysis_sutra.json.js"></script>
 
 
@@ -137,7 +138,7 @@
         var arr=Object.keys(frqObj);
         //$.each(frqObj, function (k, frq) {
         for(var i=0;i<arr.length;i++){
-            if(i>3000)break;//jquery.js:4 Uncaught RangeError: Maximum call stack size exceeded
+            if(i>2000)break;//jquery.js:4 Uncaught RangeError: Maximum call stack size exceeded
             var k=arr[i];
             var frq=frqObj[k];
             trs += "<tr><td/>";
@@ -183,12 +184,13 @@
         gen_tab(CUV_OT_FrqObj, "CUV_OT_FrqObj");
         gen_tab(CUV_NT_FrqObj, "CUV_NT_FrqObj");
         gen_tab(CUV_Gospel_FrqObj, "CUV_Gospel_FrqObj");
-        gen_tab(Quran_FrqObj, "Quran_FrqObj");
+        
 
         gen_tab(PreQinChar_FrqObj, "PreQin_FrqObj");
         gen_tab(PostQinChar_FrqObj, "PostQin_FrqObj");
 
-        gen_tab(PostQinChar_FrqObj, "PostQin_FrqObj");
+        gen_tab(Sutra_FrqObj, "Sutra_FrqObj");
+        gen_tab(Quran_FrqObj, "Quran_FrqObj");
         
         
 
