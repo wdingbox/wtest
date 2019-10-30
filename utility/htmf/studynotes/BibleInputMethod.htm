@@ -1061,11 +1061,11 @@
                         if ("object" == typeof val) {
                             $.each(val, function (key, str) {
                                 var vid = vol + chp + ":" + vrs;
-                                st += "<div><input type='checkbox' title='" + key + "'/><a class='tx' vid='" + vid + "'>" + str + "</a></div>";
+                                st += `<div><input type='checkbox' title='${key}'/><a class='tx tx${key}' vid='${vid}'>${str}</a></div>`;
                             });
                         }
                         if ("string" == typeof val) {
-                            st += "<div>" + val + "</iv>";
+                            st += "<div>" + val + "</div>";
                         }
                         st += "</td></tr>";
                     });
