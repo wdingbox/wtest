@@ -230,7 +230,9 @@ function get_pattern_lowerxx(vrs, num, frqObj, scod) {
 
 
 
-
+function get_jsn_from_blueletter(){
+    
+}
 
 
 var ot_stat = {
