@@ -27,38 +27,53 @@
 
 
     <script language="javascript">
-        $(document).ready(function () {
-            var url = "../blueletter/demut_likeness.htm";
-            var obj={};
+        $(function () {
+            
+            $("a").each(function () {
+                var tx = $(this).attr("href");
+                $(this).text(tx);
+                $("#items").append(`<p class='filename' title="filename">${tx}</p>`);
+            });
+
+            $(".filename").bind("click",function(){
+                var filename = $(this).text();
+                gen_json(filename);
+            })
+            
+        });/////////////
+
+
+        function gen_json(filename) {
+            ///var url = "../blueletter/demut_likeness.htm";
+            var obj = {};
             jQuery.ajax({
-                url: url,
+                url: filename,
                 success: function (result) {
-                     console.log(result);
-                     $(result).find(".bVerse").each(function(){
-                         var vs = $(this).find(".bVerse__col-two").text().trim();
-                         var tx = $(this).find(".bVerse__col-three").text().trim();
-                         
-                         
-                         var idx = tx.indexOf("-");
-                         vs = tx.substr(0,idx);
-                         tx = tx.substr(1+idx);
-                         tx=tx.trim();
+                    console.log(result);
+                    $(result).find(".bVerse").each(function () {
+                        var vs = $(this).find(".bVerse__col-two").text().trim();
+                        var tx = $(this).find(".bVerse__col-three").text().trim();
 
-                         tx = tx.replace(/[\\][n]/g," ");
-                         tx = tx.replace(/[\n|\r|\t]+/g," ");
-                         //tx = tx.replace(/[\s]{2,}/g,"  ");
-                                         
 
-                         console.log(vs,tx);
-                         obj[vs]=tx;
-                     });
+                        var idx = tx.indexOf("-");
+                        vs = tx.substr(0, idx);
+                        tx = tx.substr(1 + idx);
+                        tx = tx.trim();
+
+                        tx = tx.replace(/[\\][n]/g, " ");
+                        tx = tx.replace(/[\n|\r|\t]+/g, " ");
+                        //tx = tx.replace(/[\s]{2,}/g,"  ");
+
+
+                        console.log(vs, tx);
+                        obj[vs] = tx;
+                    });
                 },
                 async: false
             });
 
-            $("#out").val(JSON.stringify(obj,null,4));       
-        });/////////////
-
+            $("#out").val(JSON.stringify(obj, null, 4));
+        }
     </script>
 
 </HEAD>
@@ -66,13 +81,30 @@
 <BODY xonbeforeunload="return 'leave?';">
     <div id="ctrl">
         <button id="indxer">indxer</button>
-        <textarea id='out'></textarea>
+        <textarea id='out'></textarea><hr/>
+        
     </div>
-    <p>
+    <p>...
     </p>
-    <p>
+    <p>...
     </p>
-    <a href="../blueletter/demut_likeness.htm">demut</a>
+    <p>...
+    </p>
+    <p>...
+    </p>
+    <p>...
+    </p>
+    <p>...
+    </p>
+
+    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br/><a href="../blueletter/tselem_image.htm">demut</a>
+    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
+    <hr/>
+
+    <div id="items">....</div>
 
     <div id="holder">-</div>
 </BODY>
