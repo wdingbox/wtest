@@ -27,34 +27,57 @@
 
 
     <script language="javascript">
-        console.log(window.location);
-
         $(document).ready(function () {
-            gen_table_nt(GreekSonship);
+            var url = "../blueletter/demut_likeness.htm";
+            var obj={};
+            jQuery.ajax({
+                url: url,
+                success: function (result) {
+                     console.log(result);
+                     $(result).find(".bVerse").each(function(){
+                         var vs = $(this).find(".bVerse__col-two").text().trim();
+                         var tx = $(this).find(".bVerse__col-three").text().trim();
+                         
+                         
+                         var idx = tx.indexOf("-");
+                         vs = tx.substr(0,idx);
+                         tx = tx.substr(1+idx);
+                         tx=tx.trim();
+
+                         tx = tx.replace(/[\\][n]/g," ");
+                         tx = tx.replace(/[\n|\r|\t]+/g," ");
+                         //tx = tx.replace(/[\s]{2,}/g,"  ");
+                                         
+
+                         console.log(vs,tx);
+                         obj[vs]=tx;
+                     });
+                },
+                async: false
+            });
+
+            $("#out").val(JSON.stringify(obj,null,4));       
         });/////////////
 
     </script>
 
 </HEAD>
 
-<BODY onbeforeunload="return 'leave?';">
+<BODY xonbeforeunload="return 'leave?';">
     <div id="ctrl">
-        <button id="indxer">indxer</button><textarea id='out'></textarea>
+        <button id="indxer">indxer</button>
+        <textarea id='out'></textarea>
     </div>
-    <p>Strong's Number H1121 matches the Hebrew בֵּן (ben),
-        which occurs 4,906 times in 3,654 verses in the Hebrew concordance of the KJV.
+    <p>
     </p>
-    <p>Strong's Number G5207 matches the Greek υἱός (huios),
-        which occurs 382 times in 348 verses in the Greek concordance of the KJV.
-        son-of-x=219,
-        so-of-God=50. so-of-living-God=2. son-of-Father=2
-        son-of-man/men=102
+    <p>
     </p>
+    <a href="../blueletter/demut_likeness.htm">demut</a>
 
     <div id="holder">-</div>
 </BODY>
 
 </HTML>
 <script type="text/javascript">
-   
+
 </script>
