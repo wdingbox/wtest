@@ -24,14 +24,7 @@ function gen_table_fr_obj(Sons) {
 
     table_sort();
 }
-function get_json_notes(){
-    var obj={};
-    $(".notes").each(function(){
-        var itm = $(this).attr("title");
-        obj[itm] = $(this).text().trim();
-    });
-    $("#out").val(JSON.stringify(obj,null,4));
-}
+
 
 
 

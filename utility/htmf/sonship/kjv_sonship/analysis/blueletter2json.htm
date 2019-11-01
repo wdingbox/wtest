@@ -23,7 +23,7 @@
 
     <style>
         .hili {
-            background-color:cornflowerblue;
+            background-color: cornflowerblue;
         }
     </style>
 
@@ -45,21 +45,21 @@
 
             $(".filename").bind("click", function () {
                 var filename = $(this).text();
-                gen_json(filename);
+                gen_json_from_htmfile(filename);
             });
 
         });/////////////
         var obj = {};
 
 
-        function get_vname(filename){
+        function get_vname(filename) {
             var li = filename.lastIndexOf("/");
             var str = filename.substr(1 + li);
             var arr = str.split(".");
             return arr[0];
         }
 
-        function gen_json(filename) {
+        function gen_json_from_htmfile(filename) {
             ///var url = "../blueletter/demut_likeness.htm";
             obj = {};
 
@@ -86,18 +86,19 @@
                 },
                 async: false
             });
-
-
-
             $("#out").val("var " + get_vname(filename) + "=\n" + JSON.stringify(obj, null, 4));
         };
 
+        function get_json_notes() {
+            var fnam = $(".hili").text();
 
-        function gen_table() {
-            var val = $("#out").val();
-            var idx = val.indexOf("=");
-            val = val.substr(idx + 1);
-        };
+            var obj = {};
+            $(".notes").each(function () {
+                var itm = $(this).attr("title");
+                obj[itm] = $(this).text().trim();
+            });
+            $("#out").val("var "+get_vname(fnam)+"_notes\n"+JSON.stringify(obj, null, 4));
+        }
 
     </script>
 
