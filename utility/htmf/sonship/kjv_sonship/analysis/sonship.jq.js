@@ -10,7 +10,7 @@ function gen_table_fr_obj(Sons) {
         var pat1 = "";
         var pat2 = "";
         var pat3 = "";
-        st += `<tr><td>${i}</td><td>${key}</td><td>${vrs}</td><td contenteditable>${num}</td><td contenteditable>${pat1}</td><td contenteditable>${pat2}</td><td contenteditable>${pat3}</td></tr>`;
+        st += `<tr><td>${i}</td><td>${key}</td><td>${vrs}</td><td class='notes' title='${key}' contenteditable>${num}</td><td contenteditable>${pat1}</td><td contenteditable>${pat2}</td><td contenteditable>${pat3}</td></tr>`;
     }
     st += "</tbody></table>";
     $("#holder").html(st);
@@ -24,7 +24,14 @@ function gen_table_fr_obj(Sons) {
 
     table_sort();
 }
-
+function get_json_notes(){
+    var obj={};
+    $(".notes").each(function(){
+        var itm = $(this).attr("title");
+        obj[itm] = $(this).text().trim();
+    });
+    $("#out").val(JSON.stringify(obj,null,4));
+}
 
 
 

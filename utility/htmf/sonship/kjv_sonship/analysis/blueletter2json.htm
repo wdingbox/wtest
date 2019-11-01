@@ -22,29 +22,47 @@
     <script language="javascript" src="./sonship.jq.js"></script>
 
     <style>
+        .hili {
+            background-color:cornflowerblue;
+        }
     </style>
 
 
 
     <script language="javascript">
         $(function () {
+            var sa = "";
             $("a").each(function () {
                 var tx = $(this).attr("href");
                 $(this).text(tx);
-                $("#items").append(`<p class='filename' title="filename">${tx}</p>`);
+                sa += `<a class='filename' title="filename">${tx}</a><br/>`;
+
+            });
+            $("#items").append(sa).find("a").bind("click", function () {
+                $(".hili").removeClass("hili");
+                $(this).toggleClass("hili");
             });
 
-            $(".filename").bind("click",function(){
+            $(".filename").bind("click", function () {
                 var filename = $(this).text();
                 gen_json(filename);
             });
+
         });/////////////
         var obj = {};
 
+
+        function get_vname(filename){
+            var li = filename.lastIndexOf("/");
+            var str = filename.substr(1 + li);
+            var arr = str.split(".");
+            return arr[0];
+        }
+
         function gen_json(filename) {
             ///var url = "../blueletter/demut_likeness.htm";
-            obj={};
-            
+            obj = {};
+
             jQuery.ajax({
                 url: filename,
                 success: function (result) {
@@ -52,7 +70,6 @@
                     $(result).find(".bVerse").each(function () {
                         var vs = $(this).find(".bVerse__col-two").text().trim();
                         var tx = $(this).find(".bVerse__col-three").text().trim();
-
 
                         var idx = tx.indexOf("-");
                         vs = tx.substr(0, idx);
@@ -63,7 +80,6 @@
                         tx = tx.replace(/[\n|\r|\t]+/g, " ");
                         //tx = tx.replace(/[\s]{2,}/g,"  ");
 
-
                         console.log(vs, tx);
                         obj[vs] = tx;
                     });
@@ -71,19 +87,18 @@
                 async: false
             });
 
-            var li=filename.lastIndexOf("/");
-            var str=filename.substr(1+li);
-            var arr=str.split(".");
-
-            $("#out").val("var "+arr[0]+"=\n"+JSON.stringify(obj, null, 4));
-        }
 
 
-        function gen_table(){
+            $("#out").val("var " + get_vname(filename) + "=\n" + JSON.stringify(obj, null, 4));
+        };
+
+
+        function gen_table() {
             var val = $("#out").val();
             var idx = val.indexOf("=");
-            val = val.substr(idx+1);
-        }
+            val = val.substr(idx + 1);
+        };
+
     </script>
 
 </HEAD>
@@ -93,7 +108,8 @@
         <button id="indxer">indxer</button>
         <textarea id='out'></textarea>
         <button onclick="gen_table_fr_obj(obj);">gen_tab</button>
-        
+        <button onclick="get_json_notes();">gen_notes</button>
+
     </div>
     <p>...
     </p>
@@ -103,19 +119,15 @@
     </p>
     <p>...
     </p>
-    <p>...
-    </p>
-    <p>...
-    </p>
 
-    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
-    <br/><a href="../blueletter/tselem_image.htm">demut</a>
-    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
-    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
-    <br/><a href="../blueletter/demut_likeness.htm">demut</a>
-    <hr/>
+    <br /><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br /><a href="../blueletter/tselem_image.htm">demut</a>
+    <br /><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br /><a href="../blueletter/demut_likeness.htm">demut</a>
+    <br /><a href="../blueletter/demut_likeness.htm">demut</a>
+    <hr />
 
-    <div id="items">....</div>
+    <div id="items">click to generate json from file:<br></div>
 
     <div id="holder">-</div>
 </BODY>
