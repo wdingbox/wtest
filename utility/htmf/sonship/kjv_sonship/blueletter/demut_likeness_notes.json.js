@@ -1,8 +1,8 @@
-var demut_likeness_notes
+var demut_likeness_notes=
 {
     "Gen 1:26 ": "0",
     "Gen 5:1 ": "0",
-    "Gen 5:3 ": "0",
+    "Gen 5:3 ": "begat a son.",
     "2Ki 16:10 ": "0",
     "2Ch 4:3 ": "0",
     "Psa 58:4 ": "0",
