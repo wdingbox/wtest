@@ -28,7 +28,6 @@
 
     <script language="javascript">
         $(function () {
-            
             $("a").each(function () {
                 var tx = $(this).attr("href");
                 $(this).text(tx);
@@ -38,14 +37,14 @@
             $(".filename").bind("click",function(){
                 var filename = $(this).text();
                 gen_json(filename);
-            })
-            
+            });
         });/////////////
-
+        var obj = {};
 
         function gen_json(filename) {
             ///var url = "../blueletter/demut_likeness.htm";
-            var obj = {};
+            obj={};
+            
             jQuery.ajax({
                 url: filename,
                 success: function (result) {
@@ -72,7 +71,18 @@
                 async: false
             });
 
-            $("#out").val(JSON.stringify(obj, null, 4));
+            var li=filename.lastIndexOf("/");
+            var str=filename.substr(1+li);
+            var arr=str.split(".");
+
+            $("#out").val("var "+arr[0]+"=\n"+JSON.stringify(obj, null, 4));
+        }
+
+
+        function gen_table(){
+            var val = $("#out").val();
+            var idx = val.indexOf("=");
+            val = val.substr(idx+1);
         }
     </script>
 
@@ -81,7 +91,8 @@
 <BODY xonbeforeunload="return 'leave?';">
     <div id="ctrl">
         <button id="indxer">indxer</button>
-        <textarea id='out'></textarea><hr/>
+        <textarea id='out'></textarea>
+        <button onclick="gen_table_fr_obj(obj);">gen_tab</button>
         
     </div>
     <p>...

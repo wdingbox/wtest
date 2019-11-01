@@ -1,3 +1,33 @@
+function gen_table_fr_obj(Sons) {
+    var frqObj = [{}, {}, {}];
+    var arr = Object.keys(Sons);
+    var st = "<table border='1'>";
+    st += "<thead><tr><th>#</th><th>vrs</th><th>txt</th><th>usg</th><th>-</th><th>-</th><th>-</th></tr></thead><tbody>"
+    for (var i = 0; i < arr.length; i++) {
+        var key = arr[i];
+        var vrs = Sons[key];
+        var num = [0];
+        var pat1 = "";
+        var pat2 = "";
+        var pat3 = "";
+        st += `<tr><td>${i}</td><td>${key}</td><td>${vrs}</td><td contenteditable>${num}</td><td contenteditable>${pat1}</td><td contenteditable>${pat2}</td><td contenteditable>${pat3}</td></tr>`;
+    }
+    st += "</tbody></table>";
+    $("#holder").html(st);
+
+
+    for (var i = 0; i < frqObj.length; i++) {
+        var sortedObj = sortObjVal(frqObj[i]);
+        frqObj[i] = sortedObj;
+    }
+    $("#out").val(JSON.stringify(frqObj, null, 4));
+
+    table_sort();
+}
+
+
+
+
 
 
 

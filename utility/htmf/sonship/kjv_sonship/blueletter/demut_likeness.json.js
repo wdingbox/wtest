@@ -1,3 +1,4 @@
+var demut_likeness=
 {
     "Gen 1:26 ": "And God said, Let us make man in our image, after our likeness: H1823 and let                 them have dominion over the fish of the sea, and over the fowl of the air, and over the cattle, and over                 all the earth, and over every creeping thing that creepeth upon the earth.",
     "Gen 5:1 ": "This is the book of the generations of Adam. In the day that God created man, in the                 likeness H1823 of God made he him;",
