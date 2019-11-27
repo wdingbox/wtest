@@ -16,8 +16,11 @@
 
     <scriptxx language="javascript" src="../../htmjs/jq/jquery.js"></scriptxx>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script language="javascript" src="../../htmjs/jq/table_Indexer.js"></script>
+    <script language="javascript" src="../../htmjs/jq/table_Indexer.js?v=1"></script>
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
+    <script src="../../../../bible_obj_lib/jsdb/cc/z2g/jianfan/Traditional2SimplifiedObj.json.js"></script>
+
+
     <!--------->
 
     <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePeopleFreq.json.js"></script>
@@ -37,8 +40,9 @@
 
         .divbox {
             width: 50px;
-            height: 15px;
+            height: 20px;
             overflow: hidden;
+            background-color:lightgreen;
         }
 
         .show {
@@ -94,6 +98,9 @@
                 trs += `<td>${i}</td>`;
                 ar.forEach(function (v, j) {
                     switch (j) {
+                        case 0:
+                            v = Tradition2Simplified(v);
+                            break;
                         case 1:
                             v = Camelize_Name(v);
                             break;
@@ -136,10 +143,14 @@
     </tbody></table>`;
 
             $("#out").html(stb).find("td").bind("click", function () {
-                var ht = $(this).find(".divbox").html();
-                $(".show").html(ht);
-                //$("#outx").val($(this).text());
-                $(".show").slideDown();
+                var el = $(this).find(".divbox");
+                if (el.length > 0) {
+                    var ht = $(el).html();
+                    $(".show").html(ht);
+                    //$("#outx").val($(this).text());
+                    $(".show").slideDown();
+                }
+
 
                 $(".hili").removeClass("hili");
                 $(this).addClass("hili");
