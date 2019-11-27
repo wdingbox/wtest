@@ -22,13 +22,44 @@
 
     <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePersonsInfo.json.js"></script>
 
+    <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePeopleInfo.json.js"></script>
 
     <style>
-        table{
+        table {
             border-collapse: collapse;
+            margin-top: 500px;
         }
-        th, .hili{
+
+        th,
+        .hili {
             background-color: darkgray;
+        }
+
+        div.co3,
+        div.co5,
+        div.co6,
+        div.co7,
+        div.co8,
+        div.co9 {
+            width: 50px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .show {
+            position: fixed;
+            top: 20px;
+            right: 10px;
+            background-color: darkseagreen;
+            width: 500px;
+            height: 500px;
+            overflow: scroll;
+        }
+
+        #menu {
+            position: fixed;
+            top: 2px;
+            right: 10px;
         }
     </style>
 
@@ -38,48 +69,84 @@
 
 
         $(function () {
-            gen_tab(BiblePersonsInfo);
+            gen_tab(BiblePeopleInfo);
             table_sort();
+            $("#toggler").click(function () {
+                $(".show").toggle();
+            });
+            $(".show").toggle();
         });
 
+        function Camelize_Name(str) {
+            str = str.replace("-", " ");
+            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+                return index == 0 ? word.toUpperCase() : word.toLowerCase();
+            }).replace(/\s+/g, '-');
+        }
 
-        function gen_tab(obj) {
+        function gen_tab(arr) {
             var trs = "";
-            var arr = Object.keys(obj);
-            arr.forEach(function (key) {
-                var ar = obj[key];
+            //var arr = Object.keys(obj);
+            arr.forEach(function (ar, i) {
+                //var ar = obj[key];
                 trs += "<tr>";
-                trs += `<td></td><td>${key}</td>`;
-                ar.forEach(function(v){
-                    trs += `<td>${v}</td>`;
+                trs += `<td>${i}</td>`;
+                ar.forEach(function (v, j) {
+                    if (1 == j) {
+                        v = Camelize_Name(v);
+                    }
+                    if (j > 2) {
+                        v = v.length + " " + v;
+                    }
+                    trs += `<td><div class='co${j}' title='co${j}'>${v}</div></td>`;
                 })
-                
+
                 trs += "</tr>";
             });
 
             var stb = `<table border='1'>
-    <caption><a href='https://www.taiwanbible.com/web/word/placeList.jsp?p=1'>Bible People Reference</a></caption> 
+    <caption><a href='https://www.taiwanbible.com/web/word/peopleList.jsp?p=1'>Bible People Reference</a></caption> 
     <thead>
     <tr>
         <th>#</th>
-        <th>NIV</th>
-        <th>和合本名字</th>   
-        <th>Frq</th>    
+        <th>中文名字</th>       
+        <th>英文名字</th>
+        <th title='查詢經文'>-</th>
+        <th title='代表經文'>代表</th>
+        <th title='Nave's Topical Bible'>-</th>
+        <th>ISBE</th>
+        <th>Easton</th>
+        <th>HBND</th>
+        <th>SDB</th>
     </tr>
     </thead>
     <tbody>
         ${trs}
     </tbody></table>`;
 
-            $("#out").html(stb).find("td").bind("click",function(){
-                $(this).toggleClass("hili");
+            $("#out").html(stb).find("td").bind("click", function () {
+                $(".hili").removeClass("hili");
+                $(this).addClass("hili");
+                $(".show").val($(this).text()).slideDown();
+                //$("#outx").val($(this).text());
             });
         }
     </script>
 </HEAD>
 
 <body>
-    <button id="indxer">indxer</button>
+
+    <div id="menu">
+        <button id="indxer">indxer</button>
+        <button id="toggler">toggleHide</button>
+    </div>
+
+    <textarea class="show">
+
+    </textarea>
+
+
+
     <div id="out">...</div>
 </body>
 
