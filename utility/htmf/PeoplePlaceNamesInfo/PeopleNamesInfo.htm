@@ -1,0 +1,81 @@
+<HTML>
+
+<HEAD>
+    <TITLE>bPerson</TITLE>
+    <base target="_blank" />
+    <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
+
+
+    <link rel="stylesheet" xhref="./BibleInputMethod.css">
+    </link>
+
+
+
+
+
+    <scriptxx language="javascript" src="../../htmjs/jq/jquery.js"></scriptxx>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script language="javascript" src="../../htmjs/jq/table_Indexer.js"></script>
+    <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
+    <!--------->
+
+    <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/CUVsen_PeopleZongYingDuiZhao.json.js"></script>
+
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        th, .hili{
+            background-color: darkgray;
+        }
+    </style>
+
+
+
+    <script language="javascript">
+
+
+        $(function () {
+            gen_tab(CUVsen_PeopleZongYingDuiZhao);
+            table_sort();
+        });
+
+
+        function gen_tab(obj) {
+            var trs = "";
+            var arr = Object.keys(obj);
+            arr.forEach(function (key) {
+                trs += "<tr>";
+                trs += `<td></td><td>${key}</td>`;
+                trs += `<td>${obj[key]}</td>`;
+                trs += "</tr>";
+            });
+
+            var stb = `<table border='1'>
+    <caption><a href='https://www.taiwanbible.com/web/word/placeList.jsp?p=1'>Bible People Reference</a></caption> 
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>NIV</th>
+        <th>和合本名字</th>       
+    </tr>
+    </thead>
+    <tbody>
+        ${trs}
+    </tbody></table>`;
+
+            $("#out").html(stb).find("td").bind("click",function(){
+                $(this).toggleClass("hili");
+            });
+        }
+    </script>
+</HEAD>
+
+<body>
+    <button id="indxer">indxer</button>
+    <div id="out">...</div>
+</body>
+
+</HTML>
