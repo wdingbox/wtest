@@ -23,6 +23,7 @@
 
     <script language="javascript" src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePersonsInfo.json.js"></script>
 
+    <script language="javascript" src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePeopleInfo.json.js"></script>
 
 
 
@@ -62,7 +63,7 @@
         $(document).ready(function () {
 
             var trs = load(NIV);
-            personNameFrq(BiblePersonsInfo,trs);
+            personNameFrq(BiblePeopleInfo,trs);
 
 
         });/////////////
@@ -105,6 +106,27 @@
             });
 
             $("#out").val(JSON.stringify(personObj,null,4));
+        }
+        function Camelize_Name(str) {
+            str = str.replace("-", " ");
+            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+                return index == 0 ? word.toUpperCase() : word.toLowerCase();
+            }).replace(/\s+/g, '-');
+        }
+        function personNameFrq(BiblePeopleInfoArr,trs){
+            //var arr=Object.keys(personObj);
+            BiblePeopleInfoArr.forEach(function(ar,i){
+                var key=Camelize_Name(ar[1]);
+                var reg = new RegExp(key+" ", "g");
+                var mat = trs.match(reg);
+                if(!mat){
+                    mat=[];
+                }
+                console.log(key, mat.length);
+                BiblePeopleInfoArr[i][2]=mat.length;
+            });
+
+            $("#out").val(JSON.stringify(BiblePeopleInfoArr,null,4));
         }
 
     </script>

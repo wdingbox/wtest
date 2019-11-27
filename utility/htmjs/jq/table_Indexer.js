@@ -3,7 +3,8 @@ function table_sort(tbid){
 		tbid="table";
 	}
     $(tbid).tablesorter({
-    //  theme: 'blue',
+	//  theme: 'blue',
+		sortInitialOrder: "desc",
         usNumberFormat : false,
         sortReset      : true,
         sortRestart    : true,  
