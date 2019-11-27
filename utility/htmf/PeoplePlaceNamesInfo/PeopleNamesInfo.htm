@@ -20,7 +20,7 @@
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
     <!--------->
 
-    <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/CUVsen_PeopleZongYingDuiZhao.json.js"></script>
+    <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePersonsInfo.json.js"></script>
 
 
     <style>
@@ -38,7 +38,7 @@
 
 
         $(function () {
-            gen_tab(CUVsen_PeopleZongYingDuiZhao);
+            gen_tab(BiblePersonsInfo);
             table_sort();
         });
 
@@ -47,9 +47,13 @@
             var trs = "";
             var arr = Object.keys(obj);
             arr.forEach(function (key) {
+                var ar = obj[key];
                 trs += "<tr>";
                 trs += `<td></td><td>${key}</td>`;
-                trs += `<td>${obj[key]}</td>`;
+                ar.forEach(function(v){
+                    trs += `<td>${v}</td>`;
+                })
+                
                 trs += "</tr>";
             });
 
