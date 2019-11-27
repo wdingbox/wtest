@@ -24,7 +24,7 @@
 
 
     <style>
-        th{
+        th, .hili{
             background-color: darkgray;
         }
     </style>
@@ -46,7 +46,7 @@
                 trs += "<tr>";
                 trs += `<td></td>`;
                 ar.forEach(function (v, j) {
-                    if(v.indexOf("http")==0){
+                    if (v.indexOf("http") == 0) {
                         v = `<a href=${v}>map</a>`;
                     }
                     trs += `<td>${v}</td>`;
@@ -73,12 +73,15 @@
         ${trs}
     </tbody></table>`;
 
-        $("#out").html(stb);
+            $("#out").html(stb).find("td").bind("click",function(){
+                $(this).toggleClass("hili");
+            });
         }
     </script>
 </HEAD>
 
 <body>
+    <button id="indxer">indxer</button>
     <div id="out">...</div>
 </body>
 
