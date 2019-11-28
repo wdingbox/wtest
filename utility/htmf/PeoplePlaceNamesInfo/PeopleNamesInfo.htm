@@ -33,16 +33,24 @@
             margin-top: 500px;
         }
 
-        th,
+        th {
+            background-color: gray;
+        }
+
         .hili {
-            background-color: darkgray;
+            background-color: grey;
+        }
+
+        .slt {
+            border-color: red;
+            border-width: 2px;
         }
 
         .divbox {
             width: 50px;
             height: 20px;
             overflow: hidden;
-            background-color: lightgreen;
+            color: blue;
         }
 
         .show {
@@ -115,10 +123,10 @@
                     }
                     var tit = "";
                     if ([3, 5, 6, 7, 8, 9].indexOf(j) >= 0) {
-                        tit = "co" + j + ":" + $(v).text().trim();
+                        tit = "idx" + j + ":" + $(v).text().trim();
                         v = v.length;
                     }
-                    trs += `<td><div ${class_divbox(j)} title='co${tit}'>${v}</div></td>`;
+                    trs += `<td><div ${class_divbox(j)} title='${tit}'>${v}</div></td>`;
                 });
                 trs += "</tr>";
             });
@@ -150,12 +158,11 @@
                     $(".show").html(ht);
                     //$("#outx").val($(this).text());
                     $(".show").slideDown();
+
+                    $(".slt").removeClass("slt");
+                    $(this).addClass("slt");
                 }
-
-
-                $(".hili").removeClass("hili");
-                $(this).addClass("hili");
-                console.log($(this).html());
+                $(this).toggleClass("hili");
             });
         };//////
     </script>
