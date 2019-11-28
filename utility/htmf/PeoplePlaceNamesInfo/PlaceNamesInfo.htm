@@ -18,6 +18,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script language="javascript" src="../../htmjs/jq/table_Indexer.js"></script>
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
+    <script src="../../../../bible_obj_lib/jsdb/cc/z2g/jianfan/Traditional2SimplifiedObj.json.js"></script>
+
     <!--------->
 
     <script src="../../../../bible_obj_lib/jsdb/PeoplePlaceName/BiblePlacesInfo.json.js"></script>
@@ -49,6 +51,7 @@
                 trs += "<tr>";
                 trs += `<td></td>`;
                 ar.forEach(function (v, j) {
+                    if(0===j) v=Tradition2Simplified(v);
                     if (v.indexOf("http") == 0) {
                         v = `<a href=${v}>map</a>`;
                     }

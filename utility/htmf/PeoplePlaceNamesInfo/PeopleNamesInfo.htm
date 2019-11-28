@@ -42,7 +42,7 @@
             width: 50px;
             height: 20px;
             overflow: hidden;
-            background-color:lightgreen;
+            background-color: lightgreen;
         }
 
         .show {
@@ -113,11 +113,12 @@
                         default:
                             break;
                     }
-                    var len = "";
+                    var tit = "";
                     if ([3, 5, 6, 7, 8, 9].indexOf(j) >= 0) {
-                        len = v.length + " ";
+                        tit = "co" + j + ":" + $(v).text().trim();
+                        v = v.length;
                     }
-                    trs += `<td><div ${class_divbox(j)} title='co${j}'>${len}${v}</div></td>`;
+                    trs += `<td><div ${class_divbox(j)} title='co${tit}'>${v}</div></td>`;
                 });
                 trs += "</tr>";
             });
@@ -145,7 +146,7 @@
             $("#out").html(stb).find("td").bind("click", function () {
                 var el = $(this).find(".divbox");
                 if (el.length > 0) {
-                    var ht = $(el).html();
+                    var ht = $(el).attr("title");
                     $(".show").html(ht);
                     //$("#outx").val($(this).text());
                     $(".show").slideDown();
