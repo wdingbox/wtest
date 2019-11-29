@@ -165,12 +165,25 @@
                 $(this).toggleClass("hili");
             });
         };//////
+
+
+        function replaceOrder() {
+            var out = {};
+            $("tbody tr").each(function () {
+                var chn = $(this).find("td:eq(1)").text();
+                var eng = $(this).find("td:eq(2)").text();
+                out[chn] = eng;
+            });
+            var sout = JSON.stringify(out,null,4);
+            $("#out").html(`<textarea>${sout}</textarea>`);
+        }
     </script>
 </HEAD>
 
 <body>
 
     <div id="menu">
+        <button onclick="replaceOrder();">replaceOrder</button>
         <button id="indxer">indxer</button>
         <button id="toggler">toggleHide</button>
     </div>
