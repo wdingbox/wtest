@@ -46,20 +46,20 @@
 
 
         $(function () {
-            gen_tab(CUVsen, CUVS, NIV);
+            gen_tab(CUVsen,null,null);//, CUVS, NIV);
             ////  gen_tab(CUVS, NIV);
         });
 
         function gen_tab(cuv, cuvs, niv) {
             var st = "<table border='1'>";
             var idx = 0;
-            Object.keys(niv).forEach(function (book) {
+            Object.keys(cuv).forEach(function (book) {
                 console.log(book);
-                Object.keys(niv[book]).forEach(function (chpt) {
-                    Object.keys(niv[book][chpt]).forEach(function (vrs, i) {
-                        var engtxt = niv[book][chpt][vrs];
+                Object.keys(cuv[book]).forEach(function (chpt) {
+                    Object.keys(cuv[book][chpt]).forEach(function (vrs, i) {
                         var chntxt = cuv[book][chpt][vrs];
-                        var chncus = cuvs[book][chpt][vrs];
+                        var engtxt = niv?niv[book][chpt][vrs]:"";
+                        var chncus = cuvs?cuvs[book][chpt][vrs]:"";
                         var bcv = idx+++"<br/>"+book+chpt+":"+vrs;
                         
                         st += `<tr><td>${bcv}<td><td>${chncus}<br>${chntxt}<br>${engtxt}</td></tr>`;
