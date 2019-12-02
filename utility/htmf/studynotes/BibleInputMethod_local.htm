@@ -288,6 +288,8 @@
                 var vol = $(this).text();
                 $(this).toggleClass("hili");
                 $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol));
+
+                Uti.Msg(vol+" : maxChap = "+Object.keys(_Max_struct[vol]).length);
                 update_digit_cap(tid);
             });
             update_digit_cap(tid);
