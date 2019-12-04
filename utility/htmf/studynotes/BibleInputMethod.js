@@ -114,6 +114,19 @@
             console.log(url + file);
         });
 
+        $("#crossReference").click(function () {
+            var vid = $(".vid.hili").text();
+            var ret = Uti.vcv_parser(vid);
+            var url = $(this).attr("ref");
+            if (!ret) return;
+
+            //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+            var bok = CNST.BlueLetterBibleCode[ret.vol];
+            var file = bok + " " + ret.chp + ":" + ret.vrs + "";
+            $(this).attr("href", url + file);
+            console.log(url + file);
+        });
+
 
         $("#Tab_cat caption").click(function () {
             $(".cat").removeClass("hili");
@@ -1175,17 +1188,22 @@ var BibleInputMenuContainer = `
                     </tr>
                     <tr>
                         <td>
-                            <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a></caption>
+                            <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a></caption>
+                            <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a></caption>
+                            <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
                         </td>
                     </tr>
                 </tbody>
@@ -1245,8 +1263,9 @@ CNST.FnameOfBibleObj =
         "NIV_Jw": "New International Version Jesus' Words",
         "STUS": "Studium Biblicum Version by Catholic,1968",
         "WLVS": "Wen Li Version. 文理和合本新約全書於1906年出版，新舊約全書於1919年出版.修訂新約後的新舊約全書，於1923年出版，至1934年印行最後一版, 原本分為官話、深文理、淺文理三種譯本，稱為「聖經唯一，譯本則三」。後來深淺文理合併為文理和合本 https://zh.wikisource.org/wiki/%E8%81%96%E7%B6%93_(%E5%92%8C%E5%90%88%E6%9C%AC) \n\nFor 1895 新約淺文理(包爾騰(John Shaw Burdon)、柏亨利(Henry Blodget)) https://bible.fhl.net/ob/nob.html?book=8 ",
+        "_CrossRef": "cross-references",
         "_bnotes": "personal biblical study notes",
-        "_crf": "cross-references",
+        "_crf": "self added cross-references",
         "_xrand": "personal extra random notes."
     };
 
