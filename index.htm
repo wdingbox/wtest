@@ -6,12 +6,13 @@
 	<base target="_blank" />
 	<style>
 		.hili {
-			background-color: blue;
+			background-color: grey;
 		}
 	</style>
 	<script>
 		$(function () {
 			$("a").bind("click", function () {
+				$(".hili").removeClass("hili");
 				$(this).toggleClass("hili");
 			});
 		});
