@@ -1,3 +1,7 @@
+function thousand_seperator(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function table_sort(tbid){
 	if(!tbid){
 		tbid="table";
