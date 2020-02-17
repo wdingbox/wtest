@@ -112,7 +112,7 @@
             var charFilter = $("#charFilter").val().trim();
             var cps = new ChinesePhraseStats(txt, CharGrpLen, charFilter);
             var ret=cps.gen_table();
-            ret.stat.freq={};
+           
             var etb = $(ret.stb).on("click", "td", function () {
                 $(this).toggleClass("hili");
             }).on("click", "caption", function () {
@@ -123,9 +123,13 @@
                     var frq = $(this).find("td:eq(3)").text();
                     sortedJsn[key] = frq;
                 });
-                ret.stat.freq=sortedJsn;
+
+                var oj={}
+                oj.status={generator:"frq_analyzer_chn.htm"}
+                oj.distributeFeature = ret.stat;
+                oj.sortedZiFrqObj=sortedJsn;
                 
-                $(this).find("textarea").val("var stat=\n"+JSON.stringify(ret.stat, null, 4));
+                $(this).find("textarea").val("var tmpObj=\n"+JSON.stringify(oj, null, 4));
             })
             $("#outview").append(etb);
             table_sorter();
