@@ -49,7 +49,7 @@
             calc_volSice(WLVS);
             console.log("garObj", garObj);
             var genfile = "file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/sonship/SonFreq.htm";
-            var colname = ["blueletter_frq", "blueletter_tot","blueletter_rat", "CUVS_frq", "CUVS_tot", "CUVS_rat","STUS_frq", "STUS_tot","STUS_rat", "WLVS_frq", "WLVS_tot","WLVS_rat"];
+            var colname = ["blueletter_frq", "blueletter_tot", "blueletter_rat", "CUVS_frq", "CUVS_tot", "CUVS_rat", "STUS_frq", "STUS_tot", "STUS_rat", "WLVS_frq", "WLVS_tot", "WLVS_rat"];
             var obj = { frfile: genfile, "colname": colname, StdVolmFrqAry: garObj };
             $("#out").val("var SonFrqNum_StdID=\n" + JSON.stringify(obj, null, 4));
 
@@ -75,6 +75,7 @@
     function create_frqar_ob() {
         var BibleVolSize_CUVS = Object.keys(CUVS);
         var garObj = {};
+        BibleVolSize_CUVS.push("tot");
         BibleVolSize_CUVS.forEach(function (volid) {
             garObj[volid] = new Array(3);
             garObj[volid].fill(0);
@@ -105,26 +106,37 @@
             })
         });
 
+        var totzi = 0, totlen = 0;
         Object.keys(CUVS).forEach(function (vid) {
             garObj[vid].push(ziObj[vid]);
             garObj[vid].push(lenObj[vid]);
-            var rat = 10000* parseInt(ziObj[vid]) / parseInt(lenObj[vid]);
+            var rat = 10000 * parseInt(ziObj[vid]) / parseInt(lenObj[vid]);
             rat = rat.toFixed(4);
             garObj[vid].push(rat);
+            totzi += parseInt(ziObj[vid]);
+            totlen += parseInt(lenObj[vid]);
         });
+        garObj["tot"].push(totzi)
+        garObj["tot"].push(totlen);
+        var rat = 10000 * parseInt(totzi) / parseInt(totlen);
+        rat = rat.toFixed(4);
+        garObj["tot"].push(rat);
         //console.log(ziObj);
     }
 
     function calc_frqRate_SonFrq() {
 
+        var tot=0;
         Object.keys(SonFrq_BlueletterID).forEach(function (bluieID) {
             var len = SonFrq_BlueletterID[bluieID];
             var stdvID = ConstNameConvert.BlueLetterBibleCode[bluieID];
             garObj[stdvID][0] = len;
+            tot+= parseInt(len);
 
             //var tot = BibleVolSize_CUVS[stdvID];
             //frqRateObj[stdvID] = (10000 * len / tot).toFixed(4);
         });
+        garObj["tot"][0] = tot;
 
         //console.log("frqRateObj", frqRateObj)
     }
@@ -137,15 +149,15 @@
             str += `<tr><td>${i}</td><td>${volid}</td>`;
 
 
-            ar.forEach(function (frq,k) {
+            ar.forEach(function (frq, k) {
                 str += `<td>${frq}</td>`;
-                ths +=`<td>${obj.colname[k]}</td>`;
+                ths += `<td>${obj.colname[k]}</td>`;
             });
             str += "</tr>";
             ths += "</tr>";
         });
 
-        var stb=`<table border='1'><thead>${ths}</thead><tbody>${str}</tbody></table>`;
+        var stb = `<table border='1'><thead>${ths}</thead><tbody>${str}</tbody></table>`;
         $("body").append(stb);
         table_sort();
 
