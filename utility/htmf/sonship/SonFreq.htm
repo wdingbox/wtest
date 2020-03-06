@@ -41,6 +41,14 @@
         th {
             background-color: lightgray;
         }
+
+        .ot {
+            background-color: wheat;
+        }
+
+        .nt {
+            background-color: mistyrose;
+        }
     </style>
 
 
@@ -86,7 +94,9 @@
     function create_frqar_ob() {
         var BibleVolSize_CUVS = Object.keys(CUVS);
         var garObj = {};
-        BibleVolSize_CUVS.push("tot");
+        BibleVolSize_CUVS.push("OT");
+        BibleVolSize_CUVS.push("NT");
+        BibleVolSize_CUVS.push("Tot");
         BibleVolSize_CUVS.forEach(function (volid) {
             garObj[volid] = new Array(3);
             garObj[volid].fill(0);
@@ -118,7 +128,9 @@
         });
 
         var totzi = 0, totlen = 0;
-        Object.keys(CUVS).forEach(function (vid) {
+        var ntzi = 0, ntlen = 0;
+        var otzi = 0, otlen = 0;
+        Object.keys(CUVS).forEach(function (vid, i) {
             garObj[vid].push(ziObj[vid]);
             garObj[vid].push(lenObj[vid]);
             var rat = 10000 * parseInt(ziObj[vid]) / parseInt(lenObj[vid]);//myria = 10,000
@@ -126,53 +138,77 @@
             garObj[vid].push(rat);
             totzi += parseInt(ziObj[vid]);
             totlen += parseInt(lenObj[vid]);
+            if (i < 39) {
+                otzi += parseInt(ziObj[vid]);
+                otlen += parseInt(lenObj[vid]);
+            } else {
+                ntzi += parseInt(ziObj[vid]);
+                ntlen += parseInt(lenObj[vid]);
+            }
         });
-        garObj["tot"].push(totzi)
-        garObj["tot"].push(totlen);
-        var rat = 10000 * parseInt(totzi) / parseInt(totlen);
-        rat = rat.toFixed(2);
-        garObj["tot"].push(rat);
+        function cal_total(skey, garObj, totzi, totlen) {
+            garObj[skey].push(totzi)
+            garObj[skey].push(totlen);
+            var rat = 10000 * parseInt(totzi) / parseInt(totlen);
+            rat = rat.toFixed(2);
+            garObj[skey].push(rat);
+        }
+        cal_total("OT", garObj, otzi, otlen);
+        cal_total("NT", garObj, ntzi, ntlen);
+        cal_total("Tot", garObj, totzi, totlen);
+
         //console.log(ziObj);
     }
 
     function calc_frqRate_SonFrq() {
 
-        var tot = 0;
+        var tot = 0, ot = nt = 0, iflag = 0;
         Object.keys(SonFrq_BlueletterID).forEach(function (bluieID) {
-            var len = SonFrq_BlueletterID[bluieID];
+            var len = parseInt(SonFrq_BlueletterID[bluieID]);
             var stdvID = ConstNameConvert.BlueLetterBibleCode[bluieID];
             garObj[stdvID][0] = len;
-            tot += parseInt(len);
+            tot += (len);
+            if ("Mat" === bluieID) iflag = 1;
+            if (0 === iflag) {
+                ot += len;
+            } else {
+                nt += len;
+            }
 
             //var tot = BibleVolSize_CUVS[stdvID];
             //frqRateObj[stdvID] = (10000 * len / tot).toFixed(4);
         });
-        garObj["tot"][0] = tot;
+        garObj["OT"][0] = ot;
+        garObj["NT"][0] = nt;
+        garObj["Tot"][0] = tot;
 
         //console.log("frqRateObj", frqRateObj)
     }
 
     function gen_tab(obj) {
         var str = "", ths = "", tfs = "";
-        var ignore=[1,2];
+        var ignore = [1, 2];
         Object.keys(obj.StdVolmFrqAry).forEach(function (volid, i) {
             var ar = obj.StdVolmFrqAry[volid];
             i++;
-            if (i === 67) {
-                tfs = `<tr><th></th><th>tot</th>`;
+            var cls = "ot";
+            if (i > 39) cls = "nt";
+            if (i >= 67) {
+                tfs += `<tr><th></th><th>${volid}</th>`;
                 ar.forEach(function (frq, k) {
-                    if(ignore.indexOf(k)>=0)return;
+                    if (ignore.indexOf(k) >= 0) return;
                     tfs += `<th>${frq}</th>`;
                 });
-                tfs+="</tr>";
+                tfs += "</tr>";
                 return;
             }
+
             ths = `<tr><th>#</th><th>name</th>`;
-            str += `<tr><td>${i}</td><td>${volid}</td>`;
+            str += `<tr class='${cls}'><td>${i}</td><td>${volid}</td>`;
 
 
             ar.forEach(function (frq, k) {
-                if(ignore.indexOf(k)>=0)return;
+                if (ignore.indexOf(k) >= 0) return;
                 str += `<td>${frq}</td>`;
                 ths += `<th>${obj.colname[k]}</th>`;
             });
@@ -180,9 +216,10 @@
             ths += "</tr>";
         });
 
-        var stb = `<table border='1' title="frq of son in bible."><thead>${ths}</thead><tbody>${str}</tbody><tfoot>${tfs}</tfoot></table>`;
+        var stb = `<table border='1' title="frq of son in bible."><thead>${ths}</thead><tbody>${str}</tbody><tfoot title='ot'>${tfs}</tfoot></table>`;
         $("body").append(stb);
         table_sort();
+        $("body").append(stb);
 
     }
 </script>
