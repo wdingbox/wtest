@@ -30,6 +30,17 @@
 
 
     <style>
+        tr xtd:nth-child(4),
+        tr xtd:nth-child(5),
+
+        tr xth:nth-child(4),
+        tr xth:nth-child(5) {
+            display: none;
+        }
+
+        th {
+            background-color: lightgray;
+        }
     </style>
 
 
@@ -49,7 +60,7 @@
             calc_volSice(WLVS);
             console.log("garObj", garObj);
             var genfile = "file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/sonship/SonFreq.htm";
-            var colname = ["blueletter_frq", "blueletter_tot", "blueletter_rat", "CUVS_frq", "CUVS_tot", "CUVS_rat", "STUS_frq", "STUS_tot", "STUS_rat", "WLVS_frq", "WLVS_tot", "WLVS_rat"];
+            var colname = ["HG<br>frq", "blueletter<br>tot", "blueletter<br>pm", "CUVS<br>frq", "CUVS<br>tot", "CUVS<br>pm", "STUS<br>frq", "STUS<br>tot", "STUS<br>pm", "WLVS<br>frq", "WLVS<br>tot", "WLVS<br>pm"];
             var obj = { frfile: genfile, "colname": colname, StdVolmFrqAry: garObj };
             $("#out").val("var SonFrqNum_StdID=\n" + JSON.stringify(obj, null, 4));
 
@@ -110,8 +121,8 @@
         Object.keys(CUVS).forEach(function (vid) {
             garObj[vid].push(ziObj[vid]);
             garObj[vid].push(lenObj[vid]);
-            var rat = 10000 * parseInt(ziObj[vid]) / parseInt(lenObj[vid]);
-            rat = rat.toFixed(4);
+            var rat = 10000 * parseInt(ziObj[vid]) / parseInt(lenObj[vid]);//myria = 10,000
+            rat = rat.toFixed(2);
             garObj[vid].push(rat);
             totzi += parseInt(ziObj[vid]);
             totlen += parseInt(lenObj[vid]);
@@ -119,19 +130,19 @@
         garObj["tot"].push(totzi)
         garObj["tot"].push(totlen);
         var rat = 10000 * parseInt(totzi) / parseInt(totlen);
-        rat = rat.toFixed(4);
+        rat = rat.toFixed(2);
         garObj["tot"].push(rat);
         //console.log(ziObj);
     }
 
     function calc_frqRate_SonFrq() {
 
-        var tot=0;
+        var tot = 0;
         Object.keys(SonFrq_BlueletterID).forEach(function (bluieID) {
             var len = SonFrq_BlueletterID[bluieID];
             var stdvID = ConstNameConvert.BlueLetterBibleCode[bluieID];
             garObj[stdvID][0] = len;
-            tot+= parseInt(len);
+            tot += parseInt(len);
 
             //var tot = BibleVolSize_CUVS[stdvID];
             //frqRateObj[stdvID] = (10000 * len / tot).toFixed(4);
@@ -142,22 +153,34 @@
     }
 
     function gen_tab(obj) {
-        var str = "", ths = "";
+        var str = "", ths = "", tfs = "";
+        var ignore=[1,2];
         Object.keys(obj.StdVolmFrqAry).forEach(function (volid, i) {
             var ar = obj.StdVolmFrqAry[volid];
-            ths = `<tr><td>#</td><td>vol</td>`;
+            i++;
+            if (i === 67) {
+                tfs = `<tr><th></th><th>tot</th>`;
+                ar.forEach(function (frq, k) {
+                    if(ignore.indexOf(k)>=0)return;
+                    tfs += `<th>${frq}</th>`;
+                });
+                tfs+="</tr>";
+                return;
+            }
+            ths = `<tr><th>#</th><th>name</th>`;
             str += `<tr><td>${i}</td><td>${volid}</td>`;
 
 
             ar.forEach(function (frq, k) {
+                if(ignore.indexOf(k)>=0)return;
                 str += `<td>${frq}</td>`;
-                ths += `<td>${obj.colname[k]}</td>`;
+                ths += `<th>${obj.colname[k]}</th>`;
             });
             str += "</tr>";
             ths += "</tr>";
         });
 
-        var stb = `<table border='1'><thead>${ths}</thead><tbody>${str}</tbody></table>`;
+        var stb = `<table border='1' title="frq of son in bible."><thead>${ths}</thead><tbody>${str}</tbody><tfoot>${tfs}</tfoot></table>`;
         $("body").append(stb);
         table_sort();
 
