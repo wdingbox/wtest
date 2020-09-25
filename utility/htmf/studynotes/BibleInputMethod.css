@@ -198,14 +198,14 @@ body {
     #externalinkMenu{
         position: absolute;
         left: 30px;
-        background-color: darkslategrey;
+        background-color: rgb(246, 126, 7);
         z-index: 9999;
     }
     #externalinkMenu table tbody a{
         text-decoration: none;
     }
     #externalinkMenu table tbody a:visited{
-        color: lightblue;
+        color: rgb(241, 245, 247);
     }
 
     #oBible {
