@@ -8,20 +8,20 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" href="./BibleInputMethod.css">
+    <link rel="stylesheet" href="./BibleInputMethod.css?v=1">
     </link>
 
 
     <script>
-        var gStartDate = new Date();
-        console.log(gStartDate.toString() + " ------ start load");//
+        var gStartDate = (new Date()).getTime();
     </script>
 
 
- 
+
     <script xxxxxxxxsrc="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
     <script language="javascript" src="../../htmjs/jq/jquery.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!---------->
     <script language="javascript" src="../../htmjs/jq/table_Indexer.js"></script>
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
     <!--------->
@@ -34,18 +34,19 @@
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/CUVpy.json.js"></script>
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
+
     <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleStruct/_Max.json.js"></script>
-    <script language="javascript" xxxxsrc="https://github.com/wdingbox/bible_obj_lib/blob/master/jsdb/jsBibleStruct/_Max.json.js"></script>
+
     <!---------->
-    <script language="javascript" src="./BibleInputMethod.js"></script>
-    <!---------->
+    <script language="javascript" src="./BibleInputMethod.js?v=1"></script>
+    <!------ api ---->
     <script src_test="http://localhost:7778/Jsonpster/" src="http://104.188.182.128:7778/Jsonpster/"></script>
 
 
 
 
     <script>
-        console.log((new Date()).toString());//
+        console.log("loadingTime(ms):", (new Date()).getTime() - gStartDate);//
     </script>
     <style>
     </style>

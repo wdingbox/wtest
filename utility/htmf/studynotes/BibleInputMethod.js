@@ -19,6 +19,10 @@ BibleInputMenu.prototype.init = function () {
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
+    $("#externalinkMenu").draggable()
+    $("#externalinkMenu").bind("click",function(){
+        $("#externalinkMenu").hide()
+    })
 
     this.Gen_Keys_Menu();
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
@@ -420,11 +424,19 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
     Uti.Msg("tot=" + tb.size);
     $("#oBible").html(tb.htm);
     table_sort("#BibOut");
-    $("#oBible").find(".vid").bind("click", function () {
+    $("#oBible").find("td.vid").bind("click", function () {
         var _This = this;
         $(".vid.hili").removeClass("hili");
         $(_This).toggleClass("hili");
+        var bcr = $(this)[0].getBoundingClientRect();
+        console.log(bcr)
+        var y = bcr.y + window.scrollY - $("#externalinkMenu").height()
+        $("#externalinkMenu").css('top', y).show();
+        //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
+
         var vid = $(this).text();
+        $("#externalinkMenu").find("caption").text(vid).focus()
+
         var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
         var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
         Jsonpster.Run(prm, function (ret) {
@@ -1061,6 +1073,7 @@ var BibleInputMenuContainer = `
                 <thead id=""></thead>
                 <tbody id=""></tbody>
             </table>
+
             <table id="Tab_bkn" border="1" style="float:left;">
                 <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
                 <thead id=""></thead>
@@ -1079,7 +1092,6 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
-
             <table id="Tab_vol" border="1" style="float:left;">
                 <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
                 <thead id=""></thead>
@@ -1174,41 +1186,6 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
 
-            <table id='refslist' border="1" align="left">
-                <!--thead><th>#</th><th>vcv</th><th>refs</th></thead--->
-                <tbody>
-                    <tr>
-                        <td>
-                            <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletter</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
             <div id="othersx">
         <button id="oBible_indxer">indxer</button>
@@ -1237,8 +1214,48 @@ var BibleInputMenuContainer = `
 </div>
 <hr />
 <button id="menuToggler" onclick="$('#menuContainer').slideToggle();">-</button>
-<div id='oBible'>----</div>
 
+
+<div id="externalinkMenu">
+    <table id='refslist' border="1" align="left">
+    <caption>ext link</caption>
+    <tbody>
+        <tr>
+            <td>
+                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletter</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+
+
+<div id='oBible'>----</div>
         `;//////backtick for multiple lines. 
 
 function txFontsizeIncrs(n) {

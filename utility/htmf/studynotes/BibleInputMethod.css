@@ -195,6 +195,18 @@ body {
         border:1px solid blue
     }
 
+    #externalinkMenu{
+        position: absolute;
+        left: 30px;
+        background-color: darkslategrey;
+        z-index: 9999;
+    }
+    #externalinkMenu table tbody a{
+        text-decoration: none;
+    }
+    #externalinkMenu table tbody a:visited{
+        color: lightblue;
+    }
 
     #oBible {
         margin-top: 500px;
@@ -217,7 +229,7 @@ body {
         color:red;
     }
 td.vid{
-    font-size:8px
+    font-size:10px
 }
 /***** customed checkbox ****/
 input[type='checkbox'] {
