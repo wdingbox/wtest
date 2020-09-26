@@ -244,7 +244,8 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
     $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
     $(tid).html(trs).find(".v3").bind("click", function () {
         var vol = $(this).text();
-        $(this).toggleClass("hili");
+        $(".v3.hili").removeClass("hili");
+        $(this).addClass("hili");
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol));
 
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length);
