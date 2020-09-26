@@ -13,7 +13,7 @@ var Ext_Link_Menu = {
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             var blbvol = CNST.BlueLetterBibleCode[ret.vol];
             var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
             $(this).attr("href", url + file);
@@ -23,7 +23,7 @@ var Ext_Link_Menu = {
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             var volm = ret._vol;
             var bkidx = CNST.BookID2IdxCode[volm];
             var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
@@ -34,7 +34,7 @@ var Ext_Link_Menu = {
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             var vol2 = CNST.BibVolName[ret.vol][0];
             var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
             $(this).attr("href", url + file);
@@ -44,45 +44,100 @@ var Ext_Link_Menu = {
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             //https://www.studylight.org/commentary/john/1-1.html
             var vol2 = CNST.BibVolName_Studylight([ret.vol]);
             var file = vol2 + "/" + ret.chp + "-" + ret.vrs + ".html";
             $(this).attr("href", url + file);
             console.log(url + file);
         });
-    
+
         $("#ccel_org").click(function () {
             var vid = $(".vid.vmark").text();
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             //http://www.ccel.org/study/1_Samuel%202:11-4:18 
             var bok = CNST.BibVolName_ccel([ret.vol]);
             var file = bok + " " + ret.chp + ":" + ret.vrs + ".html";
             $(this).attr("href", url + file);
             console.log(url + file);
         });
-    
+
         $("#crossReference").click(function () {
             var vid = $(".vid.vmark").text();
             var ret = Uti.vcv_parser(vid);
             var url = $(this).attr("ref");
             if (!ret) return;
-    
+
             //http://www.ccel.org/study/1_Samuel%202:11-4:18 
             var bok = CNST.BlueLetterBibleCode[ret.vol];
             var file = bok + " " + ret.chp + ":" + ret.vrs + "";
             $(this).attr("href", url + file);
             console.log(url + file);
         });
-    
+
     }
 }
 
 
+function SingleInputKeyMethod(tbody) {
+    if (!tbody) {
+        tbody = "#Tab_BibleSingleInputKey tbody"
+    }
+    this.m_tbody = tbody
+}
+SingleInputKeyMethod.prototype.gen_menu = function (cbf) {
+    var ks = this.get_cha_arr_after_str("", _Max_struct);
 
+    var s = "<tr id='vitr'>";
+    var _This = this;
+    $.each(ks, function (i, c) {
+        var volarr = _This.Get_Vol_Arr_from_KeyChar(c, _Max_struct);
+        var ssb = "<sub>" + volarr.length + "</sub>";
+        if (volarr.length === 1) ssb = "";
+        c = c + ssb;
+        s += "<th><div class='vin'>" + c + "</div></th>";
+        if (9 == i) s += "</tr><tr>";
+    });
+    s += "</td></tr>";
+
+    $(this.m_tbody).html(s).find(".vin").bind("click", function () {
+        $(".vin").removeClass("hili");
+        $(this).addClass("hili");
+        var ch = $(this).text();
+        var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
+        if (!cbf) return console.error("cbf is null")
+        cbf(volarr)
+    });
+    return ks;
+}
+SingleInputKeyMethod.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
+    if (!BibleObjStruct) return [];
+    var ret = {};
+    Object.keys(BibleObjStruct).forEach(function (v) {
+        if (v.indexOf(str) == 0) {
+            var idx = str.length;
+            if (v.length > idx) {
+                var ch = v[idx];
+                if (!ret[ch]) ret[ch] = 0;
+                ret[ch]++;
+            }
+        }
+    });
+    var ks = Object.keys(ret).sort();
+    return ks;
+}
+SingleInputKeyMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
+    var arr = [];
+    Object.keys(BibleObjStruct).forEach(function (vol) {
+        if (vol.indexOf(ch) == 0) {
+            arr.push(vol);
+        };
+    });
+    return arr;
+}
 
 
 
@@ -97,13 +152,18 @@ BibleInputMenu.prototype.init = function () {
         $("#externalinkMenu").hide()
     })
 
-    this.Gen_Keys_Menu();
+    //this.Gen_Keys_Menu();
+    var _This = this
+    var sikm = new SingleInputKeyMethod()
+    sikm.gen_menu(function (volary) {
+        _This.Gen_Vol_Table("#Tab_vol tbody", volary)
+    })
+
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
     this.Gen_Cat_Table();
     this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
     this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
 
-    var _This = this;
 
 
 
@@ -160,31 +220,7 @@ BibleInputMenu.prototype.init = function () {
 
     Ext_Link_Menu.setup_links()
 };
-BibleInputMenu.prototype.Gen_Keys_Menu = function () {
-    var ks = Uti.get_cha_arr_after_str("", _Max_struct);
 
-    var s = "<tr id='vitr'>";
-    var _This = this;
-    $.each(ks, function (i, c) {
-        var volarr = Uti.Get_Vol_Arr_from_KeyChar(c, _Max_struct);
-        var ssb = "<sub>" + volarr.length + "</sub>";
-        if (volarr.length === 1) ssb = "";
-        c = c + ssb;
-        s += "<th><div class='vin'>" + c + "</div></th>";
-        if (9 == i) s += "</tr><tr>";
-    });
-    s += "</td></tr>";
-
-    $("#Tab_BibleSingleInputKey tbody").html(s).find(".vin").bind("click", function () {
-        $(".vin").removeClass("hili");
-        $(this).addClass("hili");
-        var ch = $(this).text();
-        var volarr = Uti.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
-        _This.Gen_Vol_Table("#Tab_vol tbody", volarr);
-
-    });
-    return ks;
-};
 
 BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknObj) {
     var str = "";
@@ -898,31 +934,8 @@ var Uti = {
         ret._vol = "_" + ret.vol;
         return ret;
     },
-    get_cha_arr_after_str: function (str, BibleObjStruct) {
-        if (!BibleObjStruct) return [];
-        var ret = {};
-        Object.keys(BibleObjStruct).forEach(function (v) {
-            if (v.indexOf(str) == 0) {
-                var idx = str.length;
-                if (v.length > idx) {
-                    var ch = v[idx];
-                    if (!ret[ch]) ret[ch] = 0;
-                    ret[ch]++;
-                }
-            }
-        });
-        var ks = Object.keys(ret).sort();
-        return ks;
-    },
-    Get_Vol_Arr_from_KeyChar: function (ch, BibleObjStruct) {
-        var arr = [];
-        Object.keys(BibleObjStruct).forEach(function (vol) {
-            if (vol.indexOf(ch) == 0) {
-                arr.push(vol);
-            };
-        });
-        return arr;
-    },
+
+
     Gen_Vom_trs: function (vol_arr) {
         var cls = " class='v3 hili' ";
         var trarr = [];
