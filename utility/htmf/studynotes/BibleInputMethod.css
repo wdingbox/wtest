@@ -207,6 +207,12 @@ body {
     #externalinkMenu table tbody a:visited{
         color: rgb(241, 245, 247);
     }
+    #externalinkMenu table{
+        caption-side: bottom;
+    }
+    .vmark{
+        background-color: rgb(246, 126, 8);
+    }
 
     #oBible {
         margin-top: 500px;
@@ -229,7 +235,7 @@ body {
         color:red;
     }
 td.vid{
-    font-size:10px
+    font-size:8px
 }
 /***** customed checkbox ****/
 input[type='checkbox'] {
