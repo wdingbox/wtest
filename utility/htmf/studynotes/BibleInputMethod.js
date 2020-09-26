@@ -141,6 +141,74 @@ SingleInputKeyMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObj
 
 
 
+
+function DigitNumberInputMenu(tbody){
+    if (!tbody) {
+        tbody = "#Tab_chp tbody"
+    }
+    this.m_tbody = tbody
+}
+DigitNumberInputMenu.prototype.Gen_Digit_Table = function(clsname){
+    function _td(num, clsname) {
+        var s = "<td><button class='digit " + clsname + "'>" + num + "</button></td>";
+        return s;
+    }
+    function gen_trs() {
+        var s = "", num = 1;
+        s += "<tr>" + _td(0, clsname);
+        s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
+        s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
+        s += "</tr>";
+        for (var i = 0; i < 3; i++) {
+            s += "<tr>";
+            for (var k = 0; k < 3; k++) {
+                s += _td(num++, clsname);
+            }
+            s += "</tr>";
+        };
+        return s;
+    };
+
+    var s = gen_trs();
+    var _This = this;
+    $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
+    $(this.m_tbody).find(".digit").bind("click", function () {
+        if (clsname === "chp_num") {
+            onclick_chp_digi(this);
+        } else {
+            onclick_rse_digi(this);
+        }
+    });
+    $(this.m_tbody).find(".clear").bind("click", function () {
+        var eTab = $(this).parentsUntil("table").parent();
+        var cap = eTab.find(".digiCap");
+        cap.text("*");
+        $(_This.m_tbody).find(".digit").attr("disabled", null);
+        //$(tid).find("button:contains('0')").attr("disabled", true);
+        reset_chp_num(eTab);
+        reset_rse_num(eTab);
+    });
+    $(this.m_tbody).find(".undo").bind("click", function () {
+        var eTab = $(this).parentsUntil("table").parent();
+        var cap = $(this).parentsUntil("table").parent().find(".digiCap");
+        var str = cap.text();
+        if (str.length == 1) {
+            $(_THIS.m_tbody).find(".clear").click();
+            return;
+        }
+        else {
+            str = str.substr(0, str.length - 1);
+            cap.text(str);
+        }
+        reset_chp_num(eTab);
+        reset_rse_num(eTab);
+    });
+    return;
+}
+
+
+
+
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
@@ -161,8 +229,14 @@ BibleInputMenu.prototype.init = function () {
 
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
     this.Gen_Cat_Table();
-    this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
-    this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
+    
+    //this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
+    //this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
+    var d1 = new DigitNumberInputMenu("#Tab_chp tbody");
+    var d2 = new DigitNumberInputMenu("#Tab_vrs tbody");
+    d1.Gen_Digit_Table("chp_num")
+    d2.Gen_Digit_Table("vrs_num")
+
 
 
 
@@ -290,63 +364,6 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
     update_digit_cap(tid);
 };
 
-BibleInputMenu.prototype.Gen_Digit_Table = function (tid, clsname, imaxNum) {
-    function _td(num, clsname) {
-        var s = "<td><button class='digit " + clsname + "'>" + num + "</button></td>";
-        return s;
-    }
-    function gen_trs() {
-        var s = "", num = 1;
-        s += "<tr>" + _td(0, clsname);
-        s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
-        s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
-        s += "</tr>";
-        for (var i = 0; i < 3; i++) {
-            s += "<tr>";
-            for (var k = 0; k < 3; k++) {
-                s += _td(num++, clsname);
-            }
-            s += "</tr>";
-        };
-        return s;
-    };
-
-    var s = gen_trs();
-    var _This = this;
-    $(tid).html(s).find("button:contains('0')").attr("disabled", true);
-    $(tid).find(".digit").bind("click", function () {
-        if (clsname === "chp_num") {
-            onclick_chp_digi(this);
-        } else {
-            onclick_rse_digi(this);
-        }
-    });
-    $(tid).find(".clear").bind("click", function () {
-        var eTab = $(this).parentsUntil("table").parent();
-        var cap = eTab.find(".digiCap");
-        cap.text("*");
-        $(tid).find(".digit").attr("disabled", null);
-        //$(tid).find("button:contains('0')").attr("disabled", true);
-        reset_chp_num(eTab);
-        reset_rse_num(eTab);
-    });
-    $(tid).find(".undo").bind("click", function () {
-        var eTab = $(this).parentsUntil("table").parent();
-        var cap = $(this).parentsUntil("table").parent().find(".digiCap");
-        var str = cap.text();
-        if (str.length == 1) {
-            $(tid).find(".clear").click();
-            return;
-        }
-        else {
-            str = str.substr(0, str.length - 1);
-            cap.text(str);
-        }
-        reset_chp_num(eTab);
-        reset_rse_num(eTab);
-    });
-    return;
-};
 
 
 BibleInputMenu.prototype.get_selected_bkn_fnamesArr = function () {
