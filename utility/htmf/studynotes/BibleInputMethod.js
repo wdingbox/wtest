@@ -476,7 +476,7 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
         $(this).addClass("hili");
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol));
 
-        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length);
+        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length +"\n\n\n");
         update_digit_cap(tid);
     });
     update_digit_cap(tid);
