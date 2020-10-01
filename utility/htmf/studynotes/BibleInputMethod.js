@@ -222,7 +222,7 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
             str = str.substr(0, str.length - 1);
             cap.text(str);
         }
-     
+
     });
     return;
 }
@@ -234,20 +234,18 @@ DigitNumberInputMenu.prototype.get_digiCap = function () {
     }
     return ichap
 }
+DigitNumberInputMenu.prototype.set_digiCap = function (i) {
+    $(this.m_tbody).parent().find(".digiCap").text(i)
+}
 DigitNumberInputMenu.prototype.on_Click_digit = function (cbf) {
     this.cbf_click_digit = cbf
 
     var _THIS = this
     $(this.m_tbody).find(".digit").bind("click", function () {
         var dici = $(this).text();
-
-        var eTab = $(this).parentsUntil("table").parent();
-
-        var eCap = eTab.find(".digiCap");
-
         var icap = _THIS.get_digiCap()
         var iupdateCap = icap * 10 + parseInt(dici);
-        eCap.text(iupdateCap);
+        _THIS.set_digiCap(iupdateCap);
 
         /////////////////////////////////////
         // prepare for next available digits.
@@ -275,6 +273,26 @@ DigitNumberInputMenu.prototype.reset_num = function () {
         }
     });
 }
+DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
+    if (null === i || 0 === i) {
+        onclick_chp_loadBible();
+        return;
+    }
+
+    if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
+    var vol = $(".v3.hili").text();
+    if (vol.length === 0) return alert("Fatal err vol=null");
+    var iMaxChap = 1 + Object.keys(_Max_struct[vol]).length;
+
+    var idigiCap = i + this.get_digiCap()
+    if (idigiCap <= 0) idigiCap = iMaxChap
+    if (idigiCap >= iMaxChap) iMaxChap = 1
+
+    this.set_digiCap(idigiCap);
+    this.reset_num()
+
+    onclick_chp_loadBible();
+}
 
 
 
@@ -301,8 +319,8 @@ DigitNumberInputMenu.prototype.reset_num = function () {
 
 
 
-
-
+var d1 = new DigitNumberInputMenu("#Tab_chp tbody");
+var d2 = new DigitNumberInputMenu("#Tab_vrs tbody");
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
@@ -326,8 +344,7 @@ BibleInputMenu.prototype.init = function () {
 
     //this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
     //this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
-    var d1 = new DigitNumberInputMenu("#Tab_chp tbody");
-    var d2 = new DigitNumberInputMenu("#Tab_vrs tbody");
+
     d1.Gen_Digit_Table("chp_num")
     d2.Gen_Digit_Table("vrs_num")
 
@@ -344,10 +361,10 @@ BibleInputMenu.prototype.init = function () {
         parmBook.vol = $(".v3.hili").text();
         parmBook.chp = d1.get_digiCap()
         var vrs = d2.get_digiCap()
-        var bkchvr = parmBook.vol+parmBook.chp + ":" + vrs
-        $(".vid").each(function(){
+        var bkchvr = parmBook.vol + parmBook.chp + ":" + vrs
+        $(".vid").each(function () {
             var txt = $(this).text()
-            if(txt === bkchvr){
+            if (txt === bkchvr) {
                 $(this)[0].scrollIntoViewIfNeeded()
                 $(this).addClass("hiliScroll2View");
             }
@@ -476,7 +493,7 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
         $(this).addClass("hili");
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol));
 
-        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length +"\n\n\n");
+        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
         update_digit_cap(tid);
     });
     update_digit_cap(tid);
@@ -756,35 +773,9 @@ function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
 function Set_BibleIpnut_UI(prm) {
     var s = "<tr><td class='v3 hili'>" + prm.vol + "</td></tr>";
     $("#Tab_vol tbody").html(s);
-    $("#chp_cap").text(prm.chp);
+    d1.set_digiCap(prm.chp);
 }
-function onclick_NextChp(i) {
-    if (null === i || 0 === i) {
-        onclick_chp_loadBible();
-        return;
-    }
 
-    if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
-    var vol = $(".v3.hili").text();
-    if (vol.length === 0) return alert("Fatal err vol=null");
-
-    var chp = $("#chp_cap").text();
-    if (chp === "*") {
-        if (1 === i) chp = 0;
-        if (-1 === i) {
-            chp = 1 + Object.keys(_Max_struct[vol]).length;
-        }
-    };
-    var ichp = parseInt(chp) + i;
-    if (ichp < 1 || ichp > 150) return alert(ichp + " ichp out of range.");
-
-    if (undefined == _Max_struct[vol]["" + ichp]) return alert(vol + " has no:" + ichp);
-    $("#chp_cap").text(ichp);
-
-    reset_chp_num($("#Tab_chp"));
-
-    onclick_chp_loadBible();
-}
 function onclick_chp_loadBible() {
     var parm = gBim.get_selected_vcv_parm();
     parm.vrs = "*";
@@ -1121,9 +1112,9 @@ var BibleInputMenuContainer = `
 
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
-                    <a onclick='onclick_NextChp(-1)'>chp-</a>
-                    <button class='digiCap' id='chp_cap' onclick='onclick_NextChp(0)' title='chapter'>*</button>
-                    <a onclick='onclick_NextChp(+1)'> + &nbsp; </a>
+                    <a onclick='d1.onclick_NextChp(-1)'>chp-</a>
+                    <button class='digiCap' id='chp_cap' onclick='d1.onclick_NextChp(0)' title='chapter'>*</button>
+                    <a onclick='d1.onclick_NextChp(+1)'> + &nbsp; </a>
                     </caption>
                 <thead id=""></thead>
                 <tbody id=''>
