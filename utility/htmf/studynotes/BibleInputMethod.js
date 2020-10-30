@@ -282,11 +282,14 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
     var vol = $(".v3.hili").text();
     if (vol.length === 0) return alert("Fatal err vol=null");
-    var iMaxChap = 1 + Object.keys(_Max_struct[vol]).length;
+    var iMaxChap =  Object.keys(_Max_struct[vol]).length;
 
     var idigiCap = i + this.get_digiCap()
-    if (idigiCap <= 0) idigiCap = iMaxChap
-    if (idigiCap >= iMaxChap) iMaxChap = 1
+    if (idigiCap <= 0) {
+        idigiCap = iMaxChap
+    } else if (idigiCap >= iMaxChap) {
+        iMaxChap = 1
+    }
 
     this.set_digiCap(idigiCap);
     this.reset_num()
