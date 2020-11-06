@@ -234,9 +234,7 @@ body {
     .ok{
         color:red;
     }
-td.vid{
-    font-size:10px
-}
+
 /***** customed checkbox ****/
 input[type='checkbox'] {
 	margin-top: -30px;
