@@ -11,15 +11,16 @@
     <script language="javascript" src="../../htmjs/jq/table_Indexer.js">
     </script>
     <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
     <script language="javascript" src="./frq_analyzer.cn.js"></script>
+    <script language="javascript" src="./frq_analyzer_english.js"></script>
 
 
     <!-- for niv loader -->
@@ -135,6 +136,12 @@
             table_sorter();
         }
 
+        function EngTxt2WordFreq(){
+            var txt = $("#inptxt").val();
+            var tab = engwdfrq.genTable(txt)
+            $("#outview").append(tab);
+            table_sorter();
+        }
     </script>
 
     <style>
@@ -156,6 +163,7 @@
     <div id='menu'>
         <select size='7'>
             <option value=''></option>
+            <option onclick='EngTxt2WordFreq()'>English_WordFreq</option>
             <option onclick='cn_frq(this);'>cnfrq</option>
             <option value='English_Words_NIV_dictionary_generating'>English_Words_NIV_dictionary_generating</option>
             <option value='Chinese_Chars'>Chinese Text 2 Htm</option>
