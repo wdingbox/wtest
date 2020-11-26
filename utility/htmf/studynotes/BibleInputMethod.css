@@ -119,6 +119,13 @@ body {
         background-color: rgb(24, 117, 117);
     }
 
+    #Tab_vol{
+        position: fixed;
+        left: 30px;
+        background-color: rgb(246, 126, 7);
+        z-index: 9999;
+    }
+    
     #Tab_vol thead,
     #Tab_cat thead,
     #Tab_bkn thead {
@@ -197,6 +204,8 @@ body {
         width: 30px;
         border:1px solid blue
     }
+
+
 
     #externalinkMenu{
         position: absolute;
@@ -326,4 +335,7 @@ input[title='NIV']:checked:after {
 }
 .NT{
     color:rgb(29, 29, 87);
+}
+.vinNum{
+    background-color: rgb(163, 17, 207);
 }
