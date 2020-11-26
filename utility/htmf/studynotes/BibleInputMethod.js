@@ -177,16 +177,17 @@ function DigitNumberInputMenu(tbody) {
 }
 DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     this.m_classname = clsname
+    this.m_displayId = clsname
     function _td(num, clsname) {
         var s = "<td><button class='digit " + clsname + "'>" + num + "</button></td>";
         return s;
     }
     function gen_trs() {
         var s = "", num = 1;
-        s += "<tr>"
-        s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
-        s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
-        s += "</tr>";
+        // s += "<tr>"
+        // s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
+        // s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
+        // s += "</tr>";
         s += "<tr>";
         for (var i = 1; i < 10; i++) {
             s += _td(num++, clsname);
@@ -199,33 +200,20 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     var s = gen_trs();
     $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
 
-
-    $(this.m_tbody).find(".clear").bind("click", function () {
-        var eTab = $(this).parentsUntil("table").parent();
-        var cap = eTab.find(".digiCap");
-        cap.text("*");
+    $(`#${this.m_displayId}`).bind("click", function () {
+        $(this).text("")
         $(_This.m_tbody).find(".digit").attr("disabled", null);
-        //$(tid).find("button:contains('0')").attr("disabled", true);
-        _This.reset_num();
-    });
-    $(this.m_tbody).find(".undo").bind("click", function () {
-        var eTab = $(this).parentsUntil("table").parent();
-        var cap = $(this).parentsUntil("table").parent().find(".digiCap");
-        var str = cap.text();
-        if (str.length == 1) {
-            $(_THIS.m_tbody).find(".clear").click();
-            return;
-        }
-        else {
-            str = str.substr(0, str.length - 1);
-            cap.text(str);
-        }
-
+        $(_This.m_tbody).find(".digit:contains('0')").attr("disabled", true);
+        $(this).next(".chapvrsnum").trigger("click")
     });
     return;
 }
+DigitNumberInputMenu.prototype.reset_digiCap = function () {
+    $(`#${this.m_displayId}`).trigger('click')
+}
 DigitNumberInputMenu.prototype.get_digiCap = function () {
-    var chap = $(this.m_tbody).parent().find(".digiCap").text()
+    var chap = $(`#${this.m_displayId}`).text()
+    //var chap = $(this.m_tbody).parent().find(".digiCap").text()
     var ichap = parseInt(chap)
     if (!Number.isInteger(ichap)) {
         ichap = 0;
@@ -233,7 +221,8 @@ DigitNumberInputMenu.prototype.get_digiCap = function () {
     return ichap
 }
 DigitNumberInputMenu.prototype.set_digiCap = function (i) {
-    $(this.m_tbody).parent().find(".digiCap").text(i)
+    $(`#${this.m_displayId}`).text(i)
+    //$(this.m_tbody).parent().find(".digiCap").text(i)
 }
 DigitNumberInputMenu.prototype.on_Click_digit = function (cbf) {
     this.cbf_click_digit = cbf
@@ -338,6 +327,8 @@ BibleInputMenu.prototype.init = function () {
     var sikm = new SingleInputKeyMethod()
     sikm.gen_menu(function (volary) {
         _This.Gen_Vol_Table("#Tab_vol tbody", volary)
+        d1.reset_digiCap()
+        d2.reset_digiCap()
     })
 
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
@@ -489,6 +480,8 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
     $("#vol_cap_sub").text("1");
     $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
     $(tid).html(trs).find(".v3").bind("click", function () {
+        d1.reset_digiCap()
+        d2.reset_digiCap()
         var vol = $(this).text();
         $(".v3.hili").removeClass("hili");
         $(this).addClass("hili");
@@ -1080,7 +1073,7 @@ var BibleInputMenuContainer = `
     <div id="BibInputMenuHolder">
         <div id="ID_BibleInputMenuContainer">
             <table border="1" id="Tab_BibleSingleInputKey">
-                <caption id="BibleInputCap">Bible Input Keys</caption>
+                <caption><a id="BibleInputCap">Bible Input Keys</a> <button class='chapvrsnum' id='chp_num'>*</button>:<button class='chapvrsnum' id='vrs_num'></button></caption>
                 <thead id=""></thead>
                 <tbody id=""></tbody>
             </table>
@@ -1088,11 +1081,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <table id='Tab_chp' border="1" style="float:;">
-                <caption>
-                    <a onclick='d1.onclick_NextChp(-1)'>chp-</a>
-                    <button class='digiCap' id='chp_cap' onclick='d1.onclick_NextChp(0)' title='chapter'>*</button>
-                    <a onclick='d1.onclick_NextChp(+1)'> + &nbsp; </a>
-                    </caption>
+                        
                 <thead id=""></thead>
                 <tbody id=''>
                     <tr>
@@ -1103,9 +1092,7 @@ var BibleInputMenuContainer = `
             <a style="float:;"></a>
 
             <table id="Tab_vrs" border="1" style="float;">
-                <caption>vrs <button class='digiCap' id='vrs_cap' title='verse'>*</button>
-                    <button id="loadVolChpVrs" onclick='onclick_load_BknVolChpVrs();' title='Load Bible'>.</button>
-                    </caption>
+                
                 <thead id=""></thead>
                 <tbody id="">
                     <tr>
