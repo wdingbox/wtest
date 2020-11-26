@@ -103,11 +103,14 @@ body {
     }
 
 
-    #Tab_chp {
+    #Tab_BibleSingleInputKey{
+        background-color: rgb(46, 12, 238);
+    }
+    #Tab_chp,#DigitOfChapter {
         background-color: green;
     }
 
-    #Tab_vrs {
+    #Tab_vrs, #DigitOfVerse {
         background-color: rgb(149, 97, 29);
     }
 

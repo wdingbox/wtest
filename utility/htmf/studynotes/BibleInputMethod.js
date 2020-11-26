@@ -171,28 +171,25 @@ SingleInputKeyMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObj
 
 function DigitNumberInputMenu(tbody) {
     if (!tbody) {
-        tbody = "#Tab_chp tbody"
+        tbody = "#DigitOfChapter"
     }
     this.m_tbody = tbody
 }
 DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     this.m_classname = clsname
     this.m_displayId = clsname
+    var digitype = clsname.substr(0,3)
     function _td(num, clsname) {
-        var s = "<td><button class='digit " + clsname + "'>" + num + "</button></td>";
+        var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
         return s;
     }
     function gen_trs() {
         var s = "", num = 1;
-        // s += "<tr>"
-        // s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
-        // s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
-        // s += "</tr>";
-        s += "<tr>";
+        s += `<tr>`;
         for (var i = 1; i < 10; i++) {
             s += _td(num++, clsname);
         };
-        s += _td(0, clsname) + "</tr>";
+        s += _td(0, clsname) + `</tr>`;
         return s;
     };
 
@@ -309,8 +306,8 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
 
 
 
-var d1 = new DigitNumberInputMenu("#Tab_chp tbody");
-var d2 = new DigitNumberInputMenu("#Tab_vrs tbody");
+var d1 = new DigitNumberInputMenu("#DigitOfChapter");
+var d2 = new DigitNumberInputMenu("#DigitOfVerse");
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
@@ -334,8 +331,7 @@ BibleInputMenu.prototype.init = function () {
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
     this.Gen_Cat_Table();
 
-    //this.Gen_Digit_Table("#Tab_chp tbody", "chp_num", 150);
-    //this.Gen_Digit_Table("#Tab_vrs tbody", "vrs_num", 176);
+
 
     d1.Gen_Digit_Table("chp_num")
     d2.Gen_Digit_Table("vrs_num")
@@ -1072,6 +1068,9 @@ var BibleInputMenuContainer = `
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
         <div id="ID_BibleInputMenuContainer">
+
+            <!----------------------------->
+
             <table border="1" id="Tab_BibleSingleInputKey">
                 <caption><a id="BibleInputCap">Bible Input Keys</a> <button class='chapvrsnum' id='chp_num'>*</button>:<button class='chapvrsnum' id='vrs_num'></button></caption>
                 <thead id=""></thead>
@@ -1080,22 +1079,14 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
 
-            <table id='Tab_chp' border="1" style="float:;">
+            <table id='Tab_chp'  style="float:;">
                         
                 <thead id=""></thead>
                 <tbody id=''>
-                    <tr>
+                    <tr id='DigitOfChapter'>
                         <td></td>
                     </tr>
-                </tbody>
-            </table>
-            <a style="float:;"></a>
-
-            <table id="Tab_vrs" border="1" style="float;">
-                
-                <thead id=""></thead>
-                <tbody id="">
-                    <tr>
+                    <tr id='DigitOfVerse'>
                         <td></td>
                     </tr>
                 </tbody>
