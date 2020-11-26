@@ -91,13 +91,13 @@ var Ext_Link_Menu = {
 
 
 
-function SingleInputKeyMethod(tbody) {
+function SingleKeyInputMethod(tbody) {
     if (!tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
 }
-SingleInputKeyMethod.prototype.gen_menu = function (cbf) {
+SingleKeyInputMethod.prototype.gen_menu = function (cbf) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
 
     var s = "<tr id='vitr'>";
@@ -122,7 +122,7 @@ SingleInputKeyMethod.prototype.gen_menu = function (cbf) {
     });
     return ks;
 }
-SingleInputKeyMethod.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
+SingleKeyInputMethod.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
     if (!BibleObjStruct) return [];
     var ret = {};
     Object.keys(BibleObjStruct).forEach(function (v) {
@@ -138,7 +138,7 @@ SingleInputKeyMethod.prototype.get_cha_arr_after_str = function (str, BibleObjSt
     var ks = Object.keys(ret).sort();
     return ks;
 }
-SingleInputKeyMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
+SingleKeyInputMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
     var arr = [];
     Object.keys(BibleObjStruct).forEach(function (vol) {
         if (vol.indexOf(ch) == 0) {
@@ -321,7 +321,7 @@ BibleInputMenu.prototype.init = function () {
 
     //this.Gen_Keys_Menu();
     var _This = this
-    var sikm = new SingleInputKeyMethod()
+    var sikm = new SingleKeyInputMethod()
     sikm.gen_menu(function (volary) {
         _This.Gen_Vol_Table("#Tab_vol tbody", volary)
         d1.reset_digiCap()
