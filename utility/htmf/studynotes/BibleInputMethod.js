@@ -91,13 +91,13 @@ var Ext_Link_Menu = {
 
 
 
-function SingleKeyInputMethod(tbody) {
+function SingleKeyInputMenu(tbody) {
     if (!tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
 }
-SingleKeyInputMethod.prototype.gen_menu = function (cbf) {
+SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
 
     var s = "<tr id='vitr'>";
@@ -122,7 +122,7 @@ SingleKeyInputMethod.prototype.gen_menu = function (cbf) {
     });
     return ks;
 }
-SingleKeyInputMethod.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
+SingleKeyInputMenu.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
     if (!BibleObjStruct) return [];
     var ret = {};
     Object.keys(BibleObjStruct).forEach(function (v) {
@@ -138,7 +138,7 @@ SingleKeyInputMethod.prototype.get_cha_arr_after_str = function (str, BibleObjSt
     var ks = Object.keys(ret).sort();
     return ks;
 }
-SingleKeyInputMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
+SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
     var arr = [];
     Object.keys(BibleObjStruct).forEach(function (vol) {
         if (vol.indexOf(ch) == 0) {
@@ -169,16 +169,16 @@ SingleKeyInputMethod.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObj
 
 
 
-function DigitNumberInputMenu(tbody) {
+function DigitNumberInputMenu(tbody, nextDigiMenu) {
     if (!tbody) {
         tbody = "#DigitOfChapter"
     }
     this.m_tbody = tbody
+    this.m_nextDigiMenu = nextDigiMenu
 }
 DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     this.m_classname = clsname
     this.m_displayId = clsname
-    var digitype = clsname.substr(0,3)
     function _td(num, clsname) {
         var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
         return s;
@@ -201,12 +201,17 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
         $(this).text("")
         $(_This.m_tbody).find(".digit").attr("disabled", null);
         $(_This.m_tbody).find(".digit:contains('0')").attr("disabled", true);
-        $(this).next(".chapvrsnum").trigger("click")
+        $(this).next(".chapvrsnum").text("")
+        if(_This.m_nextDigiMenu) _This.m_nextDigiMenu.reset_digiCap(false)
     });
     return;
 }
-DigitNumberInputMenu.prototype.reset_digiCap = function () {
-    $(`#${this.m_displayId}`).trigger('click')
+DigitNumberInputMenu.prototype.reset_digiCap = function (b) {
+    if(b){
+        $(`#${this.m_displayId}`).trigger('click')
+    }else{
+        $(this.m_tbody).find(".digit").attr("disabled", true);
+    }
 }
 DigitNumberInputMenu.prototype.get_digiCap = function () {
     var chap = $(`#${this.m_displayId}`).text()
@@ -234,6 +239,7 @@ DigitNumberInputMenu.prototype.on_Click_digit = function (cbf) {
         /////////////////////////////////////
         // prepare for next available digits.
         _THIS.reset_num()
+        if(_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_num()
     });
 }
 DigitNumberInputMenu.prototype.reset_num = function () {
@@ -306,8 +312,8 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
 
 
 
-var d1 = new DigitNumberInputMenu("#DigitOfChapter");
 var d2 = new DigitNumberInputMenu("#DigitOfVerse");
+var d1 = new DigitNumberInputMenu("#DigitOfChapter", d2);
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
@@ -321,11 +327,11 @@ BibleInputMenu.prototype.init = function () {
 
     //this.Gen_Keys_Menu();
     var _This = this
-    var sikm = new SingleKeyInputMethod()
+    var sikm = new SingleKeyInputMenu()
     sikm.gen_menu(function (volary) {
         _This.Gen_Vol_Table("#Tab_vol tbody", volary)
-        d1.reset_digiCap()
-        d2.reset_digiCap()
+        d1.reset_digiCap(true)
+        d2.reset_digiCap(false)
     })
 
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
@@ -476,8 +482,8 @@ BibleInputMenu.prototype.Gen_Vol_Table = function (tid, vol_arr) {
     $("#vol_cap_sub").text("1");
     $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
     $(tid).html(trs).find(".v3").bind("click", function () {
-        d1.reset_digiCap()
-        d2.reset_digiCap()
+        d1.reset_digiCap(true)
+        d2.reset_digiCap(false)
         var vol = $(this).text();
         $(".v3.hili").removeClass("hili");
         $(this).addClass("hili");
