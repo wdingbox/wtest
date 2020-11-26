@@ -183,17 +183,15 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     }
     function gen_trs() {
         var s = "", num = 1;
-        s += "<tr>" + _td(0, clsname);
+        s += "<tr>"
         s += "<th title='clear'><button title='clear' class='clear' >C</button></th>";
         s += "<th title='undo'><button title='clear'  class='undo' >&lt;</button></th>";
         s += "</tr>";
-        for (var i = 0; i < 3; i++) {
-            s += "<tr>";
-            for (var k = 0; k < 3; k++) {
-                s += _td(num++, clsname);
-            }
-            s += "</tr>";
+        s += "<tr>";
+        for (var i = 1; i < 10; i++) {
+            s += _td(num++, clsname);
         };
+        s += _td(0, clsname) + "</tr>";
         return s;
     };
 
@@ -282,7 +280,7 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
     var vol = $(".v3.hili").text();
     if (vol.length === 0) return alert("Fatal err vol=null");
-    var iMaxChap =  Object.keys(_Max_struct[vol]).length;
+    var iMaxChap = Object.keys(_Max_struct[vol]).length;
 
     var idigiCap = i + this.get_digiCap()
     if (idigiCap <= 0) {
@@ -1087,31 +1085,7 @@ var BibleInputMenuContainer = `
                 <tbody id=""></tbody>
             </table>
 
-            <table id="Tab_bkn" border="1" style="float:left;">
-                <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table border="1" style="float:left;" id="Tab_cat">
-                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table id="Tab_vol" border="1" style="float:left;">
-                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
-                <thead id=""></thead>
-                <tbody id=''>
-
-                </tbody>
-            </table>
+            <!----------------------------->
 
             <table id='Tab_chp' border="1" style="float:;">
                 <caption>
@@ -1139,6 +1113,35 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
+
+            <!----------------------------->
+
+            <table id="Tab_bkn" border="1" style="float:left;">
+                <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table border="1" style="float:left;" id="Tab_cat">
+                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="Tab_vol" border="1" style="float:left;">
+                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
+                <thead id=""></thead>
+                <tbody id=''>
+
+                </tbody>
+            </table>
+
             
 
 
