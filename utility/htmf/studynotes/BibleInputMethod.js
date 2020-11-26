@@ -141,9 +141,22 @@ SingleKeyInputMenu.prototype.get_cha_arr_after_str = function (str, BibleObjStru
 SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
     var arr = [];
     Object.keys(BibleObjStruct).forEach(function (vol) {
-        if (vol.indexOf(ch) == 0) {
+        if(['1','2','3'].indexOf(ch)>=0){
+            if (vol.indexOf(ch) === 0) {
+                arr.push(vol);
+            }
+            return arr
+        }
+
+        var firstChar = vol[0]
+        var flag = 0
+        if(['1','2','3'].indexOf(firstChar)>=0){
+            flag = 1
+        }
+
+        if (vol.indexOf(ch) === flag) {
             arr.push(vol);
-        };
+        }
     });
     return arr;
 }
@@ -202,14 +215,14 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
         $(_This.m_tbody).find(".digit").attr("disabled", null);
         $(_This.m_tbody).find(".digit:contains('0')").attr("disabled", true);
         $(this).next(".chapvrsnum").text("")
-        if(_This.m_nextDigiMenu) _This.m_nextDigiMenu.reset_digiCap(false)
+        if (_This.m_nextDigiMenu) _This.m_nextDigiMenu.reset_digiCap(false)
     });
     return;
 }
 DigitNumberInputMenu.prototype.reset_digiCap = function (b) {
-    if(b){
+    if (b) {
         $(`#${this.m_displayId}`).trigger('click')
-    }else{
+    } else {
         $(this.m_tbody).find(".digit").attr("disabled", true);
     }
 }
@@ -239,7 +252,7 @@ DigitNumberInputMenu.prototype.on_Click_digit = function (cbf) {
         /////////////////////////////////////
         // prepare for next available digits.
         _THIS.reset_num()
-        if(_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_num()
+        if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_num()
     });
 }
 DigitNumberInputMenu.prototype.reset_num = function () {
@@ -930,12 +943,12 @@ var Uti = {
 
 
     Gen_Vom_trs: function (vol_arr) {
-        var cls = " class='v3 hili' ";
         var trarr = [];
-        vol_arr.forEach(function (vol) {
+        vol_arr.forEach(function (vol, i) {
+            var hili = (0 === i) ? "hili" : ""
+            var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
             //<td align='right'>"+BibVolName[vol][0]+"</td>
             trarr.push("<tr><td" + cls + "title='" + CNST.BibVolNameEngChn(vol) + "'>" + vol + "</td></tr>");
-            cls = " class='v3' ";
         });
         return trarr.join("");
     },
@@ -1099,6 +1112,24 @@ var BibleInputMenuContainer = `
             </table>
 
             <!----------------------------->
+            <table id="Tab_vol" border="1" style="float:left;">
+                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
+                <thead id=""></thead>
+                <tbody id=''>
+
+                </tbody>
+            </table>
+
+
+            <table border="1" style="float:left;" id="Tab_cat">
+                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
+                <thead id=""></thead>
+                <tbody id=''>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
 
             <table id="Tab_bkn" border="1" style="float:left;">
                 <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
@@ -1109,23 +1140,6 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
-            <table border="1" style="float:left;" id="Tab_cat">
-                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table id="Tab_vol" border="1" style="float:left;">
-                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
-                <thead id=""></thead>
-                <tbody id=''>
-
-                </tbody>
-            </table>
-
             
 
 
@@ -1358,6 +1372,14 @@ CNST.BibVolName = {
 };
 CNST.BibVolNameEngChn = function (Vid) {
     return CNST.BibVolName[Vid][0] + " " + CNST.BibVolName[Vid][2];
+};
+CNST.BibVol_OTorNT = function (Vid) {
+    var ary = Object.keys(CNST.BibVolName)
+    var idx = ary.indexOf(Vid)
+    if (idx >= 38) {
+        return "NT"
+    }
+    return "OT";
 };
 CNST.BibVolName_Studylight = function (Vid) {
     return CNST.BibVolName[Vid][1];
