@@ -406,27 +406,7 @@ DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfLoadBible) {
 }
 
 DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
-    if (null === i || 0 === i) {
-        onclick_chp_loadBible();
-        return;
-    }
 
-    if ($(".v3.hili").length != 1) return Uti.Msg("vol.len!=1");
-    var vol = $(".v3.hili").text();
-    if (vol.length === 0) return alert("Fatal err vol=null");
-    var iMaxChap = Object.keys(_Max_struct[vol]).length;
-
-    var idigiCap = i + this.get_showupVal()
-    if (idigiCap <= 0) {
-        idigiCap = iMaxChap
-    } else if (idigiCap >= iMaxChap) {
-        iMaxChap = 1
-    }
-
-    this.set_showupVal(idigiCap);
-
-
-    onclick_chp_loadBible();
 }
 
 
@@ -1005,44 +985,6 @@ function onclick_BibleObj_search_str() {
     Uti.Msg(unicds);
 
 }
-
-function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
-    var vid = prm.vol + prm.chp + ":" + prm.vrs;
-    prm.vrs = "*";
-    prm.vol_arr = [prm.vol];
-    var bibOj = Uti.get_xOj(prm);
-    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
-    var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
-    console.log(inp);
-    var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    Jsonpster.Run(par, function (ret) {
-        apiCallback_Gen_clientBibleObj_table(ret);
-        Uti.scrollIntoViewIfNeeded_to_vid(vid);
-    });
-}
-function Set_BibleIpnut_UI(prm) {
-    var s = "<tr><td class='v3 hili'>" + prm.vol + "</td></tr>";
-    $("#Tab_vol tbody").html(s);
-    d1.set_showupVal(prm.chp);
-}
-
-function onclick_chp_loadBible() {
-    var parm = gBim.get_selected_vcv_parm();
-    parm.vrs = "*";
-    if (parm.vol_arr.length >= 66) {
-        if (!confirm("load the whole bible of 66?")) {
-            return;
-        }
-    }
-    var bibOj = Uti.get_xOj(parm);
-    console.log("Obj=", bibOj);
-    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
-    var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
-    var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    Uti.Msg(par);
-    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
-};
-
 function onclick_load_search_string_history(bSortByTime) {
     var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
     var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -1065,28 +1007,7 @@ function onclick_load_search_string_history(bSortByTime) {
 
 
 var Uti = {
-    validateBibleLoad: function (inp) {
-        if (null === inp.bibOj) {
-            //alert("bibOj=null");
-            return false;
-            if (confirm("load the whole Bible?")) {
-                inp.bibOj = {};
-            } else {
-                return false;
-            }
-        }
-        if (inp.fname.length === 0) {
-            alert("Please select a biblical BooK Name.");
-            return false;
-        }
-        var volArr = Object.keys(inp.bibOj);
-        if (volArr.length >= 66) {
-            var s = JSON.stringify(inp);
-            s += "\n\nLoad whole Bible vol=" + volArr.length + "\nContinue?";
-            return confirm(s);
-        }
-        return true;
-    },
+  
     validateSearch: function (inp) {
         if (!inp.Search.File) {
             alert("no searchFile");
@@ -1385,10 +1306,9 @@ var BibleInputMenuContainer = `
             <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
             
            
-            <button onclick="$('#searchResult').val('');" title='clearout txt'></button>
+            <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
             <br>
-            <textarea id="searchResult" cols="50"  value='search results...' title='load search history.'>
-                </textarea><br>
+            
 
             
 
@@ -1403,6 +1323,10 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
+
+
+            <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
+                </textarea><br>
 
         
             
