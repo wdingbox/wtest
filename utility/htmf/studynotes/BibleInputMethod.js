@@ -509,15 +509,15 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
 
     var _THIS = this
     $(this.m_tabid + " #loadhistory").bind("click", function () {
-        _THIS.onclick_load_vcv_history(1)
+        _THIS.onclick_load_vcv_history(true)
     })
     $(this.m_tabid + " #sort_history_by_vcvID").bind("click", function () {
-        _THIS.onclick_load_vcv_history(0)
+        _THIS.onclick_load_vcv_history(false)
     })
 }
 Tab_mark_bcv_history.prototype.addnew = function (vcv, tm) {
     this.m_vcvHistory[vcv] = (!tm) ? (new Date()).toISOString() : tm
-    this.update_tab()
+    this.update_tab(true)
 }
 Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
     var _THIS = this
@@ -530,12 +530,12 @@ Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
         ar.push(`<tr><td title='${tm}'>${vcv}</td></tr>`)
     });
 
-    ar.sort()
+    ar.reverse()
     return ar.join()
 }
-Tab_mark_bcv_history.prototype.update_tab = function () {
+Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     var _THIS = this
-    var trs = this.gen_trs_sort_by_time()
+    var trs = this.gen_trs_sort_by_time(bSortByTime)
     $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function () {
         var vcv = $(this).text()
         var par = Uti.vcv_parser(vcv)
@@ -557,7 +557,7 @@ Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime)
         //history
         console.log(ret);
         _THIS.read_history_to_Obj(ret);
-        _THIS.update_tab()
+        _THIS.update_tab(bSortByTime)
 
     });
 };///
@@ -590,7 +590,6 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
             });
         });
     });
-    return ops;
 }
 
 
@@ -1385,8 +1384,7 @@ var BibleInputMenuContainer = `
             <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
             <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
             
-            <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
-            <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='load history sort by str'>^</button>
+           
             <button onclick="$('#searchResult').val('');" title='clearout txt'></button>
             <br>
             <textarea id="searchResult" cols="50"  value='search results...' title='load search history.'>
