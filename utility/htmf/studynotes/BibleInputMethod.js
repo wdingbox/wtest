@@ -671,7 +671,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     console.log("RestApi:",RestApi)
-    console.log("loadpar",par)
+    console.log("loadpar:",par)
     Uti.Msg(par);
     Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
     setTimeout(function(){
