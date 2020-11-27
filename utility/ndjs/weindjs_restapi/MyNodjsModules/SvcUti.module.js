@@ -38,6 +38,9 @@ var SvcUti = {
             var inpObj = SvcUti.GetApiInputParamObj(req);
             var content = fs.readFileSync(inpObj.filename, "utf8");
             var idx = content.indexOf("{");
+            if(idx<0){
+                console.log("Invalid js file content.", content)
+            }
             var shead = content.substr(0, idx);
             console.log("shead==", shead);
             content = content.substring(idx);
