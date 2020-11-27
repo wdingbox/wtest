@@ -96,6 +96,7 @@ function SingleKeyInputMenu(tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
+    this.m_chp_vrs_clsnam = "chapvrsnum"
 }
 SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
@@ -116,6 +117,8 @@ SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
     $(this.m_tbody).html(s).find(".vin").bind("click", function () {
         $(".vin").removeClass("hili");
         $(this).addClass("hili");
+        $("."+_This.m_chp_vrs_clsnam).text("")
+
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
         if (!cbf) return console.error("cbf is null")
