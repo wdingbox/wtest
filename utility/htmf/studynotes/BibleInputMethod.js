@@ -783,6 +783,7 @@ BibleInputMenu.prototype.get_selected_load_parm = function () {
 /////////
 
 function OutputBibleTable() {
+    this.m_tbid = "#oBible"
 }
 OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     function editing_save(_This) {
@@ -830,9 +831,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
     var tb = Uti.gen_clientBibleObj_table(ret);
     Uti.Msg("tot=" + tb.size);
-    $("#oBible").html(tb.htm);
+    $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
-    $("#oBible").find("td.vid").bind("click", function () {
+    $(this.m_tbid).find("td.vid").bind("click", function () {
         var _This = this;
         $(".vid.vmark").removeClass("vmark");
         $(_This).toggleClass("vmark");
@@ -855,11 +856,11 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         });
     });
 
-    //$("#oBible").find(".tx").bind("focusout", editing_save);
-    $("#oBible").find(".tx").bind("keydown", function () {
+    //$(this.m_tbid).find(".tx").bind("focusout", editing_save);
+    $(this.m_tbid).find(".tx").bind("keydown", function () {
         $(this).addClass("edit_keydown");
     });
-    $("#oBible").find("[type=checkbox]").bind("click", function () {
+    $(this.m_tbid).find("[type=checkbox]").bind("click", function () {
         $(".ok").remove();
         var stit = $(this).attr("title");
         if (stit[0] != "_") { //"_bnotes") {
@@ -878,7 +879,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             editing_save($(this).next());
         }
     });
-    $("#oBible").find(".tx").bind("click", function () {
+    $(this.m_tbid).find(".tx").bind("click", function () {
         $(".ok").remove();
         $(this).toggleClass("hili2");
         var rsn = $(this).prev().attr("title");
@@ -902,7 +903,7 @@ OutputBibleTable.prototype.setFontSize = function (n) {
         document.m_tx_fontSize = 16;
     }
     document.m_tx_fontSize += n;
-    $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
+    $(this.m_tbid + " table .tx").css("font-size", document.m_tx_fontSize);
 }
 
 
@@ -1039,20 +1040,7 @@ var Uti = {
         //results = results.substr(0, 60);
         $("#searchResult").val(results);
     },
-    scrollIntoViewIfNeeded_to_vid(vid) {
-        //var vid = $(this).text().trim();
-        $(".vid.hiliScroll2View").removeClass("hiliScroll2View");
-        var bfind = false;
-        $("#oBible").find(".vid").each(function () {
-            var vid2 = $(this).text().trim();
-            if (vid === vid2) {
-                $(this)[0].scrollIntoViewIfNeeded();
-                $(this).addClass("hiliScroll2View");
-                bfind = true;
-            }
-        });
-        return bfind;
-    },
+ 
     read_history_to_opt: function (ret, bSortByTime) {
         var ops = [];
         $.each(ret, function (vol, chobj) {
