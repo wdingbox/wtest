@@ -809,7 +809,14 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
     });
     txFontsizeIncrs(0);
 }
-
+function txFontsizeIncrs(n) {
+    if (undefined === document.m_tx_fontSize) {
+        document.m_tx_fontSize = 16;
+    }
+    //var fsize=$("#oBible table .tx").css("font-size");
+    document.m_tx_fontSize += n;
+    $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
+}
 
 function onclick_regex_match_next(incrs) {
     var str = $("#sinput").val();
@@ -1383,14 +1390,7 @@ var BibleInputMenuContainer = `
 <div id='oBible'>----</div>
         `;//////backtick for multiple lines. 
 
-function txFontsizeIncrs(n) {
-    if (undefined === document.m_tx_fontSize) {
-        document.m_tx_fontSize = 16;
-    }
-    //var fsize=$("#oBible table .tx").css("font-size");
-    document.m_tx_fontSize += n;
-    $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
-}
+
 
 CNST.FnameOfBibleObj =
 {
