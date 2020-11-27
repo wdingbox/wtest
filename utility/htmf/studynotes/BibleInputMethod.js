@@ -245,7 +245,7 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
             _This.m_nextDigiMenu.set_digiCap("")
             _This.m_nextDigiMenu.disable_digiCap(true)
         } else {
-            _This.disable_digiCap(false)
+            _This.init_verse_digiKeys_by_vol()
             //$(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", false);
         }
     });
@@ -291,38 +291,36 @@ DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
 
 DigitNumberInputMenu.prototype.init_verse_digiKeys_by_vol = function () {
     var vol = $(this.m_volID).attr("volcode")
-    var chp = this.get_digiCap()
+    var chp = this.m_nextDigiMenu.get_digiCap()
+    var vrs = this.get_digiCap()
+
+    function _enable_key(vol, chp, vrs, dici) {
+        var vrs = (vrs * 10 + dici)
+        return (undefined === _Max_struct[vol][chp][vrs])
+    }
 
 
-    if (!vol) {
+    if (!vol || !chp) {
         $(this.m_tbody).find(".digit").attr("disabled", true);
         return
     }
-    var iMaxChap = Object.keys(_Max_struct[vol]).length;
-    if (0 === chp) {
-        if (iMaxChap >= 9) {
+    var iMaxVrs = Object.keys(_Max_struct[vol][chp]).length;
+    if (0 === vrs) {
+        if (iMaxVrs >= 9) {
             $(this.m_tbody).find(".digit").attr("disabled", false);
             $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
         } else {
             $(this.m_tbody).find(".digit").each(function () {
                 var dici = parseInt($(this).text());
-                var schp = (chp * 10 + dici)
-                if (undefined === _Max_struct[vol][schp]) {
-                    $(this).attr("disabled", true);
-                } else {
-                    $(this).attr("disabled", false);
-                }
+                var bret = _enable_key(vol, chp, vrs, dici)
+                $(this).attr("disabled", bret);
             });
         }
     } else {
         $(this.m_tbody).find(".digit").each(function () {
             var dici = parseInt($(this).text());
-            var schp = (chp * 10 + dici)
-            if (undefined === _Max_struct[vol][schp]) {
-                $(this).attr("disabled", true);
-            } else {
-                $(this).attr("disabled", false);
-            }
+            var bret = _enable_key(vol, chp, vrs, dici)
+            $(this).attr("disabled", bret);
         });
     }
 }
@@ -358,9 +356,9 @@ DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoa
 
         if (_THIS.isDigiChp()) {//Chp Digi Key
             _THIS.init_chap_digiKeys_by_vol()
-            _THIS.m_nextDigiMenu.disable_digiCap(false)
+            _THIS.m_nextDigiMenu.init_verse_digiKeys_by_vol()
         } else {
-            //_THIS.init_chap_digiKeys_by_vol()
+            _THIS.init_verse_digiKeys_by_vol()
         }
         cbfLoadBible()
     });
