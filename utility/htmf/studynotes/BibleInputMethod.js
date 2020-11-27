@@ -188,9 +188,54 @@ SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjSt
 
 
 
+function BookNamesListTable(tbody) {
+
+    this.m_tbid = tbody // "#Tab_bkn"
+}
+BookNamesListTable.prototype.gen_table = function (cbf) {
 
 
+}
 
+BookNamesListTable.prototype.Gen_BKN_Table = function (parm) {
+    var str = "";
+    var bknArr = Object.keys(CNST.FnameOfBibleObj);
+    $.each(bknArr, function (i, v) {
+        var hil = "";
+        if (i == 1) hil = "hili";
+        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+    });
+    $(this.m_tbid+" tbody").html(str).find(".cbkn").bind("click", function () {
+        //$(".cbkn").removeClass("hili");
+        $(this).toggleClass("hili");
+
+        $(".searchFile").removeClass("searchFile");
+        $(this).toggleClass("searchFile");
+
+        $("#searchFile").text($(this).text());
+
+        var name = $(this).text();
+        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
+
+        parm.onClick(name)
+    });
+}
+BookNamesListTable.prototype.get_selected_bkn_fnamesArr = function () {
+    var fnamesArr = [];
+    $(".cbkn.hili").each(function () {
+        var ss = $(this).text();
+        fnamesArr.push(ss);
+    });
+    if (fnamesArr.length == 0) {
+        alert("Err: no bookname selected.");
+    }
+    return fnamesArr;
+};///
+BookNamesListTable.prototype.get_selected_Search_Parm = function () {
+    var searchFileName = $(".cbkn.hili.searchFile").text();
+    var searchStrn = $("#sinput").val();
+    return { File: searchFileName, Strn: searchStrn };
+};///
 
 
 
@@ -340,7 +385,7 @@ DigitNumberInputMenu.prototype.add_showupVal = function (i) {
     _THIS.set_showupVal(iupdateCap);
 }
 
-DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoadBible) {
+DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfLoadBible) {
     var _THIS = this
 
     $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
@@ -418,36 +463,36 @@ VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
 },
 
 
-VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
-    var tid = this.m_id;
+    VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
+        var tid = this.m_id;
 
-    var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    $(tid).css('top', y).css('left', bcr.x).show()
+        var bcr = $("#menuContainer")[0].getBoundingClientRect();
+        $(tid).css('top', y).css('left', bcr.x).show()
 
-    
-    var trs = this.Gen_Vol_trs(vol_arr);
-    //$("#vol_cap_sub").text("");
-    $("#vol_capx").text(cap);
-    
-    
-    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
-    tid += " tbody"
-    $(tid).html(trs).find(".v3").bind("click", function () {
 
-        $(".v3.hili").removeClass("hili");
-        $(this).addClass("hili");
+        var trs = this.Gen_Vol_trs(vol_arr);
+        //$("#vol_cap_sub").text("");
+        $("#vol_capx").text(cap);
 
-        var vol = $(this).text();
-        $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
-        d1.init_chap_digiKeys_by_vol()
-        d2.disable_all_digiKey(true)
+        //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+        tid += " tbody"
+        $(tid).html(trs).find(".v3").bind("click", function () {
 
-        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+            $(".v3.hili").removeClass("hili");
+            $(this).addClass("hili");
+
+            var vol = $(this).text();
+            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+
+            d1.init_chap_digiKeys_by_vol()
+            d2.disable_all_digiKey(true)
+
+            Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+            //update_digit_cap(tid);
+        });
         //update_digit_cap(tid);
-    });
-    //update_digit_cap(tid);
-};
+    };
 
 
 
@@ -471,6 +516,8 @@ d1.set_Neightbor(d2)
 d2.set_Neightbor(d1)
 
 var tabsel = new VolumesMiniSelectTable("#Tab_vol")
+var bkntab = new BookNamesListTable("#Tab_bkn")
+
 
 var BibleInputMenu = function () {
 }
@@ -496,20 +543,19 @@ BibleInputMenu.prototype.init = function () {
         d2.disable_all_digiKey(true)
     })
 
-    this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
+    bkntab.Gen_BKN_Table({onClick:function(){
+        _This.loadBible();
+    }});
+
     this.Gen_Cat_Table();
 
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
 
     d1.on_Click_digitKey(function () {
-        return _This.get_selected_vcv_parm()
-    }, function () {
         _This.loadBible();
     })
     d2.on_Click_digitKey(function () {
-        return _This.get_selected_vcv_parm()
-    }, function () {
         //onclick_chp_loadBible();
         var parmBook = _This.get_selected_vcv_parm()
         var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
@@ -572,27 +618,6 @@ BibleInputMenu.prototype.init = function () {
 };
 
 
-BibleInputMenu.prototype.Gen_BKN_Table = function gen_BKN_Table(tid, bknObj) {
-    var str = "";
-    var bknArr = Object.keys(bknObj);
-    $.each(bknArr, function (i, v) {
-        var hil = "";
-        if (i == 1) hil = "hili";
-        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
-    });
-    $(tid).html(str).find(".cbkn").bind("click", function () {
-        //$(".cbkn").removeClass("hili");
-        $(this).toggleClass("hili");
-
-        $(".searchFile").removeClass("searchFile");
-        $(this).toggleClass("searchFile");
-
-        $("#searchFile").text($(this).text());
-
-        var name = $(this).text();
-        Uti.Msg(name + " : " + bknObj[name]);
-    });
-}
 BibleInputMenu.prototype.Gen_Cat_Table = function () {
     var _This = this;
     var s = "";
@@ -603,7 +628,7 @@ BibleInputMenu.prototype.Gen_Cat_Table = function () {
         $(".cat").removeClass("hili");
         var scat = $(this).addClass("hili").text();
         if (document.m_current_cat === scat) {
-            
+
         } else {
             //document.m_current_cat = scat;
             var vol_arr = CNST.Cat2VolArr[scat];
@@ -615,22 +640,8 @@ BibleInputMenu.prototype.Gen_Cat_Table = function () {
 
 
 
-BibleInputMenu.prototype.get_selected_bkn_fnamesArr = function () {
-    var fnamesArr = [];
-    $(".cbkn.hili").each(function () {
-        var ss = $(this).text();
-        fnamesArr.push(ss);
-    });
-    if (fnamesArr.length == 0) {
-        alert("Err: no bookname selected.");
-    }
-    return fnamesArr;
-};///
-BibleInputMenu.prototype.get_selected_Search_Parm = function () {
-    var searchFileName = $(".cbkn.hili.searchFile").text();
-    var searchStrn = $("#sinput").val();
-    return { File: searchFileName, Strn: searchStrn };
-};///
+
+
 BibleInputMenu.prototype.get_selected_vcv_parm = function () {
     var vol = $("#BibleInputCap").attr("volcode");
     var chp = $("#chp_num").text();
@@ -645,23 +656,26 @@ BibleInputMenu.prototype.get_selected_vcv_bibOj = function () {
     ob[parm.vol] = {}
     ob[parm.vol][parm.chp] = {}
     if (parm.vrs) {
-        ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
+        //ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
     }
     return ob;
 };
 BibleInputMenu.prototype.loadBible = function () {
     var bibOj = this.get_selected_vcv_bibOj();
     console.log("Obj=", bibOj);
-    var fnamesArr = gBim.get_selected_bkn_fnamesArr();
+    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     Uti.Msg(par);
-    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+    console.log("loadpar",par)
+    setTimeout(function(){
+        Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+    },10)
     return bibOj;
 };///
 BibleInputMenu.prototype.get_selected_load_parm = function () {
     //
-    var fnamesArr = this.get_selected_bkn_fnamesArr();
+    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var vcvpar = this.get_selected_vcv_parm();
     var bibOj = Uti.get_xOj(vcvpar);
     var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
@@ -849,7 +863,7 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     var inp = gBim.get_selected_load_parm();
-    inp.Search = gBim.get_selected_Search_Parm();
+    inp.Search = bkntab.get_selected_Search_Parm();
     if (!Uti.validateSearch(inp)) return;
     console.log(inp);
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
@@ -875,7 +889,7 @@ function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
     prm.vrs = "*";
     prm.vol_arr = [prm.vol];
     var bibOj = Uti.get_xOj(prm);
-    var fnamesArr = gBim.get_selected_bkn_fnamesArr();
+    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: { File: "", Strn: "" } };
     console.log(inp);
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
@@ -900,7 +914,7 @@ function onclick_chp_loadBible() {
     }
     var bibOj = Uti.get_xOj(parm);
     console.log("Obj=", bibOj);
-    var fnamesArr = gBim.get_selected_bkn_fnamesArr();
+    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     Uti.Msg(par);
