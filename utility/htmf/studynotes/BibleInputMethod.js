@@ -341,27 +341,6 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam,
         cbfLoadBible()
     });
 }
-DigitNumberInputMenu.prototype.reset_num = function (vol) {
-    var _THIS = this
-    var parmBook = { vol: '', chp: '' }
-    if (!this.cbf_click_digit) return
-    parmBook = this.cbf_click_digit()
-
-    console.log("updateCap=", _THIS.m_classname, parmBook)
-
-
-    $(_THIS.m_tbody).find("." + _THIS.m_classname).attr("disabled", null);
-
-    var idigiCap = this.get_digiCap()
-    $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
-        var idn = parseInt($(this).text());
-        var inx = idigiCap * 10 + idn;
-        var obj = (!parmBook.chp) ? _Max_struct[parmBook.vol][inx] : _Max_struct[parmBook.vol][parmBook.chp][inx]
-        if (undefined === obj) {
-            $(this).attr("disabled", true);
-        }
-    });
-}
 DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     if (null === i || 0 === i) {
         onclick_chp_loadBible();
@@ -381,7 +360,7 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     }
 
     this.set_digiCap(idigiCap);
-    this.reset_num()
+ 
 
     onclick_chp_loadBible();
 }
