@@ -500,13 +500,48 @@ VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
 
 
 
+function Tab_mark_bcv_history(){
+    this.m_tabid = "#Tab_mark_bcv_history"
+    this.m_vcvHistory = {}
+}
+Tab_mark_bcv_history.prototype.onClickHistoryItem = function(onClickHistoryItm){
+    this.m_onClickHistoryItm = onClickHistoryItm
+}
+Tab_mark_bcv_history.prototype.addnew = function(vcv, par){
+    this.m_vcvHistory[vcv] = (new Date()).toISOString()
+    this.update_tab(par)
+}
+Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function(bSortByTime){
+    var _THIS =this
+    var ar=[]
+    Object.keys(this.m_vcvHistory).forEach(function(vcv,i){
+        var tm=""
+        if(bSortByTime){
+            tm = _THIS.m_vcvHistory[vcv]
+        }
+        ar.push(`<tr><td title='${tm}'>${vcv}</td></tr>`)
+    });
+
+    ar.sort()
+    return ar.join()
+}
+Tab_mark_bcv_history.prototype.update_tab = function(){
+    var _THIS =this
+    var trs = this.gen_trs_sort_by_time()
+    $(this.m_tabid +" tbody").html(trs).find("td").bind("click",function(){
+        var vcv = $(this).text()
+        var par = Uti.vcv_parser(vcv)
+        $("#BibleInputCap").attr("volcode",par.vol).text(par.vol)
+        $("#chp_num").text(par.chp)
+        $("#vrs_num").text(par.vrs)
+
+        if(_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm()
+    })
+}
 
 
 
-
-
-
-
+var markHistory = new Tab_mark_bcv_history()
 
 
 
@@ -557,6 +592,10 @@ BibleInputMenu.prototype.init = function () {
     })
     d2.on_Click_digitKey(function () {
         _This.scrollToView_Vrs()
+    })
+
+    markHistory.onClickHistoryItem(function(){
+        _This.loadBible_chp()
     })
 
 
@@ -673,7 +712,11 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     console.log("RestApi:",RestApi)
     console.log("loadpar:",par)
     Uti.Msg(par);
-    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+    Jsonpster.Run(par,function(ret){
+        apiCallback_Gen_clientBibleObj_table(ret, {onClickHistory:function(){
+            _THIS.loadBible_chp()
+        }})
+    });
     setTimeout(function(){
         _THIS.scrollToView_Vrs()
     },2100)
@@ -698,7 +741,7 @@ BibleInputMenu.prototype.get_selected_load_parm = function () {
 //////////
 //////////
 /////////
-function apiCallback_Gen_clientBibleObj_table(ret) {
+function apiCallback_Gen_clientBibleObj_table(ret, par) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
         var fil = $(_This).attr("title");
@@ -758,6 +801,8 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
 
         var vid = $(this).text();
         $("#externalinkMenu").find("caption").text(vid).focus()
+
+        markHistory.addnew(vid, par)
 
         var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
         var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -1269,6 +1314,26 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
+            
+            <table id="Tab_mark_bcv_history" border="1" style="float:left;">
+                <caption><a id='loads_buttons'>[v] 
+                        <a> 
+                        <a id='loads_buttons'>[^] 
+                        <a>
+                </caption>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Pleas click H button <br>for History.<br>
+                            <br>
+                            Pleas click ^ button <br>sort by str.<br>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
             
 
 
