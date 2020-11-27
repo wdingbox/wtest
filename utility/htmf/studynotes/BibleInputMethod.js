@@ -126,7 +126,7 @@ SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
         var x = bcr.x + $(this).width();// + window.scrollX;// - $("#externalinkMenu").width()
         // $("#externalinkMenu").css('top', y).show();
         if (!cbf) return console.error("cbf is null")
-        cbf(volarr, x, y)
+        cbf(ch, volarr, x, y)
     });
     return ks;
 }
@@ -391,12 +391,12 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
 
 function VolumesMiniSelectTable(tid) {
     this.m_id = tid; //"Tab_vol"
-
-    $(tid).bind("click", function () {
+}
+VolumesMiniSelectTable.prototype.init = function () {
+    $(this.m_id).bind("click", function () {
         $(this).hide()
     })
 }
-
 VolumesMiniSelectTable.prototype.get_selary = function () {
     var vol_arr = []
     $(".v3.hili").each(function () {
@@ -418,18 +418,20 @@ VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
 },
 
 
-VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
+VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
     var tid = this.m_id;
 
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
     $(tid).css('top', y).css('left', bcr.x).show()
 
-    tid += " tbody"
-
+    
     var trs = this.Gen_Vol_trs(vol_arr);
-    $("#vol_cap_sub").text("1");
-
+    //$("#vol_cap_sub").text("");
+    $("#vol_capx").text(cap);
+    
+    
     //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+    tid += " tbody"
     $(tid).html(trs).find(".v3").bind("click", function () {
 
         $(".v3.hili").removeClass("hili");
@@ -482,14 +484,14 @@ BibleInputMenu.prototype.init = function () {
         $("#externalinkMenu").hide()
     })
 
-    tabsel = new VolumesMiniSelectTable("#Tab_vol")
+    tabsel.init()
 
     //this.Gen_Keys_Menu();
     var _This = this
     var sikm = new SingleKeyInputMenu()
 
-    sikm.gen_menu(function (volary, x, y) {
-        tabsel.Gen_Vol_Table(volary, x, y)
+    sikm.gen_menu(function (ch, volary, x, y) {
+        tabsel.Gen_Vol_Table(ch, volary, x, y)
         d1.disable_all_digiKey(true)
         d2.disable_all_digiKey(true)
     })
@@ -538,16 +540,7 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    $("#vol_capx").click(function () {
-        var m = $("#Tab_vol tbody").find(".v3.hili").length;
-        if (m > 0) {
-            $("#Tab_vol tbody").find(".v3").removeClass("hili");
-        } else {
-            $("#Tab_vol tbody").find(".v3").addClass("hili");
-        }
-        var m = $("#Tab_vol tbody").find(".v3.hili").length;
-        $("#vol_cap_sub").text(m);
-    });
+
 
     $("#Tab_cat caption").click(function () {
         $(".cat").removeClass("hili");
@@ -610,11 +603,11 @@ BibleInputMenu.prototype.Gen_Cat_Table = function () {
         $(".cat").removeClass("hili");
         var scat = $(this).addClass("hili").text();
         if (document.m_current_cat === scat) {
-            $("#vol_capx").click();
+            
         } else {
-            document.m_current_cat = scat;
+            //document.m_current_cat = scat;
             var vol_arr = CNST.Cat2VolArr[scat];
-            tabsel.Gen_Vol_Table(vol_arr);
+            tabsel.Gen_Vol_Table(scat, vol_arr);
         }
 
     });
@@ -1218,7 +1211,7 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
             <table id="Tab_vol" border="1" style="float:left;">
-                <caption class='vcvCap' id='vol_capx' title='volunm name'>V<sub id="vol_cap_sub">0</sub></caption>
+                <caption class='vcvCap' id='vol_capx' title=''></caption>
                 <thead id=""></thead>
                 <tbody id=''>
 
