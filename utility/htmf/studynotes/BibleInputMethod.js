@@ -221,7 +221,7 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
 
     var _This = this;
     var s = gen_trs();
-    $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
+    $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
 
     $(this.m_displayId).bind("click", function () {
@@ -230,9 +230,10 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
             _This.init_chap_digiKeys_by_vol()
 
             _This.m_nextDigiMenu.set_digiCap("")
-            _This.m_nextDigiMenu.reset_digiCap(false)
+            _This.m_nextDigiMenu.disable_digiCap(true)
         } else {
-            $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
+            _This.disable_digiCap(false)
+            //$(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", false);
         }
     });
 }
@@ -274,11 +275,7 @@ DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
         });
     }
 }
-DigitNumberInputMenu.prototype.reset_digiCap = function (b) {
-    if (b) {
-        //$(this.m_displayId).trigger('click')
-    } else {
-    }
+DigitNumberInputMenu.prototype.disable_digiCap = function (b) {
     $(this.m_tbody).find(".digit").attr("disabled", b);
 }
 DigitNumberInputMenu.prototype.get_digiCap = function () {
@@ -324,13 +321,13 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, 
 
         if (_THIS.m_nextDigiMenu) {
             _THIS.init_chap_digiKeys_by_vol()
-            _THIS.m_nextDigiMenu.reset_digiCap(false)
+            _THIS.m_nextDigiMenu.disable_digiCap(false)
         } else {
 
         }
         cbfLoadBible()
     });
-    if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_digiCap(true)
+    if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.disable_digiCap(true)
 }
 DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
@@ -456,7 +453,7 @@ VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
         d1.init_chap_digiKeys_by_vol()
-        d2.reset_digiCap(true)
+        d2.disable_digiCap(true)
 
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
         //update_digit_cap(tid);
@@ -504,8 +501,8 @@ BibleInputMenu.prototype.init = function () {
 
     sikm.gen_menu(function (volary, x, y) {
         tabsel.Gen_Vol_Table(volary, x, y)
-        d1.reset_digiCap(false)
-        d2.reset_digiCap(false)
+        d1.disable_digiCap(true)
+        d2.disable_digiCap(true)
     })
 
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
