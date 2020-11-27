@@ -255,6 +255,19 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
 DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
     var vol = $(this.m_volID).attr("volcode")
     var chp = this.get_digiCap()
+    var _THIS = this
+
+    function _enable_key(vol, chp) {
+        $(_THIS.m_tbody).find(".digit").each(function () {
+            var dici = parseInt($(this).text());
+            var schp = (chp * 10 + dici)
+            if (undefined === _Max_struct[vol][schp]) {
+                $(this).attr("disabled", true);
+            } else {
+                $(this).attr("disabled", false);
+            }
+        });
+    }
 
     if (!vol) {
         $(this.m_tbody).find(".digit").attr("disabled", true);
@@ -266,26 +279,10 @@ DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
             $(this.m_tbody).find(".digit").attr("disabled", false);
             $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
         } else {
-            $(this.m_tbody).find(".digit").each(function () {
-                var dici = parseInt($(this).text());
-                var schp = (chp * 10 + dici)
-                if (undefined === _Max_struct[vol][schp]) {
-                    $(this).attr("disabled", true);
-                } else {
-                    $(this).attr("disabled", false);
-                }
-            });
+            _enable_key(vol, chp)
         }
     } else {
-        $(this.m_tbody).find(".digit").each(function () {
-            var dici = parseInt($(this).text());
-            var schp = (chp * 10 + dici)
-            if (undefined === _Max_struct[vol][schp]) {
-                $(this).attr("disabled", true);
-            } else {
-                $(this).attr("disabled", false);
-            }
-        });
+        _enable_key(vol, chp)
     }
 }
 
@@ -338,7 +335,6 @@ DigitNumberInputMenu.prototype.get_digiCap = function () {
 }
 DigitNumberInputMenu.prototype.set_digiCap = function (i) {
     $(this.m_displayId).text(i)
-    //$(this.m_tbody).parent().find(".digiCap").text(i)
 }
 DigitNumberInputMenu.prototype.add_digiCap = function (i) {
     var _THIS = this
