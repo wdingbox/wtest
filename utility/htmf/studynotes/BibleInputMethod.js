@@ -544,7 +544,7 @@ BibleInputMenu.prototype.init = function () {
     })
 
     bkntab.Gen_BKN_Table({onClick:function(){
-        _This.loadBible();
+        _This.loadBible_chp();
     }});
 
     this.Gen_Cat_Table();
@@ -553,19 +553,10 @@ BibleInputMenu.prototype.init = function () {
     d2.Gen_Digit_Table()
 
     d1.on_Click_digitKey(function () {
-        _This.loadBible();
+        _This.loadBible_chp();
     })
     d2.on_Click_digitKey(function () {
-        //onclick_chp_loadBible();
-        var parmBook = _This.get_selected_vcv_parm()
-        var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
-        $(".vid").each(function () {
-            var txt = $(this).text()
-            if (txt === bkchvr) {
-                $(this)[0].scrollIntoViewIfNeeded()
-                $(this).addClass("hiliScroll2View");
-            }
-        })
+        _This.scrollToView_Vrs()
     })
 
 
@@ -639,6 +630,18 @@ BibleInputMenu.prototype.Gen_Cat_Table = function () {
 };
 
 
+BibleInputMenu.prototype.scrollToView_Vrs = function () {
+    var parmBook = this.get_selected_vcv_parm()
+    var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
+    $(".vid").each(function () {
+        var txt = $(this).text()
+        if (txt === bkchvr) {
+            $(this)[0].scrollIntoViewIfNeeded()
+            $(this).addClass("hiliScroll2View");
+        }
+    })
+};///
+
 
 
 
@@ -649,7 +652,7 @@ BibleInputMenu.prototype.get_selected_vcv_parm = function () {
     var ob = { vol: vol, chp: chp, vrs: vrs }
     return ob;
 };
-BibleInputMenu.prototype.get_selected_vcv_bibOj = function () {
+BibleInputMenu.prototype.get_selected_bc_bibOj = function () {
     var parm = this.get_selected_vcv_parm()
 
     var ob = {}
@@ -660,17 +663,19 @@ BibleInputMenu.prototype.get_selected_vcv_bibOj = function () {
     }
     return ob;
 };
-BibleInputMenu.prototype.loadBible = function () {
-    var bibOj = this.get_selected_vcv_bibOj();
+BibleInputMenu.prototype.loadBible_chp = function () {
+    var _THIS = this
+    var bibOj = this.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
     var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     Uti.Msg(par);
     console.log("loadpar",par)
+    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
     setTimeout(function(){
-        Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
-    },10)
+        _THIS.scrollToView_Vrs()
+    },2100)
     return bibOj;
 };///
 BibleInputMenu.prototype.get_selected_load_parm = function () {
