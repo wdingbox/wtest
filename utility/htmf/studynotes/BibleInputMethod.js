@@ -807,18 +807,7 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
     });
     txFontsizeIncrs(0);
 }
-function onclick_load_BknVolChpVrs() {
-    var inp = gBim.get_selected_load_parm();
-    //inp.Search.File = "";//disable search
-    if (!Uti.validateBibleLoad(inp)) return;
-    console.log(inp);
 
-    var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-
-    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
-
-    console.log(Jsonpster);
-};
 
 function onclick_regex_match_next(incrs) {
     var str = $("#sinput").val();
@@ -860,6 +849,7 @@ function onclick_regex_match_next(incrs) {
     if (document.g_matchCount > 0) {//save to history.
         var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
         var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+        console.log(prm)
         Jsonpster.Run(prm, function () {
             Uti.Msg("found");
         });
@@ -872,6 +862,7 @@ function onclick_BibleObj_search_str() {
     if (!Uti.validateSearch(inp)) return;
     console.log(inp);
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
+    console.log(par)
     Uti.Msg(par);
     Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
@@ -1091,11 +1082,13 @@ var Uti = {
         return true;
     },
     get_xOj: function (par) {
+        if(!par.vol_arr) par.vol_arr = [par.vol]
         return Uti.get_bibOj(par.vol_arr, par.chp, par.vrs);
     },
     get_bibOj: function (vol_arr, chp, vrs) {
         if ("object" != typeof vol_arr) {
             alert("assertion failed: vol must be arry");
+            console.log(vol_arr)
             return null;
         }
         if (!vol_arr === 0) {
