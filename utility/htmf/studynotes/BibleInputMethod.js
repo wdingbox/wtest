@@ -670,8 +670,9 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    Uti.Msg(par);
+    console.log("RestApi:",RestApi)
     console.log("loadpar",par)
+    Uti.Msg(par);
     Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
     setTimeout(function(){
         _THIS.scrollToView_Vrs()
@@ -760,6 +761,7 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
 
         var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
         var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+        console.log(prm)
         Jsonpster.Run(prm, function (ret) {
             Uti.Msg(vid + " is stored in history; and ref is available.");
         });
