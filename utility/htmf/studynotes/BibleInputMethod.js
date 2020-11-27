@@ -121,11 +121,11 @@ SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
 
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
-        if (!cbf) return console.error("cbf is null")
         var bcr = $(this)[0].getBoundingClientRect();
         var y = bcr.y + $(this).height();// + window.scrollY;// - $("#externalinkMenu").height()
         var x = bcr.x + $(this).width();// + window.scrollX;// - $("#externalinkMenu").width()
         // $("#externalinkMenu").css('top', y).show();
+        if (!cbf) return console.error("cbf is null")
         cbf(volarr, x, y)
     });
     return ks;
@@ -175,8 +175,6 @@ SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjSt
     });
     return arr;
 }
-
-
 
 
 
@@ -407,29 +405,31 @@ VolumesMiniSelectTable.prototype.get_selary = function () {
     });
     return vol_arr
 }
+VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
+    var trarr = [];
+    vol_arr.forEach(function (vol, i) {
+        var hili = "";//(0 === i) ? "hili" : ""
+        var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
+        //<td align='right'>"+BibVolName[vol][0]+"</td>
+        var iMaxChap = Object.keys(_Max_struct[vol]).length;
+        trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
+    });
+    return trarr.join("");
+},
+
+
 VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
     var tid = this.m_id;
-
-    function update_digit_cap(tid) {
-        var m = $(tid).find(".v3.hili").length;
-        $("#vol_cap_sub").text(m);
-        if (m > 1) {
-            $(".digiCap").addClass("grayout");
-        } else {
-            $(".digiCap").removeClass("grayout");
-        }
-        $(".clear").click();
-    };
 
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
     $(tid).css('top', y).css('left', bcr.x).show()
 
     tid += " tbody"
 
-    var trs = Uti.Gen_Vom_trs(vol_arr);
+    var trs = this.Gen_Vol_trs(vol_arr);
     $("#vol_cap_sub").text("1");
 
-    $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
     $(tid).html(trs).find(".v3").bind("click", function () {
 
         $(".v3.hili").removeClass("hili");
@@ -1056,17 +1056,7 @@ var Uti = {
     },
 
 
-    Gen_Vom_trs: function (vol_arr) {
-        var trarr = [];
-        vol_arr.forEach(function (vol, i) {
-            var hili = (0 === i) ? "hili" : ""
-            var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
-            //<td align='right'>"+BibVolName[vol][0]+"</td>
-            var iMaxChap = Object.keys(_Max_struct[vol]).length;
-            trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
-        });
-        return trarr.join("");
-    },
+
     validate_vcv_xxxxxx: function (vol, chp, vrs) {
         if (undefined == _Max_struct[vol]) return alert("fatal err vol=" + vol);
         else if (undefined == _Max_struct[vol][chp]) {
