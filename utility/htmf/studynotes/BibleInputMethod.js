@@ -818,6 +818,18 @@ function txFontsizeIncrs(n) {
     $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 function onclick_regex_match_next(incrs) {
     var str = $("#sinput").val();
     var reg = new RegExp(str, "g");
