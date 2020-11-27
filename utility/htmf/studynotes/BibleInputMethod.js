@@ -507,9 +507,9 @@ function Tab_mark_bcv_history(){
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function(onClickHistoryItm){
     this.m_onClickHistoryItm = onClickHistoryItm
 }
-Tab_mark_bcv_history.prototype.addnew = function(vcv, par){
+Tab_mark_bcv_history.prototype.addnew = function(vcv){
     this.m_vcvHistory[vcv] = (new Date()).toISOString()
-    this.update_tab(par)
+    this.update_tab()
 }
 Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function(bSortByTime){
     var _THIS =this
@@ -715,9 +715,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     console.log("loadpar:",par)
     Uti.Msg(par);
     Jsonpster.Run(par,function(ret){
-        apiCallback_Gen_clientBibleObj_table(ret, {onClickHistory:function(){
-            _THIS.loadBible_chp()
-        }})
+        apiCallback_Gen_clientBibleObj_table(ret)
     });
     setTimeout(function(){
         _THIS.scrollToView_Vrs()
@@ -743,7 +741,7 @@ BibleInputMenu.prototype.get_selected_load_parm = function () {
 //////////
 //////////
 /////////
-function apiCallback_Gen_clientBibleObj_table(ret, par) {
+function apiCallback_Gen_clientBibleObj_table(ret) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
         var fil = $(_This).attr("title");
@@ -804,7 +802,7 @@ function apiCallback_Gen_clientBibleObj_table(ret, par) {
         var vid = $(this).text();
         $("#externalinkMenu").find("caption").text(vid).focus()
 
-        markHistory.addnew(vid, par)
+        markHistory.addnew(vid)
 
         var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
         var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -1267,7 +1265,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <table border="1" id="Tab_BibleSingleInputKey">
-                <caption><a id="BibleInputCap">Bible Input Keys</a> <button class='chapvrsnum' id='chp_num'>*</button>:<button class='chapvrsnum' id='vrs_num'></button></caption>
+                <caption><a id="BibleInputCap">Bible Input Keys</a> <button class='chapvrsnum' id='chp_num'></button>:<button class='chapvrsnum' id='vrs_num'></button></caption>
                 <thead id=""></thead>
                 <tbody id=""></tbody>
             </table>
