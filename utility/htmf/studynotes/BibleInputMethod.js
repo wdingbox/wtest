@@ -291,33 +291,19 @@ DigitNumberInputMenu.prototype.set_digiCap = function (i) {
     $(this.m_displayId).text(i)
     //$(this.m_tbody).parent().find(".digiCap").text(i)
 }
-DigitNumberInputMenu.prototype.update_digiCap = function (i) {
+DigitNumberInputMenu.prototype.add_digiCap = function (i) {
     var _THIS = this
     var icap = _THIS.get_digiCap()
     var iupdateCap = icap * 10 + parseInt(i);
     _THIS.set_digiCap(iupdateCap);
 }
-DigitNumberInputMenu.prototype.on_Click_digit = function (volid, cbf) {
-    this.cbf_click_digit = cbf
-    var vol = $(volid).attr("volcode")
 
-    var _THIS = this
-    $(this.m_tbody).find(".digit").bind("click", function () {
-        var dici = $(this).text();
-        _THIS.update_digiCap(dici);
-
-        /////////////////////////////////////
-        // prepare for next available digits.
-        _THIS.reset_num()
-        if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_num()
-    });
-}
 DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
 
     $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
         var dici = $(this).text();
-        _THIS.update_digiCap(dici)
+        _THIS.add_digiCap(dici)
 
         if (_THIS.m_nextDigiMenu) {
             _THIS.init_chap_digiKeys_by_vol()
@@ -347,10 +333,10 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam,
 
     $(this.m_tbody).find(".digit").bind("click", function () {
         var dici = $(this).text();
-        _THIS.update_digiCap(dici)
+        _THIS.add_digiCap(dici)
 
-        var par = cbfGetParam()
-        reshuffle_vrs_digi(par)
+        //var par = cbfGetParam()
+        //reshuffle_vrs_digi(par)
 
         cbfLoadBible()
     });
