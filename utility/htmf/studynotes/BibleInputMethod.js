@@ -460,39 +460,39 @@ VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
         trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
     });
     return trarr.join("");
-},
+}
 
 
-    VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
-        var tid = this.m_id;
+VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
+    var tid = this.m_id;
 
-        var bcr = $("#menuContainer")[0].getBoundingClientRect();
-        $(tid).css('top', y).css('left', bcr.x).show()
-
-
-        var trs = this.Gen_Vol_trs(vol_arr);
-        //$("#vol_cap_sub").text("");
-        $("#vol_capx").text(cap);
+    var bcr = $("#menuContainer")[0].getBoundingClientRect();
+    $(tid).css('top', y).css('left', bcr.x).show()
 
 
-        //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
-        tid += " tbody"
-        $(tid).html(trs).find(".v3").bind("click", function () {
+    var trs = this.Gen_Vol_trs(vol_arr);
+    //$("#vol_cap_sub").text("");
+    $("#vol_capx").text(cap);
 
-            $(".v3.hili").removeClass("hili");
-            $(this).addClass("hili");
 
-            var vol = $(this).text();
-            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+    tid += " tbody"
+    $(tid).html(trs).find(".v3").bind("click", function () {
 
-            d1.init_chap_digiKeys_by_vol()
-            d2.disable_all_digiKey(true)
+        $(".v3.hili").removeClass("hili");
+        $(this).addClass("hili");
 
-            Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
-            //update_digit_cap(tid);
-        });
+        var vol = $(this).text();
+        $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+
+        d1.init_chap_digiKeys_by_vol()
+        d2.disable_all_digiKey(true)
+
+        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
         //update_digit_cap(tid);
-    };
+    });
+    //update_digit_cap(tid);
+};
 
 
 
@@ -585,7 +585,7 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
         $.each(chobj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, ob) {
                 $.each(ob, function (searchStr, tm) {
-                    _THIS.addnew(searchStr,tm)
+                    _THIS.addnew(searchStr, tm)
                 });
             });
         });
