@@ -781,7 +781,10 @@ BibleInputMenu.prototype.get_selected_load_parm = function () {
 //////////
 //////////
 /////////
-function apiCallback_Gen_clientBibleObj_table(ret) {
+
+function OutputBibleTable() {
+}
+OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
         var fil = $(_This).attr("title");
@@ -892,17 +895,23 @@ function apiCallback_Gen_clientBibleObj_table(ret) {
             document.execCommand("copy");
         }
     });
-    txFontsizeIncrs(0);
+    this.setFontSize(0);
 }
-function txFontsizeIncrs(n) {
+OutputBibleTable.prototype.setFontSize = function (n) {
     if (undefined === document.m_tx_fontSize) {
         document.m_tx_fontSize = 16;
     }
-    //var fsize=$("#oBible table .tx").css("font-size");
     document.m_tx_fontSize += n;
     $("#oBible table .tx").css("font-size", document.m_tx_fontSize);
 }
 
+
+
+var gobt = new OutputBibleTable()
+
+function apiCallback_Gen_clientBibleObj_table(ret) {
+    gobt.Gen_clientBibleObj_table(ret)
+}
 
 
 
@@ -1332,7 +1341,7 @@ var BibleInputMenuContainer = `
             <tbody id="StructAna"></tbody>
         </table>
         <input id="CopyTextToClipboard" title="CopyTextToClipboard"/><br>
-        <button onclick="txFontsizeIncrs(10);" title='font-size plus'>f+</button><button onclick="txFontsizeIncrs(-10);">f-</button>
+        <button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button><button onclick="gobt.setFontSize(-10);">f-</button>
     </div>
 
         </div>
