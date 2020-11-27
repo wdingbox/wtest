@@ -242,11 +242,10 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
         if (_This.isDigiChp()) {//Chp Digi Key
             _This.init_chap_digiKeys_by_vol()
 
-            _This.m_nextDigiMenu.set_digiCap("")
-            _This.m_nextDigiMenu.disable_digiCap(true)
+            _This.m_nextDigiMenu.set_showupVal("")
+            _This.m_nextDigiMenu.disable_all_digiKey(true)
         } else {
             _This.init_verse_digiKeys_by_vol()
-            //$(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", false);
         }
     });
 }
@@ -254,7 +253,7 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
 
 DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
     var vol = $(this.m_volID).attr("volcode")
-    var chp = this.get_digiCap()
+    var chp = this.get_showupVal()
     var _THIS = this
 
     function _enable_key(vol, chp) {
@@ -288,8 +287,8 @@ DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
 
 DigitNumberInputMenu.prototype.init_verse_digiKeys_by_vol = function () {
     var vol = $(this.m_volID).attr("volcode")
-    var chp = this.m_nextDigiMenu.get_digiCap()
-    var vrs = this.get_digiCap()
+    var chp = this.m_nextDigiMenu.get_showupVal()
+    var vrs = this.get_showupVal()
 
     function _enable_key(vol, chp, vrs, dici) {
         var vrs = (vrs * 10 + dici)
@@ -321,26 +320,26 @@ DigitNumberInputMenu.prototype.init_verse_digiKeys_by_vol = function () {
         });
     }
 }
-DigitNumberInputMenu.prototype.disable_digiCap = function (b) {
+DigitNumberInputMenu.prototype.disable_all_digiKey = function (b) {
     $(this.m_tbody).find(".digit").attr("disabled", b);
 }
-DigitNumberInputMenu.prototype.get_digiCap = function () {
+
+DigitNumberInputMenu.prototype.get_showupVal = function () {
     var chap = $(this.m_displayId).text()
-    //var chap = $(this.m_tbody).parent().find(".digiCap").text()
     var ichap = parseInt(chap)
     if (!Number.isInteger(ichap)) {
         ichap = 0;
     }
     return ichap
 }
-DigitNumberInputMenu.prototype.set_digiCap = function (i) {
+DigitNumberInputMenu.prototype.set_showupVal = function (i) {
     $(this.m_displayId).text(i)
 }
-DigitNumberInputMenu.prototype.add_digiCap = function (i) {
+DigitNumberInputMenu.prototype.add_showupVal = function (i) {
     var _THIS = this
-    var icap = _THIS.get_digiCap()
+    var icap = _THIS.get_showupVal()
     var iupdateCap = icap * 10 + parseInt(i);
-    _THIS.set_digiCap(iupdateCap);
+    _THIS.set_showupVal(iupdateCap);
 }
 
 DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoadBible) {
@@ -348,7 +347,7 @@ DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoa
 
     $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
         var dici = $(this).text();
-        _THIS.add_digiCap(dici)
+        _THIS.add_showupVal(dici)
 
         if (_THIS.isDigiChp()) {//Chp Digi Key
             _THIS.init_chap_digiKeys_by_vol()
@@ -359,7 +358,7 @@ DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoa
         cbfLoadBible()
     });
     if (_THIS.isDigiChp()) {//Chp Digi Key 
-        _THIS.m_nextDigiMenu.disable_digiCap(true)
+        _THIS.m_nextDigiMenu.disable_all_digiKey(true)
     }
 }
 
@@ -374,14 +373,14 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     if (vol.length === 0) return alert("Fatal err vol=null");
     var iMaxChap = Object.keys(_Max_struct[vol]).length;
 
-    var idigiCap = i + this.get_digiCap()
+    var idigiCap = i + this.get_showupVal()
     if (idigiCap <= 0) {
         idigiCap = iMaxChap
     } else if (idigiCap >= iMaxChap) {
         iMaxChap = 1
     }
 
-    this.set_digiCap(idigiCap);
+    this.set_showupVal(idigiCap);
 
 
     onclick_chp_loadBible();
@@ -440,7 +439,7 @@ VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
         d1.init_chap_digiKeys_by_vol()
-        d2.disable_digiCap(true)
+        d2.disable_all_digiKey(true)
 
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
         //update_digit_cap(tid);
@@ -491,8 +490,8 @@ BibleInputMenu.prototype.init = function () {
 
     sikm.gen_menu(function (volary, x, y) {
         tabsel.Gen_Vol_Table(volary, x, y)
-        d1.disable_digiCap(true)
-        d2.disable_digiCap(true)
+        d1.disable_all_digiKey(true)
+        d2.disable_all_digiKey(true)
     })
 
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
@@ -897,7 +896,7 @@ function LoadBible_HiliVerse_by_vol_chp_vrs(prm) {
 function Set_BibleIpnut_UI(prm) {
     var s = "<tr><td class='v3 hili'>" + prm.vol + "</td></tr>";
     $("#Tab_vol tbody").html(s);
-    d1.set_digiCap(prm.chp);
+    d1.set_showupVal(prm.chp);
 }
 
 function onclick_chp_loadBible() {
