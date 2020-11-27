@@ -1316,10 +1316,9 @@ var BibleInputMenuContainer = `
             </table>
             
             <table id="Tab_mark_bcv_history" border="1" style="float:left;">
-                <caption><a id='loads_buttons'>[v] 
-                        <a> 
-                        <a id='loads_buttons'>[^] 
-                        <a>
+                <caption>
+                   <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
+                   <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='load history sort by str'>^</button>
                 </caption>
                 <thead></thead>
                 <tbody>

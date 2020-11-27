@@ -140,7 +140,7 @@ body {
         display: block;
     }
 
-    #Tab_load_vcv_history {
+    #Tab_load_vcv_history, #Tab_mark_bcv_history {
         background-color: rgb(29, 105, 149);
     }
 
