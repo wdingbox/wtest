@@ -194,22 +194,32 @@ SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjSt
 
 
 
-function DigitNumberInputMenu(tbody, nextDigiMenu) {
+function DigitNumberInputMenu(digiType, tbody, clsname) {
+    this.m_digiType = digiType;// chpDigi or vrsDigi
+
     if (!tbody) {
         tbody = "#DigitOfChapter"
     }
     this.m_tbody = tbody
-    this.m_nextDigiMenu = nextDigiMenu
+    this.m_classname = clsname
+
+    this.m_displayId = "#" + clsname
+
     this.m_volID = "#BibleInputCap"
 }
-DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
-    this.m_classname = clsname
-    this.m_displayId = "#" + clsname
+DigitNumberInputMenu.prototype.set_Neightbor = function (nextDigiMenu) {
+    this.m_nextDigiMenu = nextDigiMenu
+}
+DigitNumberInputMenu.prototype.isDigiChp = function () {
+    return (this.m_digiType === "digiChp")
+}
+
+DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
     function _td(num, clsname) {
         var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
         return s;
     }
-    function gen_trs() {
+    function gen_trs(clsname) {
         var s = "", num = 1;
         s += `<tr>`;
         for (var i = 1; i < 10; i++) {
@@ -220,13 +230,13 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     };
 
     var _This = this;
-    var s = gen_trs();
+    var s = gen_trs(this.m_classname);
     $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
 
     $(this.m_displayId).bind("click", function () {
         $(this).text("")
-        if (_This.m_nextDigiMenu) {//Chp Digi Key
+        if (_This.isDigiChp()) {//Chp Digi Key
             _This.init_chap_digiKeys_by_vol()
 
             _This.m_nextDigiMenu.set_digiCap("")
@@ -242,6 +252,44 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
 DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
     var vol = $(this.m_volID).attr("volcode")
     var chp = this.get_digiCap()
+
+    if (!vol) {
+        $(this.m_tbody).find(".digit").attr("disabled", true);
+        return
+    }
+    var iMaxChap = Object.keys(_Max_struct[vol]).length;
+    if (0 === chp) {
+        if (iMaxChap >= 9) {
+            $(this.m_tbody).find(".digit").attr("disabled", false);
+            $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
+        } else {
+            $(this.m_tbody).find(".digit").each(function () {
+                var dici = parseInt($(this).text());
+                var schp = (chp * 10 + dici)
+                if (undefined === _Max_struct[vol][schp]) {
+                    $(this).attr("disabled", true);
+                } else {
+                    $(this).attr("disabled", false);
+                }
+            });
+        }
+    } else {
+        $(this.m_tbody).find(".digit").each(function () {
+            var dici = parseInt($(this).text());
+            var schp = (chp * 10 + dici)
+            if (undefined === _Max_struct[vol][schp]) {
+                $(this).attr("disabled", true);
+            } else {
+                $(this).attr("disabled", false);
+            }
+        });
+    }
+}
+
+DigitNumberInputMenu.prototype.init_verse_digiKeys_by_vol = function () {
+    var vol = $(this.m_volID).attr("volcode")
+    var chp = this.get_digiCap()
+
 
     if (!vol) {
         $(this.m_tbody).find(".digit").attr("disabled", true);
@@ -305,38 +353,31 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, 
         var dici = $(this).text();
         _THIS.add_digiCap(dici)
 
+        if (_THIS.isDigiChp()) {//Chp Digi Key
+            _THIS.init_chap_digiKeys_by_vol()
+            _THIS.m_nextDigiMenu.disable_digiCap(false)
+        } else {
+            //_THIS.init_chap_digiKeys_by_vol()
+        }
+        cbfLoadBible()
+    });
+    if (_THIS.isDigiChp()) {//Chp Digi Key 
+        _THIS.m_nextDigiMenu.disable_digiCap(true)
+    }
+}
+DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
+    var _THIS = this
+
+    $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
+        var dici = $(this).text();
+        _THIS.add_digiCap(dici)
+
         if (_THIS.m_nextDigiMenu) {
             _THIS.init_chap_digiKeys_by_vol()
             _THIS.m_nextDigiMenu.disable_digiCap(false)
         } else {
 
         }
-        cbfLoadBible()
-    });
-    if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.disable_digiCap(true)
-}
-DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
-    var _THIS = this
-    function reshuffle_vrs_digi(par) {
-        if (undefined === par.vol) return
-        if (undefined === par.chp) return
-        var idigiCap = _THIS.get_digiCap()
-        $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
-            var idn = parseInt($(this).text());
-            var inx = idigiCap * 10 + idn;
-            var obj = _Max_struct[par.vol][par.chp][inx]
-            if (undefined === obj) {
-                $(this).attr("disabled", true);
-            }
-        });
-    }
-
-    $(this.m_tbody).find(".digit").bind("click", function () {
-        var dici = $(this).text();
-        _THIS.add_digiCap(dici)
-
-        //var par = cbfGetParam()
-        //reshuffle_vrs_digi(par)
 
         cbfLoadBible()
     });
@@ -360,7 +401,7 @@ DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     }
 
     this.set_digiCap(idigiCap);
- 
+
 
     onclick_chp_loadBible();
 }
@@ -442,8 +483,11 @@ VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
 
 
 
-var d2 = new DigitNumberInputMenu("#DigitOfVerse");
-var d1 = new DigitNumberInputMenu("#DigitOfChapter", d2);
+var d1 = new DigitNumberInputMenu("digiChp", "#DigitOfChapter", "chp_num");
+var d2 = new DigitNumberInputMenu("digiVrs", "#DigitOfVerse", "vrs_num");
+d1.set_Neightbor(d2)
+d2.set_Neightbor(d1)
+
 var tabsel = new VolumesMiniSelectTable("#Tab_vol")
 
 var BibleInputMenu = function () {
@@ -475,8 +519,8 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    d1.Gen_Digit_Table("chp_num")
-    d2.Gen_Digit_Table("vrs_num")
+    d1.Gen_Digit_Table()
+    d2.Gen_Digit_Table()
 
 
     d1.on_Click_digit_for_chap(function () {
@@ -484,7 +528,7 @@ BibleInputMenu.prototype.init = function () {
     }, function () {
         _This.loadBible();
     })
-    d2.on_Click_digit_for_verse(function () {
+    d2.on_Click_digit_for_chap(function () {
         return _This.get_selected_vcv_parm()
     }, function () {
         //onclick_chp_loadBible();
