@@ -541,6 +541,45 @@ Tab_mark_bcv_history.prototype.update_tab = function(){
 
 
 
+
+
+
+function Tab_Cat(){
+    this.m_tabid = "#Tab_cat"
+}
+Tab_Cat.prototype.Gen_Cat_Table = function(cbf){
+
+    $(this.m_tabid+" caption").click(function () {
+        $(".cat").removeClass("hili");
+        $(".v3").remove();
+
+    });
+
+    var _This = this;
+    var s = "";
+    $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
+        s += "<tr><td class='cat'>" + v + "</td></tr>";
+    });
+    $(this.m_tabid+" tbody").html(s).find(".cat").bind("click", function () {
+        $(".cat").removeClass("hili");
+        var scat = $(this).addClass("hili").text();
+
+        if(cbf) cbf(scat)
+        //if (document.m_current_cat === scat) {
+//
+        //} else {
+        //    //document.m_current_cat = scat;
+        //    var vol_arr = CNST.Cat2VolArr[scat];
+        //    tabsel.Gen_Vol_Table(scat, vol_arr);
+        //}
+
+    });
+}
+
+
+
+
+var catab = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
 
 
@@ -567,6 +606,10 @@ BibleInputMenu.prototype.init = function () {
     })
 
     tabsel.init()
+    catab.Gen_Cat_Table(function(scat){
+        var vol_arr = CNST.Cat2VolArr[scat];
+            tabsel.Gen_Vol_Table(scat, vol_arr);
+    })
 
     //this.Gen_Keys_Menu();
     var _This = this
@@ -582,7 +625,7 @@ BibleInputMenu.prototype.init = function () {
         _This.loadBible_chp();
     }});
 
-    this.Gen_Cat_Table();
+ 
 
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
@@ -618,55 +661,14 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    $("#Tab_cat caption").click(function () {
-        $(".cat").removeClass("hili");
-        $(".v3").remove();
 
-    });
 
-    $("#vrs_cap").click(function () {
-        var parm = _This.get_selected_vcv_parm();
-        console.log(parm)
-        if (parm.vrs === "*") {
-            Uti.Msg("no op");
-            return;
-        };
-        var vcv = parm.vol_arr[0] + parm.chp + ":" + parm.vrs;
-        if (Uti.scrollIntoViewIfNeeded_to_vid(vcv)) {
-            var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vcv } };
-            var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-            Uti.Msg(prm);
-            Jsonpster.Run(prm, function (ret) {
-                Uti.Msg(vcv);
-            });
-        } else {
-            Uti.Msg(vcv + " not found.")
-        }
-    });
+
 
     Ext_Link_Menu.setup_links()
 };
 
 
-BibleInputMenu.prototype.Gen_Cat_Table = function () {
-    var _This = this;
-    var s = "";
-    $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
-        s += "<tr><td class='cat'>" + v + "</td></tr>";
-    });
-    $("#Tab_cat tbody").html(s).find(".cat").bind("click", function () {
-        $(".cat").removeClass("hili");
-        var scat = $(this).addClass("hili").text();
-        if (document.m_current_cat === scat) {
-
-        } else {
-            //document.m_current_cat = scat;
-            var vol_arr = CNST.Cat2VolArr[scat];
-            tabsel.Gen_Vol_Table(scat, vol_arr);
-        }
-
-    });
-};
 
 
 BibleInputMenu.prototype.scrollToView_Vrs = function () {
