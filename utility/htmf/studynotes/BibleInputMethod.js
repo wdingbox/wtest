@@ -639,15 +639,13 @@ BibleInputMenu.prototype.get_selected_vcv_parm = function () {
     return ob;
 };
 BibleInputMenu.prototype.get_selected_vcv_bibOj = function () {
-    var vol = $("#BibleInputCap").attr("volcode");
-    var chp = $("#chp_num").text();
-    var vrs = $("#vrs_num").text();
+    var parm = this.get_selected_vcv_parm()
 
     var ob = {}
-    ob[vol] = {}
-    ob[vol][chp] = {}
-    if (vrs) {
-        ob[vol][chp][vrs] = vrs
+    ob[parm.vol] = {}
+    ob[parm.vol][parm.chp] = {}
+    if (parm.vrs) {
+        ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
     }
     return ob;
 };
