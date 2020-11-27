@@ -200,10 +200,11 @@ function DigitNumberInputMenu(tbody, nextDigiMenu) {
     }
     this.m_tbody = tbody
     this.m_nextDigiMenu = nextDigiMenu
+    this.m_volID = "#BibleInputCap"
 }
 DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     this.m_classname = clsname
-    this.m_displayId = clsname
+    this.m_displayId = "#" + clsname
     function _td(num, clsname) {
         var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
         return s;
@@ -222,24 +223,66 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function (clsname) {
     var s = gen_trs();
     $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
 
-    $(`#${this.m_displayId}`).bind("click", function () {
+
+    $(this.m_displayId).bind("click", function () {
         $(this).text("")
-        $(_This.m_tbody).find(".digit").attr("disabled", null);
-        $(_This.m_tbody).find(".digit:contains('0')").attr("disabled", true);
-        $(this).next(".chapvrsnum").text("")
-        if (_This.m_nextDigiMenu) _This.m_nextDigiMenu.reset_digiCap(false)
+        if (_This.m_nextDigiMenu) {//Chp Digi Key
+            _This.init_chap_digiKeys_by_vol()
+
+            _This.m_nextDigiMenu.set_digiCap("")
+            _This.m_nextDigiMenu.reset_digiCap(false)
+        } else {
+            $(this.m_tbody).html(s).find("button:contains('0')").attr("disabled", true);
+        }
     });
-    return;
+}
+
+
+DigitNumberInputMenu.prototype.init_chap_digiKeys_by_vol = function () {
+    var vol = $(this.m_volID).attr("volcode")
+    var chp = this.get_digiCap()
+
+    if (!vol) {
+        $(this.m_tbody).find(".digit").attr("disabled", true);
+        return
+    }
+    var iMaxChap = Object.keys(_Max_struct[vol]).length;
+    if (0 === chp) {
+        if (iMaxChap >= 9) {
+            $(this.m_tbody).find(".digit").attr("disabled", false);
+            $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
+        } else {
+            $(this.m_tbody).find(".digit").each(function () {
+                var dici = parseInt($(this).text());
+                var schp = (chp * 10 + dici)
+                if (undefined === _Max_struct[vol][schp]) {
+                    $(this).attr("disabled", true);
+                } else {
+                    $(this).attr("disabled", false);
+                }
+            });
+        }
+    } else {
+        $(this.m_tbody).find(".digit").each(function () {
+            var dici = parseInt($(this).text());
+            var schp = (chp * 10 + dici)
+            if (undefined === _Max_struct[vol][schp]) {
+                $(this).attr("disabled", true);
+            } else {
+                $(this).attr("disabled", false);
+            }
+        });
+    }
 }
 DigitNumberInputMenu.prototype.reset_digiCap = function (b) {
     if (b) {
-        $(`#${this.m_displayId}`).trigger('click')
+        //$(this.m_displayId).trigger('click')
     } else {
-        $(this.m_tbody).find(".digit").attr("disabled", true);
     }
+    $(this.m_tbody).find(".digit").attr("disabled", b);
 }
 DigitNumberInputMenu.prototype.get_digiCap = function () {
-    var chap = $(`#${this.m_displayId}`).text()
+    var chap = $(this.m_displayId).text()
     //var chap = $(this.m_tbody).parent().find(".digiCap").text()
     var ichap = parseInt(chap)
     if (!Number.isInteger(ichap)) {
@@ -248,7 +291,7 @@ DigitNumberInputMenu.prototype.get_digiCap = function () {
     return ichap
 }
 DigitNumberInputMenu.prototype.set_digiCap = function (i) {
-    $(`#${this.m_displayId}`).text(i)
+    $(this.m_displayId).text(i)
     //$(this.m_tbody).parent().find(".digiCap").text(i)
 }
 DigitNumberInputMenu.prototype.update_digiCap = function (i) {
@@ -275,32 +318,19 @@ DigitNumberInputMenu.prototype.on_Click_digit = function (volid, cbf) {
 DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
 
-    function reshuffle_chp_digi(par) {
-        if (undefined === par.vol) return
-        var idigiCap = _THIS.get_digiCap()
-        $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
-            var idn = parseInt($(this).text());
-            var inx = idigiCap * 10 + idn;
-            var obj = _Max_struct[par.vol][inx]
-            if (undefined === obj) {
-                $(this).attr("disabled", true);
-            }
-        });
-    }
-
-    $(this.m_tbody).find(".digit").bind("click", function () {
+    $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
         var dici = $(this).text();
         _THIS.update_digiCap(dici)
 
-        var par = cbfGetParam()
-        reshuffle_chp_digi(par)
+        if (_THIS.m_nextDigiMenu) {
+            _THIS.init_chap_digiKeys_by_vol()
+            _THIS.m_nextDigiMenu.reset_digiCap(false)
+        } else {
 
-        if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_digiCap(true)
+        }
         cbfLoadBible()
     });
-    if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_digiCap(false)
-
-
+    if (_THIS.m_nextDigiMenu) _THIS.m_nextDigiMenu.reset_digiCap(true)
 }
 DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
@@ -418,17 +448,20 @@ VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (vol_arr, x, y) {
 
     $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
     $(tid).html(trs).find(".v3").bind("click", function () {
-        d1.reset_digiCap(true)
-        d2.reset_digiCap(false)
-        var vol = $(this).text();
+
         $(".v3.hili").removeClass("hili");
         $(this).addClass("hili");
+
+        var vol = $(this).text();
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
+        d1.init_chap_digiKeys_by_vol()
+        d2.reset_digiCap(true)
+
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
-        update_digit_cap(tid);
+        //update_digit_cap(tid);
     });
-    update_digit_cap(tid);
+    //update_digit_cap(tid);
 };
 
 
@@ -471,7 +504,7 @@ BibleInputMenu.prototype.init = function () {
 
     sikm.gen_menu(function (volary, x, y) {
         tabsel.Gen_Vol_Table(volary, x, y)
-        d1.reset_digiCap(true)
+        d1.reset_digiCap(false)
         d2.reset_digiCap(false)
     })
 
