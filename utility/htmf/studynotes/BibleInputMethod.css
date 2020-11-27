@@ -140,7 +140,7 @@ body {
         display: block;
     }
 
-    #Tab_load_vcv_history, #Tab_mark_bcv_history {
+    #Tab_mark_bcv_history {
         background-color: rgb(29, 105, 149);
     }
 
@@ -153,12 +153,12 @@ body {
     }
 
     #Tab_regex_history_lst thead,
-    #Tab_load_vcv_history thead {
+    #Tab_mark_bcv_history thead {
         display: block;
     }
 
     #Tab_regex_history_lst tbody,
-    #Tab_load_vcv_history tbody {
+    #Tab_mark_bcv_history tbody {
         height: 210px;
         overflow-y: scroll;
         display: block;

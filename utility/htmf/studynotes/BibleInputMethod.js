@@ -205,7 +205,7 @@ BookNamesListTable.prototype.Gen_BKN_Table = function (parm) {
         if (i == 1) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
-    $(this.m_tbid+" tbody").html(str).find(".cbkn").bind("click", function () {
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         $(this).toggleClass("hili");
 
@@ -500,23 +500,31 @@ VolumesMiniSelectTable.prototype.Gen_Vol_trs = function (vol_arr) {
 
 
 
-function Tab_mark_bcv_history(){
+function Tab_mark_bcv_history() {
     this.m_tabid = "#Tab_mark_bcv_history"
     this.m_vcvHistory = {}
 }
-Tab_mark_bcv_history.prototype.onClickHistoryItem = function(onClickHistoryItm){
+Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
+
+    var _THIS = this
+    $(this.m_tabid + " #loadhistory").bind("click", function () {
+        _THIS.onclick_load_vcv_history(1)
+    })
+    $(this.m_tabid + " #sort_history_by_vcvID").bind("click", function () {
+        _THIS.onclick_load_vcv_history(0)
+    })
 }
-Tab_mark_bcv_history.prototype.addnew = function(vcv){
-    this.m_vcvHistory[vcv] = (new Date()).toISOString()
+Tab_mark_bcv_history.prototype.addnew = function (vcv, tm) {
+    this.m_vcvHistory[vcv] = (!tm) ? (new Date()).toISOString() : tm
     this.update_tab()
 }
-Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function(bSortByTime){
-    var _THIS =this
-    var ar=[]
-    Object.keys(this.m_vcvHistory).forEach(function(vcv,i){
-        var tm=""
-        if(bSortByTime){
+Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
+    var _THIS = this
+    var ar = []
+    Object.keys(this.m_vcvHistory).forEach(function (vcv, i) {
+        var tm = ""
+        if (bSortByTime) {
             tm = _THIS.m_vcvHistory[vcv]
         }
         ar.push(`<tr><td title='${tm}'>${vcv}</td></tr>`)
@@ -525,31 +533,82 @@ Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function(bSortByTime){
     ar.sort()
     return ar.join()
 }
-Tab_mark_bcv_history.prototype.update_tab = function(){
-    var _THIS =this
+Tab_mark_bcv_history.prototype.update_tab = function () {
+    var _THIS = this
     var trs = this.gen_trs_sort_by_time()
-    $(this.m_tabid +" tbody").html(trs).find("td").bind("click",function(){
+    $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function () {
         var vcv = $(this).text()
         var par = Uti.vcv_parser(vcv)
-        $("#BibleInputCap").attr("volcode",par.vol).text(par.vol)
+        $("#BibleInputCap").attr("volcode", par.vol).text(par.vol)
         $("#chp_num").text(par.chp)
         $("#vrs_num").text(par.vrs)
 
-        if(_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm()
+        if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm()
     })
 }
+Tab_mark_bcv_history.prototype.init = function () {
+
+}
+Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime) {
+    var _THIS = this
+    var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
+    var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
+    Jsonpster.Run(prm, function (ret) {
+        //history
+        console.log(ret);
+        _THIS.read_history_to_Obj(ret);
+        _THIS.update_tab()
+
+    });
+};///
+Tab_mark_bcv_history.prototype.read_history_to_opt = function (ret, bSortByTime) {
+    var ops = [];
+    $.each(ret, function (vol, chobj) {
+        $.each(chobj, function (chp, vrsObj) {
+            $.each(vrsObj, function (vrs, ob) {
+                $.each(ob, function (searchStr, tm) {
+                    if (!bSortByTime) tm = "";
+                    ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+                });
+            });
+        });
+    });
+    ops.sort();
+    if (bSortByTime) {
+        ops.reverse();
+    }
+    return ops;
+}
+Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
+    var _THIS = this
+    $.each(ret, function (vol, chobj) {
+        $.each(chobj, function (chp, vrsObj) {
+            $.each(vrsObj, function (vrs, ob) {
+                $.each(ob, function (searchStr, tm) {
+                    _THIS.addnew(searchStr,tm)
+                });
+            });
+        });
+    });
+    return ops;
+}
 
 
 
 
 
 
-function Tab_Cat(){
+
+
+
+
+
+function Tab_Cat() {
     this.m_tabid = "#Tab_cat"
 }
-Tab_Cat.prototype.Gen_Cat_Table = function(cbf){
+Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
 
-    $(this.m_tabid+" caption").click(function () {
+    $(this.m_tabid + " caption").click(function () {
         $(".cat").removeClass("hili");
         $(".v3").remove();
 
@@ -560,13 +619,13 @@ Tab_Cat.prototype.Gen_Cat_Table = function(cbf){
     $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
         s += "<tr><td class='cat'>" + v + "</td></tr>";
     });
-    $(this.m_tabid+" tbody").html(s).find(".cat").bind("click", function () {
+    $(this.m_tabid + " tbody").html(s).find(".cat").bind("click", function () {
         $(".cat").removeClass("hili");
         var scat = $(this).addClass("hili").text();
 
-        if(cbf) cbf(scat)
+        if (cbf) cbf(scat)
         //if (document.m_current_cat === scat) {
-//
+        //
         //} else {
         //    //document.m_current_cat = scat;
         //    var vol_arr = CNST.Cat2VolArr[scat];
@@ -606,9 +665,9 @@ BibleInputMenu.prototype.init = function () {
     })
 
     tabsel.init()
-    catab.Gen_Cat_Table(function(scat){
+    catab.Gen_Cat_Table(function (scat) {
         var vol_arr = CNST.Cat2VolArr[scat];
-            tabsel.Gen_Vol_Table(scat, vol_arr);
+        tabsel.Gen_Vol_Table(scat, vol_arr);
     })
 
     //this.Gen_Keys_Menu();
@@ -621,11 +680,13 @@ BibleInputMenu.prototype.init = function () {
         d2.disable_all_digiKey(true)
     })
 
-    bkntab.Gen_BKN_Table({onClick:function(){
-        _This.loadBible_chp();
-    }});
+    bkntab.Gen_BKN_Table({
+        onClick: function () {
+            _This.loadBible_chp();
+        }
+    });
 
- 
+
 
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
@@ -637,7 +698,7 @@ BibleInputMenu.prototype.init = function () {
         _This.scrollToView_Vrs()
     })
 
-    markHistory.onClickHistoryItem(function(){
+    markHistory.onClickHistoryItem(function () {
         _This.loadBible_chp()
     })
 
@@ -711,15 +772,15 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    console.log("RestApi:",RestApi)
-    console.log("loadpar:",par)
+    console.log("RestApi:", RestApi)
+    console.log("loadpar:", par)
     Uti.Msg(par);
-    Jsonpster.Run(par,function(ret){
+    Jsonpster.Run(par, function (ret) {
         apiCallback_Gen_clientBibleObj_table(ret)
     });
-    setTimeout(function(){
+    setTimeout(function () {
         _THIS.scrollToView_Vrs()
-    },2100)
+    }, 2100)
     return bibOj;
 };///
 BibleInputMenu.prototype.get_selected_load_parm = function () {
@@ -982,29 +1043,7 @@ function onclick_chp_loadBible() {
     Uti.Msg(par);
     Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 };
-function onclick_load_vcv_history(bSortByTime) {
-    var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
-    var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-    Jsonpster.Run(prm, function (ret) {
-        //history
-        console.log(ret);
-        var ops = Uti.read_history_to_opt(ret, bSortByTime);
-        $("#Tab_load_vcv_history tbody").html(ops.join("")).find(".option").bind("click", function () {
-            $(".option").removeClass("hili");
-            $(this).addClass("hili");
-            var s = $(this).text();
-            var mat = s.match(/^(\w{3})[\s]{0,}(\d+)\s{0,}[\:]\s{0,}(\d+)\s{0,}$/);
-            if (mat) {
-                console.log(mat);
-                var vcv = { vol: mat[1], chp: mat[2], vrs: mat[3] };
-                LoadBible_HiliVerse_by_vol_chp_vrs(vcv);
-                Set_BibleIpnut_UI(vcv);
 
-            } else { alert("vcv err:" + s) }
-        });
-
-    });
-};///
 function onclick_load_search_string_history(bSortByTime) {
     var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
     var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
@@ -1148,7 +1187,7 @@ var Uti = {
         return true;
     },
     get_xOj: function (par) {
-        if(!par.vol_arr) par.vol_arr = [par.vol]
+        if (!par.vol_arr) par.vol_arr = [par.vol]
         return Uti.get_bibOj(par.vol_arr, par.chp, par.vrs);
     },
     get_bibOj: function (vol_arr, chp, vrs) {
@@ -1317,8 +1356,8 @@ var BibleInputMenuContainer = `
             
             <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                 <caption>
-                   <button id="loadhistory" onclick='onclick_load_vcv_history(1);' title='load history sort by time'>h</button>
-                   <button id="sort_history_by_vcvID" onclick='onclick_load_vcv_history(0);' title='load history sort by str'>^</button>
+                   <button id="loadhistory"  title='load history sort by time'>h</button>
+                   <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
                 </caption>
                 <thead></thead>
                 <tbody>
@@ -1367,22 +1406,7 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
 
-            <table id="Tab_load_vcv_history" border="1" style="float:left;">
-                <caption><span id='loads_buttons'>
-                        <span>
-                </caption>
-                <thead></thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Pleas click H button <br>for History.<br>
-                            <br>
-                            Pleas click ^ button <br>sort by str.<br>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        
             
         </div>
     </div>
