@@ -1081,31 +1081,6 @@ var Uti = {
         return ret;
     },
 
-
-
-    validate_vcv_xxxxxx: function (vol, chp, vrs) {
-        if (undefined == _Max_struct[vol]) return alert("fatal err vol=" + vol);
-        else if (undefined == _Max_struct[vol][chp]) {
-            var ichp = parseInt(chp);
-            if (Number.isInteger(ichp)) {
-                var max = Object.keys(_Max_struct[vol]).length;
-                if (parseInt(chp) > max) {
-                    return alert("input chp=" + chp + ":\n" + vol + " max chapter is " + max);
-                }
-            }
-
-        }
-        else if (undefined == _Max_struct[vol][chp][vrs]) {
-            var ivrs = parseInt(vrs);
-            if (Number.isInteger(ivrs)) {
-                var max = Object.keys(_Max_struct[vol][chp]).length;
-                if (parseInt(vrs) >= max) {
-                    return alert("input vrs=" + vrs + ":\n" + vol + " " + chp + " max verse is " + max);
-                }
-            }
-        }
-        return true;
-    },
     get_xOj: function (par) {
         if (!par.vol_arr) par.vol_arr = [par.vol]
         return Uti.get_bibOj(par.vol_arr, par.chp, par.vrs);
