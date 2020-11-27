@@ -117,7 +117,7 @@ SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
     $(this.m_tbody).html(s).find(".vin").bind("click", function () {
         $(".vin").removeClass("hili");
         $(this).addClass("hili");
-        $("."+_This.m_chp_vrs_clsnam).text("")
+        $("." + _This.m_chp_vrs_clsnam).text("")
 
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
@@ -504,11 +504,8 @@ BibleInputMenu.prototype.init = function () {
     this.Gen_BKN_Table("#Tab_bkn tbody", CNST.FnameOfBibleObj);
     this.Gen_Cat_Table();
 
-
-
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
-
 
     d1.on_Click_digitKey(function () {
         return _This.get_selected_vcv_parm()
