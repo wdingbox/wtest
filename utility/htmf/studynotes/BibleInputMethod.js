@@ -349,7 +349,7 @@ DigitNumberInputMenu.prototype.add_digiCap = function (i) {
     _THIS.set_digiCap(iupdateCap);
 }
 
-DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, cbfLoadBible) {
+DigitNumberInputMenu.prototype.on_Click_digitKey = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
 
     $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
@@ -368,23 +368,7 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, 
         _THIS.m_nextDigiMenu.disable_digiCap(true)
     }
 }
-DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
-    var _THIS = this
 
-    $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
-        var dici = $(this).text();
-        _THIS.add_digiCap(dici)
-
-        if (_THIS.m_nextDigiMenu) {
-            _THIS.init_chap_digiKeys_by_vol()
-            _THIS.m_nextDigiMenu.disable_digiCap(false)
-        } else {
-
-        }
-
-        cbfLoadBible()
-    });
-}
 DigitNumberInputMenu.prototype.onclick_NextChp = function (i) {
     if (null === i || 0 === i) {
         onclick_chp_loadBible();
@@ -526,12 +510,12 @@ BibleInputMenu.prototype.init = function () {
     d2.Gen_Digit_Table()
 
 
-    d1.on_Click_digit_for_chap(function () {
+    d1.on_Click_digitKey(function () {
         return _This.get_selected_vcv_parm()
     }, function () {
         _This.loadBible();
     })
-    d2.on_Click_digit_for_chap(function () {
+    d2.on_Click_digitKey(function () {
         return _This.get_selected_vcv_parm()
     }, function () {
         //onclick_chp_loadBible();
