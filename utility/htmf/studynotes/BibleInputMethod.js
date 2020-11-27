@@ -275,8 +275,8 @@ DigitNumberInputMenu.prototype.on_Click_digit = function (volid, cbf) {
 DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, cbfLoadBible) {
     var _THIS = this
 
-    function reshuffle_chp_digi(par){
-        if(undefined === par.vol) return
+    function reshuffle_chp_digi(par) {
+        if (undefined === par.vol) return
         var idigiCap = _THIS.get_digiCap()
         $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
             var idn = parseInt($(this).text());
@@ -302,18 +302,30 @@ DigitNumberInputMenu.prototype.on_Click_digit_for_chap = function (cbfGetParam, 
 
 
 }
-DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (volid, chpid, cbf) {
+DigitNumberInputMenu.prototype.on_Click_digit_for_verse = function (cbfGetParam, cbfLoadBible) {
+    var _THIS = this
+    function reshuffle_vrs_digi(par) {
+        if (undefined === par.vol) return
+        if (undefined === par.chp) return
+        var idigiCap = _THIS.get_digiCap()
+        $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
+            var idn = parseInt($(this).text());
+            var inx = idigiCap * 10 + idn;
+            var obj = _Max_struct[par.vol][par.chp][inx]
+            if (undefined === obj) {
+                $(this).attr("disabled", true);
+            }
+        });
+    }
 
-    var vol = $(volid).attr("volcode")
-    var chp = $(chpid).text()
-    var idigiCap = this.get_digiCap()
-    $(_THIS.m_tbody).find("." + _THIS.m_classname).each(function () {
-        var idn = parseInt($(this).text());
-        var inx = idigiCap * 10 + idn;
-        var obj = _Max_struct[vol][chp][inx]
-        if (undefined === obj) {
-            $(this).attr("disabled", true);
-        }
+    $(this.m_tbody).find(".digit").bind("click", function () {
+        var dici = $(this).text();
+        _THIS.update_digiCap(dici)
+
+        var par = cbfGetParam()
+        reshuffle_vrs_digi(par)
+
+        cbfLoadBible()
     });
 }
 DigitNumberInputMenu.prototype.reset_num = function (vol) {
@@ -474,16 +486,15 @@ BibleInputMenu.prototype.init = function () {
 
     d1.on_Click_digit_for_chap(function () {
         return _This.get_selected_vcv_parm()
-    }, function(){
+    }, function () {
         _This.loadBible();
     })
-    d2.on_Click_digit(function () {
+    d2.on_Click_digit_for_verse(function () {
+        return _This.get_selected_vcv_parm()
+    }, function () {
         //onclick_chp_loadBible();
-        var parmBook = { vol: '' }
-        parmBook.vol = $(".v3.hili").text();
-        parmBook.chp = d1.get_digiCap()
-        var vrs = d2.get_digiCap()
-        var bkchvr = parmBook.vol + parmBook.chp + ":" + vrs
+        var parmBook = _This.get_selected_vcv_parm()
+        var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
         $(".vid").each(function () {
             var txt = $(this).text()
             if (txt === bkchvr) {
@@ -491,7 +502,6 @@ BibleInputMenu.prototype.init = function () {
                 $(this).addClass("hiliScroll2View");
             }
         })
-        return parmBook
     })
 
 
@@ -623,11 +633,11 @@ BibleInputMenu.prototype.get_selected_vcv_bibOj = function () {
     var vol = $("#BibleInputCap").attr("volcode");
     var chp = $("#chp_num").text();
     var vrs = $("#vrs_num").text();
-    
+
     var ob = {}
     ob[vol] = {}
     ob[vol][chp] = {}
-    if(vrs){
+    if (vrs) {
         ob[vol][chp][vrs] = vrs
     }
     return ob;
