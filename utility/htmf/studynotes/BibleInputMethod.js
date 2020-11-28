@@ -228,37 +228,43 @@ SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
 
 SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
     var _THIS =this
-    var tid = this.m_id;
+    var tid = this.m_id + " tbody"
+    var bcr = $("#menuContainer")[0].getBoundingClientRect();
+    var h2 = $("#Tab_BibleSingleInputKey").height();
 
-
-    //$(_THIS.m_id).find("caption").text("");
-
-    var trs = this.Gen_Vol_trs(vol_arr);
-    //$(_THIS.m_id).find("caption").text(cap);
-
-    tid += " tbody"
-    $(tid).html(trs).find(".v3").bind("click", function () {
-
-        $(".v3.hili").removeClass("hili");
-        $(this).addClass("hili");
-
-        var vol = $(this).attr("vol");
+    function _set_ui_vol(vol){
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
         d1.init_chap_digiKeys_by_vol()
         d2.disable_all_digiKey(true)
 
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+    }
+
+
+
+    var trs = this.Gen_Vol_trs(vol_arr);
+
+    $(tid).html(trs).find(".v3").bind("click", function () {
+        $(".v3.hili").removeClass("hili");
+        $(this).addClass("hili");
+
+        var vol = $(this).attr("vol");
+        _set_ui_vol(vol)
     });
-
-
-    var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    var h2 = $("#Tab_BibleSingleInputKey").height();
     
     if(alreadyhili){
         $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).slideToggle()
     }else{
         $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).show()
+    }
+
+    if(vol_arr.length === 1){//auto setup
+        setTimeout(()=>{
+            $(_THIS.m_id).hide()
+            _set_ui_vol(vol_arr[0])
+        },1000)
+        return
     }
 };
 
