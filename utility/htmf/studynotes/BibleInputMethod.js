@@ -126,18 +126,20 @@ SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
     s += "</td></tr>";
 
     $(this.m_tbody).html(s).find(".vin").bind("click", function () {
+        var alreadyHili = $(this)[0].classList.contains('hili')
+        console.log("alreadyHili", alreadyHili)
+
         $(".vin").removeClass("hili");
         $(this).addClass("hili");
         $("." + _This.m_chp_vrs_clsnam).text("")
 
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
-        var bcr = $(this)[0].getBoundingClientRect();
-        var y = bcr.y + $(this).height();// + window.scrollY;// - $("#externalinkMenu").height()
-        var x = bcr.x + $(this).width();// + window.scrollX;// - $("#externalinkMenu").width()
-        // $("#externalinkMenu").css('top', y).show();
+
         if (!cbf) return console.error("cbf is null")
-        cbf(ch, volarr, x, y)
+        setTimeout(function(){
+            cbf(ch, volarr, alreadyHili)
+        },100)
     });
     return ks;
 }
@@ -188,6 +190,74 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjS
 }
 
 
+
+
+
+function SingleLeftVolsTable(tid) {
+    this.m_id = tid; //"Tab_vol"
+}
+SingleLeftVolsTable.prototype.init = function () {
+    $(this.m_id).bind("click", function () {
+        $(this).hide()
+    }).hide()
+}
+SingleLeftVolsTable.prototype.get_selary = function () {
+    var vol_arr = []
+    $(".v3.hili").each(function () {
+        var svol = $(this).text();
+        vol_arr.push(svol);
+    });
+    return vol_arr
+}
+SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
+    var trarr = [];
+    vol_arr.forEach(function (vol, i) {
+        var hili = "";//(0 === i) ? "hili" : ""
+        var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
+        //<td align='right'>"+BibVolName[vol][0]+"</td>
+        var iMaxChap = Object.keys(_Max_struct[vol]).length;
+        trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
+    });
+    return trarr.join("");
+}
+
+
+SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
+    var _THIS =this
+    var tid = this.m_id;
+
+
+    $(_THIS.m_id).find("caption").text("");
+
+    var trs = this.Gen_Vol_trs(vol_arr);
+    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+    tid += " tbody"
+    $(tid).html(trs).find(".v3").bind("click", function () {
+
+        $(".v3.hili").removeClass("hili");
+        $(this).addClass("hili");
+
+        var vol = $(this).text();
+        $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+
+        d1.init_chap_digiKeys_by_vol()
+        d2.disable_all_digiKey(true)
+
+        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+    });
+
+    $(_THIS.m_id).find("caption").text(cap);
+
+
+    var bcr = $("#menuContainer")[0].getBoundingClientRect();
+    var h2 = $("#Tab_BibleSingleInputKey").height();
+    
+    if(alreadyhili){
+        $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).slideToggle()
+    }else{
+        $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).show()
+    }
+};
 
 
 
@@ -427,68 +497,6 @@ DigitNumberInputPanel.prototype.onclick_NextChp = function (i) {
 
 
 
-function SingleLeftVolsTable(tid) {
-    this.m_id = tid; //"Tab_vol"
-}
-SingleLeftVolsTable.prototype.init = function () {
-    $(this.m_id).bind("click", function () {
-        $(this).hide()
-    }).hide()
-}
-SingleLeftVolsTable.prototype.get_selary = function () {
-    var vol_arr = []
-    $(".v3.hili").each(function () {
-        var svol = $(this).text();
-        vol_arr.push(svol);
-    });
-    return vol_arr
-}
-SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
-    var trarr = [];
-    vol_arr.forEach(function (vol, i) {
-        var hili = "";//(0 === i) ? "hili" : ""
-        var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
-        //<td align='right'>"+BibVolName[vol][0]+"</td>
-        var iMaxChap = Object.keys(_Max_struct[vol]).length;
-        trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
-    });
-    return trarr.join("");
-}
-
-
-SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
-    var tid = this.m_id;
-
-    var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    $(tid).css('top', y).css('left', bcr.x).slideToggle("slow")
-
-
-    var trs = this.Gen_Vol_trs(vol_arr);
-    //$("#vol_cap_sub").text("");
-    $("#vol_capx").text(cap);
-
-
-    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
-    tid += " tbody"
-    $(tid).html(trs).find(".v3").bind("click", function () {
-
-        $(".v3.hili").removeClass("hili");
-        $(this).addClass("hili");
-
-        var vol = $(this).text();
-        $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
-
-        d1.init_chap_digiKeys_by_vol()
-        d2.disable_all_digiKey(true)
-
-        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
-        //update_digit_cap(tid);
-    });
-    //update_digit_cap(tid);
-};
-
-
-
 
 
 
@@ -667,8 +675,8 @@ BibleInputMenu.prototype.init = function () {
     var _This = this
     var sikm = new SingleKeyInputPanel()
 
-    sikm.gen_panel(function (ch, volary, x, y) {
-        tabsel.Gen_Vol_Table(ch, volary, x, y)
+    sikm.gen_panel(function (ch, volary, alreadyhili) {
+        tabsel.Gen_Vol_Table(ch, volary, alreadyhili)
         d1.disable_all_digiKey(true)
         d2.disable_all_digiKey(true)
     })
@@ -1227,10 +1235,10 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
             <table id="Tab_vol" border="1" style="float:left;">
-                <caption class='vcvCap' id='vol_capx' title=''></caption>
-                <thead id=""></thead>
-                <tbody id=''>
-
+                <caption></caption>
+                <thead id="">
+                </thead>
+                <tbody>
                 </tbody>
             </table>
 
