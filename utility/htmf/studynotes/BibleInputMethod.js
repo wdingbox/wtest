@@ -102,14 +102,14 @@ OutputBibleRapport.prototype.init = function () {
 
 
 
-function SingleKeyInputMenu(tbody) {
+function SingleKeyInputPanel(tbody) {
     if (!tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
     this.m_chp_vrs_clsnam = "chapvrsnum"
 }
-SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
+SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
 
     var s = "<tr id='vitr'>";
@@ -141,7 +141,7 @@ SingleKeyInputMenu.prototype.gen_menu = function (cbf) {
     });
     return ks;
 }
-SingleKeyInputMenu.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
+SingleKeyInputPanel.prototype.get_cha_arr_after_str = function (str, BibleObjStruct) {
     if (!BibleObjStruct) return [];
     var ret = {};
     Object.keys(BibleObjStruct).forEach(function (v) {
@@ -164,7 +164,7 @@ SingleKeyInputMenu.prototype.get_cha_arr_after_str = function (str, BibleObjStru
 
     return ks;
 }
-SingleKeyInputMenu.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
+SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
     var arr = [];
     Object.keys(BibleObjStruct).forEach(function (vol) {
         if (['1', '2', '3'].indexOf(ch) >= 0) {
@@ -665,9 +665,9 @@ BibleInputMenu.prototype.init = function () {
 
     //this.Gen_Keys_Menu();
     var _This = this
-    var sikm = new SingleKeyInputMenu()
+    var sikm = new SingleKeyInputPanel()
 
-    sikm.gen_menu(function (ch, volary, x, y) {
+    sikm.gen_panel(function (ch, volary, x, y) {
         tabsel.Gen_Vol_Table(ch, volary, x, y)
         d1.disable_all_digiKey(true)
         d2.disable_all_digiKey(true)
