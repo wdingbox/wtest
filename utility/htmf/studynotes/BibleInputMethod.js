@@ -204,7 +204,7 @@ SingleKeyOutputVolsTable.prototype.init = function () {
     var _THIS = this
     $(this.m_id).bind("click", function () {
         $(_THIS.m_id).slideUp()
-    }).hide()
+    }).hide().draggable();
 }
 SingleKeyOutputVolsTable.prototype.get_selary = function () {
     var vol_arr = []
