@@ -5,7 +5,7 @@ const path = require('path');
 
 var Utility = {
     GetJsonStringFrmFile: function (fname) {
-        if(!fs.existsSync(fname)) console.log("not existsSync", fname)
+        if (!fs.existsSync(fname)) console.log("not existsSync", fname)
         var content = fs.readFileSync(fname, "utf8");
         console.log("load size", content.length, fname)
         var idx = content.indexOf("{");
