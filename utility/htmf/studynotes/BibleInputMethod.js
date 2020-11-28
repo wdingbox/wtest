@@ -227,7 +227,7 @@ SingleKeyOutputBooksTable.prototype.Gen_Vol_trs = function (vol_arr) {
 }
 
 
-SingleKeyOutputBooksTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
+SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr, alreadyhili) {
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -256,7 +256,7 @@ SingleKeyOutputBooksTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alre
     });
 
     if (alreadyhili) {
-        $(this.m_id).css('top', bcr.y + h2).css('left', bcr.x).slideToggle()
+        $(this.m_id).css('top', bcr.y + h2).css('left', bcr.x).toggle();//.slideToggle()
     } else {
         $(this.m_id).css('top', bcr.y + h2).css('left', bcr.x).show()
     }
@@ -637,10 +637,14 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
         s += "<tr><td class='cat'>" + v + "</td></tr>";
     });
     $(this.m_tabid + " tbody").html(s).find(".cat").bind("click", function () {
+        var alreadyHili = $(this)[0].classList.contains('hili')
+
         $(".cat").removeClass("hili");
         var scat = $(this).addClass("hili").text();
 
-        if (par && par.onClickItm) par.onClickItm(scat)
+        var vol_arr = CNST.Cat2VolArr[scat];
+
+        if (par && par.onClickItm) par.onClickItm(scat, vol_arr, alreadyHili)
     });
 }
 
@@ -677,9 +681,8 @@ BibleInputMenu.prototype.init = function () {
 
     siob.init()
     catab.Gen_Cat_Table({
-        onClickItm: function (scat) {
-            var vol_arr = CNST.Cat2VolArr[scat];
-            siob.Gen_Vol_Table(scat, vol_arr);
+        onClickItm: function (scat, volary, alreadyHili) {
+            siob.Gen_BookList_Table(scat, volary, alreadyHili);
             sikm.rm_hili()
         }
     })
@@ -689,7 +692,7 @@ BibleInputMenu.prototype.init = function () {
 
     sikm.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
-            siob.Gen_Vol_Table(ch, volary, alreadyhili)
+            siob.Gen_BookList_Table(ch, volary, alreadyhili)
             //d1.disable_all_digiKey(true)
             //d2.disable_all_digiKey(true)
             catab.rm_hili()
