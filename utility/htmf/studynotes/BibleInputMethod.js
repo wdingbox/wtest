@@ -107,7 +107,7 @@ function SingleKeyInputPanel(tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
-    this.m_chp_vrs_clsnam = "chapvrsnum"
+   
 }
 SingleKeyInputPanel.prototype.rm_hili = function(){
     $(".vin").removeClass("hili");
@@ -134,7 +134,7 @@ SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
 
         $(".vin").removeClass("hili");
         $(this).addClass("hili");
-        $("." + _This.m_chp_vrs_clsnam).text("")
+        //
 
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
@@ -196,16 +196,17 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjS
 
 
 
-function SingleLeftVolsTable(tid) {
+function SingleKeyOutputVolsTable(tid) {
     this.m_id = tid; //"Tab_vol"
+    this.m_chp_vrs_clsnam = "chapvrsnum"
 }
-SingleLeftVolsTable.prototype.init = function () {
+SingleKeyOutputVolsTable.prototype.init = function () {
     var _THIS = this
     $(this.m_id).bind("click", function () {
         $(_THIS.m_id).slideUp()
     }).hide()
 }
-SingleLeftVolsTable.prototype.get_selary = function () {
+SingleKeyOutputVolsTable.prototype.get_selary = function () {
     var vol_arr = []
     $(".v3.hili").each(function () {
         var svol = $(this).text();
@@ -213,7 +214,7 @@ SingleLeftVolsTable.prototype.get_selary = function () {
     });
     return vol_arr
 }
-SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
+SingleKeyOutputVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
     var trarr = [];
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
@@ -226,7 +227,7 @@ SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
 }
 
 
-SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
+SingleKeyOutputVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
     var _THIS =this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -234,6 +235,7 @@ SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhil
 
     function _set_ui_vol(vol){
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+        $("." + _THIS.m_chp_vrs_clsnam).text("")
 
         d1.init_chap_digiKeys_by_vol()
         d2.disable_all_digiKey(true)
@@ -259,11 +261,13 @@ SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhil
         $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).show()
     }
 
-    if(vol_arr.length === 1){//auto setup
+    if(vol_arr.length === -1){//auto setup
         setTimeout(()=>{
-            $(_THIS.m_id).hide()
-            _set_ui_vol(vol_arr[0])
-        },1000)
+            $(tid).find(".v3").each(function(){
+                $(this).find("td").addClass("hili");
+                $(this).trigger("click")
+            })
+        },2000)
         return
     }
 };
@@ -662,7 +666,7 @@ var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num");
 d1.set_Neightbor(d2)
 d2.set_Neightbor(d1)
 
-var tabsel = new SingleLeftVolsTable("#Tab_vol")
+var tabsel = new SingleKeyOutputVolsTable("#Tab_vol")
 var bkntab = new BookNamesListTable("#Tab_bkn")
 var sikm = new SingleKeyInputPanel()
 
@@ -691,8 +695,8 @@ BibleInputMenu.prototype.init = function () {
     
     sikm.gen_panel(function (ch, volary, alreadyhili) {
         tabsel.Gen_Vol_Table(ch, volary, alreadyhili)
-        d1.disable_all_digiKey(true)
-        d2.disable_all_digiKey(true)
+        //d1.disable_all_digiKey(true)
+        //d2.disable_all_digiKey(true)
         catab.rm_hili()
     })
 
