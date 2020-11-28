@@ -342,6 +342,8 @@ function DigitNumberInputPanel(digiType, tbody, clsname) {
     this.m_displayId = "#" + clsname
 
     this.m_volID = "#BibleInputCap"
+
+    this.m_cbf = null
 }
 DigitNumberInputPanel.prototype.set_Neightbor = function (nextDigiMenu) {
     this.m_nextDigiMenu = nextDigiMenu
@@ -409,7 +411,10 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
     }
     var iMaxChap = Object.keys(_Max_struct[vol]).length;
     if (0 === chp) {
-        if (iMaxChap >= 9) {
+        if(1===iMaxChap){
+            this.add_showupVal(1)
+            if(this.m_cbfLoadBible )this.m_cbfLoadBible ()
+        }else if (iMaxChap >= 9) {
             $(this.m_tbody).find(".digit").attr("disabled", false);
             $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
         } else {
@@ -418,6 +423,7 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
     } else {
         _enable_key(vol, chp)
     }
+    return iMaxChap
 }
 
 DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
@@ -479,6 +485,7 @@ DigitNumberInputPanel.prototype.add_showupVal = function (i) {
 
 DigitNumberInputPanel.prototype.on_Click_digitKey = function (cbfLoadBible) {
     var _THIS = this
+    this.m_cbfLoadBible = cbfLoadBible
 
     $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
         var dici = $(this).text();
