@@ -282,16 +282,10 @@ SingleKeyOutputVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alrea
 
 
 
-function BookNamesListTable(tbody) {
-
+function NameOfBibleListTable(tbody) {
     this.m_tbid = tbody // "#Tab_bkn"
 }
-BookNamesListTable.prototype.gen_table = function (cbf) {
-
-
-}
-
-BookNamesListTable.prototype.Gen_BKN_Table = function (parm) {
+NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
     var str = "";
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     $.each(bknArr, function (i, v) {
@@ -311,10 +305,10 @@ BookNamesListTable.prototype.Gen_BKN_Table = function (parm) {
         var name = $(this).text();
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
 
-        parm.onClick(name)
+        parm.onClickItm(name)
     });
 }
-BookNamesListTable.prototype.get_selected_bkn_fnamesArr = function () {
+NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     var fnamesArr = [];
     $(".cbkn.hili").each(function () {
         var ss = $(this).text();
@@ -325,7 +319,7 @@ BookNamesListTable.prototype.get_selected_bkn_fnamesArr = function () {
     }
     return fnamesArr;
 };///
-BookNamesListTable.prototype.get_selected_Search_Parm = function () {
+NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
     var searchFileName = $(".cbkn.hili.searchFile").text();
     var searchStrn = $("#sinput").val();
     return { File: searchFileName, Strn: searchStrn };
@@ -667,7 +661,7 @@ d1.set_Neightbor(d2)
 d2.set_Neightbor(d1)
 
 var tabsel = new SingleKeyOutputVolsTable("#Tab_vol")
-var bkntab = new BookNamesListTable("#Tab_bkn")
+var nbtab = new NameOfBibleListTable("#Tab_bkn")
 var sikm = new SingleKeyInputPanel()
 
 var BibleInputMenu = function () {
@@ -700,8 +694,8 @@ BibleInputMenu.prototype.init = function () {
         catab.rm_hili()
     })
 
-    bkntab.Gen_BKN_Table({
-        onClick: function () {
+    nbtab.Gen_NB_Table({
+        onClickItm: function () {
             _This.loadBible_chp();
         }
     });
@@ -782,7 +776,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var _THIS = this
     var bibOj = this.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
-    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
+    var fnamesArr = nbtab.get_selected_nb_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     console.log("RestApi:", RestApi)
@@ -798,7 +792,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
 };///
 BibleInputMenu.prototype.get_selected_load_parm = function () {
     //
-    var fnamesArr = bkntab.get_selected_bkn_fnamesArr();
+    var fnamesArr = nbtab.get_selected_nb_fnamesArr();
     var vcvpar = this.get_selected_vcv_parm();
     var bibOj = Uti.get_xOj(vcvpar);
     var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
@@ -1040,7 +1034,7 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     var inp = gBim.get_selected_load_parm();
-    inp.Search = bkntab.get_selected_Search_Parm();
+    inp.Search = nbtab.get_selected_Search_Parm();
     if (!Uti.validateSearch(inp)) return;
     console.log(inp);
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
@@ -1263,7 +1257,7 @@ var BibleInputMenuContainer = `
 
 
             <table border="1" style="float:left;" id="Tab_cat">
-                <caption class='' id='' title='Volumns Catagory'>Cat</caption>
+                <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                 <thead id=""></thead>
                 <tbody id=''>
                     <tr>
@@ -1273,7 +1267,7 @@ var BibleInputMenuContainer = `
             </table>
 
             <table id="Tab_bkn" border="1" style="float:left;">
-                <caption class='bbbCap' id='bkn_cap' title='Biblical Book Name'>BKN</caption>
+                <caption class='bbbCap' id='bkn_cap' title='Names of Bible'>NB</caption>
                 <thead id=""></thead>
                 <tbody id=''>
                     <tr>
