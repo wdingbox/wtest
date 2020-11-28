@@ -5,10 +5,10 @@
 
 
 
-function OutputBibleRapport() {
+function OutputBibleExRapport() {
     this.m_id = "#externalinkMenu"
 }
-OutputBibleRapport.prototype.init_links = function () {
+OutputBibleExRapport.prototype.init_links = function () {
     var Ext_Link_Menu = {
         setup_links: function () {
             $("#blb").click(function () {
@@ -84,7 +84,7 @@ OutputBibleRapport.prototype.init_links = function () {
     }
     Ext_Link_Menu.setup_links()
 }
-OutputBibleRapport.prototype.init = function () {
+OutputBibleExRapport.prototype.init = function () {
     this.init_links()
 
     $(this.m_id).draggable()
@@ -112,7 +112,7 @@ function SingleKeyInputPanel(tbody) {
 SingleKeyInputPanel.prototype.rm_hili = function () {
     $(".vin").removeClass("hili");
 }
-SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
+SingleKeyInputPanel.prototype.gen_panel = function (par) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
 
     var s = "<tr id='vitr'>";
@@ -139,9 +139,9 @@ SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
         var ch = $(this).text();
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
 
-        if (!cbf) return console.error("cbf is null")
+        if (!par) return console.error("par is null")
         setTimeout(function () {
-            cbf(ch, volarr, alreadyHili)
+            if (par && par.onClickItm) par.onClickItm(ch, volarr, alreadyHili)
         }, 100)
     });
     return ks;
@@ -196,17 +196,17 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjS
 
 
 
-function SingleKeyOutputVolsTable(tid) {
+function SingleKeyOutputBooksTable(tid) {
     this.m_id = tid; //"Tab_vol"
     this.m_chp_vrs_clsnam = "chapvrsnum"
 }
-SingleKeyOutputVolsTable.prototype.init = function () {
+SingleKeyOutputBooksTable.prototype.init = function () {
     var _THIS = this
     $(this.m_id).bind("click", function () {
         $(_THIS.m_id).slideUp()
     }).hide().draggable();
 }
-SingleKeyOutputVolsTable.prototype.get_selary = function () {
+SingleKeyOutputBooksTable.prototype.get_selary = function () {
     var vol_arr = []
     $(".v3.hili").each(function () {
         var svol = $(this).text();
@@ -214,7 +214,7 @@ SingleKeyOutputVolsTable.prototype.get_selary = function () {
     });
     return vol_arr
 }
-SingleKeyOutputVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
+SingleKeyOutputBooksTable.prototype.Gen_Vol_trs = function (vol_arr) {
     var trarr = [];
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
@@ -227,7 +227,7 @@ SingleKeyOutputVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
 }
 
 
-SingleKeyOutputVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
+SingleKeyOutputBooksTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -481,7 +481,7 @@ DigitNumberInputPanel.prototype.add_showupVal = function (i) {
     _THIS.set_showupVal(iupdateCap);
 }
 
-DigitNumberInputPanel.prototype.on_Click_digitKey = function (cbfLoadBible) {
+DigitNumberInputPanel.prototype.on_Click_Digit = function (cbfLoadBible) {
     var _THIS = this
     this.m_cbfLoadBible = cbfLoadBible
 
@@ -623,7 +623,7 @@ function Tab_Cat() {
 Tab_Cat.prototype.rm_hili = function () {
     $(".cat").removeClass("hili");
 }
-Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
+Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
     $(this.m_tabid + " caption").click(function () {
         $(".cat").removeClass("hili");
@@ -640,15 +640,13 @@ Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
         $(".cat").removeClass("hili");
         var scat = $(this).addClass("hili").text();
 
-        if (cbf) cbf(scat)
-
-
+        if (par && par.onClickItm) par.onClickItm(scat)
     });
 }
 
 
 
-var obrapport = new OutputBibleRapport()
+var obrapport = new OutputBibleExRapport()
 
 var catab = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
@@ -660,9 +658,9 @@ var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num");
 d1.set_Neightbor(d2)
 d2.set_Neightbor(d1)
 
-var tabsel = new SingleKeyOutputVolsTable("#Tab_vol")
-var nbtab = new NameOfBibleListTable("#Tab_bkn")
+var siob = new SingleKeyOutputBooksTable("#Tab_vol")
 var sikm = new SingleKeyInputPanel()
+var nbtab = new NameOfBibleListTable("#Tab_bkn")
 
 var BibleInputMenu = function () {
 }
@@ -677,21 +675,25 @@ BibleInputMenu.prototype.init = function () {
 
     obrapport.init()
 
-    tabsel.init()
-    catab.Gen_Cat_Table(function (scat) {
-        var vol_arr = CNST.Cat2VolArr[scat];
-        tabsel.Gen_Vol_Table(scat, vol_arr);
-        sikm.rm_hili()
+    siob.init()
+    catab.Gen_Cat_Table({
+        onClickItm: function (scat) {
+            var vol_arr = CNST.Cat2VolArr[scat];
+            siob.Gen_Vol_Table(scat, vol_arr);
+            sikm.rm_hili()
+        }
     })
 
     //this.Gen_Keys_Menu();
     var _This = this
 
-    sikm.gen_panel(function (ch, volary, alreadyhili) {
-        tabsel.Gen_Vol_Table(ch, volary, alreadyhili)
-        //d1.disable_all_digiKey(true)
-        //d2.disable_all_digiKey(true)
-        catab.rm_hili()
+    sikm.gen_panel({
+        onClickItm: function (ch, volary, alreadyhili) {
+            siob.Gen_Vol_Table(ch, volary, alreadyhili)
+            //d1.disable_all_digiKey(true)
+            //d2.disable_all_digiKey(true)
+            catab.rm_hili()
+        }
     })
 
     nbtab.Gen_NB_Table({
@@ -705,10 +707,10 @@ BibleInputMenu.prototype.init = function () {
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
 
-    d1.on_Click_digitKey(function () {
+    d1.on_Click_Digit(function () {
         _This.loadBible_chp();
     })
-    d2.on_Click_digitKey(function () {
+    d2.on_Click_Digit(function () {
         _This.scrollToView_Vrs()
     })
 
