@@ -834,7 +834,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     };
 
 
-    var tb = Uti.gen_clientBibleObj_table(ret);
+    var tb = this.gen_clientBibleObj_table(ret);
     Uti.Msg("tot=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
@@ -911,6 +911,38 @@ OutputBibleTable.prototype.setFontSize = function (n) {
     $(this.m_tbid + " table .tx").css("font-size", document.m_tx_fontSize);
 }
 
+OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
+    var idx = 0, st = "";
+    $.each(ret, function (vol, chpObj) {
+        $.each(chpObj, function (chp, vrsObj) {
+            $.each(vrsObj, function (vrs, val) {
+                //console.log("typeof val=", typeof val);
+                idx++;
+                var vid = vol + "<br>" + chp + ":" + vrs;
+                st += "<tr><td class='vid'>" + vid + "</td><td>";
+                if ("object" == typeof val) {
+                    $.each(val, function (key, str) {
+                        var vid = vol + chp + ":" + vrs;
+                        st += `<div><input type='checkbox' title='${key}'/><a class='tx tx${key}' vid='${vid}'>${str}</a></div>`;
+                    });
+                }
+                if ("string" == typeof val) {
+                    st += "<div>" + val + "</div>";
+                }
+                st += "</td></tr>";
+            });
+        });
+    });
+
+    var s = "<table id='BibOut' border='1'>";
+    s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
+    s += "<thead><th>vcv</th><th>scripts</th></thead>";
+    s += "<tbody>";
+    s += st;
+
+    s += "</tbody></table>";
+    return { htm: s, size: idx };
+}
 
 
 var gobt = new OutputBibleTable()
@@ -1140,38 +1172,6 @@ var Uti = {
         return bibOj;
     },
 
-    gen_clientBibleObj_table: function (ret) {
-        var idx = 0, st = "";
-        $.each(ret, function (vol, chpObj) {
-            $.each(chpObj, function (chp, vrsObj) {
-                $.each(vrsObj, function (vrs, val) {
-                    //console.log("typeof val=", typeof val);
-                    idx++;
-                    var vid = vol + "<br>" + chp + ":" + vrs;
-                    st += "<tr><td class='vid'>" + vid + "</td><td>";
-                    if ("object" == typeof val) {
-                        $.each(val, function (key, str) {
-                            var vid = vol + chp + ":" + vrs;
-                            st += `<div><input type='checkbox' title='${key}'/><a class='tx tx${key}' vid='${vid}'>${str}</a></div>`;
-                        });
-                    }
-                    if ("string" == typeof val) {
-                        st += "<div>" + val + "</div>";
-                    }
-                    st += "</td></tr>";
-                });
-            });
-        });
-
-        var s = "<table id='BibOut' border='1'>";
-        s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
-        s += "<thead><th>vcv</th><th>scripts</th></thead>";
-        s += "<tbody>";
-        s += st;
-
-        s += "</tbody></table>";
-        return { htm: s, size: idx };
-    },
 };////  Uti
 ////////////////////////////////////
 const CNST = {
