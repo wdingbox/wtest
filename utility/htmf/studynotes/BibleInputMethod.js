@@ -291,7 +291,9 @@ DigitNumberInputMenu.prototype.Gen_Digit_Table = function () {
     $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
 
-    $(this.m_displayId).bind("click", function () {
+    $(this.m_displayId).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+        
         $(this).text("")
         if (_This.isDigiChp()) {//Chp Digi Key
             _This.init_chap_digiKeys_by_vol()
@@ -1201,7 +1203,9 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <table border="1" id="Tab_BibleSingleInputKey">
-                <caption><a id="BibleInputCap">Bible Input Keys</a> <button class='chapvrsnum' id='chp_num'></button>:<button class='chapvrsnum' id='vrs_num'></button></caption>
+                <caption>
+                
+                </caption>
                 <thead id=""></thead>
                 <tbody id=""></tbody>
             </table>
@@ -1343,7 +1347,10 @@ var BibleInputMenuContainer = `
 
 </div>
 <hr />
-<button id="menuToggler" onclick="$('#menuContainer').slideToggle();">-</button>
+<div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
+    <a id="BibleInputCap">Bible Input Keys</a> 
+    <button class='chapvrsnum' id='chp_num'></button>:<button class='chapvrsnum' id='vrs_num'></button>
+</div>
 
 
 <div id="externalinkMenu">
