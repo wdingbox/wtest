@@ -420,7 +420,7 @@ function VolumesMiniSelectTable(tid) {
 VolumesMiniSelectTable.prototype.init = function () {
     $(this.m_id).bind("click", function () {
         $(this).hide()
-    })
+    }).hide()
 }
 VolumesMiniSelectTable.prototype.get_selary = function () {
     var vol_arr = []
@@ -638,10 +638,13 @@ BibleInputMenu.prototype.init = function () {
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
+
+    
     $("#externalinkMenu").draggable()
     $("#externalinkMenu").bind("click", function () {
         $("#externalinkMenu").hide()
-    })
+    }).hide()
+
 
     tabsel.init()
     catab.Gen_Cat_Table(function (scat) {
@@ -840,7 +843,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
         var y = bcr.y + window.scrollY - $("#externalinkMenu").height()
-        $("#externalinkMenu").css('top', y).show();
+        $("#externalinkMenu").css('top', y).slideToggle();
         //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
 
         var vid = $(this).text();
