@@ -7,7 +7,7 @@ var Utility = {
     GetJsonStringFrmFile: function (fname) {
         if(!fs.existsSync(fname)) console.log("not existsSync", fname)
         var content = fs.readFileSync(fname, "utf8");
-        console.log("load size", content.length)
+        console.log("load size", content.length, fname)
         var idx = content.indexOf("{");
         var shead = content.substr(0, idx);
         console.log("shead==", shead);
