@@ -107,9 +107,9 @@ function SingleKeyInputPanel(tbody) {
         tbody = "#Tab_BibleSingleInputKey tbody"
     }
     this.m_tbody = tbody
-   
+
 }
-SingleKeyInputPanel.prototype.rm_hili = function(){
+SingleKeyInputPanel.prototype.rm_hili = function () {
     $(".vin").removeClass("hili");
 }
 SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
@@ -140,9 +140,9 @@ SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
         var volarr = _This.Get_Vol_Arr_from_KeyChar(ch[0], _Max_struct);
 
         if (!cbf) return console.error("cbf is null")
-        setTimeout(function(){
+        setTimeout(function () {
             cbf(ch, volarr, alreadyHili)
-        },100)
+        }, 100)
     });
     return ks;
 }
@@ -228,12 +228,12 @@ SingleKeyOutputVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
 
 
 SingleKeyOutputVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhili) {
-    var _THIS =this
+    var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
     var h2 = $("#Tab_BibleSingleInputKey").height();
 
-    function _set_ui_vol(vol){
+    function _set_ui_vol(vol) {
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
         $("." + _THIS.m_chp_vrs_clsnam).text("")
 
@@ -254,20 +254,20 @@ SingleKeyOutputVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alrea
         var vol = $(this).attr("vol");
         _set_ui_vol(vol)
     });
-    
-    if(alreadyhili){
-        $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).slideToggle()
-    }else{
-        $(this.m_id).css('top', bcr.y+h2).css('left', bcr.x).show()
+
+    if (alreadyhili) {
+        $(this.m_id).css('top', bcr.y + h2).css('left', bcr.x).slideToggle()
+    } else {
+        $(this.m_id).css('top', bcr.y + h2).css('left', bcr.x).show()
     }
 
-    if(vol_arr.length === -1){//auto setup
-        setTimeout(()=>{
-            $(tid).find(".v3").each(function(){
+    if (vol_arr.length === -1) {//auto setup problematic
+        setTimeout(() => {
+            $(tid).find(".v3").each(function () {
                 $(this).find("td").addClass("hili");
                 $(this).trigger("click")
             })
-        },2000)
+        }, 2000)
         return
     }
 };
@@ -378,7 +378,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
 
     $(this.m_displayId).bind("click", function (evt) {
         evt.stopImmediatePropagation();
-        
+
         $(this).text("")
         if (_This.isDigiChp()) {//Chp Digi Key
             _This.init_chap_digiKeys_by_vol()
@@ -415,10 +415,10 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
     }
     var iMaxChap = Object.keys(_Max_struct[vol]).length;
     if (0 === chp) {
-        if(1===iMaxChap){
+        if (1 === iMaxChap) {
             this.add_showupVal(1)
-            if(this.m_cbfLoadBible )this.m_cbfLoadBible ()
-        }else if (iMaxChap >= 9) {
+            if (this.m_cbfLoadBible) this.m_cbfLoadBible()
+        } else if (iMaxChap >= 9) {
             $(this.m_tbody).find(".digit").attr("disabled", false);
             $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
         } else {
@@ -654,7 +654,7 @@ Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
 
 
 
-var obrapport  = new OutputBibleRapport()
+var obrapport = new OutputBibleRapport()
 
 var catab = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
@@ -680,7 +680,7 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    
+
     obrapport.init()
 
     tabsel.init()
@@ -692,7 +692,7 @@ BibleInputMenu.prototype.init = function () {
 
     //this.Gen_Keys_Menu();
     var _This = this
-    
+
     sikm.gen_panel(function (ch, volary, alreadyhili) {
         tabsel.Gen_Vol_Table(ch, volary, alreadyhili)
         //d1.disable_all_digiKey(true)
