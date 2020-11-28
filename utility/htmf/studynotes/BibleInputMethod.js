@@ -109,6 +109,9 @@ function SingleKeyInputPanel(tbody) {
     this.m_tbody = tbody
     this.m_chp_vrs_clsnam = "chapvrsnum"
 }
+SingleKeyInputPanel.prototype.rm_hili = function(){
+    $(".vin").removeClass("hili");
+}
 SingleKeyInputPanel.prototype.gen_panel = function (cbf) {
     var ks = this.get_cha_arr_after_str("", _Max_struct);
 
@@ -197,8 +200,9 @@ function SingleLeftVolsTable(tid) {
     this.m_id = tid; //"Tab_vol"
 }
 SingleLeftVolsTable.prototype.init = function () {
+    var _THIS = this
     $(this.m_id).bind("click", function () {
-        $(this).hide()
+        $(_THIS.m_id).slideUp()
     }).hide()
 }
 SingleLeftVolsTable.prototype.get_selary = function () {
@@ -213,10 +217,10 @@ SingleLeftVolsTable.prototype.Gen_Vol_trs = function (vol_arr) {
     var trarr = [];
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
-        var cls = ` class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' `;
+        var cls = `class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' vol='${vol}'`;
         //<td align='right'>"+BibVolName[vol][0]+"</td>
         var iMaxChap = Object.keys(_Max_struct[vol]).length;
-        trarr.push(`<tr><td ${cls} title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
+        trarr.push(`<tr ${cls}><td title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
     });
     return trarr.join("");
 }
@@ -227,17 +231,18 @@ SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhil
     var tid = this.m_id;
 
 
-    $(_THIS.m_id).find("caption").text("");
+    //$(_THIS.m_id).find("caption").text("");
 
     var trs = this.Gen_Vol_trs(vol_arr);
-    //$("#BibleInputCap").text(CNST.BibVolNameEngChn(vol_arr[0]));
+    //$(_THIS.m_id).find("caption").text(cap);
+
     tid += " tbody"
     $(tid).html(trs).find(".v3").bind("click", function () {
 
         $(".v3.hili").removeClass("hili");
         $(this).addClass("hili");
 
-        var vol = $(this).text();
+        var vol = $(this).attr("vol");
         $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
 
         d1.init_chap_digiKeys_by_vol()
@@ -245,8 +250,6 @@ SingleLeftVolsTable.prototype.Gen_Vol_Table = function (cap, vol_arr, alreadyhil
 
         Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
     });
-
-    $(_THIS.m_id).find("caption").text(cap);
 
 
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -606,6 +609,9 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
 function Tab_Cat() {
     this.m_tabid = "#Tab_cat"
 }
+Tab_Cat.prototype.rm_hili = function () {
+    $(".cat").removeClass("hili");
+}
 Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
 
     $(this.m_tabid + " caption").click(function () {
@@ -624,13 +630,7 @@ Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
         var scat = $(this).addClass("hili").text();
 
         if (cbf) cbf(scat)
-        //if (document.m_current_cat === scat) {
-        //
-        //} else {
-        //    //document.m_current_cat = scat;
-        //    var vol_arr = CNST.Cat2VolArr[scat];
-        //    tabsel.Gen_Vol_Table(scat, vol_arr);
-        //}
+
 
     });
 }
@@ -651,7 +651,7 @@ d2.set_Neightbor(d1)
 
 var tabsel = new SingleLeftVolsTable("#Tab_vol")
 var bkntab = new BookNamesListTable("#Tab_bkn")
-
+var sikm = new SingleKeyInputPanel()
 
 var BibleInputMenu = function () {
 }
@@ -663,22 +663,24 @@ BibleInputMenu.prototype.init = function () {
 
 
 
+    
     obrapport.init()
 
     tabsel.init()
     catab.Gen_Cat_Table(function (scat) {
         var vol_arr = CNST.Cat2VolArr[scat];
         tabsel.Gen_Vol_Table(scat, vol_arr);
+        sikm.rm_hili()
     })
 
     //this.Gen_Keys_Menu();
     var _This = this
-    var sikm = new SingleKeyInputPanel()
-
+    
     sikm.gen_panel(function (ch, volary, alreadyhili) {
         tabsel.Gen_Vol_Table(ch, volary, alreadyhili)
         d1.disable_all_digiKey(true)
         d2.disable_all_digiKey(true)
+        catab.rm_hili()
     })
 
     bkntab.Gen_BKN_Table({

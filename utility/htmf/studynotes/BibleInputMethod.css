@@ -127,6 +127,8 @@ body {
         left: 30px;
         background-color: #5F95FC;
         z-index: 9999;
+        padding: 0px 10px 10px 1px;
+        margin: 0px 1px 1px 78px;
     }
     
     #Tab_vol thead,
@@ -135,10 +137,15 @@ body {
         display: block;
     }
 
-    #Tab_vol tbody,
+    
     #Tab_cat tbody,
     #Tab_bkn tbody {
         height: 266px;
+        overflow-y: scroll;
+        display: block;
+    }
+    #Tab_vol tbody{
+        height: 340px;
         overflow-y: scroll;
         display: block;
     }
@@ -336,8 +343,12 @@ input[title='NIV']:checked:after {
 .txCUVpy{
     background-color: rgb(78, 30, 68);
 }
-.NT{
+.v3.NT{
     color:rgb(29, 29, 87);
+    background-color:rgb(196, 196, 233);
+}
+.v3.OT{
+    background-color:rgb(29, 29, 87);
 }
 .vinNum{
     background-color: rgb(163, 17, 207);
