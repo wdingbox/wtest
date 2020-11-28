@@ -5,82 +5,93 @@
 
 
 
-
-var Ext_Link_Menu = {
-    setup_links: function () {
-        $("#blb").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            var blbvol = CNST.BlueLetterBibleCode[ret.vol];
-            var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
-            $(this).attr("href", url + file);
-        });
-        $("#h_g").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            var volm = ret._vol;
-            var bkidx = CNST.BookID2IdxCode[volm];
-            var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
-            $(this).attr("href", url + file);
-        });
-        $("#gtw").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            var vol2 = CNST.BibVolName[ret.vol][0];
-            var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
-            $(this).attr("href", url + file);
-        });
-        $("#studylight").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            //https://www.studylight.org/commentary/john/1-1.html
-            var vol2 = CNST.BibVolName_Studylight([ret.vol]);
-            var file = vol2 + "/" + ret.chp + "-" + ret.vrs + ".html";
-            $(this).attr("href", url + file);
-            console.log(url + file);
-        });
-
-        $("#ccel_org").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            //http://www.ccel.org/study/1_Samuel%202:11-4:18 
-            var bok = CNST.BibVolName_ccel([ret.vol]);
-            var file = bok + " " + ret.chp + ":" + ret.vrs + ".html";
-            $(this).attr("href", url + file);
-            console.log(url + file);
-        });
-
-        $("#crossReference").click(function () {
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            var url = $(this).attr("ref");
-            if (!ret) return;
-
-            //http://www.ccel.org/study/1_Samuel%202:11-4:18 
-            var bok = CNST.BlueLetterBibleCode[ret.vol];
-            var file = bok + " " + ret.chp + ":" + ret.vrs + "";
-            $(this).attr("href", url + file);
-            console.log(url + file);
-        });
-
-    }
+function OutputBibleRapport() {
+    this.m_id = "#externalinkMenu"
 }
+OutputBibleRapport.prototype.init_links = function () {
+    var Ext_Link_Menu = {
+        setup_links: function () {
+            $("#blb").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
 
+                var blbvol = CNST.BlueLetterBibleCode[ret.vol];
+                var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
+                $(this).attr("href", url + file);
+            });
+            $("#h_g").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
+
+                var volm = ret._vol;
+                var bkidx = CNST.BookID2IdxCode[volm];
+                var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
+                $(this).attr("href", url + file);
+            });
+            $("#gtw").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
+
+                var vol2 = CNST.BibVolName[ret.vol][0];
+                var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
+                $(this).attr("href", url + file);
+            });
+            $("#studylight").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
+
+                //https://www.studylight.org/commentary/john/1-1.html
+                var vol2 = CNST.BibVolName_Studylight([ret.vol]);
+                var file = vol2 + "/" + ret.chp + "-" + ret.vrs + ".html";
+                $(this).attr("href", url + file);
+                console.log(url + file);
+            });
+
+            $("#ccel_org").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
+
+                //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+                var bok = CNST.BibVolName_ccel([ret.vol]);
+                var file = bok + " " + ret.chp + ":" + ret.vrs + ".html";
+                $(this).attr("href", url + file);
+                console.log(url + file);
+            });
+
+            $("#crossReference").click(function () {
+                var vid = $(".vid.vmark").text();
+                var ret = Uti.vcv_parser(vid);
+                var url = $(this).attr("ref");
+                if (!ret) return;
+
+                //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+                var bok = CNST.BlueLetterBibleCode[ret.vol];
+                var file = bok + " " + ret.chp + ":" + ret.vrs + "";
+                $(this).attr("href", url + file);
+                console.log(url + file);
+            });
+        }
+    }
+    Ext_Link_Menu.setup_links()
+}
+OutputBibleRapport.prototype.init = function () {
+    this.init_links()
+
+    $(this.m_id).draggable()
+    $(this.m_id).bind("click", function () {
+        $(this.m_id).hide()
+    }).hide()
+}
 
 
 
@@ -616,6 +627,7 @@ Tab_Cat.prototype.Gen_Cat_Table = function (cbf) {
 
 
 
+var obrapport  = new OutputBibleRapport()
 
 var catab = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
@@ -639,12 +651,9 @@ BibleInputMenu.prototype.init = function () {
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
 
-    
-    $("#externalinkMenu").draggable()
-    $("#externalinkMenu").bind("click", function () {
-        $("#externalinkMenu").hide()
-    }).hide()
 
+
+    obrapport.init()
 
     tabsel.init()
     catab.Gen_Cat_Table(function (scat) {
@@ -702,13 +711,6 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-
-
-
-
-
-
-    Ext_Link_Menu.setup_links()
 };
 
 
@@ -1020,7 +1022,7 @@ function onclick_load_search_string_history(bSortByTime) {
 
 
 var Uti = {
-  
+
     validateSearch: function (inp) {
         if (!inp.Search.File) {
             alert("no searchFile");
@@ -1043,7 +1045,7 @@ var Uti = {
         //results = results.substr(0, 60);
         $("#searchResult").val(results);
     },
- 
+
     read_history_to_opt: function (ret, bSortByTime) {
         var ops = [];
         $.each(ret, function (vol, chobj) {
