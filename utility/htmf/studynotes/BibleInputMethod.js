@@ -460,7 +460,7 @@ VolumesMiniSelectTable.prototype.Gen_Vol_Table = function (cap, vol_arr, x, y) {
     var tid = this.m_id;
 
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    $(tid).css('top', y).css('left', bcr.x).show()
+    $(tid).css('top', y).css('left', bcr.x).slideToggle("slow")
 
 
     var trs = this.Gen_Vol_trs(vol_arr);
