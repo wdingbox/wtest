@@ -403,7 +403,10 @@ NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
 
 
 
-function DigitNumberInputPanel(digiType, tbody, clsname) {
+
+
+///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num", showup);
+function DigitNumberInputPanel(digiType, tbody, clsname, shwup) {
     this.m_digiType = digiType;// chpDigi or vrsDigi
 
     if (!tbody) {
@@ -416,7 +419,8 @@ function DigitNumberInputPanel(digiType, tbody, clsname) {
 
     this.m_volID = "#BibleInputCap"
 
-    this.m_cbf = null
+    this.m_showup = shwup
+
 }
 DigitNumberInputPanel.prototype.set_Neightbor = function (nextDigiMenu) {
     this.m_nextDigiMenu = nextDigiMenu
@@ -600,7 +604,7 @@ DigitNumberInputPanel.prototype.on_Click_Digit = function (cbfLoadBible) {
 }
 
 DigitNumberInputPanel.prototype.onclick_showup_vrs_goNextChp = function (i) {
-    var maxChp = this.get_showup_bkn_info().maxChp
+    var maxChp = this.m_showup.get_showup_bkn_info().maxChp
     if (maxChp < 1) return
 
     var chp = i + this.m_nextDigiMenu.get_showupVal() //showup 
@@ -762,8 +766,8 @@ var markHistory = new Tab_mark_bcv_history()
 
 
 
-var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num");
-var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num");
+var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num", showup);
+var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num", showup);
 
 
 var siob = new SingleKeyOutputBooksTable("#Tab_vol")
