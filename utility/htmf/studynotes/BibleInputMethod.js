@@ -102,6 +102,7 @@ function ShowupBknChpVrsPanel() {
     this.m_showupBknID = "#BibleInputCap"
     this.m_showupChpId = "#chp_num"
     this.m_showupVrsId = "#vrs_num"
+    this.m_minus_ChpId = "#minus_ChpVal"
 }
 ShowupBknChpVrsPanel.prototype.init = function () {
 
@@ -149,7 +150,7 @@ ShowupBknChpVrsPanel.prototype.set_showupBkc = function (bkc) {
     $(this.m_showupBknID).text(Bkname).attr("volcode", bkc);
 }
 ShowupBknChpVrsPanel.prototype.get_showupBkc = function () {
-    return  $(this.m_showupBknID).attr("volcode");
+    return $(this.m_showupBknID).attr("volcode");
 }
 ShowupBknChpVrsPanel.prototype.get_showup_bkn_info = function (b) {
     var booknamecode = this.get_showupBkc()
@@ -167,9 +168,9 @@ ShowupBknChpVrsPanel.prototype.update_showup = function (bcv) {
     this.set_showupVrs(par.vrs)
 }
 ShowupBknChpVrsPanel.prototype.get_selected_vcv_parm = function () {
-    var vol = this.get_showupBkc() 
-    var chp = this.get_showupChp() 
-    var vrs = this.get_showupVrs() 
+    var vol = this.get_showupBkc()
+    var chp = this.get_showupChp()
+    var vrs = this.get_showupVrs()
     var ob = { vol: vol, chp: chp, vrs: vrs }
     return ob;
 };
@@ -185,6 +186,68 @@ ShowupBknChpVrsPanel.prototype.get_selected_bc_bibOj = function () {
     return ob;
 };
 
+
+ShowupBknChpVrsPanel.prototype.onclick_showup_vrs_goNextChp = function (i) {
+    var maxChp = this.get_showup_bkn_info().maxChp
+    if (maxChp < 1) return
+
+    var chp = i + this.get_showupChp() //showup chp
+
+    if (chp > maxChp) chp = 1
+    if (chp <= 0) chp = maxChp
+
+    this.set_showupChp(chp) //showup chp
+
+    //this.init_verse_digiKeys_by_vol() //showup vrs. 
+    //this.m_cbfLoadBible() //showup chap reload. 
+}
+
+
+ShowupBknChpVrsPanel.prototype.onclick_Vrs2 = function (cbfLoadBible) {
+    var _This = this
+
+    $(this.m_showupVrsId).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+        var maxChp = _This.get_showup_bkn_info().maxChp
+        if (maxChp < 1) return
+
+        var vrs = _This.get_showupVrs()
+        if (vrs) {
+            _This.set_showupVrs("")
+            //_This.init_verse_digiKeys_by_vol()
+            cbfLoadBible(0)
+        } else {
+            _This.onclick_showup_vrs_goNextChp(1)
+            cbfLoadBible(1)
+        }
+    });
+
+
+    $(this.m_minus_ChpId).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+        var maxChp = _This.get_showup_bkn_info().maxChp
+        if (maxChp < 1) return
+
+        _This.onclick_showup_vrs_goNextChp(-1)
+        cbfLoadBible(1)
+    });
+
+}
+ShowupBknChpVrsPanel.prototype.onclick_Chp = function (cbfLoadBible) {
+    var _This = this
+    $(this.m_showupChpId).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+
+
+        _This.set_showupChp("")
+        //_This.init_chap_digiKeys_by_vol()
+
+        _This.set_showupVrs("")
+        //_This.m_nextDigiMenu.disable_all_digiKey(true)
+
+        cbfLoadBible()
+    });
+}
 
 
 
@@ -428,7 +491,7 @@ function DigitNumberInputPanel(digiType, tbody, clsname, shwup) {
 
     this.m_showupID = "#" + clsname
 
-  
+
 
     this.m_showup = shwup
 
@@ -459,6 +522,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
     var s = gen_trs(this.m_classname);
     $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
+return
 
     $(this.m_showupID).bind("click", function (evt) {
         evt.stopImmediatePropagation();
@@ -566,6 +630,9 @@ DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
 DigitNumberInputPanel.prototype.disable_all_digiKey = function (b) {
     $(this.m_tbody).find(".digit").attr("disabled", b);
 }
+
+
+
 
 
 DigitNumberInputPanel.prototype.get_showupVal = function () {
@@ -789,6 +856,21 @@ BibleInputMenu.prototype.init = function () {
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
+
+
+    showup.onclick_Vrs2(function (bload) {
+        if (bload) {
+            d1.init_chap_digiKeys_by_vol()
+            d2.init_verse_digiKeys_by_vol()
+            _This.loadBible_chp();
+        }else{
+
+        }
+    })
+    showup.onclick_Chp(function () {
+        d1.init_chap_digiKeys_by_vol()
+        d2.disable_all_digiKey(true)
+    })
 
 
 
