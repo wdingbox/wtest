@@ -141,6 +141,13 @@ ShowupBknChpVrsPanel.prototype.get_showup_bkn_info = function (b) {
     }
     return { bkn: booknamecode, maxChp: iMaxChap }
 }
+
+ShowupBknChpVrsPanel.prototype.update_showup = function (bcv) {
+    var par = Uti.vcv_parser(bcv)
+    $(this.m_showupBknID).attr("volcode", par.vol).text(par.vol)
+    $(this.m_showupChpId).text(par.chp)
+    $(this.m_showupVrsId).text(par.vrs)
+}
 ShowupBknChpVrsPanel.prototype.get_selected_vcv_parm = function () {
     var vol = $(this.m_showupBknID).attr("volcode");
     var chp = $(this.m_showupChpId).text();
@@ -148,13 +155,17 @@ ShowupBknChpVrsPanel.prototype.get_selected_vcv_parm = function () {
     var ob = { vol: vol, chp: chp, vrs: vrs }
     return ob;
 };
-ShowupBknChpVrsPanel.prototype.update_showup = function (bcv) {
-    var par = Uti.vcv_parser(bcv)
-    $(this.m_showupBknID).attr("volcode", par.vol).text(par.vol)
-    $(this.m_showupChpId).text(par.chp)
-    $(this.m_showupVrsId).text(par.vrs)
-}
+ShowupBknChpVrsPanel.prototype.get_selected_bc_bibOj = function () {
+    var parm = this.get_selected_vcv_parm()
 
+    var ob = {}
+    ob[parm.vol] = {}
+    ob[parm.vol][parm.chp] = {}
+    if (parm.vrs) {
+        //ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
+    }
+    return ob;
+};
 
 var showup = new ShowupBknChpVrsPanel()
 
@@ -844,7 +855,7 @@ BibleInputMenu.prototype.init = function () {
 
 
 BibleInputMenu.prototype.scrollToView_Vrs = function () {
-    var parmBook = this.get_selected_vcv_parm()
+    var parmBook = showup.get_selected_vcv_parm()
     var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
     $(".vid").each(function () {
         var txt = $(this).text()
@@ -858,27 +869,11 @@ BibleInputMenu.prototype.scrollToView_Vrs = function () {
 
 
 
-BibleInputMenu.prototype.get_selected_vcv_parm = function () {
-    var vol = $("#BibleInputCap").attr("volcode");
-    var chp = $("#chp_num").text();
-    var vrs = $("#vrs_num").text();
-    var ob = { vol: vol, chp: chp, vrs: vrs }
-    return ob;
-};
-BibleInputMenu.prototype.get_selected_bc_bibOj = function () {
-    var parm = this.get_selected_vcv_parm()
 
-    var ob = {}
-    ob[parm.vol] = {}
-    ob[parm.vol][parm.chp] = {}
-    if (parm.vrs) {
-        //ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
-    }
-    return ob;
-};
+
 BibleInputMenu.prototype.loadBible_chp = function () {
     var _THIS = this
-    var bibOj = this.get_selected_bc_bibOj();
+    var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
     var fnamesArr = nbtab.get_selected_nb_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
@@ -897,7 +892,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
 BibleInputMenu.prototype.get_selected_load_parm = function () {
     //
     var fnamesArr = nbtab.get_selected_nb_fnamesArr();
-    var vcvpar = this.get_selected_vcv_parm();
+    var vcvpar = showup.get_selected_vcv_parm();
     var bibOj = Uti.get_xOj(vcvpar);
     var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
 
