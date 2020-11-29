@@ -328,6 +328,10 @@ NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
 
 
 
+
+
+
+
 function DigitNumberInputPanel(digiType, tbody, clsname) {
     this.m_digiType = digiType;// chpDigi or vrsDigi
 
@@ -373,16 +377,30 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
     $(this.m_displayId).bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
-        $(this).text("")
         if (_This.isDigiChp()) {//Chp Digi Key
+            _This.set_showupVal("")
             _This.init_chap_digiKeys_by_vol()
 
             _This.m_nextDigiMenu.set_showupVal("")
             _This.m_nextDigiMenu.disable_all_digiKey(true)
         } else {
-            _This.init_verse_digiKeys_by_vol()
+            var vrs = _This.get_showupVal()
+            if (vrs) {
+                _This.set_showupVal("")
+                _This.init_verse_digiKeys_by_vol()
+            } else {
+                _This.onclick_showup_vrs_goNextChp(1)
+            }
         }
     });
+
+    if (!_This.isDigiChp()) {//equavllent to vrs showup key.
+        $("#minus_ChpVal").bind('click', function (evt) {
+            evt.stopImmediatePropagation();
+
+            _This.onclick_showup_vrs_goNextChp(-1)
+        })
+    }
 }
 
 
@@ -462,6 +480,14 @@ DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
 DigitNumberInputPanel.prototype.disable_all_digiKey = function (b) {
     $(this.m_tbody).find(".digit").attr("disabled", b);
 }
+DigitNumberInputPanel.prototype.get_showup_bkn_info = function (b) {
+    var booknamecode = $(this.m_volID).attr("volcode")
+    var iMaxChap = -1
+    if (booknamecode.length > 0) {
+        iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
+    }
+    return { bkn: booknamecode, maxChp: iMaxChap }
+}
 
 DigitNumberInputPanel.prototype.get_showupVal = function () {
     var chap = $(this.m_displayId).text()
@@ -502,8 +528,17 @@ DigitNumberInputPanel.prototype.on_Click_Digit = function (cbfLoadBible) {
     }
 }
 
-DigitNumberInputPanel.prototype.onclick_NextChp = function (i) {
+DigitNumberInputPanel.prototype.onclick_showup_vrs_goNextChp = function (i) {
+    var maxChp = this.get_showup_bkn_info().maxChp
+    if (maxChp < 1) return
 
+    var chp = i + this.m_nextDigiMenu.get_showupVal()
+
+    if (chp > maxChp) chp = 1
+    if (chp <= 0) chp = maxChp
+
+    this.m_nextDigiMenu.set_showupVal(chp)
+    this.m_nextDigiMenu.m_cbfLoadBible()
 }
 
 
@@ -1375,7 +1410,8 @@ var BibleInputMenuContainer = `
 <hr />
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
     <a id="BibleInputCap">Bible Input Keys</a> 
-    <button class='chapvrsnum' id='chp_num'></button>:<button class='chapvrsnum' id='vrs_num'></button>
+    <a id="minus_ChpVal">&nbsp;—&nbsp;</a>
+    <button class='chapvrsnum' id='chp_num'></button> : <button class='chapvrsnum' id='vrs_num'></button>
 </div>
 
 
