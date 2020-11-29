@@ -555,14 +555,7 @@ DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
 DigitNumberInputPanel.prototype.disable_all_digiKey = function (b) {
     $(this.m_tbody).find(".digit").attr("disabled", b);
 }
-DigitNumberInputPanel.prototype.get_showup_bkn_info = function (b) {
-    var booknamecode = $(this.m_volID).attr("volcode")
-    var iMaxChap = -1
-    if (booknamecode.length > 0) {
-        iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
-    }
-    return { bkn: booknamecode, maxChp: iMaxChap }
-}
+
 
 DigitNumberInputPanel.prototype.get_showupVal = function () {
     var chap = $(this.m_showupID).text()
