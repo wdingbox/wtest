@@ -799,7 +799,7 @@ BibleInputMenu.prototype.init = function () {
 
     siob.init({
         onClickItm: function (vol) {
-            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+            showup.set_showupBkc(vol);
             d1.set_showupVal("")
             d2.set_showupVal("")
 
