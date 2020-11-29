@@ -199,12 +199,14 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjS
 function SingleKeyOutputBooksTable(tid) {
     this.m_id = tid; //"Tab_vol"
     this.m_chp_vrs_clsnam = "chapvrsnum"
+    this.cbf_onClickItm = null
 }
-SingleKeyOutputBooksTable.prototype.init = function () {
+SingleKeyOutputBooksTable.prototype.init = function (par) {
     var _THIS = this
     $(this.m_id).bind("click", function () {
         $(_THIS.m_id).slideUp()
     }).hide().draggable();
+    this.cbf_onClickItm = par.onClickItm
 }
 SingleKeyOutputBooksTable.prototype.get_selary = function () {
     var vol_arr = []
@@ -233,18 +235,6 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
     var h2 = $("#Tab_BibleSingleInputKey").height();
 
-    function _set_ui_vol(vol) {
-        $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
-        $("." + _THIS.m_chp_vrs_clsnam).text("")
-
-        d1.init_chap_digiKeys_by_vol()
-        d2.disable_all_digiKey(true)
-
-        Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
-    }
-
-
-
     var trs = this.Gen_Vol_trs(vol_arr);
 
     $(tid).html(trs).find(".v3").bind("click", function () {
@@ -252,7 +242,7 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
         $(this).addClass("hili");
 
         var vol = $(this).attr("vol");
-        _set_ui_vol(vol)
+        _THIS.cbf_onClickItm(vol)
     });
 
     if (alreadyhili) {
@@ -341,7 +331,7 @@ function DigitNumberInputPanel(digiType, tbody, clsname) {
     this.m_tbody = tbody
     this.m_classname = clsname
 
-    this.m_displayId = "#" + clsname
+    this.m_showupID = "#" + clsname
 
     this.m_volID = "#BibleInputCap"
 
@@ -374,7 +364,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
     $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
 
-    $(this.m_displayId).bind("click", function (evt) {
+    $(this.m_showupID).bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
         if (_This.isDigiChp()) {//Chp Digi Key
@@ -394,7 +384,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
         }
     });
 
-    if (!_This.isDigiChp()) {//equavllent to vrs showup key.
+    if (!_This.isDigiChp()) {//equavllent to click vrs showup key with -1 step.
         $("#minus_ChpVal").bind('click', function (evt) {
             evt.stopImmediatePropagation();
 
@@ -490,7 +480,7 @@ DigitNumberInputPanel.prototype.get_showup_bkn_info = function (b) {
 }
 
 DigitNumberInputPanel.prototype.get_showupVal = function () {
-    var chap = $(this.m_displayId).text()
+    var chap = $(this.m_showupID).text()
     var ichap = parseInt(chap)
     if (!Number.isInteger(ichap)) {
         ichap = 0;
@@ -498,7 +488,7 @@ DigitNumberInputPanel.prototype.get_showupVal = function () {
     return ichap
 }
 DigitNumberInputPanel.prototype.set_showupVal = function (i) {
-    $(this.m_displayId).text(i)
+    $(this.m_showupID).text(i)
 }
 DigitNumberInputPanel.prototype.add_showupVal = function (i) {
     var _THIS = this
@@ -532,13 +522,14 @@ DigitNumberInputPanel.prototype.onclick_showup_vrs_goNextChp = function (i) {
     var maxChp = this.get_showup_bkn_info().maxChp
     if (maxChp < 1) return
 
-    var chp = i + this.m_nextDigiMenu.get_showupVal()
+    var chp = i + this.m_nextDigiMenu.get_showupVal() //showup 
 
     if (chp > maxChp) chp = 1
     if (chp <= 0) chp = maxChp
 
-    this.m_nextDigiMenu.set_showupVal(chp)
-    this.m_nextDigiMenu.m_cbfLoadBible()
+    this.m_nextDigiMenu.set_showupVal(chp) //showup chp
+    this.init_verse_digiKeys_by_vol() //showup vrs. 
+    this.m_nextDigiMenu.m_cbfLoadBible() //showup chap reload. 
 }
 
 
@@ -694,8 +685,7 @@ var markHistory = new Tab_mark_bcv_history()
 
 var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num");
 var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num");
-d1.set_Neightbor(d2)
-d2.set_Neightbor(d1)
+
 
 var siob = new SingleKeyOutputBooksTable("#Tab_vol")
 var sikm = new SingleKeyInputPanel()
@@ -714,7 +704,19 @@ BibleInputMenu.prototype.init = function () {
 
     obrapport.init()
 
-    siob.init()
+    siob.init({
+        onClickItm: function (vol) {
+            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+            d1.set_showupVal("")
+            d2.set_showupVal("")
+
+            d1.init_chap_digiKeys_by_vol()
+            d2.disable_all_digiKey(true)
+
+            Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+        }
+    })
+
     catab.Gen_Cat_Table({
         onClickItm: function (scat, volary, alreadyHili) {
             siob.Gen_BookList_Table(scat, volary, alreadyHili);
@@ -741,6 +743,8 @@ BibleInputMenu.prototype.init = function () {
     });
 
 
+    d1.set_Neightbor(d2)
+    d2.set_Neightbor(d1)
 
     d1.Gen_Digit_Table()
     d2.Gen_Digit_Table()
