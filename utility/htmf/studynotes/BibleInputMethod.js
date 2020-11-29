@@ -695,52 +695,11 @@ var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
 
+    var _This = this
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
 
-
-
-
-    obrapport.init()
-
-    siob.init({
-        onClickItm: function (vol) {
-            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
-            d1.set_showupVal("")
-            d2.set_showupVal("")
-
-            d1.init_chap_digiKeys_by_vol()
-            d2.disable_all_digiKey(true)
-
-            Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
-        }
-    })
-
-    catab.Gen_Cat_Table({
-        onClickItm: function (scat, volary, alreadyHili) {
-            siob.Gen_BookList_Table(scat, volary, alreadyHili);
-            sikm.rm_hili()
-        }
-    })
-
-    //this.Gen_Keys_Menu();
-    var _This = this
-
-    sikm.gen_panel({
-        onClickItm: function (ch, volary, alreadyhili) {
-            siob.Gen_BookList_Table(ch, volary, alreadyhili)
-            //d1.disable_all_digiKey(true)
-            //d2.disable_all_digiKey(true)
-            catab.rm_hili()
-        }
-    })
-
-    nbtab.Gen_NB_Table({
-        onClickItm: function () {
-            _This.loadBible_chp();
-        }
-    });
 
 
     d1.set_Neightbor(d2)
@@ -756,12 +715,50 @@ BibleInputMenu.prototype.init = function () {
         _This.scrollToView_Vrs()
     })
 
+    siob.init({
+        onClickItm: function (vol) {
+            $("#BibleInputCap").text(CNST.BibVolNameEngChn(vol)).attr("volcode", vol);
+            d1.set_showupVal("")
+            d2.set_showupVal("")
+
+            d1.init_chap_digiKeys_by_vol()
+            d2.disable_all_digiKey(true)
+
+            Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+        }
+    })
+   
+    sikm.gen_panel({
+        onClickItm: function (ch, volary, alreadyhili) {
+            siob.Gen_BookList_Table(ch, volary, alreadyhili)
+            //d1.disable_all_digiKey(true)
+            //d2.disable_all_digiKey(true)
+            catab.rm_hili()
+        }
+    })
+
+    catab.Gen_Cat_Table({
+        onClickItm: function (scat, volary, alreadyHili) {
+            siob.Gen_BookList_Table(scat, volary, alreadyHili);
+            sikm.rm_hili()
+        }
+    })
+
+   
+
+    nbtab.Gen_NB_Table({
+        onClickItm: function () {
+            _This.loadBible_chp();
+        }
+    });
+
+
+
     markHistory.onClickHistoryItem(function () {
         _This.loadBible_chp()
     })
 
-
-
+    obrapport.init()
 
 
     $("#Compare_vcv").click(function () {
@@ -775,9 +772,6 @@ BibleInputMenu.prototype.init = function () {
         table_col_index("#oBible table");
         table_sort("#oBible table");
     });
-
-
-
 };
 
 
