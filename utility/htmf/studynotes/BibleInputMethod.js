@@ -106,22 +106,20 @@ function ShowupBknChpVrsPanel() {
 ShowupBknChpVrsPanel.prototype.init = function () {
 
 }
-DigitNumberInputPanel.prototype.set_showupBkn = function (bcd) {
-    var Bkname = ""
-    $(this.m_showupBknID).attr("volcode", bcd).text(Bkname)
-}
 
-DigitNumberInputPanel.prototype.set_showupChp = function (i) {
+
+
+ShowupBknChpVrsPanel.prototype.set_showupChp = function (i) {
     $(this.m_showupChpId).text(i)
 }
-DigitNumberInputPanel.prototype.set_showupVrs = function (i) {
+ShowupBknChpVrsPanel.prototype.set_showupVrs = function (i) {
     $(this.m_showupVrsId).text(i)
 }
 
-DigitNumberInputPanel.prototype.get_showupChp = function (i) {
+ShowupBknChpVrsPanel.prototype.get_showupChp = function (i) {
     return this.get_showupVal(this.m_showupChpId)
 }
-DigitNumberInputPanel.prototype.get_showupVrs = function (i) {
+ShowupBknChpVrsPanel.prototype.get_showupVrs = function (i) {
     return this.get_showupVal(this.m_showupVrsId)
 }
 
@@ -133,8 +131,17 @@ ShowupBknChpVrsPanel.prototype.get_showupVal = function (showupID) {
     }
     return ichap
 }
+
+
+ShowupBknChpVrsPanel.prototype.set_showupBkc = function (bkc) {
+    var Bkname = CNST.BibVolNameEngChn(bkc)
+    $(this.m_showupBknID).text(Bkname).attr("volcode", bkc);
+}
+ShowupBknChpVrsPanel.prototype.get_showupBkc = function () {
+    return  $(this.m_showupBknID).attr("volcode");
+}
 ShowupBknChpVrsPanel.prototype.get_showup_bkn_info = function (b) {
-    var booknamecode = $(this.m_showupBknID).attr("volcode")
+    var booknamecode = this.get_showupBkc()
     var iMaxChap = -1
     if (booknamecode.length > 0) {
         iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
@@ -144,14 +151,14 @@ ShowupBknChpVrsPanel.prototype.get_showup_bkn_info = function (b) {
 
 ShowupBknChpVrsPanel.prototype.update_showup = function (bcv) {
     var par = Uti.vcv_parser(bcv)
-    $(this.m_showupBknID).attr("volcode", par.vol).text(par.vol)
-    $(this.m_showupChpId).text(par.chp)
-    $(this.m_showupVrsId).text(par.vrs)
+    this.set_showupBkc(par.vol)
+    this.set_showupChp(par.chp)
+    this.set_showupVrs(par.vrs)
 }
 ShowupBknChpVrsPanel.prototype.get_selected_vcv_parm = function () {
-    var vol = $(this.m_showupBknID).attr("volcode");
-    var chp = $(this.m_showupChpId).text();
-    var vrs = $(this.m_showupVrsId).text();
+    var vol = this.get_showupBkc() 
+    var chp = this.get_showupChp() 
+    var vrs = this.get_showupVrs() 
     var ob = { vol: vol, chp: chp, vrs: vrs }
     return ob;
 };
@@ -655,10 +662,6 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     var trs = this.gen_trs_sort_by_time(bSortByTime)
     $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function () {
         var vcv = $(this).text()
-        //  var par = Uti.vcv_parser(vcv)
-        //  $("#BibleInputCap").attr("volcode", par.vol).text(par.vol)
-        //  $("#chp_num").text(par.chp)
-        //  $("#vrs_num").text(par.vrs)
 
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
     })
