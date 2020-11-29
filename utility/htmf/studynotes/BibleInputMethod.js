@@ -417,7 +417,7 @@ function DigitNumberInputPanel(digiType, tbody, clsname, shwup) {
 
     this.m_showupID = "#" + clsname
 
-    this.m_volID = "#BibleInputCap"
+  
 
     this.m_showup = shwup
 
@@ -480,8 +480,8 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
 
 
 DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
-    var vol = $(this.m_volID).attr("volcode")
-    var chp = this.get_showupVal()
+    var vol = this.m_showup.get_showupBkc();// $(this.m_volID).attr("volcode")
+    var chp = this.m_showup.get_showupChp();  //.get_showupVal()
     var _THIS = this
 
     function _enable_key(vol, chp) {
@@ -518,7 +518,7 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
 }
 
 DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
-    var vol = $(this.m_volID).attr("volcode")
+    var vol = this.m_showup.get_showupBkc(); // $(this.m_volID).attr("volcode")
     var chp = this.m_nextDigiMenu.get_showupVal()
     var vrs = this.get_showupVal()
 
