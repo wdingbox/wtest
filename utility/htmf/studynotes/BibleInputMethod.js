@@ -174,8 +174,6 @@ ShowupBknChpVrsPanel.prototype.get_selected_bc_bibOj = function () {
     return ob;
 };
 
-var showup = new ShowupBknChpVrsPanel()
-
 
 
 
@@ -755,7 +753,9 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
 
 
-var obrapport = new OutputBibleExRapport()
+
+var showup = new ShowupBknChpVrsPanel()
+
 
 var catab = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
@@ -769,6 +769,9 @@ var d2 = new DigitNumberInputPanel("digiVrs", "#DigitOfVerse", "vrs_num");
 var siob = new SingleKeyOutputBooksTable("#Tab_vol")
 var sikm = new SingleKeyInputPanel()
 var nbtab = new NameOfBibleListTable("#Tab_bkn")
+
+var obrapport = new OutputBibleExRapport()
+
 
 var BibleInputMenu = function () {
 }
