@@ -519,8 +519,8 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
 
 DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
     var vol = this.m_showup.get_showupBkc(); // $(this.m_volID).attr("volcode")
-    var chp = this.m_nextDigiMenu.get_showupVal()
-    var vrs = this.get_showupVal()
+    var chp = this.m_showup.get_showupChp(); //m_nextDigiMenu.get_showupVal()
+    var vrs = this.m_showup.get_showupVrs();//
 
     function _enable_key(vol, chp, vrs, dici) {
         var vrs = (vrs * 10 + dici)
