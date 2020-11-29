@@ -98,6 +98,71 @@ OutputBibleExRapport.prototype.init = function () {
 
 
 
+function ShowupBknChpVrsPanel() {
+    this.m_showupBknID = "#BibleInputCap"
+    this.m_showupChpId = "#chp_num"
+    this.m_showupVrsId = "#vrs_num"
+}
+ShowupBknChpVrsPanel.prototype.init = function () {
+
+}
+DigitNumberInputPanel.prototype.set_showupBkn = function (bcd) {
+    var Bkname = ""
+    $(this.m_showupBknID).attr("volcode", bcd).text(Bkname)
+}
+
+DigitNumberInputPanel.prototype.set_showupChp = function (i) {
+    $(this.m_showupChpId).text(i)
+}
+DigitNumberInputPanel.prototype.set_showupVrs = function (i) {
+    $(this.m_showupVrsId).text(i)
+}
+
+DigitNumberInputPanel.prototype.get_showupChp = function (i) {
+    return this.get_showupVal(this.m_showupChpId)
+}
+DigitNumberInputPanel.prototype.get_showupVrs = function (i) {
+    return this.get_showupVal(this.m_showupVrsId)
+}
+
+ShowupBknChpVrsPanel.prototype.get_showupVal = function (showupID) {
+    var chap = $(showupID).text()
+    var ichap = parseInt(chap)
+    if (!Number.isInteger(ichap)) {
+        ichap = 0;
+    }
+    return ichap
+}
+ShowupBknChpVrsPanel.prototype.get_showup_bkn_info = function (b) {
+    var booknamecode = $(this.m_showupBknID).attr("volcode")
+    var iMaxChap = -1
+    if (booknamecode.length > 0) {
+        iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
+    }
+    return { bkn: booknamecode, maxChp: iMaxChap }
+}
+ShowupBknChpVrsPanel.prototype.get_selected_vcv_parm = function () {
+    var vol = $(this.m_showupBknID).attr("volcode");
+    var chp = $(this.m_showupChpId).text();
+    var vrs = $(this.m_showupVrsId).text();
+    var ob = { vol: vol, chp: chp, vrs: vrs }
+    return ob;
+};
+ShowupBknChpVrsPanel.prototype.update_showup = function (bcv) {
+    var par = Uti.vcv_parser(bcv)
+    $(this.m_showupBknID).attr("volcode", par.vol).text(par.vol)
+    $(this.m_showupChpId).text(par.chp)
+    $(this.m_showupVrsId).text(par.vrs)
+}
+
+
+var showup = new ShowupBknChpVrsPanel()
+
+
+
+
+
+
 
 
 
@@ -579,12 +644,12 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     var trs = this.gen_trs_sort_by_time(bSortByTime)
     $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function () {
         var vcv = $(this).text()
-        var par = Uti.vcv_parser(vcv)
-        $("#BibleInputCap").attr("volcode", par.vol).text(par.vol)
-        $("#chp_num").text(par.chp)
-        $("#vrs_num").text(par.vrs)
+        //  var par = Uti.vcv_parser(vcv)
+        //  $("#BibleInputCap").attr("volcode", par.vol).text(par.vol)
+        //  $("#chp_num").text(par.chp)
+        //  $("#vrs_num").text(par.vrs)
 
-        if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm()
+        if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
     })
 }
 Tab_mark_bcv_history.prototype.init = function () {
@@ -727,7 +792,7 @@ BibleInputMenu.prototype.init = function () {
             Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
         }
     })
-   
+
     sikm.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
             siob.Gen_BookList_Table(ch, volary, alreadyhili)
@@ -744,7 +809,7 @@ BibleInputMenu.prototype.init = function () {
         }
     })
 
-   
+
 
     nbtab.Gen_NB_Table({
         onClickItm: function () {
@@ -754,7 +819,8 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    markHistory.onClickHistoryItem(function () {
+    markHistory.onClickHistoryItem(function (bcv) {
+        showup.update_showup(bcv)
         _This.loadBible_chp()
     })
 
