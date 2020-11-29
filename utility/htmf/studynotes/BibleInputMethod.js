@@ -106,7 +106,18 @@ function ShowupBknChpVrsPanel() {
 ShowupBknChpVrsPanel.prototype.init = function () {
 
 }
-
+ShowupBknChpVrsPanel.prototype.add_showupChp = function (i) {
+    var _THIS = this
+    var icap = _THIS.get_showupChp()
+    var iupdateCap = icap * 10 + parseInt(i);
+    _THIS.set_showupChp(iupdateCap);
+}
+ShowupBknChpVrsPanel.prototype.add_showupVrs = function (i) {
+    var _THIS = this
+    var icap = _THIS.get_showupVrs()
+    var iupdateCap = icap * 10 + parseInt(i);
+    _THIS.set_showupVrs(iupdateCap);
+}
 
 
 ShowupBknChpVrsPanel.prototype.set_showupChp = function (i) {
@@ -481,7 +492,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
 
 DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
     var vol = this.m_showup.get_showupBkc();// $(this.m_volID).attr("volcode")
-    var chp = this.m_showup.get_showupChp();  //.get_showupVal()
+    var chp = this.m_showup.get_showupChp();  //()
     var _THIS = this
 
     function _enable_key(vol, chp) {
@@ -519,7 +530,7 @@ DigitNumberInputPanel.prototype.init_chap_digiKeys_by_vol = function () {
 
 DigitNumberInputPanel.prototype.init_verse_digiKeys_by_vol = function () {
     var vol = this.m_showup.get_showupBkc(); // $(this.m_volID).attr("volcode")
-    var chp = this.m_showup.get_showupChp(); //m_nextDigiMenu.get_showupVal()
+    var chp = this.m_showup.get_showupChp(); //
     var vrs = this.m_showup.get_showupVrs();//
 
     function _enable_key(vol, chp, vrs, dici) {
