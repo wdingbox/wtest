@@ -1414,7 +1414,11 @@ var BibleInputMenuContainer = `
         font-family: 'Times New Roman';
     }
 </style>
-
+<div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
+    <a id="BibleInputCap">Biblic Input Keyboard</a>
+    <a id="minus_ChpVal" op='—'>--</a>
+    <div class='chapvrsnum' id='chp_num'></div> : <div class='chapvrsnum' id='vrs_num'></div>
+</div>
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
         <div id="ID_BibleInputMenuContainer">
@@ -1555,11 +1559,7 @@ var BibleInputMenuContainer = `
 
 </div>
 <hr />
-<div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
-    <a id="BibleInputCap">Biblic Input Keyboard</a>
-    <a id="minus_ChpVal" op='—'>--</a>
-    <div class='chapvrsnum' id='chp_num'></div> : <div class='chapvrsnum' id='vrs_num'></div>
-</div>
+
 
 
 <div id="externalinkMenu">
