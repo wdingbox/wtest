@@ -845,6 +845,9 @@ BibleInputMenu.prototype.init = function () {
 
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
+
+            var bcv = `${vol}1:1`
+            markHistory.addnew(bcv)
             //d1.init_Chp_digiKeys_by_vol()
             //d2.disable_all_digiKey(true)
 
