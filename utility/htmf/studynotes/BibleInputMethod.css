@@ -32,10 +32,31 @@ body {
     }
 
     #menuToggler {
+        display: block;
+        white-space: nowrap;
+        
         top: 1px;
         height: 30px;
-        width:350px;
+        width: 350px;
         background: #5F95FC;
+    }
+    #menuToggler span, #menuToggler div{
+        display: inline-block; 
+       
+        text-align: center;
+        background-color: gray;
+        width: 30px;
+        height: 19px;
+
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        border: .1px solid black;
+        cursor: pointer;
+    }
+    #minus_ChpVal{
+        color: black;
+      
+        cursor: pointer;
     }
 
 
@@ -43,6 +64,10 @@ body {
     .hili {
         background-color: red;
     }
+    .hili_digi_key {
+        border: 1px solid red;
+    }
+
     .hiliScroll2View {
         border: 3px solid yellow;
     }

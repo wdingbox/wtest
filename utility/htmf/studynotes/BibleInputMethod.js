@@ -236,6 +236,7 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         var maxChp = _This.m_Bki.get_showup_bkn_info().maxChp
         if (maxChp < 1) return
 
+        _This.m_Vrs.set_showupVal("")
         _This.goNextChp(-1)
         cbfLoadBible(1)
     });
@@ -1562,9 +1563,9 @@ var BibleInputMenuContainer = `
 </div>
 <hr />
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
-    <a id="BibleInputCap">Bible Input Keys</a> 
-    <a id="minus_ChpVal">&nbsp;—&nbsp;</a>
-    <button class='chapvrsnum' id='chp_num'></button> : <button class='chapvrsnum' id='vrs_num'></button>
+    <a id="BibleInputCap">Biblic Input Keyboard</a>
+    <a id="minus_ChpVal" op='—'>--</a>
+    <div class='chapvrsnum' id='chp_num'></div> : <div class='chapvrsnum' id='vrs_num'></div>
 </div>
 
 
