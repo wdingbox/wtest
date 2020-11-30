@@ -473,7 +473,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         this.m_classname = clsname
 
         function _td(num, clsname) {
-            var s = `<th><div class='digit  ${clsname}' title='${clsname}'>${num}</div></th>`;
+            var s = `<th><button class='digit  ${clsname}' title='${clsname}'>${num}</button></th>`;
             return s;
         }
         function gen_trs(clsname) {
@@ -514,6 +514,9 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
             _THIS.m_parent.init_Chp_digiKeys_by_vol()
             _THIS.m_parent.init_Vrs_digiKeys_by_vol()
 
+            $(".hili_digi_key").removeClass("hili_digi_key")
+            $(this).addClass("hili_digi_key")
+
             cbfLoadBible()
         });
     }
@@ -537,6 +540,9 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
             _THIS.m_parent.m_showup.m_Vrs.append_showupVal(dici)
 
             _THIS.m_parent.init_Vrs_digiKeys_by_vol()
+
+            $(".hili_digi_key").removeClass("hili_digi_key")
+            $(this).addClass("hili_digi_key")
 
             cbfLoadBible()
         });
@@ -1426,19 +1432,6 @@ var BibleInputMenuContainer = `
             </table>
 
             <!----------------------------->
-
-            <table id='Tab_digit' border='1'  style="float:;">
-                        
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr id='xDigitOfChapt'>
-                        <td></td>
-                    </tr>
-                    <tr id='xDigitOfVerse'>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
 
             <!----------------------------->
             <table id="Tab_vol" border="1" style="float:left;">

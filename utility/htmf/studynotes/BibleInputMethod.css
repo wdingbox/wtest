@@ -147,6 +147,15 @@ body {
     div.digit[disabled]{
         color:gray;
     }
+    button.digit{
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        width: 100%;
+    }
+    button.digit[disabled]{
+        color:gray;
+        background-color: gray;
+    }
 
 
     #Tab_cat tbody tr:nth-child(1),
