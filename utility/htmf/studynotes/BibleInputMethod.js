@@ -1418,7 +1418,7 @@ var BibleInputMenuContainer = `
         display:none;
     }
     .selected_grp{
-        display: visual;
+        background-color:blue;
     }
 </style>
 
@@ -1463,10 +1463,10 @@ var BibleInputMenuContainer = `
 
 
         <div id="GroupsMenuBar">
-        <a onclick="$('#GroupsContainer').slideToggle();">[+]</a> 
+        <a onclick="$('#GroupsContainer').slideToggle();"></a> 
         <a onclick="$('#grp_opt').slideToggle();">Opt</a> 
         <a onclick="$('#grp_explore').slideToggle();">Explore</a>
-        <a onclick="$('#grp_dbg').slideToggle();">dbg</a>
+        <a onclick="$('#grp_dbg').slideToggle();">Dbg</a>
         <a onclick="$('#grp_config').slideToggle();">Config</a>
         <a onclick="$('#grp_explore').slideToggle();"></a>
         <a onclick="$('#grp_explore').slideToggle();"></a>
@@ -1523,23 +1523,24 @@ var BibleInputMenuContainer = `
                 <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
                 <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
                 <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
+                <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                <tbody>
+                    <tr>
+                        <td>
+                            click search results<br>
+                            to show history serch<br>                           
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             </div>
 
             <div class="hideGrpMenu" id="grp_dbg"  style="float:left;display:none;">
            
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <br>
-                <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                    <tbody>
-                        <tr>
-                            <td>
-                                click search results<br>
-                                to show history serch<br>                           
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+               
 
 
                 <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
