@@ -880,6 +880,8 @@ BibleInputMenu.prototype.init = function () {
 
     markHistory.onClickHistoryItem(function (bcv) {
         showup.update_showup(bcv)
+        digi.init_Chp_digiKeys_by_vol()
+        digi.init_Vrs_digiKeys_by_vol()
         _This.loadBible_chp()
     })
 
