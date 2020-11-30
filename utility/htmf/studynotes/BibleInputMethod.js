@@ -1442,13 +1442,14 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <!----------------------------->
-            <table id="Tab_OutputBooksList" border="1" style="float:left;">
+            <table id="Tab_OutputBooksList" border="1">
                 <caption></caption>
                 <thead id="">
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+            <!----------------------------->
 
 
             <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">

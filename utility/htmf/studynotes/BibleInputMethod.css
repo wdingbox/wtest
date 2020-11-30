@@ -22,7 +22,7 @@ body {
         top: 30px;
         background-color: rgb(51, 158, 158);
 
-        overflow: scroll;
+        overflow: visible;
         display: block;
 
         height: 130px;
