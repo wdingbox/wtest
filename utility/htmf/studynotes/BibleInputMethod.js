@@ -276,7 +276,7 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
 
 function SingleKeyInputPanel(tbody) {
     if (!tbody) {
-        tbody = "#Tab_BibleSingleInputKey"
+        tbody = "#SingleKeywordsBody"
     }
     this.m_tbody = tbody
 
@@ -405,7 +405,7 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    var h2 = $("#Tab_BibleSingleInputKey").height();
+    var h2 = $("#SingleKeywordsBody").height();
 
     var trs = this.Gen_Vol_trs(vol_arr);
 
@@ -1430,7 +1430,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <table border="1" id="inputkey">
-                <tbody id="Tab_BibleSingleInputKey">
+                <tbody id="SingleKeywordsBody">
                 </tbody>
                 <tbody id='DigitOfChapt'>
                 </tbody>
@@ -1450,6 +1450,10 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
             <!----------------------------->
+
+
+
+
 
 
             <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
