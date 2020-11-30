@@ -275,7 +275,7 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
 
 function SingleKeyInputPanel(tbody) {
     if (!tbody) {
-        tbody = "#Tab_BibleSingleInputKey tbody"
+        tbody = "#Tab_BibleSingleInputKey"
     }
     this.m_tbody = tbody
 
@@ -297,7 +297,7 @@ SingleKeyInputPanel.prototype.gen_panel = function (par) {
         s += `<th><div class='vin ${vintype}'>${c}</div></th>`;
         if (9 == i) s += "</tr><tr>";
     });
-    s += "</td></tr>";
+    s += "</tr>";
 
     $(this.m_tbody).html(s).find(".vin").bind("click", function () {
         var alreadyHili = $(this)[0].classList.contains('hili')
@@ -455,12 +455,11 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
 
 ///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapt", "chp_num", showup);
 function DigitNumberInputZone() {
-    //this.m_digiType = digiType;// chpDigi or vrsDigi
     this.m_showup = null
 }
 DigitNumberInputZone.prototype.init_digi = function (shwup) {
     this.m_showup = shwup
-    ///////-------////////
+    ///////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     function DigitNumberSet(parent) {
         this.m_tbody = null
         this.m_parent = parent
@@ -473,7 +472,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         this.m_classname = clsname
 
         function _td(num, clsname) {
-            var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
+            var s = `<th><button class='digit  ${clsname}' title='${clsname}'>${num}</button></th>`;
             return s;
         }
         function gen_trs(clsname) {
@@ -498,7 +497,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         this.disable_all_digiKey(false)
         $(this.m_tbody).find(".digit:contains('0')").attr("disabled", true);
     }
-    ///////-------////////
+    ///////====================================================================
 
     this.m_Chp = new DigitNumberSet(this)
     this.m_Vrs = new DigitNumberSet(this)
@@ -1415,24 +1414,26 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
 
-            <table border="1" id="Tab_BibleSingleInputKey">
-                <caption>
+            <table border="1" id="inputkey">
+                <tbody id="Tab_BibleSingleInputKey">
+                </tbody>
+                <tbody id='DigitOfChapt'>
+                </tbody>
+                <tbody id='DigitOfVerse'>
+                </tbody>
                 
-                </caption>
-                <thead id=""></thead>
-                <tbody id=""></tbody>
             </table>
 
             <!----------------------------->
 
-            <table id='Tab_chp'  style="float:;">
+            <table id='Tab_digit' border='1'  style="float:;">
                         
                 <thead id=""></thead>
                 <tbody id=''>
-                    <tr id='DigitOfChapt'>
+                    <tr id='xDigitOfChapt'>
                         <td></td>
                     </tr>
-                    <tr id='DigitOfVerse'>
+                    <tr id='xDigitOfVerse'>
                         <td></td>
                     </tr>
                 </tbody>
