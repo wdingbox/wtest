@@ -150,7 +150,9 @@ body {
         padding: 0px 0px 0px 0px;
         margin: 0px 0px 0px 0px;
         width: 100%;
-        border: 0px 0px 0px 0px;
+        padding: 0;
+        border: none;
+        background: none;
     }
     button.digit[disabled]{
 
