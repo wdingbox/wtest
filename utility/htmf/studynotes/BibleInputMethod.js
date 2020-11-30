@@ -490,7 +490,7 @@ NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
 
 
 
-///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num", showup);
+///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapt", "chp_num", showup);
 function DigitNumberInputZone() {
     //this.m_digiType = digiType;// chpDigi or vrsDigi
     this.m_showup = null
@@ -504,7 +504,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
     }
     DigitNumberSet.prototype.Gen_Digits = function (tbody, clsname) {
         if (!tbody) {
-            tbody = "#DigitOfChapter"
+            tbody = "#DigitOfChapt"
         }
         this.m_tbody = tbody
         this.m_classname = clsname
@@ -823,11 +823,10 @@ BibleInputMenu.prototype.init = function () {
     showup.onclick_Chp(function () {
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
-        //d2.disable_all_digiKey(true)
     })
 
 
-    digi.m_Chp.Gen_Digits("#DigitOfChapter", "chp_num")
+    digi.m_Chp.Gen_Digits("#DigitOfChapt", "chp_num")
     digi.m_Vrs.Gen_Digits("#DigitOfVerse", "vrs_num")
 
     digi.m_Chp.on_Click_Digit(function () {
@@ -837,18 +836,6 @@ BibleInputMenu.prototype.init = function () {
         _This.scrollToView_Vrs();
     })
 
-    //d1.set_Neightbor(d2)
-    //d2.set_Neightbor(d1)
-
-    //d1.Gen_Digit_Table()
-    //d2.Gen_Digit_Table()
-
-    //  d1.on_Click_Digit(function () {
-    //      _This.loadBible_chp();
-    //  })
-    //  d2.on_Click_Digit(function () {
-    //      _This.scrollToView_Vrs()
-    //  })
 
     siob.init({
         onClickItm: function (vol) {
@@ -1397,7 +1384,7 @@ var BibleInputMenuContainer = `
                         
                 <thead id=""></thead>
                 <tbody id=''>
-                    <tr id='DigitOfChapter'>
+                    <tr id='DigitOfChapt'>
                         <td></td>
                     </tr>
                     <tr id='DigitOfVerse'>
