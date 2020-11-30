@@ -121,6 +121,9 @@ body {
         margin: 0 0 0 0;
         width:90%
     }
+    div.digit[disabled]{
+        color:gray
+    }
 
     #Tab_cat tbody tr:nth-child(1),
     #Tab_cat tbody tr:nth-child(7) {

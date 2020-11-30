@@ -472,7 +472,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         this.m_classname = clsname
 
         function _td(num, clsname) {
-            var s = `<th><button class='digit  ${clsname}' title='${clsname}'>${num}</button></th>`;
+            var s = `<th><div class='digit  ${clsname}' title='${clsname}'>${num}</div></th>`;
             return s;
         }
         function gen_trs(clsname) {
