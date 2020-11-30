@@ -225,7 +225,7 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
             cbfLoadBible(1)
         } else {
             _This.m_Vrs.detchback()
-            cbfLoadBible(0)
+            cbfLoadBible(1)
         }
     });
 
@@ -248,7 +248,7 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
         var vrs = "" + _This.m_Chp.get_showupVal()
         if (vrs.length > 0) {
             _This.m_Chp.detchback()
-            _This.m_Vrs.set_showupVal(1)
+            _This.m_Vrs.set_showupVal("")
             cbfLoadBible(1)
         } else {
             _This.m_Vrs.set_showupVal("")
