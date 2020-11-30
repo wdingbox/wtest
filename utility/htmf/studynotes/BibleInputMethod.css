@@ -148,6 +148,10 @@ body {
         color:gray;
     }
     button.digit{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+       
         padding: 0px 0px 0px 0px;
         margin: 0px 0px 0px 0px;
         width: 100%;
