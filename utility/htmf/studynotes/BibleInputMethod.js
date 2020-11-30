@@ -479,6 +479,98 @@ NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
 
 
 
+
+
+
+
+
+
+
+
+
+///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num", showup);
+function DigitNumberInputZone(digiType, tbody, clsname, shwup) {
+    this.m_digiType = digiType;// chpDigi or vrsDigi
+
+
+
+    this.m_showupID = "#" + clsname
+
+
+
+    this.m_showup = shwup
+
+}
+DigitNumberInputZone.prototype.init_digi = function (nextDigiMenu) {
+    function DigitNumberSet(tbody, clsname) {
+
+    }
+    DigitNumberSet.prototype.Gen_Digits = function (tbody, clsname) {
+        if (!tbody) {
+            tbody = "#DigitOfChapter"
+        }
+        this.m_tbody = tbody
+        this.m_classname = clsname
+
+        function _td(num, clsname) {
+            var s = `<td><button class='digit  ${clsname}' title='${clsname}'>${num}</button></td>`;
+            return s;
+        }
+        function gen_trs(clsname) {
+            var s = "", num = 1;
+            s += `<tr>`;
+            for (var i = 1; i < 10; i++) {
+                s += _td(num++, clsname);
+            };
+            s += _td(0, clsname) + `</tr>`;
+            return s;
+        };
+
+  
+        var s = gen_trs(this.m_classname);
+        $(this.m_tbody).html(s).find("button").attr("disabled", true);
+
+        return
+    }
+    ///////-------////////
+    var _This = this;
+
+    this.dChp = new DigitNumberSet()
+    this.dVrs = new DigitNumberSet()
+
+    this.dChp.on_Click_Digit = function(cbfLoadBible){
+        this.m_cbfLoadBible = cbfLoadBible
+
+        $(this.m_tbody).find("." + _THIS.m_classname).bind("click", function () {
+            var dici = $(this).text();
+            _THIS.add_showupVal(dici)
+    
+            if (_THIS.isDigiChp()) {//Chp Digi Key
+                _THIS.init_chap_digiKeys_by_vol()
+                _THIS.m_nextDigiMenu.init_verse_digiKeys_by_vol()
+            } else {
+                _THIS.init_verse_digiKeys_by_vol()
+            }
+            cbfLoadBible()
+        });
+        if (_THIS.isDigiChp()) {//Chp Digi Key 
+            _THIS.m_nextDigiMenu.disable_all_digiKey(true)
+        }
+    }
+
+ 
+
+}
+DigitNumberInputZone.prototype.isDigiChp = function () {
+
+}
+
+////////////////
+
+
+
+
+
 ///var d1 = new DigitNumberInputPanel("digiChp", "#DigitOfChapter", "chp_num", showup);
 function DigitNumberInputPanel(digiType, tbody, clsname, shwup) {
     this.m_digiType = digiType;// chpDigi or vrsDigi
@@ -522,7 +614,7 @@ DigitNumberInputPanel.prototype.Gen_Digit_Table = function () {
     var s = gen_trs(this.m_classname);
     $(this.m_tbody).html(s).find("button").attr("disabled", true);
 
-return
+    return
 
     $(this.m_showupID).bind("click", function (evt) {
         evt.stopImmediatePropagation();
@@ -863,7 +955,7 @@ BibleInputMenu.prototype.init = function () {
             d1.init_chap_digiKeys_by_vol()
             d2.init_verse_digiKeys_by_vol()
             _This.loadBible_chp();
-        }else{
+        } else {
 
         }
     })
