@@ -140,13 +140,7 @@ body {
     #DigitOfVerse {
         background-color: rgb(149, 97, 29);
     }
-    div.digit{
-        padding: 3px 7px 3px 7px;
-        margin: 0px 0px 0px 0px;
-    }
-    div.digit[disabled]{
-        color:gray;
-    }
+
     button.digit{
         -webkit-appearance: none;
         -moz-appearance: none;
@@ -155,11 +149,9 @@ body {
         padding: 0px 0px 0px 0px;
         margin: 0px 0px 0px 0px;
         width: 100%;
-        background-color: gray;
     }
     button.digit[disabled]{
-        color:gray;
-        background-color: gray;
+
     }
 
 
