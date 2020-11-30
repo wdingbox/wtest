@@ -634,7 +634,7 @@ DigitNumberInputZone.prototype.init_Vrs_digiKeys_by_vol = function () {
 
 
 function Tab_Cat() {
-    this.m_tabid = "#Tab_cat"
+    this.m_tabid = "#Tab_CatagryOfBooks"
 }
 Tab_Cat.prototype.rm_hili = function () {
     $(".cat").removeClass("hili");
@@ -1414,11 +1414,15 @@ var BibleInputMenuContainer = `
         font-family: 'Times New Roman';
     }
 </style>
+
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
     <a id="BibleInputCap">Biblic Input Keyboard</a>
     <a id="minus_ChpVal" op='—'>--</a>
     <div class='chapvrsnum' id='chp_num'></div> : <div class='chapvrsnum' id='vrs_num'></div>
 </div>
+
+<!----------------------------->
+
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
         <div id="ID_BibleInputMenuContainer">
@@ -1447,7 +1451,7 @@ var BibleInputMenuContainer = `
             </table>
 
 
-            <table border="1" style="float:left;" id="Tab_cat">
+            <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                 <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                 <thead id=""></thead>
                 <tbody id=''>

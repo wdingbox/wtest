@@ -162,8 +162,8 @@ body {
     }
 
 
-    #Tab_cat tbody tr:nth-child(1),
-    #Tab_cat tbody tr:nth-child(7) {
+    #Tab_CatagryOfBooks tbody tr:nth-child(1),
+    #Tab_CatagryOfBooks tbody tr:nth-child(7) {
         background-color: rgb(24, 117, 117);
     }
 
@@ -177,14 +177,14 @@ body {
     }
     
     #Tab_OutputBooksList thead,
-    #Tab_cat thead,
-    #Tab_bkn thead {
+    #Tab_CatagryOfBooks thead,
+    #Tab_NamesOfBible thead {
         display: block;
     }
 
     
-    #Tab_cat tbody,
-    #Tab_bkn tbody {
+    #Tab_CatagryOfBooks tbody,
+    #Tab_NamesOfBible tbody {
         height: 266px;
         overflow-y: scroll;
         display: block;
