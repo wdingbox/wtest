@@ -1421,7 +1421,7 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
 
-            <table  id="inputkey">
+            <table border="1" id="inputkey">
                 <tbody id="Tab_BibleSingleInputKey">
                 </tbody>
                 <tbody id='DigitOfChapt'>
