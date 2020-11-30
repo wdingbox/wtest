@@ -443,57 +443,6 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
 
 
 
-function NameOfBibleListTable(tbody) {
-    this.m_tbid = tbody // "#Tab_NamesOfBible"
-}
-NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
-    var str = "";
-    var bknArr = Object.keys(CNST.FnameOfBibleObj);
-    $.each(bknArr, function (i, v) {
-        var hil = "";
-        if (i == 1) hil = "hili";
-        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
-    });
-    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
-        //$(".cbkn").removeClass("hili");
-        $(this).toggleClass("hili");
-
-        $(".searchFile").removeClass("searchFile");
-        $(this).toggleClass("searchFile");
-
-        $("#searchFile").text($(this).text());
-
-        var name = $(this).text();
-        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
-
-        parm.onClickItm(name)
-    });
-}
-NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
-    var fnamesArr = [];
-    $(".cbkn.hili").each(function () {
-        var ss = $(this).text();
-        fnamesArr.push(ss);
-    });
-    if (fnamesArr.length == 0) {
-        alert("Err: no bookname selected.");
-    }
-    return fnamesArr;
-};///
-NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
-    var searchFileName = $(".cbkn.hili.searchFile").text();
-    var searchStrn = $("#sinput").val();
-    return { File: searchFileName, Strn: searchStrn };
-};///
-
-
-
-
-
-
-
-
-
 
 
 
@@ -668,6 +617,112 @@ DigitNumberInputZone.prototype.init_Vrs_digiKeys_by_vol = function () {
 
 
 
+
+
+
+
+
+
+
+
+
+
+function Tab_Cat() {
+    this.m_tabid = "#Tab_cat"
+}
+Tab_Cat.prototype.rm_hili = function () {
+    $(".cat").removeClass("hili");
+}
+Tab_Cat.prototype.Gen_Cat_Table = function (par) {
+
+    $(this.m_tabid + " caption").click(function () {
+        $(".cat").removeClass("hili");
+        $(".v3").remove();
+
+    });
+
+    var _This = this;
+    var s = "";
+    $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
+        s += "<tr><td class='cat'>" + v + "</td></tr>";
+    });
+    $(this.m_tabid + " tbody").html(s).find(".cat").bind("click", function () {
+        var alreadyHili = $(this)[0].classList.contains('hili')
+
+        $(".cat").removeClass("hili");
+        var scat = $(this).addClass("hili").text();
+
+        var vol_arr = CNST.Cat2VolArr[scat];
+
+        if (par && par.onClickItm) par.onClickItm(scat, vol_arr, alreadyHili)
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function NameOfBibleListTable(tbody) {
+    this.m_tbid = tbody // "#Tab_NamesOfBible"
+}
+NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
+    var str = "";
+    var bknArr = Object.keys(CNST.FnameOfBibleObj);
+    $.each(bknArr, function (i, v) {
+        var hil = "";
+        if (i == 1) hil = "hili";
+        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+    });
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        //$(".cbkn").removeClass("hili");
+        $(this).toggleClass("hili");
+
+        $(".searchFile").removeClass("searchFile");
+        $(this).toggleClass("searchFile");
+
+        $("#searchFile").text($(this).text());
+
+        var name = $(this).text();
+        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
+
+        parm.onClickItm(name)
+    });
+}
+NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
+    var fnamesArr = [];
+    $(".cbkn.hili").each(function () {
+        var ss = $(this).text();
+        fnamesArr.push(ss);
+    });
+    if (fnamesArr.length == 0) {
+        alert("Err: no bookname selected.");
+    }
+    return fnamesArr;
+};///
+NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
+    var searchFileName = $(".cbkn.hili.searchFile").text();
+    var searchStrn = $("#sinput").val();
+    return { File: searchFileName, Strn: searchStrn };
+};///
+
+
+
+
+
+
+
+
+
+
 function Tab_mark_bcv_history() {
     this.m_tabid = "#Tab_mark_bcv_history"
     this.m_vcvHistory = {}
@@ -765,37 +820,6 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
 
 
 
-
-function Tab_Cat() {
-    this.m_tabid = "#Tab_cat"
-}
-Tab_Cat.prototype.rm_hili = function () {
-    $(".cat").removeClass("hili");
-}
-Tab_Cat.prototype.Gen_Cat_Table = function (par) {
-
-    $(this.m_tabid + " caption").click(function () {
-        $(".cat").removeClass("hili");
-        $(".v3").remove();
-
-    });
-
-    var _This = this;
-    var s = "";
-    $.each(Object.keys(CNST.Cat2VolArr), function (i, v) {
-        s += "<tr><td class='cat'>" + v + "</td></tr>";
-    });
-    $(this.m_tabid + " tbody").html(s).find(".cat").bind("click", function () {
-        var alreadyHili = $(this)[0].classList.contains('hili')
-
-        $(".cat").removeClass("hili");
-        var scat = $(this).addClass("hili").text();
-
-        var vol_arr = CNST.Cat2VolArr[scat];
-
-        if (par && par.onClickItm) par.onClickItm(scat, vol_arr, alreadyHili)
-    });
-}
 
 
 
