@@ -135,6 +135,12 @@ ShowupBCV.prototype.init = function () {
         var iupdateCap = icap * 10 + parseInt(i);
         _THIS.set_showupVal(iupdateCap);
     }
+    Showup_CV.prototype.detchback = function () {
+        var sval = "" + this.get_showupVal()
+        var s = sval.substr(0, sval.length - 1)
+        this.set_showupVal(s);
+        return s
+    }
     ////--------------------------------------------
     ////~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     function Showup_Bk(val_id) {
@@ -214,13 +220,12 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         if (maxChp < 1) return
 
         var vrs = _This.m_Vrs.get_showupVal()
-        if (vrs) {
-            _This.m_Vrs.set_showupVal("")
-            //_This.init_Vrs_digiKeys_by_vol()
-            cbfLoadBible(0)
-        } else {
+        if (0 === vrs) {
             _This.goNextChp(1)
             cbfLoadBible(1)
+        } else {
+            _This.m_Vrs.detchback()
+            cbfLoadBible(0)
         }
     });
 
@@ -240,13 +245,22 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
     $(this.m_Chp.m_showupValID).bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
-        _This.m_Chp.set_showupVal("")
+        var vrs = "" + _This.m_Chp.get_showupVal()
+        if (vrs.length > 0) {
+            _This.m_Chp.detchback()
+            _This.m_Vrs.set_showupVal(1)
+            cbfLoadBible(1)
+        } else {
+            _This.m_Vrs.set_showupVal("")
+            cbfLoadBible(0)
+        }
+
+        //_This.m_Chp.set_showupVal("")
         //_This.init_Chp_digiKeys_by_vol()
 
-        _This.m_Vrs.set_showupVal("")
         //_This.m_nextDigiMenu.disable_all_digiKey(true)
 
-        cbfLoadBible()
+        //cbfLoadBible()
     });
 }
 ////////////////-------------------////////////////////////////////
@@ -820,9 +834,12 @@ BibleInputMenu.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
         }
     })
-    showup.onclick_Chp(function () {
+    showup.onclick_Chp(function (bload) {
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
+        if(bload){
+            _This.loadBible_chp();
+        }
     })
 
 
@@ -858,7 +875,7 @@ BibleInputMenu.prototype.init = function () {
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
             skout.Gen_BookList_Table(ch, volary, alreadyhili)
-            
+
             bibcat.rm_hili()
         }
     })
