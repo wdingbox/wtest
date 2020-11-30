@@ -1413,6 +1413,13 @@ var BibleInputMenuContainer = `
 
         font-family: 'Times New Roman';
     }
+
+    .hideGrpMenu{
+        display:none;
+    }
+    .selected_grp{
+        display: visual;
+    }
 </style>
 
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
@@ -1450,122 +1457,126 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
             <!----------------------------->
-
-
-
-
-
-
-            <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
-                <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                <caption class='bbbCap' id='bkn_cap' title='Names of Bible'>NB</caption>
-                <thead id=""></thead>
-                <tbody id=''>
-                    <tr>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <table id="Tab_mark_bcv_history" border="1" style="float:left;">
-                <caption>
-                   <button id="loadhistory"  title='load history sort by time'>h</button>
-                   <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
-                </caption>
-                <thead></thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Pleas click H button <br>for History.<br>
-                            <br>
-                            Pleas click ^ button <br>sort by str.<br>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            
-
-
-
         </div>
-        <div id="ID_Explore">
 
-            <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
 
-            <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
-            <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
-            <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
-            
+
+
+        <div id="GroupsMenuBar">
+        <a onclick="$('#GroupsContainer').slideToggle();">[+]</a> 
+        <a onclick="$('#grp_opt').slideToggle();">Opt</a> 
+        <a onclick="$('#grp_explore').slideToggle();">Explore</a>
+        <a onclick="$('#grp_dbg').slideToggle();">dbg</a>
+        <a onclick="$('#grp_config').slideToggle();">Config</a>
+        <a onclick="$('#grp_explore').slideToggle();"></a>
+        <a onclick="$('#grp_explore').slideToggle();"></a>
+        <a onclick="$('#grp_explore').slideToggle();"></a>
+        <a onclick="$('#grp_explore').slideToggle();"></a>
+        
+        </div>
+        <div id="GroupsContainer" style="display:visual">
+
+            <div class="hideGrpMenu" id="grp_opt" style="float:left;display:none;">
+                <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
+                    <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
+                    <thead id=""></thead>
+                    <tbody id=''>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table id="Tab_NamesOfBible" border="1" style="float:left;">
+                    <caption class='bbbCap' id='bkn_cap' title='Names of Bible'>NB</caption>
+                    <thead id=""></thead>
+                    <tbody id=''>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table id="Tab_mark_bcv_history" border="1" style="float:left;">
+                    <caption>
+                       <button id="loadhistory"  title='load history sort by time'>h</button>
+                       <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
+                    </caption>
+                    <thead></thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                Pleas click H button <br>for History.<br>
+                                <br>
+                                Pleas click ^ button <br>sort by str.<br>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="hideGrpMenu" id="grp_explore" style="float:left;display:none;">
+
+                <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
+
+                <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
+                <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
+                <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
+            </div>
+
+            <div class="hideGrpMenu" id="grp_dbg"  style="float:left;display:none;">
            
-            <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
-            <br>
-            
+                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
+                <br>
+                <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                click search results<br>
+                                to show history serch<br>                           
 
-            
-
-            <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                <tbody>
-                    <tr>
-                        <td>
-                            click search results<br>
-                            to show history serch<br>                           
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
-            <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
+                <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
-        
-            
+            </div>
+
+            <div class="hideGrpMenu" id="grp_config"  style="float:left;display:none;">
+                <table id='tmpsel2ref' border="1" align="left">
+                    <thead></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+
+
+                <button id="oBible_indxer">indxer</button>
+                <button id="Compare_vcv">Compare_vcv</button>
+                <a href='../index.htm'>ref</a>
+
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td>Vol</td>
+                            <td>Chp</td>
+                            <td>Ver</td>
+                        </tr>
+                    </thead>
+                    <tbody id="StructAna"></tbody>
+                </table>
+                <input id="CopyTextToClipboard" title="CopyTextToClipboard"/><br>
+                <button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button><button onclick="gobt.setFontSize(-10);">f-</button>
+            </div> 
+            <!--------- end of GroupsContainer ------>
         </div>
     </div>
-    <div id="others">
-            <table id='tmpsel2ref' border="1" align="left">
-                <thead></thead>
-                <tbody>
-                </tbody>
-            </table>
-
-
-            <div id="othersx">
-        <button id="oBible_indxer">indxer</button>
-        <button id="Compare_vcv">Compare_vcv</button>
-        <a href='../index.htm'>ref</a>
-
-        <table border="1">
-            <thead>
-                <tr>
-                    <td>#</td>
-                    <td>Vol</td>
-                    <td>Chp</td>
-                    <td>Ver</td>
-                </tr>
-            </thead>
-            <tbody id="StructAna"></tbody>
-        </table>
-        <input id="CopyTextToClipboard" title="CopyTextToClipboard"/><br>
-        <button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button><button onclick="gobt.setFontSize(-10);">f-</button>
-    </div>
-
-        </div>
-
-    
-
 </div>
 <hr />
 
