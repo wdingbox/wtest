@@ -151,9 +151,10 @@ body {
         padding: 0px 0px 0px 0px;
         margin: 0px 0px 0px 0px;
         width: 100%;
+        background-color: gray;
     }
     button.digit[disabled]{
-        color:lightgray;
+        color:gray;
         background-color: gray;
     }
 
