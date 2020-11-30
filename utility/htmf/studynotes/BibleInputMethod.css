@@ -116,6 +116,11 @@ body {
     #DigitOfVerse {
         background-color: rgb(149, 97, 29);
     }
+    #DigitOfVerse button, #DigitOfChapt button{
+        padding: 0 0 0 0;
+        margin: 0 0 0 0;
+        width:100%
+    }
 
     #Tab_cat tbody tr:nth-child(1),
     #Tab_cat tbody tr:nth-child(7) {
