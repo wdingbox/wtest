@@ -369,7 +369,7 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjS
 
 
 function SingleKeyOutputBooksTable(tid) {
-    this.m_id = tid; //"Tab_vol"
+    this.m_id = tid; //"Tab_OutputBooksList"
     this.m_chp_vrs_clsnam = "chapvrsnum"
     this.cbf_onClickItm = null
 }
@@ -833,7 +833,7 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
 var showup = new ShowupBCV() // ShowupBknChpVrsPanel()
 var skinp = new SingleKeyInputPanel()
 var digi = new DigitNumberInputZone()
-var skout = new SingleKeyOutputBooksTable("#Tab_vol")
+var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 
 var bibcat = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
@@ -1434,7 +1434,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <!----------------------------->
-            <table id="Tab_vol" border="1" style="float:left;">
+            <table id="Tab_OutputBooksList" border="1" style="float:left;">
                 <caption></caption>
                 <thead id="">
                 </thead>

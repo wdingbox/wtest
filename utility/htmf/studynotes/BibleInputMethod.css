@@ -167,7 +167,7 @@ body {
         background-color: rgb(24, 117, 117);
     }
 
-    #Tab_vol{
+    #Tab_OutputBooksList{
         position: fixed;
         left: 30px;
         background-color: #5F95FC;
@@ -176,7 +176,7 @@ body {
         margin: 0px 1px 1px 78px;
     }
     
-    #Tab_vol thead,
+    #Tab_OutputBooksList thead,
     #Tab_cat thead,
     #Tab_bkn thead {
         display: block;
@@ -189,7 +189,7 @@ body {
         overflow-y: scroll;
         display: block;
     }
-    #Tab_vol tbody{
+    #Tab_OutputBooksList tbody{
         height: 340px;
         overflow-y: scroll;
         display: block;
