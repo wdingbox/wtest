@@ -817,7 +817,7 @@ BibleInputMenu.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chp();
         } else {
-
+            digi.init_Vrs_digiKeys_by_vol()
         }
     })
     showup.onclick_Chp(function () {
