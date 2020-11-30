@@ -430,7 +430,7 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
 
 
 function NameOfBibleListTable(tbody) {
-    this.m_tbid = tbody // "#Tab_bkn"
+    this.m_tbid = tbody // "#Tab_NamesOfBible"
 }
 NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
     var str = "";
@@ -787,14 +787,14 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
 
 var showup = new ShowupBCV() // ShowupBknChpVrsPanel()
-var sikm = new SingleKeyInputPanel()
+var skinp = new SingleKeyInputPanel()
 var digi = new DigitNumberInputZone()
-var siob = new SingleKeyOutputBooksTable("#Tab_vol")
+var skout = new SingleKeyOutputBooksTable("#Tab_vol")
 
-var catab = new Tab_Cat()
+var bibcat = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
 
-var nbtab = new NameOfBibleListTable("#Tab_bkn")
+var nambib = new NameOfBibleListTable("#Tab_NamesOfBible")
 
 var obrapport = new OutputBibleExRapport()
 
@@ -837,7 +837,7 @@ BibleInputMenu.prototype.init = function () {
     })
 
 
-    siob.init({
+    skout.init({
         onClickItm: function (vol) {
             showup.m_Bki.set_showupBkc(vol);
             showup.m_Chp.set_showupVal("")
@@ -855,25 +855,24 @@ BibleInputMenu.prototype.init = function () {
         }
     })
 
-    sikm.gen_panel({
+    skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
-            siob.Gen_BookList_Table(ch, volary, alreadyhili)
-            //d1.disable_all_digiKey(true)
-            //d2.disable_all_digiKey(true)
-            catab.rm_hili()
+            skout.Gen_BookList_Table(ch, volary, alreadyhili)
+            
+            bibcat.rm_hili()
         }
     })
 
-    catab.Gen_Cat_Table({
+    bibcat.Gen_Cat_Table({
         onClickItm: function (scat, volary, alreadyHili) {
-            siob.Gen_BookList_Table(scat, volary, alreadyHili);
-            sikm.rm_hili()
+            skout.Gen_BookList_Table(scat, volary, alreadyHili);
+            skinp.rm_hili()
         }
     })
 
 
 
-    nbtab.Gen_NB_Table({
+    nambib.Gen_NB_Table({
         onClickItm: function () {
             _This.loadBible_chp();
         }
@@ -928,7 +927,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
-    var fnamesArr = nbtab.get_selected_nb_fnamesArr();
+    var fnamesArr = nambib.get_selected_nb_fnamesArr();
     var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     console.log("RestApi:", RestApi)
@@ -944,7 +943,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
 };///
 BibleInputMenu.prototype.get_selected_load_parm = function () {
     //
-    var fnamesArr = nbtab.get_selected_nb_fnamesArr();
+    var fnamesArr = nambib.get_selected_nb_fnamesArr();
     var vcvpar = showup.get_selected_vcv_parm();
     var bibOj = Uti.get_xOj(vcvpar);
     var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
@@ -1186,7 +1185,7 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     var inp = gBim.get_selected_load_parm();
-    inp.Search = nbtab.get_selected_Search_Parm();
+    inp.Search = nambib.get_selected_Search_Parm();
     if (!Uti.validateSearch(inp)) return;
     console.log(inp);
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
@@ -1418,7 +1417,7 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
 
-            <table id="Tab_bkn" border="1" style="float:left;">
+            <table id="Tab_NamesOfBible" border="1" style="float:left;">
                 <caption class='bbbCap' id='bkn_cap' title='Names of Bible'>NB</caption>
                 <thead id=""></thead>
                 <tbody id=''>
