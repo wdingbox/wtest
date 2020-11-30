@@ -64,9 +64,7 @@ body {
     .hili {
         background-color: red;
     }
-    .hili_digi_key {
-        border: 1px solid red;
-    }
+  
 
     .hiliScroll2View {
         border: 3px solid yellow;
@@ -157,6 +155,10 @@ body {
     }
     button.digit[disabled]{
 
+    }
+    .hili_digi_key {
+        border: 1px solid red;
+        background-color: ;
     }
 
 
