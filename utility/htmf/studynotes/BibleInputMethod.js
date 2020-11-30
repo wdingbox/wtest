@@ -201,9 +201,6 @@ ShowupBCV.prototype.goNextChp = function (i) {
     if (chp <= 0) chp = maxChp
 
     this.m_Chp.set_showupVal(chp) //showup chp
-
-    //this.init_verse_digiKeys_by_vol() //showup vrs. 
-    //this.m_cbfLoadBible() //showup chap reload. 
 }
 
 
@@ -219,7 +216,7 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         var vrs = _This.m_Vrs.get_showupVal()
         if (vrs) {
             _This.m_Vrs.set_showupVal("")
-            //_This.init_verse_digiKeys_by_vol()
+            //_This.init_Vrs_digiKeys_by_vol()
             cbfLoadBible(0)
         } else {
             _This.goNextChp(1)
@@ -244,7 +241,7 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
         evt.stopImmediatePropagation();
 
         _This.m_Chp.set_showupVal("")
-        //_This.init_chap_digiKeys_by_vol()
+        //_This.init_Chp_digiKeys_by_vol()
 
         _This.m_Vrs.set_showupVal("")
         //_This.m_nextDigiMenu.disable_all_digiKey(true)
@@ -551,8 +548,8 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
             var dici = $(this).text();
             _THIS.m_parent.m_showup.m_Chp.append_showupVal(dici)
 
-            _THIS.m_parent.init_chap_digiKeys_by_vol()
-            _THIS.m_parent.init_verse_digiKeys_by_vol()
+            _THIS.m_parent.init_Chp_digiKeys_by_vol()
+            _THIS.m_parent.init_Vrs_digiKeys_by_vol()
 
             cbfLoadBible()
         });
@@ -576,7 +573,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
             var dici = $(this).text();
             _THIS.m_parent.m_showup.m_Vrs.append_showupVal(dici)
 
-            _THIS.m_parent.init_verse_digiKeys_by_vol()
+            _THIS.m_parent.init_Vrs_digiKeys_by_vol()
 
             cbfLoadBible()
         });
@@ -593,7 +590,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         });
     }
 }
-DigitNumberInputZone.prototype.init_chap_digiKeys_by_vol = function () {
+DigitNumberInputZone.prototype.init_Chp_digiKeys_by_vol = function () {
     var vol = this.m_showup.m_Bki.get_showupBkc();// $(this.m_volID).attr("volcode")
     var chp = this.m_showup.m_Chp.get_showupVal();  //()
     var _THIS = this
@@ -605,7 +602,7 @@ DigitNumberInputZone.prototype.init_chap_digiKeys_by_vol = function () {
     var iMaxChap = Object.keys(_Max_struct[vol]).length;
     if (0 === chp) {
         if (1 === iMaxChap) {
-            this.m_Chp.append_showupVal(1)
+            this.m_showup.m_Chp.append_showupVal(1)
             if (this.m_Chp.m_cbfLoadBible) this.m_Chp.m_cbfLoadBible()
         } else if (iMaxChap >= 9) {
             this.m_Chp.disable_zero_only()
@@ -617,7 +614,7 @@ DigitNumberInputZone.prototype.init_chap_digiKeys_by_vol = function () {
     }
     return iMaxChap
 }
-DigitNumberInputZone.prototype.init_verse_digiKeys_by_vol = function () {
+DigitNumberInputZone.prototype.init_Vrs_digiKeys_by_vol = function () {
     var vol = this.m_showup.m_Bki.get_showupBkc(); // $(this.m_volID).attr("volcode")
     var chp = this.m_showup.m_Chp.get_showupVal(); //
     var vrs = this.m_showup.m_Vrs.get_showupVal();//
@@ -816,16 +813,16 @@ BibleInputMenu.prototype.init = function () {
 
     showup.onclick_Vrs2_plus_minus(function (bload) {
         if (bload) {
-            digi.init_chap_digiKeys_by_vol()
-            digi.init_verse_digiKeys_by_vol()
+            digi.init_Chp_digiKeys_by_vol()
+            digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chp();
         } else {
 
         }
     })
     showup.onclick_Chp(function () {
-        digi.init_chap_digiKeys_by_vol()
-        digi.init_verse_digiKeys_by_vol()
+        digi.init_Chp_digiKeys_by_vol()
+        digi.init_Vrs_digiKeys_by_vol()
         //d2.disable_all_digiKey(true)
     })
 
@@ -859,9 +856,9 @@ BibleInputMenu.prototype.init = function () {
             showup.m_Chp.set_showupVal("")
             showup.m_Vrs.set_showupVal("")
 
-            digi.init_chap_digiKeys_by_vol()
-            digi.init_verse_digiKeys_by_vol()
-            //d1.init_chap_digiKeys_by_vol()
+            digi.init_Chp_digiKeys_by_vol()
+            digi.init_Vrs_digiKeys_by_vol()
+            //d1.init_Chp_digiKeys_by_vol()
             //d2.disable_all_digiKey(true)
 
             Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
