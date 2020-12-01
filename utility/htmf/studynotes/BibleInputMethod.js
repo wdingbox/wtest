@@ -847,8 +847,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
         var sid = $(this).attr("id")
         var name = " "+ sid.substr(4) 
         var eac =document.createElement("a")
-        $(eac).text(name).attr("sid","#"+sid)
-        $(eBar).append(eac).append("<a> | </a>")
+        $(eac).text(name).attr("sid","#"+sid).css("padding-bottom","2px")
+        $(eBar).append(eac).append(" | ")
     });
     $(this.m_grpContainerID).prepend(eBar).find("a").bind("click",function(){
         var sid = $(this).attr("sid");
