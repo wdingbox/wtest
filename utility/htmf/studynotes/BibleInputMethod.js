@@ -1089,14 +1089,25 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     table_sort("#BibOut");
     $(this.m_tbid).find("td.vid").bind("click", function (evt) {
         evt.stopImmediatePropagation()
-        
+
         var _This = this;
+
+        var alreadyHili = $(this)[0].classList.contains('vmark')
+        if(alreadyHili){
+            $("#externalinkMenu").slideToggle();
+        }else{
+            $("#externalinkMenu").show();
+        }
+
+
         $(".vid.vmark").removeClass("vmark");
         $(_This).toggleClass("vmark");
+
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
         var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#externalinkMenu").height()
-        $("#externalinkMenu").css('top', y).slideToggle();
+
+        $("#externalinkMenu").css('top', y);
         //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
 
         var vid = $(this).text();
