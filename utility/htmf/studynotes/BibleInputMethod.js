@@ -1090,8 +1090,6 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     $(this.m_tbid).find("td.vid").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
-        var _This = this;
-
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('vmark')
         if(alreadyHili){
@@ -1100,9 +1098,8 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             $("#externalinkMenu").show();
         }
 
-
         $(".vid.vmark").removeClass("vmark");
-        $(_This).toggleClass("vmark");
+        $(this).toggleClass("vmark");
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
