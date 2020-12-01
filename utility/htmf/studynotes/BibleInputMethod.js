@@ -10,8 +10,13 @@ function OutputBibleExRapport() {
 }
 OutputBibleExRapport.prototype.init_links = function () {
     var Ext_Link_Menu = {
+        HiliEx:function(_this){
+            $(".hiliExt").removeClass("hiliExt")
+            $(_this).parent().addClass("hiliExt")
+        },
         setup_links: function () {
             $("#blb").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -22,6 +27,7 @@ OutputBibleExRapport.prototype.init_links = function () {
                 $(this).attr("href", url + file);
             });
             $("#h_g").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -33,6 +39,7 @@ OutputBibleExRapport.prototype.init_links = function () {
                 $(this).attr("href", url + file);
             });
             $("#gtw").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -43,6 +50,7 @@ OutputBibleExRapport.prototype.init_links = function () {
                 $(this).attr("href", url + file);
             });
             $("#studylight").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -56,6 +64,7 @@ OutputBibleExRapport.prototype.init_links = function () {
             });
 
             $("#ccel_org").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -69,6 +78,7 @@ OutputBibleExRapport.prototype.init_links = function () {
             });
 
             $("#crossReference").click(function () {
+                Ext_Link_Menu.HiliEx(this)
                 var vid = $(".vid.vmark").text();
                 var ret = Uti.vcv_parser(vid);
                 var url = $(this).attr("ref");
@@ -867,7 +877,7 @@ BibleInputMenu.prototype.init = function () {
     showup.onclick_Chp(function (bload) {
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
-        if(bload){
+        if (bload) {
             _This.loadBible_chp();
         }
     })
@@ -1065,7 +1075,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         $(_This).toggleClass("vmark");
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-        var y = bcr.y + window.scrollY - $("#externalinkMenu").height()
+        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#externalinkMenu").height()
         $("#externalinkMenu").css('top', y).slideToggle();
         //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
 

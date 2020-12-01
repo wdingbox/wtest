@@ -398,3 +398,6 @@ input[title='NIV']:checked:after {
 .vinNum{
     background-color: rgb(163, 17, 207);
 }
+.hiliExt{
+    background-color: darkblue;
+}
