@@ -133,10 +133,10 @@ body {
         background-color: rgb(31, 23, 80);
     }
     #DigitOfChapt {
-        background-color: green;
+        background-color: rgb(149, 97, 29); 
     }
     #DigitOfVerse {
-        background-color: rgb(149, 97, 29);
+        background-color:rgb(196, 196, 233);
     }
 
     button.digit{
@@ -400,4 +400,9 @@ input[title='NIV']:checked:after {
 }
 .hiliExt{
     background-color: darkblue;
+}
+
+
+#GroupsContainer div{
+    background-color: darkcyan;
 }

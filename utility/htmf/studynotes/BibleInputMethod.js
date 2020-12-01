@@ -1474,7 +1474,7 @@ var BibleInputMenuContainer = `
 
         <div id="GroupsMenuBar">
         <a onclick="$('#GroupsContainer').slideToggle();"></a> 
-        <a onclick="$('#grp_opt').slideToggle();">Opt</a> 
+        <a onclick="$('#gtp_set').slideToggle();">Set</a> 
         <a onclick="$('#grp_explore').slideToggle();">Explore</a>
         <a onclick="$('#grp_dbg').slideToggle();">Dbg</a>
         <a onclick="$('#grp_config').slideToggle();">Config</a>
@@ -1486,7 +1486,7 @@ var BibleInputMenuContainer = `
         </div>
         <div id="GroupsContainer" style="display:visual">
 
-            <div class="hideGrpMenu" id="grp_opt" style="float:left;display:none;">
+            <div class="hideGrpMenu" id="gtp_set" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                     <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                     <thead id=""></thead>
@@ -1509,8 +1509,8 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                     <caption>
-                       <button id="loadhistory"  title='load history sort by time'>h</button>
-                       <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
+                       <a id="loadhistory"  title='load history sort by time'>H</a>
+                       <a id="sort_history_by_vcvID"  title='load history sort by str'>^</a>
                     </caption>
                     <thead></thead>
                     <tbody>
