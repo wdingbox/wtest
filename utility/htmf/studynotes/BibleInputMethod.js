@@ -1031,7 +1031,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     }, 2100)
     return bibOj;
 };///
-BibleInputMenu.prototype.get_selected_load_parm = function () {
+BibleInputMenu.prototype.get_search_parm = function () {
     //
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     var vcvpar = showup.get_selected_vcv_parm();
@@ -1292,7 +1292,7 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    var inp = gBim.get_selected_load_parm();
+    var inp = gBim.get_search_parm();
     //inp.Search = nambib.get_selected_Search_Parm();
     if (!Uti.validateSearch(inp)) return;
     console.log(inp);
