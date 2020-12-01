@@ -1092,6 +1092,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
         var _This = this;
 
+        //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('vmark')
         if(alreadyHili){
             $("#externalinkMenu").slideToggle();
