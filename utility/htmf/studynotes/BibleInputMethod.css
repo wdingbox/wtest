@@ -136,7 +136,7 @@ body {
         background-color: rgb(149, 97, 29); 
     }
     #DigitOfVerse {
-        background-color:rgb(196, 196, 233);
+        background-color:gray;
     }
 
     button.digit{
@@ -152,10 +152,12 @@ body {
         border: none;
         background: none;
         font-size: large;
+        color:black;
     }
     button.digit[disabled]{
-
+        color:rgb(150, 146, 146);
     }
+
     .hili_digi_key {
         border: 1px solid red;
         background-color: ;
@@ -405,4 +407,9 @@ input[title='NIV']:checked:after {
 
 #GroupsContainer div{
     background-color: darkcyan;
+}
+
+.GroupsMenuMgrHili{
+    color:black;
+    background-color: gray;
 }

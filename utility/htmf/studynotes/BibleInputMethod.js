@@ -10,7 +10,7 @@ function OutputBibleExRapport() {
 }
 OutputBibleExRapport.prototype.init_links = function () {
     var Ext_Link_Menu = {
-        HiliEx:function(_this){
+        HiliEx: function (_this) {
             $(".hiliExt").removeClass("hiliExt")
             $(_this).parent().addClass("hiliExt")
         },
@@ -103,9 +103,9 @@ OutputBibleExRapport.prototype.init = function () {
     }).hide()
 }
 OutputBibleExRapport.prototype.hide = function () {
-    if($(this.m_id)[0].display === "none"){
+    if ($(this.m_id)[0].display === "none") {
         console.log("already hidden")
-    }else{
+    } else {
         $(this.m_id).hide()
     }
 }
@@ -838,10 +838,28 @@ Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
 
 
 
+function GroupsMenuMgr() {
+    this.m_grpContainerID = "#GroupsContainer"
+}
+GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
+    var eBar = document.createElement("div")
+    $(this.m_grpContainerID).find(".hideGrpMenu").each(function () {
+        var sid = $(this).attr("id")
+        var name = " "+ sid.substr(4) 
+        var eac =document.createElement("a")
+        $(eac).text(name).attr("sid","#"+sid)
+        $(eBar).append(eac).append("<a> | </a>")
+    });
+    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click",function(){
+        var sid = $(this).attr("sid");
+        $(sid).slideToggle()
+        $(this).toggleClass("GroupsMenuMgrHili")
+    })
 
 
+}
 
-
+var grpmgr = new GroupsMenuMgr()
 
 
 
@@ -868,6 +886,8 @@ BibleInputMenu.prototype.init = function () {
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
+
+    grpmgr.gen_grp_bar()
 
 
     digi.init_digi(showup)
@@ -954,7 +974,7 @@ BibleInputMenu.prototype.init = function () {
     })
 
     obrapport.init()
-    gobt.onclick_ob_table(function(){
+    gobt.onclick_ob_table(function () {
         $("#menuContainer").hide()
         obrapport.hide()
     })
@@ -1035,8 +1055,8 @@ function OutputBibleTable() {
     this.m_tbid = "#oBible"
 }
 OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
-    $(this.m_tbid).bind("click",function(){
-        if(cbf) cbf()
+    $(this.m_tbid).bind("click", function () {
+        if (cbf) cbf()
     })
 }
 OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
@@ -1092,9 +1112,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('vmark')
-        if(alreadyHili){
+        if (alreadyHili) {
             $("#externalinkMenu").slideToggle();
-        }else{
+        } else {
             $("#externalinkMenu").show();
         }
 
@@ -1501,21 +1521,10 @@ var BibleInputMenuContainer = `
 
 
 
-        <div id="GroupsMenuBar">
-        <a onclick="$('#GroupsContainer').slideToggle();"></a> 
-        <a onclick="$('#gtp_set').slideToggle();">Set</a> 
-        <a onclick="$('#grp_explore').slideToggle();">Explore</a>
-        <a onclick="$('#grp_dbg').slideToggle();">Dbg</a>
-        <a onclick="$('#grp_config').slideToggle();">Config</a>
-        <a onclick="$('#grp_explore').slideToggle();"></a>
-        <a onclick="$('#grp_explore').slideToggle();"></a>
-        <a onclick="$('#grp_explore').slideToggle();"></a>
-        <a onclick="$('#grp_explore').slideToggle();"></a>
-        
-        </div>
+       
         <div id="GroupsContainer" style="display:visual">
 
-            <div class="hideGrpMenu" id="gtp_set" style="float:left;display:none;">
+            <div class="hideGrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                     <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                     <thead id=""></thead>
@@ -1555,7 +1564,7 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="hideGrpMenu" id="grp_explore" style="float:left;display:none;">
+            <div class="hideGrpMenu" id="grp_Explore" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
 
@@ -1575,7 +1584,7 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
-            <div class="hideGrpMenu" id="grp_dbg"  style="float:left;display:none;">
+            <div class="hideGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <br>
@@ -1587,7 +1596,7 @@ var BibleInputMenuContainer = `
 
             </div>
 
-            <div class="hideGrpMenu" id="grp_config"  style="float:left;display:none;">
+            <div class="hideGrpMenu" id="grp_Config"  style="float:left;display:none;">
                 <table id='tmpsel2ref' border="1" align="left">
                     <thead></thead>
                     <tbody>
