@@ -843,7 +843,7 @@ function GroupsMenuMgr() {
 }
 GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
     var eBar = document.createElement("div")
-    $(this.m_grpContainerID).find(".hideGrpMenu").each(function () {
+    $(this.m_grpContainerID).find(".hiddenGrpMenu").each(function () {
         var sid = $(this).attr("id")
         var name = " "+ sid.substr(4) 
         var eac =document.createElement("a")
@@ -1461,24 +1461,6 @@ const CNST = {
 
 var BibleInputMenuContainer = `
 <style>
-    body {
-        background-color: black;
-        color: white;
-        width: 100%;
-        font-size: 100%;
-
-        padding: 0px 0px 0px 0px;
-        margin: 0px 0px 0px 0px;
-
-        font-family: 'Times New Roman';
-    }
-
-    .hideGrpMenu{
-        display:none;
-    }
-    .selected_grp{
-        background-color:blue;
-    }
 </style>
 
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
@@ -1524,7 +1506,7 @@ var BibleInputMenuContainer = `
        
         <div id="GroupsContainer" style="display:visual">
 
-            <div class="hideGrpMenu" id="grp_Cluster" style="float:left;display:none;">
+            <div class="hiddenGrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                     <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                     <thead id=""></thead>
@@ -1564,7 +1546,7 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="hideGrpMenu" id="grp_Explore" style="float:left;display:none;">
+            <div class="hiddenGrpMenu" id="grp_Explore" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
 
@@ -1584,7 +1566,7 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
-            <div class="hideGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
+            <div class="hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <br>
@@ -1596,7 +1578,7 @@ var BibleInputMenuContainer = `
 
             </div>
 
-            <div class="hideGrpMenu" id="grp_Config"  style="float:left;display:none;">
+            <div class="hiddenGrpMenu" id="grp_Config"  style="float:left;display:none;">
                 <table id='tmpsel2ref' border="1" align="left">
                     <thead></thead>
                     <tbody>
