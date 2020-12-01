@@ -731,6 +731,17 @@ NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     }
     return fnamesArr;
 };///
+NameOfBibleListTable.prototype.get_search_nb_fnamesArr = function () {
+    var fnamesArr = [];
+    $(".cbkn.searchFile").each(function () {
+        var ss = $(this).text();
+        fnamesArr.push(ss);
+    });
+    if (fnamesArr.length == 0) {
+        alert("Err: no bookname selected.");
+    }
+    return fnamesArr;
+};///
 NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
     var searchFileName = $(".cbkn.hili.searchFile").text();
     var searchStrn = $("#sinput").val();
@@ -845,12 +856,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".hiddenGrpMenu").each(function () {
         var sid = $(this).attr("id")
-        var name = " "+ sid.substr(4) 
-        var eac =document.createElement("a")
-        $(eac).text(name).attr("sid","#"+sid).css("padding-bottom","2px")
+        var name = " " + sid.substr(4)
+        var eac = document.createElement("a")
+        $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
         $(eBar).append(eac).append(" | ")
     });
-    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click",function(){
+    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click", function () {
         var sid = $(this).attr("sid");
         $(sid).slideToggle()
         $(this).toggleClass("GroupsMenuMgrHili")
@@ -1031,16 +1042,43 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     }, 2100)
     return bibOj;
 };///
-BibleInputMenu.prototype.get_selected_load_parm = function () {
+BibleInputMenu.prototype.get_search_parm = function () {
+    function is_valid(inp) {
+        if (!inp.Search.File) {
+            alert("no searchFile");
+            return false;
+        }
+        if (inp.Search.Strn.length == 0) {
+            alert("no searchStrn");
+            return false;
+        }
+        return true;
+    }
+
+    function unicode(s){
+        var unicds = "";
+        for (var i = 0; i < s.length; i++) {
+            var ch = s.charCodeAt(i);
+            if (ch > 512) {
+                unicds += "\\u" + ch.toString(16);
+            }
+    
+        }
+        Uti.Msg(s);
+        Uti.Msg(unicds);
+    }
     //
-    var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    var vcvpar = showup.get_selected_vcv_parm();
-    var bibOj = Uti.get_xOj(vcvpar);
 
-    var srch = nambib.get_selected_Search_Parm();
+    var fname = nambib.get_selected_Search_Parm().File;
+    var searchStrn = $("#sinput").val();
+    var inp = {fname:[], bibObj Search: { File: fname, Strn: searchStrn } }
 
-    var ret = { fname: fnamesArr, bibOj: bibOj, Search: srch };
-    return ret;
+    //var fnamesArr = nambib.get_selected_nb_fnamesArr();
+    //var vcvpar = showup.get_selected_vcv_parm();
+    //var bibOj = Uti.get_xOj(vcvpar);
+    //var ret = { fname: fnamesArr, bibOj: bibOj, Search: null };
+
+    return inp;
 };
 ///////////
 //////////
@@ -1291,27 +1329,18 @@ function onclick_regex_match_next(incrs) {
     };
 };
 function onclick_BibleObj_search_str() {
-    var s = $("#sinput").val().trim();
-    var inp = gBim.get_selected_load_parm();
+    //var s = $("#sinput").val().trim();
+    var inp = gBim.get_search_parm();
     //inp.Search = nambib.get_selected_Search_Parm();
     if (!Uti.validateSearch(inp)) return;
-    console.log(inp);
+  
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    console.log(par)
+    console.log("inputsearchparm:",par)
     Uti.Msg(par);
     Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
 
     console.log(Jsonpster);
-    var unicds = "";
-    for (var i = 0; i < s.length; i++) {
-        var ch = s.charCodeAt(i);
-        if (ch > 512) {
-            unicds += "\\u" + ch.toString(16);
-        }
 
-    }
-    Uti.Msg(s);
-    Uti.Msg(unicds);
 
 }
 function onclick_load_search_string_history(bSortByTime) {
