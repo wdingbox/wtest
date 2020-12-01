@@ -10,6 +10,11 @@ body {
     font-family: 'Times New Roman';
 }
 
+
+
+
+
+
     #menuContainer,
     #menuToggler {
         position: fixed;
@@ -53,6 +58,50 @@ body {
         border: .1px solid black;
         cursor: pointer;
     }
+
+
+    #GroupsContainer{
+        background-color: darkcyan;
+        margin-top: 5px;
+    }
+    
+    .GroupsMenuMgrHili{
+        color:black;
+        background-color: gray;
+    }
+    
+    .GrpMenu{
+        background-color: gray;
+    }
+    .hiddenGrpMenu{
+        display:none;
+    }
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     #minus_ChpVal{
         color: black;
       
@@ -151,8 +200,9 @@ body {
         padding: 0;
         border: none;
         background: none;
-        font-size: large;
-        color:black;
+        font-size: larger;
+        color:white;
+    
     }
     button.digit[disabled]{
         color:rgb(150, 146, 146);
@@ -405,20 +455,10 @@ input[title='NIV']:checked:after {
 }
 
 
-#GroupsContainer div{
-    background-color: darkcyan;
-}
-
-.GroupsMenuMgrHili{
-    color:black;
-    background-color: gray;
-}
 
 
 
-.hiddenGrpMenu{
-    display:none;
-}
-.selected_grp{
-    background-color:blue;
-}
+
+
+
+

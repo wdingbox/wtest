@@ -1506,7 +1506,7 @@ var BibleInputMenuContainer = `
        
         <div id="GroupsContainer" style="display:visual">
 
-            <div class="hiddenGrpMenu" id="grp_Cluster" style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                     <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                     <thead id=""></thead>
@@ -1546,7 +1546,7 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="hiddenGrpMenu" id="grp_Explore" style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Explore" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
 
@@ -1566,7 +1566,7 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
-            <div class="hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <a href='../index.htm'>ref</a>
@@ -1579,7 +1579,7 @@ var BibleInputMenuContainer = `
 
             </div>
 
-            <div class="hiddenGrpMenu" id="grp_Config"  style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Config"  style="float:left;display:none;">
                 <table id='tmpsel2ref' border="1" align="left">
                     <thead></thead>
                     <tbody>
