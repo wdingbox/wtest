@@ -1034,12 +1034,15 @@ BibleInputMenu.prototype.loadBible_chp = function () {
 BibleInputMenu.prototype.get_search_parm = function () {
     //
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    var vcvpar = showup.get_selected_vcv_parm();
-    var bibOj = Uti.get_xOj(vcvpar);
-
+    //var vcvpar = showup.get_selected_vcv_parm();
+    //var bibOj = Uti.get_xOj(vcvpar);
+    //var  okOj = showup.get_selected_bc_bibOj() //Uti.get_xOj(vcvpar);
+    //console.log("not:",okOj)
+    
     var srch = nambib.get_selected_Search_Parm();
+    console.log("srch:",srch)
 
-    var ret = { fname: fnamesArr, bibOj: bibOj, Search: srch };
+    var ret = { fname: fnamesArr, bibOj: null, Search: srch };
     return ret;
 };
 ///////////
