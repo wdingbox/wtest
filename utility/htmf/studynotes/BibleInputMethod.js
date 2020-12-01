@@ -102,6 +102,13 @@ OutputBibleExRapport.prototype.init = function () {
         $(this.m_id).hide()
     }).hide()
 }
+OutputBibleExRapport.prototype.hide = function () {
+    if($(this.m_id)[0].display === "none"){
+        console.log("already hidden")
+    }else{
+        $(this.m_id).hide()
+    }
+}
 
 
 
@@ -873,6 +880,7 @@ BibleInputMenu.prototype.init = function () {
         } else {
             digi.init_Vrs_digiKeys_by_vol()
         }
+        $("#menuContainer").show()
     })
     showup.onclick_Chp(function (bload) {
         digi.init_Chp_digiKeys_by_vol()
@@ -880,6 +888,7 @@ BibleInputMenu.prototype.init = function () {
         if (bload) {
             _This.loadBible_chp();
         }
+        $("#menuContainer").show()
     })
 
 
@@ -945,6 +954,10 @@ BibleInputMenu.prototype.init = function () {
     })
 
     obrapport.init()
+    gobt.onclick_ob_table(function(){
+        $("#menuContainer").hide()
+        obrapport.hide()
+    })
 
 
     $("#Compare_vcv").click(function () {
@@ -1021,6 +1034,11 @@ BibleInputMenu.prototype.get_selected_load_parm = function () {
 function OutputBibleTable() {
     this.m_tbid = "#oBible"
 }
+OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
+    $(this.m_tbid).bind("click",function(){
+        if(cbf) cbf()
+    })
+}
 OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
@@ -1069,7 +1087,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     Uti.Msg("tot=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
-    $(this.m_tbid).find("td.vid").bind("click", function () {
+    $(this.m_tbid).find("td.vid").bind("click", function (evt) {
+        evt.stopImmediatePropagation()
+        
         var _This = this;
         $(".vid.vmark").removeClass("vmark");
         $(_This).toggleClass("vmark");
