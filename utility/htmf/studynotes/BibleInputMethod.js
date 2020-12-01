@@ -731,10 +731,9 @@ NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     }
     return fnamesArr;
 };///
-NameOfBibleListTable.prototype.get_selected_Search_Parm = function () {
+NameOfBibleListTable.prototype.get_search_fname = function () {
     var searchFileName = $(".cbkn.hili.searchFile").text();
-    var searchStrn = $("#sinput").val();
-    return { File: searchFileName, Strn: searchStrn };
+    return searchFileName; //{ File: searchFileName, Strn: searchStrn };
 };///
 
 
@@ -1031,19 +1030,17 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     }, 2100)
     return bibOj;
 };///
-BibleInputMenu.prototype.get_search_parm = function () {
+BibleInputMenu.prototype.get_search_inp = function () {
     //
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    //var vcvpar = showup.get_selected_vcv_parm();
-    //var bibOj = Uti.get_xOj(vcvpar);
-    //var  okOj = showup.get_selected_bc_bibOj() //Uti.get_xOj(vcvpar);
-    //console.log("not:",okOj)
-    
-    var srch = nambib.get_selected_Search_Parm();
-    console.log("srch:",srch)
+    var searchFileName = nambib.get_search_fname();
+    var searchStrn = $("#sinput").val();
+    if(searchStrn.length===0){
+        return alert("no search str.")
+    }
 
-    var ret = { fname: fnamesArr, bibOj: null, Search: srch };
-    return ret;
+    var inp = { fname: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
+    return inp;
 };
 ///////////
 //////////
@@ -1295,10 +1292,9 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    var inp = gBim.get_search_parm();
-    //inp.Search = nambib.get_selected_Search_Parm();
-    if (!Uti.validateSearch(inp)) return;
+    var inp = gBim.get_search_inp();
     console.log(inp);
+    if(!inp) return
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     console.log(par)
     Uti.Msg(par);
@@ -1339,18 +1335,6 @@ function onclick_load_search_string_history(bSortByTime) {
 
 
 var Uti = {
-
-    validateSearch: function (inp) {
-        if (!inp.Search.File) {
-            alert("no searchFile");
-            return false;
-        }
-        if (inp.Search.Strn.length == 0) {
-            alert("no searchStrn");
-            return false;
-        }
-        return true;
-    },
 
 
     Msg: function (dat) {
@@ -1400,62 +1384,7 @@ var Uti = {
         return ret;
     },
 
-    get_xOj: function (par) {
-        if (!par.vol_arr) par.vol_arr = [par.vol]
-        return Uti.get_bibOj(par.vol_arr, par.chp, par.vrs);
-    },
-    get_bibOj: function (vol_arr, chp, vrs) {
-        if ("object" != typeof vol_arr) {
-            alert("assertion failed: vol must be arry");
-            console.log(vol_arr)
-            return null;
-        }
-        if (!vol_arr === 0) {
-            //alert("vol_arr is empty");
-            return {};
-        }
-        var bibOj = {};
-        ////vol
-        var vol = "";
-        for (var i = 0; i < vol_arr.length; i++) {
-            vol = vol_arr[i];
-            if (undefined === _Max_struct[vol]) {
-                alert("invalide vol=" + vol);
-                return null;
-            }
-            bibOj[vol] = {};
-        }
-        if (vol_arr.length > 1) {//for cat or multiple vol names.
-            return bibOj;
-        };////////////////////////////////////////////////
-        ////////
-        //vol 1, chp
-        //
-        if (chp.length == 0) { return bibOj; }
-        if (isNaN(chp)) {
-            console.log("chp isNaN:", chp);
-            return bibOj;
-        }
-        if (undefined === _Max_struct[vol][chp]) {
-            alert("ERR:\n" + vol + "_" + chp + "\n not exist.")
-            return null;
-        }
-        bibOj[vol][chp] = {};
-        /////
-        //vrs
-        if (vrs.length === 0) { return bibOj; }
-
-        if (isNaN(vrs)) {
-            console.log("vrs isNaN:", vrs);
-            return bibOj;
-        }
-        if (undefined === _Max_struct[vol][chp][vrs]) {
-            alert("ERR:\n" + vol + "_" + chp + ":" + vrs + " not exist.")
-            return null;
-        }
-        bibOj[vol][chp][vrs] = "";
-        return bibOj;
-    },
+ 
 
 };////  Uti
 ////////////////////////////////////
