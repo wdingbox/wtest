@@ -1569,6 +1569,7 @@ var BibleInputMenuContainer = `
             <div class="hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
+                <a href='../index.htm'>ref</a>
                 <br>
                
 
@@ -1589,7 +1590,7 @@ var BibleInputMenuContainer = `
 
                 <button id="oBible_indxer">indxer</button>
                 <button id="Compare_vcv">Compare_vcv</button>
-                <a href='../index.htm'>ref</a>
+                
 
                 <table border="1">
                     <thead>
