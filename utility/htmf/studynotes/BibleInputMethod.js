@@ -13,82 +13,81 @@ OutputBibleExRapport.prototype.init_links = function () {
         HiliEx: function (_this) {
             $(".hiliExt").removeClass("hiliExt")
             $(_this).parent().addClass("hiliExt")
+
+            var vid = $(".vid.vmark").text();
+            var ret = Uti.vcv_parser(vid);
+            if (!ret) return alert("ERR: vid=" + vid)
+            var url = $(_this).attr("ref");
+            ret.url = url;
+            ret.set_href = function (str) {
+                var file = this.url + str
+                console.log(file);
+                $(_this).attr("href", file);
+            }
+            ret.isNT = function () {
+                return CNST.isNT(this.vol)
+            }
+            return ret
         },
         setup_links: function () {
             $("#blb").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
                 var blbvol = CNST.BlueLetterBibleCode[ret.vol];
-                var file = blbvol + "/" + ret.chp + "/" + ret.vrs;
-                $(this).attr("href", url + file);
+                ret.set_href(blbvol + "/" + ret.chp + "/" + ret.vrs);
+            });
+            $("#qbible_com").click(function () {
+                var ret = Ext_Link_Menu.HiliEx(this)
+
+                //greek-new-testament/1-Thessalonians/1.html#1
+
+                var ont = "hebrew-old-testament"
+                if (ret.isNT()) {
+                    ont = "greek-new-testament"
+                }
+
+                var bkc = ret.vol;
+                var bkname = CNST.BiBookName[ret.vol][0];
+                bkname = bkname.replace(/_/g, "-")
+                ret.set_href(`${ont}/${bkname}/${ret.chp}.html#${ret.vrs}`);
+
             });
             $("#h_g").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
                 var volm = ret._vol;
                 var bkidx = CNST.BookID2IdxCode[volm];
-                var file = bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs;
-                $(this).attr("href", url + file);
+                ret.set_href(bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs);
+
             });
             $("#gtw").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
-                var vol2 = CNST.BibVolName[ret.vol][0];
-                var file = vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV";
-                $(this).attr("href", url + file);
+                var vol2 = CNST.BiBookName[ret.vol][0];
+                ret.set_href(vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV");
             });
             $("#studylight").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
                 //https://www.studylight.org/commentary/john/1-1.html
                 var vol2 = CNST.BibVolName_Studylight([ret.vol]);
-                var file = vol2 + "/" + ret.chp + "-" + ret.vrs + ".html";
-                $(this).attr("href", url + file);
-                console.log(url + file);
+                ret.set_href(vol2 + "/" + ret.chp + "-" + ret.vrs + ".html");
             });
 
             $("#ccel_org").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
                 //http://www.ccel.org/study/1_Samuel%202:11-4:18 
                 var bok = CNST.BibVolName_ccel([ret.vol]);
-                var file = bok + " " + ret.chp + ":" + ret.vrs + ".html";
-                $(this).attr("href", url + file);
-                console.log(url + file);
+                ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + ".html");
             });
 
             $("#crossReference").click(function () {
-                Ext_Link_Menu.HiliEx(this)
-                var vid = $(".vid.vmark").text();
-                var ret = Uti.vcv_parser(vid);
-                var url = $(this).attr("ref");
-                if (!ret) return;
+                var ret = Ext_Link_Menu.HiliEx(this)
 
                 //http://www.ccel.org/study/1_Samuel%202:11-4:18 
                 var bok = CNST.BlueLetterBibleCode[ret.vol];
-                var file = bok + " " + ret.chp + ":" + ret.vrs + "";
-                $(this).attr("href", url + file);
-                console.log(url + file);
+                ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + "");
             });
         }
     }
@@ -99,7 +98,7 @@ OutputBibleExRapport.prototype.init = function () {
 
     $(this.m_id).draggable()
     $(this.m_id).bind("click", function () {
-        $(this.m_id).hide()
+        //$(this.m_id).hide()
     }).hide()
 }
 OutputBibleExRapport.prototype.hide = function () {
@@ -380,14 +379,14 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch) {
 
 
 function SingleKeyOutputBooksTable(tid) {
-    this.m_id = tid; //"Tab_OutputBooksList"
+    this.m_id = tid; //"#Tab_OutputBooksList"
     this.m_chp_vrs_clsnam = "chapvrsnum"
     this.cbf_onClickItm = null
 }
 SingleKeyOutputBooksTable.prototype.init = function (par) {
     var _THIS = this
     $(this.m_id).bind("click", function () {
-        $(_THIS.m_id).slideUp()
+        //$(_THIS.m_id).hide()
     }).hide().draggable();
     this.cbf_onClickItm = par.onClickItm
 }
@@ -404,7 +403,7 @@ SingleKeyOutputBooksTable.prototype.Gen_Vol_trs = function (vol_arr) {
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
         var cls = `class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' vol='${vol}'`;
-        //<td align='right'>"+BibVolName[vol][0]+"</td>
+        //<td align='right'>"+BiBookName[vol][0]+"</td>
         var iMaxChap = Object.keys(_Max_struct[vol]).length;
         trarr.push(`<tr ${cls}><td title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
     });
@@ -421,11 +420,12 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
     var trs = this.Gen_Vol_trs(vol_arr);
 
     $(tid).html(trs).find(".v3").bind("click", function () {
-        $(".v3.hili").removeClass("hili");
-        $(this).addClass("hili");
+        //$(".v3.hili").removeClass("hili");
+        //$(this).addClass("hili");
 
         var vol = $(this).attr("vol");
         _THIS.cbf_onClickItm(vol)
+        $(_THIS.m_id).hide()
     });
 
     if (alreadyhili) {
@@ -879,6 +879,14 @@ BibleInputMenu.prototype.init = function () {
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
+    $('*').on('click', function (e) {
+        e.stopPropagation();
+    });
+    $("body").bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+        $("#menuContainer").hide()
+        obrapport.hide()
+    })
 
     grpmgr.gen_grp_bar()
 
@@ -1208,8 +1216,8 @@ OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
                     $.each(val, function (key, str) {
                         var vid = vol + chp + ":" + vrs;
                         var clsname = `class='tx tx${key}'`
-                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && key==='H_G'){
-                            clsname =`dir='rtl' class='tx tx${key} tx_OT'` //
+                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && key === 'H_G') {
+                            clsname = `dir='rtl' class='tx tx${key} tx_OT'` //
                         }
                         st += `<div><sup  class='nbcVrsTxt' title='${key}'>${key} </sup> <a ${clsname} vid='${vid}'>${str}</a></div>`;
                     });
@@ -1236,6 +1244,7 @@ OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
 var gobt = new OutputBibleTable()
 
 function apiCallback_Gen_clientBibleObj_table(ret) {
+    obrapport.hide()
     gobt.Gen_clientBibleObj_table(ret)
 }
 
@@ -1567,12 +1576,17 @@ var BibleInputMenuContainer = `
     <tbody>
         <tr>
             <td>
-                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletter</a>
+                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
             </td>
         </tr>
         <tr>
             <td>
-                <a id="h_g" ref="../../../../../../../___bigdata/unzipped/rel/ham12/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
+                <a id="qbible_com" ref="http://www.qbible.com/" sample="hebrew-old-testament/genesis/50.html#1" title='http://www.qbible.com/hebrew-old-testament/genesis/50.html#1'>qbible.com</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="h_g" ref="../../../../bible_concordance/rel/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
             </td>
         </tr>
         <tr>
@@ -1626,7 +1640,7 @@ CNST.FnameOfBibleObj =
     "_xrand": "personal extra random notes."
 };
 
-CNST.BibVolName = {
+CNST.BiBookName = {
     "Gen": ['Genesis', 'genesis', '创世纪',],
     "Exo": ['Exodus', 'exodus', '出埃及记',],
     "Lev": ['Leviticus', 'leviticus', '利未记',],
@@ -1695,7 +1709,10 @@ CNST.BibVolName = {
     "Rev": ['Revelation', 'revelation', '启示录',],
 };
 CNST.BibVolNameEngChn = function (Vid) {
-    return CNST.BibVolName[Vid][0] + " " + CNST.BibVolName[Vid][2];
+    return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
+};
+CNST.isNT = function (Vid) {
+    return (CNST.BibVol_OTorNT(Vid) === "t_NT")
 };
 CNST.BibVol_OTorNT = function (Vid) {
     if (CNST.OT_Bkc_Ary.indexOf(Vid) >= 0) {
@@ -1707,10 +1724,10 @@ CNST.BibVol_OTorNT = function (Vid) {
     return console.log("ERROR", Vid);
 };
 CNST.BibVolName_Studylight = function (Vid) {
-    return CNST.BibVolName[Vid][1];
+    return CNST.BiBookName[Vid][1];
 };
 CNST.BibVolName_ccel = function (Vid) {
-    return CNST.BibVolName[Vid][0];
+    return CNST.BiBookName[Vid][0];
 };
 CNST.BlueLetterBibleCode = {
     "Gen": "Gen",
