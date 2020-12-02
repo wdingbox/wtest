@@ -1179,7 +1179,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             document.execCommand("copy");
         }
 
-        
+
     });
     this.setFontSize(0);
 }
@@ -1198,12 +1198,16 @@ OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
                 idx++;
-                var vid = vol + "<br>" + chp + ":" + vrs;
+                var vid = `${vol}<br>${chp}:${vrs}`;
                 st += "<tr><td class='vid'>" + vid + "</td><td>";
                 if ("object" == typeof val) {
                     $.each(val, function (key, str) {
                         var vid = vol + chp + ":" + vrs;
-                        st += `<div><input type='checkbox' title='${key}'/><a class='tx tx${key}' vid='${vid}'>${str}</a></div>`;
+                        var clsname = `class='tx tx${key}'`
+                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && key==='H_G'){
+                            clsname =`dir='rtl' class='tx tx${key} tx_OT'` //
+                        }
+                        st += `<div><sup  class='nbcVrsTxt' title='${key}'>${key} </sup> <a ${clsname} vid='${vid}'>${str}</a></div>`;
                     });
                 }
                 if ("string" == typeof val) {
@@ -1690,13 +1694,13 @@ CNST.BibVolNameEngChn = function (Vid) {
     return CNST.BibVolName[Vid][0] + " " + CNST.BibVolName[Vid][2];
 };
 CNST.BibVol_OTorNT = function (Vid) {
-    if (CNST.OT_Bkc_Ary.indexOf(Vid)>=0) {
+    if (CNST.OT_Bkc_Ary.indexOf(Vid) >= 0) {
         return "t_OT"
     }
-    if (CNST.NT_Bkc_Ary.indexOf(Vid)>=0) {
+    if (CNST.NT_Bkc_Ary.indexOf(Vid) >= 0) {
         return "t_NT"
     }
-    return console.log("ERROR",Vid);
+    return console.log("ERROR", Vid);
 };
 CNST.BibVolName_Studylight = function (Vid) {
     return CNST.BibVolName[Vid][1];

@@ -428,7 +428,11 @@ input[title='NIV']:after {
 input[title='NIV']:checked:after {
 	background: rgb(195, 206, 100);
 }
-
+.tx_OT{
+    direction: rtl;
+    right:0px;
+    float: right;
+}
 .txH_G{
     background-color: rgb(110, 77, 40);
     text-align: right;
@@ -468,4 +472,13 @@ input[title='NIV']:checked:after {
 
 
 
-
+.vid{
+    /*transform: rotateZ(-90deg);*/
+    font-size: small;
+}
+.nbcVrsTxt{
+    font-size:xx-small;
+    width:5px;
+    background-color: #2f74f5;
+    margin: 0px 5px 0px 0px;
+}
