@@ -1406,7 +1406,7 @@ const CNST = {
 var BibleInputMenuContainer = `
 <style>
 </style>
-<input id="CopyTextToClipboard" title="CopyTextToClipboard"></input>
+<input id="CopyTextToClipboard" title="CopyTextToClipboard" readonly='true'></input>
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
     <a id="bk_name">Biblic Input Keyboard</a>
     <a id="minus_ChpVal" op='—'>--</a>
