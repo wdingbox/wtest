@@ -118,12 +118,12 @@ OutputBibleExRapport.prototype.hide = function () {
 
 
 
-
+//Showup Bookcode - Chapter:Verses
 function ShowupBCV() {
-    this.m_showupBknID = "#BibleInputCap"
+    this.m_showupBknID = "#bk_name"
     this.m_showupChpId = "#chp_num"
     this.m_showupVrsId = "#vrs_num"
-    this.m_minus_ChpId = "#minus_ChpVal"
+    this.m_minus_ChpId = "#minus_ChpVal"//:--
 
     this.init()
 }
@@ -176,7 +176,7 @@ ShowupBCV.prototype.init = function () {
     Showup_Bk.prototype.get_showup_bkn_info = function (b) {
         var booknamecode = this.get_showupBkc()
         var iMaxChap = -1
-        if (booknamecode.length > 0) {
+        if (booknamecode && booknamecode.length > 0) {
             iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
         }
         return { bkn: booknamecode, maxChp: iMaxChap }
@@ -1392,9 +1392,9 @@ var BibleInputMenuContainer = `
 </style>
 
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
-    <a id="BibleInputCap">Biblic Input Keyboard</a>
+    <a id="bk_name">Biblic Input Keyboard</a>
     <a id="minus_ChpVal" op='—'>--</a>
-    <div class='chapvrsnum' id='chp_num'></div> : <div class='chapvrsnum' id='vrs_num'></div>
+    <div class='chapvrsnum' id='chp_num'>chap</div> : <div class='chapvrsnum' id='vrs_num'>ver</div>
 </div>
 
 <!----------------------------->
@@ -1679,10 +1679,10 @@ CNST.BibVolNameEngChn = function (Vid) {
     return CNST.BibVolName[Vid][0] + " " + CNST.BibVolName[Vid][2];
 };
 CNST.BibVol_OTorNT = function (Vid) {
-    if (CNST.OT_Vols_Ary.indexOf(Vid)>=0) {
+    if (CNST.OT_Bkc_Ary.indexOf(Vid)>=0) {
         return "t_OT"
     }
-    if (CNST.NT_Vols_Ary.indexOf(Vid)>=0) {
+    if (CNST.NT_Bkc_Ary.indexOf(Vid)>=0) {
         return "t_NT"
     }
     return console.log("ERROR",Vid);
@@ -1829,7 +1829,7 @@ CNST.BookID2IdxCode = {
     _Jud: ['65', 'b'],
     _Rev: ['66', 'b'],
 };
-CNST.OT_Vols_Ary = [
+CNST.OT_Bkc_Ary = [
     "Gen",
     "Exo",
     "Lev",
@@ -1870,7 +1870,7 @@ CNST.OT_Vols_Ary = [
     "Zec",
     "Mal"
 ];
-CNST.NT_Vols_Ary = [
+CNST.NT_Bkc_Ary = [
     "Mat",
     "Mak",
     "Luk",
@@ -1900,13 +1900,13 @@ CNST.NT_Vols_Ary = [
     "Rev"
 ];
 CNST.Cat2VolArr = {
-    "OT": CNST.OT_Vols_Ary,
+    "OT": CNST.OT_Bkc_Ary,
     "Moses": ["Gen", "Exo", "Lev", "Num", "Deu"],
     "History": ["Jos", "Jug", "Rut", "1Sa", "2Sa", "1Ki", "2Ki", "1Ch", "2Ch", "Ezr", "Neh", "Est"],
     "Literature": ["Job", "Psm", "Pro", "Ecc", "Son"],
     "MajorPr": ["Isa", "Jer", "Lam", "Eze", "Dan"],
     "MinorPr": ["Joe", "Amo", "Oba", "Jon", "Mic", "Nah", "Hab", "Zep", "Hag", "Zec", "Mal"],
-    "NT": CNST.NT_Vols_Ary,
+    "NT": CNST.NT_Bkc_Ary,
     "Gospel": ["Mat", "Mak", "Luk", "Jhn"],
     "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
     "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
