@@ -701,16 +701,16 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     $(this.m_tbid + " caption").bind("click", function () {
         var txt = $(this).text()
         switch (txt) {
-            case "NB":
-                $(this).text("Up")
+            case "Pub":
+                $(this).text("Seq")
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary)
                 break;
-            case "Up":
-                $(this).text("NB")
+            case "Seq":
+                $(this).text("Pub")
                 _THIS.Gen_Table(bknArr)
                 break;
             case "Dn":
-                $(this).text("NB")
+                $(this).text("Pub")
                 _THIS.Gen_Table(bknArr)
                 break;
             default:
@@ -730,6 +730,8 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
+
+    
     function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
         var name = $(_this).text();
@@ -787,9 +789,9 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
-            case "NB": update_data(this); break;
-            case "Up": moveup_selitm(this, +1); break;
-            case "Dn": moveup_selitm(this, -1); break;
+            case "Pub": update_data(this); break;
+            case "Seq": moveup_selitm(this, +1); break;
+            //case "Dn": moveup_selitm(this, -1); break;
         }
     });
 }
@@ -1546,7 +1548,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption title='Names of Bible' NB="select" Up="moveUp" Dn="moveDn">NB</caption>
+                    <caption title='Names of Bible' Pub="select" Seq="moveUp" Dn="moveDn">Pub</caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
