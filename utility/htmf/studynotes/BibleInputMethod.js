@@ -1467,9 +1467,9 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption class='bbbCap' id='bkn_cap' title='Names of Bible'>NB</caption>
+                    <caption title='Names of Bible' NB="select" Up="moveUp" Dn="moveDn">NB</caption>
                     <thead id=""></thead>
-                    <tbody id=''>
+                    <tbody>
                         <tr>
                             <td></td>
                         </tr>
