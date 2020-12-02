@@ -1502,6 +1502,7 @@ var BibleInputMenuContainer = `
                
 
 
+                <input id="CopyTextToClipboard" title="CopyTextToClipboard"></input><br>
                 <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
@@ -1531,7 +1532,7 @@ var BibleInputMenuContainer = `
                     </thead>
                     <tbody id="StructAna"></tbody>
                 </table>
-                <input id="CopyTextToClipboard" title="CopyTextToClipboard"/><br>
+               
                 <button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button><button onclick="gobt.setFontSize(-10);">f-</button>
             </div> 
             <!--------- end of GroupsContainer ------>
