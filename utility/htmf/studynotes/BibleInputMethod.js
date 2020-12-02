@@ -1179,10 +1179,11 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             $("#CopyTextToClipboard").select();//:must be focusable, like visible input element. 
             document.execCommand("copy");
             $("#CopyTextToClipboard").hide();
+            $("body").focus()//focus back after copy.
             $(this).focus()//focus back after copy.
             setTimeout(()=>{
-                //alert("cp")
-            },1000)
+                alert("cp")
+            },5000)
         }
 
 
