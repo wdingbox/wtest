@@ -738,6 +738,7 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         }else{//will be added
             _THIS.m_selectedItems_ary.push(name)
         }
+        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
     }
     function update_hili(_this){
         $(_this).toggleClass("hili");
@@ -748,19 +749,23 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
 
         $(".searchFile").removeClass("searchFile");
         $(_this).toggleClass("searchFile");
-
-        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
-
     }
     function update_data(_this){
         update_seletedItems(_this)
         update_hili(_this)
         _THIS.m_onClickItm2Select()
     }
+
+    function moveup_selitm(_this, i){
+
+    }
+
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch($(_THIS.m_tbid+" caption").text()){
             case "NB": update_data(this); break;
+            case "Up": moveup_selitm(this, +1); break;
+            case "Dn": moveup_selitm(this, -1); break;
         }
     });
 }
