@@ -1503,6 +1503,8 @@ var BibleInputMenuContainer = `
                 <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <a href='../index.htm'>ref</a>
                 <br>
+                <button id="Compare_vcv">Compare_vcv</button>
+                <button id="oBible_indxer">indxer</button>
                
 
 
@@ -1518,26 +1520,30 @@ var BibleInputMenuContainer = `
                     <tbody>
                     </tbody>
                 </table>
-
-
-
-                <button id="oBible_indxer">indxer</button>
-                <button id="Compare_vcv">Compare_vcv</button>
-                
-
+             
                 <table border="1">
                     <thead>
                         <tr>
                             <td>#</td>
-                            <td>Vol</td>
-                            <td>Chp</td>
-                            <td>Ver</td>
+                            <td>desc</td>
+                            <td>Change</td>
+                            <td>note</td>
                         </tr>
                     </thead>
-                    <tbody id="StructAna"></tbody>
+                    <tbody id="">
+                        <tr>
+                            <td>#</td>
+                            <td>FontSize</td>
+                            <td><button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button>
+                            <button onclick="gobt.setFontSize(-10);" title='font-size minus'>f-</button></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
                 </table>
+            
+
                
-                <button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button><button onclick="gobt.setFontSize(-10);">f-</button>
+            
             </div> 
             <!--------- end of GroupsContainer ------>
         </div>
