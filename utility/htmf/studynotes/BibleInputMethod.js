@@ -358,23 +358,17 @@ SingleKeyInputPanel.prototype.get_cha_arr_after_str = function (str, BibleObjStr
 
     return ks;
 }
-SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch, BibleObjStruct) {
+SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch) {
     var arr = [];
-    Object.keys(BibleObjStruct).forEach(function (vol) {
-        if (['1', '2', '3'].indexOf(ch) >= 0) {
-            if (vol.indexOf(ch) === 0) {
-                arr.push(vol);
-            }
-            return arr
+    var BkAry = Object.keys(_Max_struct)
+    if (ch.length != 1) return BkAry
+    BkAry.forEach(function (vol) {
+        var keycod = vol[0]
+        if (!Number.isInteger(parseInt(ch)) && Number.isInteger(parseInt(keycod))) {
+            keycod = vol[1] //:J, 1Jn
         }
 
-        var firstChar = vol[0]
-        var flag = 0
-        if (['1', '2', '3'].indexOf(firstChar) >= 0) {
-            flag = 1
-        }
-
-        if (vol.indexOf(ch) === flag) {
+        if (ch === keycod) {
             arr.push(vol);
         }
     });
@@ -844,12 +838,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".hiddenGrpMenu").each(function () {
         var sid = $(this).attr("id")
-        var name = " "+ sid.substr(4) 
-        var eac =document.createElement("a")
-        $(eac).text(name).attr("sid","#"+sid).css("padding-bottom","2px")
+        var name = " " + sid.substr(4)
+        var eac = document.createElement("a")
+        $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
         $(eBar).append(eac).append(" | ")
     });
-    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click",function(){
+    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click", function () {
         var sid = $(this).attr("sid");
         $(sid).slideToggle()
         $(this).toggleClass("GroupsMenuMgrHili")
@@ -1035,7 +1029,7 @@ BibleInputMenu.prototype.get_search_inp = function () {
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     var searchFileName = nambib.get_search_fname();
     var searchStrn = $("#sinput").val();
-    if(searchStrn.length===0){
+    if (searchStrn.length === 0) {
         return alert("no search str.")
     }
 
@@ -1294,7 +1288,7 @@ function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     var inp = gBim.get_search_inp();
     console.log(inp);
-    if(!inp) return
+    if (!inp) return
     var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
     console.log(par)
     Uti.Msg(par);
@@ -1384,7 +1378,7 @@ var Uti = {
         return ret;
     },
 
- 
+
 
 };////  Uti
 ////////////////////////////////////
