@@ -720,6 +720,7 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     })
 
 }
+
 NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     var str = "";
     var _THIS = this
