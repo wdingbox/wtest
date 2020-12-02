@@ -690,13 +690,21 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
 function NameOfBibleListTable(tbody) {
     this.m_tbid = tbody // "#Tab_NamesOfBible"
+    this.m_onClickItm2Select = null
+    this.m_selectedItems_ary = ["CUVS"] //default
 }
-NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
-    var str = "";
+NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
+    this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
+    this.Gen_Table(bknArr)
+}
+NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
+    var str = "";
+    var _THIS = this
+    //var bknArr = Object.keys(CNST.FnameOfBibleObj);
     $.each(bknArr, function (i, v) {
         var hil = "";
-        if (i == 1) hil = "hili";
+        if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
@@ -711,7 +719,7 @@ NameOfBibleListTable.prototype.Gen_NB_Table = function (parm) {
         var name = $(this).text();
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
 
-        parm.onClickItm(name)
+        _THIS.m_onClickItm2Select(name)
     });
 }
 NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
@@ -959,7 +967,7 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-    nambib.Gen_NB_Table({
+    nambib.Init_NB_Table({
         onClickItm: function () {
             _This.loadBible_chp();
         }
