@@ -440,11 +440,11 @@ input[title='NIV']:checked:after {
 .txCUVpy{
     background-color: rgb(78, 30, 68);
 }
-.v3.NT{
+.v3.t_NT{
     color:rgb(29, 29, 87);
     background-color:rgb(196, 196, 233);
 }
-.v3.OT{
+.v3.t_OT{
     background-color:rgb(29, 29, 87);
 }
 .vinNum{

@@ -1679,12 +1679,13 @@ CNST.BibVolNameEngChn = function (Vid) {
     return CNST.BibVolName[Vid][0] + " " + CNST.BibVolName[Vid][2];
 };
 CNST.BibVol_OTorNT = function (Vid) {
-    var ary = Object.keys(CNST.BibVolName)
-    var idx = ary.indexOf(Vid)
-    if (idx >= 38) {
-        return "NT"
+    if (CNST.OT_Vols_Ary.indexOf(Vid)>=0) {
+        return "t_OT"
     }
-    return "OT";
+    if (CNST.NT_Vols_Ary.indexOf(Vid)>=0) {
+        return "t_NT"
+    }
+    return console.log("ERROR",Vid);
 };
 CNST.BibVolName_Studylight = function (Vid) {
     return CNST.BibVolName[Vid][1];
