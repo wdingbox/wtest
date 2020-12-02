@@ -1174,17 +1174,13 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         if ($(this).attr("contenteditable")) {
             //noop
         } else {
-            $("#CopyTextToClipboard").show();
+            //$("#CopyTextToClipboard").show();
             $("#CopyTextToClipboard").val(txt);
             $("#CopyTextToClipboard").select();//:must be focusable, like visible input element. 
             document.execCommand("copy");
-            $("#CopyTextToClipboard").hide();
+            $("#CopyTextToClipboard").blur();//.hide();
             $("body").focus()//focus back after copy.
             $(this).focus()//focus back after copy.
-            setTimeout(()=>{
-                $("button").focus()//focus back after copy.
-                alert("cp")
-            },5000)
         }
 
 
