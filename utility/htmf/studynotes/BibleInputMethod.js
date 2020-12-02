@@ -1182,6 +1182,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             $("body").focus()//focus back after copy.
             $(this).focus()//focus back after copy.
             setTimeout(()=>{
+                $("button").focus()//focus back after copy.
                 alert("cp")
             },5000)
         }
