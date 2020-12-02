@@ -729,40 +729,62 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
-    function update_seletedItems(_this){
+    function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
         var name = $(_this).text();
-        if(alreadyHili){//will be removed
+        if (alreadyHili) {//will be removed
             var idx = _THIS.m_selectedItems_ary.indexOf(name)
-            _THIS.m_selectedItems_ary.splice(idx,1)
-        }else{//will be added
+            _THIS.m_selectedItems_ary.splice(idx, 1) //remove 1.
+        } else {//will be added
             _THIS.m_selectedItems_ary.push(name)
         }
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
     }
-    function update_hili(_this){
+    function update_hili(_this) {
         $(_this).toggleClass("hili");
         var nsel = $(".cbkn.hili").size()
-        if(nsel === 0){//keep at least one.
+        if (nsel === 0) {//keep at least one.
             $(_this).addClass("hili")
         }
 
         $(".searchFile").removeClass("searchFile");
         $(_this).toggleClass("searchFile");
     }
-    function update_data(_this){
+    function update_data(_this) {
         update_seletedItems(_this)
         update_hili(_this)
         _THIS.m_onClickItm2Select()
     }
 
-    function moveup_selitm(_this, i){
-
+    function moveup_selitm(_this, i) {
+        var name = $(_this).text();
+        var idx = _THIS.m_selectedItems_ary.indexOf(name)
+        if (1 === i) {//move up
+            if(idx === 0 ){
+                var tmp = _THIS.m_selectedItems_ary.shift()
+                _THIS.m_selectedItems_ary.push(tmp)
+            }else{
+                var tmp = _THIS.m_selectedItems_ary[idx-1]
+                _THIS.m_selectedItems_ary.splice(idx+1, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx-1, 1) //rm prev
+            }
+        }
+        if (-1 === i) {//move down
+            if(idx === 0 ){
+                var tmp = _THIS.m_selectedItems_ary.shift()
+                _THIS.m_selectedItems_ary.push(tmp)
+            }else{
+                var tmp = _THIS.m_selectedItems_ary[idx-1]
+                _THIS.m_selectedItems_ary.splice(idx+1, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx-1, 1) //rm prev
+            }
+        }
+        _THIS.Gen_Table(_THIS.m_selectedItems_ary)
     }
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
-        switch($(_THIS.m_tbid+" caption").text()){
+        switch ($(_THIS.m_tbid + " caption").text()) {
             case "NB": update_data(this); break;
             case "Up": moveup_selitm(this, +1); break;
             case "Dn": moveup_selitm(this, -1); break;
