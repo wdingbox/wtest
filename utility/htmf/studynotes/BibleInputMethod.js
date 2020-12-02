@@ -706,8 +706,8 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary)
                 break;
             case "Up":
-                $(this).text("Dn")
-                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+                $(this).text("NB")
+                _THIS.Gen_Table(bknArr)
                 break;
             case "Dn":
                 $(this).text("NB")
@@ -770,16 +770,17 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
             }
         }
         if (-1 === i) {//move down
-            if(idx === 0 ){
-                var tmp = _THIS.m_selectedItems_ary.shift()
-                _THIS.m_selectedItems_ary.push(tmp)
+            if(idx === _THIS.m_selectedItems_ary.length-1 ){
+                var tmp = _THIS.m_selectedItems_ary.pop()
+                _THIS.m_selectedItems_ary.unshift(tmp)
             }else{
-                var tmp = _THIS.m_selectedItems_ary[idx-1]
-                _THIS.m_selectedItems_ary.splice(idx+1, 0, tmp) //insert after idx
-                _THIS.m_selectedItems_ary.splice(idx-1, 1) //rm prev
+                var tmp = _THIS.m_selectedItems_ary[idx]
+                _THIS.m_selectedItems_ary.splice(idx+2, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx, 1) //rm prev
             }
         }
         _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+        _THIS.m_onClickItm2Select()
     }
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
