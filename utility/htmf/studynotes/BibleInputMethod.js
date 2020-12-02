@@ -1274,7 +1274,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
 
     });
-    this.setFontSize(0);
+    //this.setFontSize(0);
 }
 OutputBibleTable.prototype.setFontSize = function (n) {
     if (undefined === document.m_tx_fontSize) {
@@ -1282,6 +1282,8 @@ OutputBibleTable.prototype.setFontSize = function (n) {
     }
     document.m_tx_fontSize += n;
     $(this.m_tbid + " table .tx").css("font-size", document.m_tx_fontSize);
+
+    gobt.scrollToView_Vrs()
 }
 
 OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
