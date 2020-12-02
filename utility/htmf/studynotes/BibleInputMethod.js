@@ -729,23 +729,38 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
-    function selectItm(_this){
+    function update_seletedItems(_this){
+        var alreadyHili = $(_this)[0].classList.contains('hili')
+        var name = $(_this).text();
+        if(alreadyHili){//will be removed
+            var idx = _THIS.m_selectedItems_ary.indexOf(name)
+            _THIS.m_selectedItems_ary.splice(idx,1)
+        }else{//will be added
+            _THIS.m_selectedItems_ary.push(name)
+        }
+    }
+    function update_hili(_this){
         $(_this).toggleClass("hili");
+        var nsel = $(".cbkn.hili").size()
+        if(nsel === 0){//keep at least one.
+            $(_this).addClass("hili")
+        }
 
         $(".searchFile").removeClass("searchFile");
         $(_this).toggleClass("searchFile");
 
-        $("#searchFile").text($(_this).text());
-
-        var name = $(_this).text();
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
 
-        _THIS.m_onClickItm2Select(name)
+    }
+    function update_data(_this){
+        update_seletedItems(_this)
+        update_hili(_this)
+        _THIS.m_onClickItm2Select()
     }
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch($(_THIS.m_tbid+" caption").text()){
-            case "NB": selectItm(this); break;
+            case "NB": update_data(this); break;
         }
     });
 }
