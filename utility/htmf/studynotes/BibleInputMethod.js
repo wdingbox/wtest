@@ -688,8 +688,8 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
 
 
-function NameOfBibleListTable(tbody) {
-    this.m_tbid = tbody // "#Tab_NamesOfBible"
+function NameOfBibleListTable(tid) {
+    this.m_tbid = tid // "#Tab_NamesOfBible"
     this.m_onClickItm2Select = null
     this.m_selectedItems_ary = ["CUVS"] //default
 }
@@ -697,6 +697,28 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
+    var _THIS = this
+    $(this.m_tbid + " caption").bind("click", function () {
+        var txt = $(this).text()
+        switch (txt) {
+            case "NB":
+                $(this).text("Up")
+                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+                break;
+            case "Up":
+                $(this).text("Dn")
+                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+                break;
+            case "Dn":
+                $(this).text("NB")
+                _THIS.Gen_Table(bknArr)
+                break;
+            default:
+                alert("er")
+                break;
+        }
+    })
+
 }
 NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     var str = "";
@@ -707,19 +729,24 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
-    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
-        //$(".cbkn").removeClass("hili");
-        $(this).toggleClass("hili");
+    function selectItm(_this){
+        $(_this).toggleClass("hili");
 
         $(".searchFile").removeClass("searchFile");
-        $(this).toggleClass("searchFile");
+        $(_this).toggleClass("searchFile");
 
-        $("#searchFile").text($(this).text());
+        $("#searchFile").text($(_this).text());
 
-        var name = $(this).text();
+        var name = $(_this).text();
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
 
         _THIS.m_onClickItm2Select(name)
+    }
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        //$(".cbkn").removeClass("hili");
+        switch($(_THIS.m_tbid+" caption").text()){
+            case "NB": selectItm(this); break;
+        }
     });
 }
 NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
