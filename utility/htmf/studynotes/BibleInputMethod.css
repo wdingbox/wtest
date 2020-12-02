@@ -13,7 +13,13 @@ body {
 
 
 
-
+    #CopyTextToClipboard{
+        width: 1px;
+        height: 10px;
+        position: fixed;
+        right: 0px;
+        top:0px
+    }
 
     #menuContainer,
     #menuToggler {
@@ -118,9 +124,10 @@ body {
     .hiliScroll2View {
         border: 3px solid yellow;
     }
-    .hili2 {
+    .hiliVrsTxt {
         background-color: #a00000;
         padding-bottom:2px;
+        border: 1px solid gold;
     }
 
     .editing {

@@ -1160,9 +1160,11 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             editing_save($(this).next());
         }
     });
-    $(this.m_tbid).find(".tx").bind("click", function () {
+    $(this.m_tbid).find(".tx").bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+
         $(".ok").remove();
-        $(this).toggleClass("hili2");
+        $(this).toggleClass("hiliVrsTxt");
         var rsn = $(this).prev().attr("title");
         var txt = $(this).text();
         var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
@@ -1170,12 +1172,14 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         Uti.Msg(txt + " (" + vcv + ")");
         //copy to clipboard.
         if ($(this).attr("contenteditable")) {
-            //nop
+            //noop
         } else {
             $("#CopyTextToClipboard").val(txt);
-            $("#CopyTextToClipboard").select();
+            $("#CopyTextToClipboard").select();//:must be focusable, like visible input element. 
             document.execCommand("copy");
         }
+
+        
     });
     this.setFontSize(0);
 }
@@ -1390,7 +1394,7 @@ const CNST = {
 var BibleInputMenuContainer = `
 <style>
 </style>
-
+<input id="CopyTextToClipboard" title="CopyTextToClipboard"></input>
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
     <a id="bk_name">Biblic Input Keyboard</a>
     <a id="minus_ChpVal" op='—'>--</a>
@@ -1502,7 +1506,7 @@ var BibleInputMenuContainer = `
                
 
 
-                <input id="CopyTextToClipboard" title="CopyTextToClipboard"></input><br>
+               
                 <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
