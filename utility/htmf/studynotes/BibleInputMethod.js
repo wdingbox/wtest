@@ -1283,7 +1283,7 @@ OutputBibleTable.prototype.setFontSize = function (n) {
     document.m_tx_fontSize += n;
     $(this.m_tbid + " table .tx").css("font-size", document.m_tx_fontSize);
 
-    gobt.scrollToView_Vrs()
+    gBim.scrollToView_Vrs()
 }
 
 OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
@@ -1323,7 +1323,7 @@ OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
     return { htm: s, size: idx };
 }
 
-
+var gBim = new BibleInputMenu();
 var gobt = new OutputBibleTable()
 
 function apiCallback_Gen_clientBibleObj_table(ret) {
