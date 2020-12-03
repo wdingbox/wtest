@@ -15,26 +15,34 @@ var MyStorage = {
         }
     },
     clear: function () {
-        setRevList(null)
-        setMarkHistory(null)
+        this.setRevList("")
+        this.setMarkHistory("")
     },
     setRevList: function (arr) {
         localStorage.setItem("RevList", arr)
     },
     getRevList: function () {
-        var ar = localStorage.getItem("RevList").split(",")
+        var ar = localStorage.getItem("RevList");
         if (!ar || ar.length === 0) {
             ar = ["NIV"]
+        }else{
+            ar = ar.split(",")
         }
         return ar
     },
-    setMarkHistory: function (arr) {
-        localStorage.setItem("MarkHistory", arr)
+    setMarkHistory: function (obj) {
+        if(!obj){
+            localStorage.setItem("MarkHistory", "")
+        }else{
+            localStorage.setItem("MarkHistory", JSON.stringify(obj))
+        }
     },
     getMarkHistory: function () {
         var ar = localStorage.getItem("MarkHistory")
         if (!ar || ar.length === 0) {
-            ar = []
+            ar = {}
+        }else{
+            ar = JSON.parse(ar)
         }
         return ar
     }
@@ -866,10 +874,10 @@ RevisionsOfBibleListTable.prototype.get_search_fname = function () {
 
 function Tab_mark_bcv_history() {
     this.m_tabid = "#Tab_mark_bcv_history"
-    this.m_vcvHistory = {}
+    this.m_bcvHistory = MyStorage.getMarkHistory()
 }
-Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
-    this.m_onClickHistoryItm = onClickHistoryItm
+Tab_mark_bcv_history.prototype.init = function () {
+    this.update_tab(true)
 
     var _THIS = this
     $(this.m_tabid + " #loadhistory").bind("click", function () {
@@ -879,17 +887,23 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
         _THIS.onclick_load_vcv_history(false)
     })
 }
+Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
+    this.m_onClickHistoryItm = onClickHistoryItm
+
+    this.init()
+}
 Tab_mark_bcv_history.prototype.addnew = function (vcv, tm) {
-    this.m_vcvHistory[vcv] = (!tm) ? (new Date()).toISOString() : tm
+    this.m_bcvHistory[vcv] = (!tm) ? (new Date()).toISOString() : tm
     this.update_tab(true)
+    MyStorage.setMarkHistory(this.m_bcvHistory)
 }
 Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
     var _THIS = this
     var ar = []
-    Object.keys(this.m_vcvHistory).forEach(function (vcv, i) {
+    Object.keys(this.m_bcvHistory).forEach(function (vcv, i) {
         var tm = ""
         if (bSortByTime) {
-            tm = _THIS.m_vcvHistory[vcv]
+            tm = _THIS.m_bcvHistory[vcv]
         }
         ar.push(`<tr><td title='${tm}'>${vcv}</td></tr>`)
     });
@@ -906,9 +920,7 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
     })
 }
-Tab_mark_bcv_history.prototype.init = function () {
 
-}
 Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime) {
     var _THIS = this
     var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
@@ -1645,15 +1657,12 @@ var BibleInputMenuContainer = `
 
             <div class="GrpMenu hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
-                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
+                
                 <a href='../index.htm'>ref</a>
                 <br>
                 <button id="Compare_vcv">Compare_vcv</button>
-                <button id="oBible_indxer">indxer</button>
-               
-
-
-               
+                <button id="oBible_indxer">indxer</button><br>
+                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
@@ -1677,11 +1686,16 @@ var BibleInputMenuContainer = `
                     </thead>
                     <tbody id="">
                         <tr>
-                            <td>#</td>
+                            <td></td>
                             <td>FontSize</td>
                             <td><button onclick="gBout.setFontSize(10);" title='font-size plus'>f+</button>
                             <button onclick="gBout.setFontSize(-10);" title='font-size minus'>f-</button></td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>clear setting</td>
+                            <td><button onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</button></td>
                         </tr>
                     </tbody>
                 </table>
