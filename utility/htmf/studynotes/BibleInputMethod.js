@@ -2,6 +2,48 @@
 
 
 
+var MyStorage = {
+    init: function () {
+        if (typeof (Storage) !== "undefined") {
+            // Code for localStorage/sessionStorage.
+            localStorage.setItem("test", [1, 2])
+            var ar = localStorage.getItem("test")
+            console.log("Storage test: ", ar)
+        } else {
+            // Sorry! No Web Storage support..
+            alert("Sorry, your browser does not support Web Storage...")
+        }
+    },
+    clear: function () {
+        setRevList(null)
+        setMarkHistory(null)
+    },
+    setRevList: function (arr) {
+        localStorage.setItem("RevList", arr)
+    },
+    getRevList: function () {
+        var ar = localStorage.getItem("RevList").split(",")
+        if (!ar || ar.length === 0) {
+            ar = ["NIV"]
+        }
+        return ar
+    },
+    setMarkHistory: function (arr) {
+        localStorage.setItem("MarkHistory", arr)
+    },
+    getMarkHistory: function () {
+        var ar = localStorage.getItem("MarkHistory")
+        if (!ar || ar.length === 0) {
+            ar = []
+        }
+        return ar
+    }
+}
+
+
+
+
+
 
 
 
@@ -688,12 +730,12 @@ Tab_Cat.prototype.Gen_Cat_Table = function (par) {
 
 
 
-function NameOfBibleListTable(tid) {
+function RevisionsOfBibleListTable(tid) {
     this.m_tbid = tid // "#Tab_NamesOfBible"
     this.m_onClickItm2Select = null
-    this.m_selectedItems_ary = ["CUVS"] //default
+    this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
 }
-NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
+RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
@@ -701,16 +743,16 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     $(this.m_tbid + " caption").bind("click", function () {
         var txt = $(this).text()
         switch (txt) {
-            case "Pub":
+            case "Rev":
                 $(this).text("Seq")
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary)
                 break;
             case "Seq":
-                $(this).text("Pub")
+                $(this).text("Rev")
                 _THIS.Gen_Table(bknArr)
                 break;
             case "Dn":
-                $(this).text("Pub")
+                $(this).text("Rev")
                 _THIS.Gen_Table(bknArr)
                 break;
             default:
@@ -721,7 +763,7 @@ NameOfBibleListTable.prototype.Init_NB_Table = function (parm) {
 
 }
 
-NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
+RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     var str = "";
     var _THIS = this
     //var bknArr = Object.keys(CNST.FnameOfBibleObj);
@@ -731,7 +773,7 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
-    
+
     function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
         var name = $(_this).text();
@@ -741,6 +783,7 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         } else {//will be added
             _THIS.m_selectedItems_ary.push(name)
         }
+        MyStorage.setRevList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
     }
     function update_hili(_this) {
@@ -763,25 +806,26 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         var name = $(_this).text();
         var idx = _THIS.m_selectedItems_ary.indexOf(name)
         if (1 === i) {//move up
-            if(idx === 0 ){
+            if (idx === 0) {
                 var tmp = _THIS.m_selectedItems_ary.shift()
                 _THIS.m_selectedItems_ary.push(tmp)
-            }else{
-                var tmp = _THIS.m_selectedItems_ary[idx-1]
-                _THIS.m_selectedItems_ary.splice(idx+1, 0, tmp) //insert after idx
-                _THIS.m_selectedItems_ary.splice(idx-1, 1) //rm prev
+            } else {
+                var tmp = _THIS.m_selectedItems_ary[idx - 1]
+                _THIS.m_selectedItems_ary.splice(idx + 1, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx - 1, 1) //rm prev
             }
         }
         if (-1 === i) {//move down
-            if(idx === _THIS.m_selectedItems_ary.length-1 ){
+            if (idx === _THIS.m_selectedItems_ary.length - 1) {
                 var tmp = _THIS.m_selectedItems_ary.pop()
                 _THIS.m_selectedItems_ary.unshift(tmp)
-            }else{
+            } else {
                 var tmp = _THIS.m_selectedItems_ary[idx]
-                _THIS.m_selectedItems_ary.splice(idx+2, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx + 2, 0, tmp) //insert after idx
                 _THIS.m_selectedItems_ary.splice(idx, 1) //rm prev
             }
         }
+        MyStorage.setRevList(_THIS.m_selectedItems_ary)
         _THIS.Gen_Table(_THIS.m_selectedItems_ary)
         _THIS.m_onClickItm2Select()
     }
@@ -789,13 +833,13 @@ NameOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
-            case "Pub": update_data(this); break;
+            case "Rev": update_data(this); break;
             case "Seq": moveup_selitm(this, +1); break;
             //case "Dn": moveup_selitm(this, -1); break;
         }
     });
 }
-NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
+RevisionsOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     var fnamesArr = [];
     $(".cbkn.hili").each(function () {
         var ss = $(this).text();
@@ -806,7 +850,7 @@ NameOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     }
     return fnamesArr;
 };///
-NameOfBibleListTable.prototype.get_search_fname = function () {
+RevisionsOfBibleListTable.prototype.get_search_fname = function () {
     var searchFileName = $(".cbkn.hili.searchFile").text();
     return searchFileName; //{ File: searchFileName, Strn: searchStrn };
 };///
@@ -947,7 +991,7 @@ var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 var bibcat = new Tab_Cat()
 var markHistory = new Tab_mark_bcv_history()
 
-var nambib = new NameOfBibleListTable("#Tab_NamesOfBible")
+var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 
 var obrapport = new OutputBibleExRapport()
 
@@ -955,8 +999,9 @@ var obrapport = new OutputBibleExRapport()
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
-
     var _This = this
+
+    MyStorage.init()
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
@@ -1550,7 +1595,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption title='Names of Bible' Pub="select" Seq="moveUp" Dn="moveDn">Pub</caption>
+                    <caption title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Rev</caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
