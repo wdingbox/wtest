@@ -7,7 +7,9 @@ var url = require('url'); //for web app.
 var Uti = require("./Uti.module").Uti;
 
 // require("../../../../../../wdingbox/hebrew_ciu/HebrewQ/audjs/") //path for module.
-const HROOT = "../../../../../wdingbox/hebrew_ciu/HebrewQ/audjs/"; //path for runtime svr.
+//const HROOT = "../../../../../wdingbox/hebrew_ciu/HebrewQ/audjs/"; //path for runtime svr.
+const HROOT = "../../../../hebrew_ciu/HebrewQ/audjs/"; //path for runtime svr.
+//require("../../../../../hebrew_ciu/HebrewQ/audjs")
 
 var HebrewUti = {
   get_VocabHebrewBufObj: function () {
