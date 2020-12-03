@@ -1695,7 +1695,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>clear setting</td>
-                            <td><button onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</button></td>
+                            <td><input type="radio" onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</input></td>
                         </tr>
                     </tbody>
                 </table>
