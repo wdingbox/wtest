@@ -25,15 +25,15 @@ var MyStorage = {
         var ar = localStorage.getItem("RevList");
         if (!ar || ar.length === 0) {
             ar = ["NIV"]
-        }else{
+        } else {
             ar = ar.split(",")
         }
         return ar
     },
     setMarkHistory: function (obj) {
-        if(!obj){
+        if (!obj) {
             localStorage.setItem("MarkHistory", "")
-        }else{
+        } else {
             localStorage.setItem("MarkHistory", JSON.stringify(obj))
         }
     },
@@ -41,7 +41,7 @@ var MyStorage = {
         var ar = localStorage.getItem("MarkHistory")
         if (!ar || ar.length === 0) {
             ar = {}
-        }else{
+        } else {
             ar = JSON.parse(ar)
         }
         return ar
@@ -980,13 +980,22 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
         $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
         $(eBar).append(eac).append(" | ")
     });
+
     $(this.m_grpContainerID).prepend(eBar).find("a").bind("click", function () {
         var sid = $(this).attr("sid");
+
         $(sid).slideToggle()
         $(this).toggleClass("GroupsMenuMgrHili")
+
+        //close others
+        $(".GroupsMenuMgrHili").each(function () {
+            var _sid = $(this).attr("sid");
+            if (_sid != sid) {
+                $(_sid).hide()
+                $(this).removeClass("GroupsMenuMgrHili")
+            }
+        })
     })
-
-
 }
 
 var grpmgr = new GroupsMenuMgr()
