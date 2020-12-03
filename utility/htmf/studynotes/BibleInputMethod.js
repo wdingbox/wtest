@@ -1667,11 +1667,11 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 
+                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
+                <button id="Compare_vcv">Compare_vcv</button>
+                <button id="oBible_indxer">indxer</button>
                 <a href='../index.htm'>ref</a>
                 <br>
-                <button id="Compare_vcv">Compare_vcv</button>
-                <button id="oBible_indxer">indxer</button><br>
-                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
                 <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
