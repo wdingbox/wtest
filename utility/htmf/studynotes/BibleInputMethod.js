@@ -1056,7 +1056,7 @@ BibleInputMenu.prototype.init = function () {
     })
 
     obrapport.init()
-    gobt.onclick_ob_table(function () {
+    gBout.onclick_ob_table(function () {
         $("#menuContainer").hide()
         obrapport.hide()
     })
@@ -1324,11 +1324,11 @@ OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
 }
 
 var gBim = new BibleInputMenu();
-var gobt = new OutputBibleTable()
+var gBout = new OutputBibleTable()
 
 function apiCallback_Gen_clientBibleObj_table(ret) {
     obrapport.hide()
-    gobt.Gen_clientBibleObj_table(ret)
+    gBout.Gen_clientBibleObj_table(ret)
 }
 
 
@@ -1634,8 +1634,8 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td>#</td>
                             <td>FontSize</td>
-                            <td><button onclick="gobt.setFontSize(10);" title='font-size plus'>f+</button>
-                            <button onclick="gobt.setFontSize(-10);" title='font-size minus'>f-</button></td>
+                            <td><button onclick="gBout.setFontSize(10);" title='font-size plus'>f+</button>
+                            <button onclick="gBout.setFontSize(-10);" title='font-size minus'>f-</button></td>
                             <td></td>
                         </tr>
                     </tbody>
