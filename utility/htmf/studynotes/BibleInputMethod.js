@@ -17,6 +17,7 @@ var MyStorage = {
     clear: function () {
         this.setRevList("")
         this.setMarkHistory("")
+        this.setFontSize("")
     },
     setRevList: function (arr) {
         localStorage.setItem("RevList", arr)
@@ -45,7 +46,16 @@ var MyStorage = {
             ar = JSON.parse(ar)
         }
         return ar
-    }
+    },
+    setFontSize: function (v) {
+        if (parseInt(v) < 6) v = 6
+        localStorage.setItem("FontSize", v)
+    },
+    getFontSize: function () {
+        var v = parseInt(localStorage.getItem("FontSize"));
+        if (!v || !Number.isInteger(v) || v.length === 0) return 16
+        return (v < 6) ? 6 : v
+    },
 }
 
 
@@ -1206,6 +1216,8 @@ function OutputBibleTable() {
     this.m_tbid = "#oBible"
 }
 OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
+    this.incFontSize(0);
+
     $(this.m_tbid).bind("click", function () {
         if (cbf) cbf()
     })
@@ -1340,15 +1352,16 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
 
     });
-    //this.setFontSize(0);
-}
-OutputBibleTable.prototype.setFontSize = function (n) {
-    if (undefined === document.m_tx_fontSize) {
-        document.m_tx_fontSize = 16;
-    }
-    document.m_tx_fontSize += n;
-    $(this.m_tbid + " table .tx").css("font-size", document.m_tx_fontSize);
 
+    this.incFontSize(0)
+}
+OutputBibleTable.prototype.incFontSize = function (n) {
+    var fsz = MyStorage.getFontSize()
+    fsz += n;
+    $(this.m_tbid + " table .tx").css("font-size", fsz);
+    $("#fontsize").text(fsz)
+
+    MyStorage.setFontSize(fsz)
     gBim.scrollToView_Vrs()
 }
 
@@ -1697,9 +1710,9 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>FontSize</td>
-                            <td><button onclick="gBout.setFontSize(10);" title='font-size plus'>f+</button>
-                            <button onclick="gBout.setFontSize(-10);" title='font-size minus'>f-</button></td>
-                            <td></td>
+                            <td><button onclick="gBout.incFontSize(2);" title='font-size plus'>f+</button>
+                            <button onclick="gBout.incFontSize(-2);" title='font-size minus'>f-</button></td>
+                            <td id='fontsize'></td>
                         </tr>
                         <tr>
                             <td></td>
