@@ -1305,7 +1305,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
-    $(this.m_tbid).find("td.vid").bind("click", function (evt) {
+    $(this.m_tbid).find(".vid").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
         //solve confliction between toggle and hili
@@ -1430,7 +1430,7 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
 
     var s = "<table id='BibOut' border='1'>";
     s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
-    s += "<thead><th>#</th><th>scripts</th></thead>";
+    s += "<thead><th>#</th></thead>";
     s += "<tbody>";
     s += st;
 
