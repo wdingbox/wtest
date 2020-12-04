@@ -1407,8 +1407,9 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
                 idx++;
-                var vid = `${vol}<br>${chp}:${vrs}`;
-                st += "<tr><td class='vid'>" + vid + "</td><td>";
+                var vid = `${vol}${chp}:${vrs}`;
+                var divbcv =`<div><a class='vid'>${vid}</a></div>`
+                st += `<tr><td>${divbcv}`;
                 if ("object" == typeof val) {
                     $.each(val, function (key, str) {
                         var vid = vol + chp + ":" + vrs;
@@ -1429,7 +1430,7 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
 
     var s = "<table id='BibOut' border='1'>";
     s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
-    s += "<thead><th>vcv</th><th>scripts</th></thead>";
+    s += "<thead><th>#</th><th>scripts</th></thead>";
     s += "<tbody>";
     s += st;
 
