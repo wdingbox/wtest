@@ -77,11 +77,11 @@ Run : function (cbf) {
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
     this.Response = cbf;
-    var s = document.createElement('script');
-    s.src = this.Url()
-    document.body.appendChild(s);
-    console.log('pster:',s, Jsonpster)
-    this.api=this.inp=null;
+    this.s = document.createElement('script');
+    this.s.src = this.Url()
+    document.body.appendChild(this.s);
+    console.log('Jsonpster:',this.s, Jsonpster);
+    this.api = this.inp = null;
 }};
 const RestApi = JSON.parse('${jstr_RestApi}');
 `;;;;;;;;;;;;;;

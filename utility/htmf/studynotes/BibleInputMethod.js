@@ -940,6 +940,7 @@ Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime)
     var _THIS = this
     Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
     Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+    Uti.Msg(Jsonpster)
     Jsonpster.Run(function (ret) {
         //history
         console.log(ret);
@@ -1183,13 +1184,14 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp = { fnames: fnamesArr, bibOj: bibOj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
         apiCallback_Gen_clientBibleObj_table(ret)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
         }, 2100)
     })
-    Uti.Msg(Jsonpster);
+
     return bibOj;
 };///
 BibleInputMenu.prototype.get_search_inp = function () {
@@ -1259,6 +1261,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         //var _This = this;
         Jsonpster.inp = { fnames: [fil], vcvx: dat };
         Jsonpster.api = RestApi.ApiBibleObj_update_notes;
+        Uti.Msg(Jsonpster)
         Jsonpster.Run(function () {
             var stx = txt.substr(0, 5) + " ... " + txt.substr(txt.length - 15);
             Uti.Msg(stx);
@@ -1269,7 +1272,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
 
     var tb = this.gen_clientBibleObj_table(ret);
-    Uti.Msg("tot=" + tb.size);
+    Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
     $(this.m_tbid).find("td.vid").bind("click", function (evt) {
@@ -1300,6 +1303,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
         Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
         Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+        Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg(vid + " is stored in history; and ref is available.");
         });
@@ -1462,6 +1466,7 @@ function onclick_regex_match_next(incrs) {
     if (document.g_matchCount > 0) {//save to history.
         Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
         Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+        Uti.Msg(Jsonpster)
         Jsonpster.Run(function () {
             Uti.Msg("found");
         });
@@ -1470,19 +1475,18 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     Jsonpster.inp = gBim.get_search_inp();
-    console.log(Jsonpster.inp);
-    if (!Jsonpster.inp) return
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Uti.Msg(Jsonpster)
+    if (!Jsonpster.inp) return
     Jsonpster.Run(apiCallback_Gen_clientBibleObj_table);
 
-    console.log(Jsonpster);
+    //test
     var unicds = "";
     for (var i = 0; i < s.length; i++) {
         var ch = s.charCodeAt(i);
         if (ch > 512) {
             unicds += "\\u" + ch.toString(16);
         }
-
     }
     Uti.Msg(s);
     Uti.Msg(unicds);
@@ -1491,6 +1495,7 @@ function onclick_BibleObj_search_str() {
 function onclick_load_search_string_history(bSortByTime) {
     Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
     Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+    Uti.Msg(Jsonpster)
     Jsonpster.Run(function (ret) {
         //history
         console.log(ret);
@@ -1519,14 +1524,13 @@ function onclick_btn_set_jsonpster_svr_ip() {
 
 
 var Uti = {
-
-
+    Msg_Idx: 0,
     Msg: function (dat) {
         var str = dat;
         if ("object" === typeof dat) {
             str = JSON.stringify(dat, null, 4);
         }
-        var results = str + "\n" + $("#txtarea").val();
+        var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + $("#txtarea").val();
         //results = results.substr(0, 60);
         $("#txtarea").val(results);
     },
