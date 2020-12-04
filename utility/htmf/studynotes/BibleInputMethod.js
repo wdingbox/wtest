@@ -890,10 +890,13 @@ Tab_mark_bcv_history.prototype.init = function () {
     this.update_tab(true)
 
     var _THIS = this
-    $(this.m_tabid + " #loadhistory").bind("click", function () {
+    $("#loadhistory").bind("click", function (evt) {
+        evt.stopImmediatePropagation()
         _THIS.onclick_load_vcv_history(true)
     })
-    $(this.m_tabid + " #sort_history_by_vcvID").bind("click", function () {
+    $("#sort_history_by_vcvID").bind("click", function (evt) {
+        evt.stopImmediatePropagation()
+        alert()
         _THIS.onclick_load_vcv_history(false)
     })
 }
@@ -924,9 +927,11 @@ Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
 Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     var _THIS = this
     var trs = this.gen_trs_sort_by_time(bSortByTime)
-    $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function () {
+    $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function (evt) {
+        evt.stopImmediatePropagation()
+        $(this).parentsUntil("table").find(".hili").removeClass("hili")
+        $(this).addClass("hili")
         var vcv = $(this).text()
-
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
     })
 }
@@ -1642,8 +1647,8 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                     <caption>
-                       <a id="loadhistory"  title='load history sort by time'>H</a>
-                       <a id="sort_history_by_vcvID"  title='load history sort by str'>^</a>
+                       <button id="loadhistory"  title='load history sort by time'>H</button>
+                       <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
                     </caption>
                     <thead></thead>
                     <tbody>
