@@ -336,6 +336,36 @@ body {
     #divPopupMenu_BcvTag table{
         caption-side: bottom;
     }
+
+
+
+
+    .hiliRevTag{
+        background-color: #a00000;
+        padding-bottom:2px;
+        border: 1px solid gold;
+    }
+    #divPopupMenu_RevTag{
+        position: absolute;
+        left: 10px;
+        background-color: rgb(246, 126, 7);
+        z-index: 9999;
+        display:none;
+    }
+    #divPopupMenu_RevTag table tbody a{
+        text-decoration: none;
+    }
+    #divPopupMenu_RevTag table tbody a:visited{
+        color: rgb(241, 245, 247);
+    }
+    #divPopupMenu_RevTag table{
+        caption-side: bottom;
+    }
+
+
+
+
+
     .vmark{
         background-color: rgb(246, 126, 8);
     }
@@ -486,7 +516,7 @@ input[title='NIV']:checked:after {
     /*border: 1px solid #73AD21;*/
     padding: 1px;
 }
-.revtag{
+.revTag{
     font-size:xx-small;
     width:5px;
     background-color: #2f74f5;

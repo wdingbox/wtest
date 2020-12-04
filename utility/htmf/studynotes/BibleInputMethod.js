@@ -16,13 +16,13 @@ var MyStorage = {
 
 
         //auto set afer load for input
-        setTimeout(()=>{
-            ["acctname","username"].forEach(function(id,i){
+        setTimeout(() => {
+            ["acctname", "username"].forEach(function (id, i) {
                 var val = localStorage.getItem(id)
-                $("#"+id).val(val)
+                $("#" + id).val(val)
             })
-        },3000)
-        
+        }, 3000)
+
     },
     clear: function () {
         this.setRevList("")
@@ -1384,7 +1384,33 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             $("body").focus()//focus back after copy.
             $(this).focus()//focus back after copy.
         }
+    });
 
+
+    $(this.m_tbid).find("sup.revTag").bind("click", function (evt) {
+        //evt.stopImmediatePropagation();
+
+        var txt = $(this).text();
+        if ("_" !== txt[0]) {
+            return;
+        }
+
+        var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
+        if (alreadyHili) {
+            $("#divPopupMenu_RevTag").slideToggle();
+        } else {
+            $("#divPopupMenu_RevTag").show();
+        }
+
+        $(".revTag.hiliRevTag").removeClass("hiliRevTag");
+        $(this).toggleClass("hiliRevTag");
+
+        var bcr = $(this)[0].getBoundingClientRect();
+        console.log(bcr)
+        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#divPopupMenu_BcvTag").height()
+
+        $("#divPopupMenu_RevTag").css('top', y);
+        //
 
     });
 
@@ -1408,16 +1434,16 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var divbcv =`<div><a class='bcvTag'>${sbcv}</a></div>`
+                var divbcv = `<div><a class='bcvTag'>${sbcv}</a></div>`
                 st += `<tr><td>${divbcv}`;
                 if ("object" == typeof val) {
-                    $.each(val, function (key, str) {
+                    $.each(val, function (revId, str) {
                         //
-                        var clsname = `class='tx tx${key}'`
-                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && key === 'H_G') {
-                            clsname = `dir='rtl' class='tx tx${key} tx_OT'` //
+                        var clsname = `class='tx tx${revId}'`
+                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
+                            clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                         }
-                        st += `<div><sup  class='revtag' title='${key}'>${key}</sup><a ${clsname} vid='${sbcv}'>${str}</a></div>`;
+                        st += `<div><sup  class='revTag' title='${revId}'>${revId}</sup><a ${clsname} vid='${sbcv}'>${str}</a></div>`;
                     });
                 }
                 if ("string" == typeof val) {
@@ -1833,6 +1859,24 @@ var BibleInputMenuContainer = `
     </table>
 </div>
 
+<div id="divPopupMenu_RevTag">
+    <table id='refslist' border="1" align="left">
+    
+    <tbody>
+        <tr>
+            <td>
+                <a id="Edit">Edit</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="Save">Save</a>
+            </td>
+        </tr>
+    </tbody>
+    <caption></caption>
+    </table>
+</div>
 
 <div id='oBible'>----</div>
         `;//////backtick for multiple lines. 
