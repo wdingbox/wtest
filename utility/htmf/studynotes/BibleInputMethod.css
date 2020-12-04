@@ -486,9 +486,10 @@ input[title='NIV']:checked:after {
     /*border: 1px solid #73AD21;*/
     padding: 1px;
 }
-.nbcVrsTxt{
+.revtag{
     font-size:xx-small;
     width:5px;
     background-color: #2f74f5;
     margin: 0px 5px 0px 0px;
+    padding: 0px 5px 0px 0px;
 }

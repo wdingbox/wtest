@@ -104,9 +104,9 @@ OutputBibleExRapport.prototype.init_links = function () {
             $(".hiliExt").removeClass("hiliExt")
             $(_this).parent().addClass("hiliExt")
 
-            var vid = $(".vid.vmark").text();
-            var ret = Uti.vcv_parser(vid);
-            if (!ret) return alert("ERR: vid=" + vid)
+            var sbcv = $(".vid.vmark").text();
+            var ret = Uti.vcv_parser(sbcv);
+            if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
             ret.set_href = function (str) {
@@ -1262,7 +1262,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         var old = $(_This).attr("oldtxt");
         var fil = $(_This).attr("title");
         var txt = $(_This).text();
-        var vid = $(_This).attr("vid");
+        var xid = $(_This).attr("vid");
         if (!fil) {
             return;
         }
@@ -1277,9 +1277,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             }
         }
 
-        var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+        var mat = xid.match(/^(\w{3})(\d+)\:(\d+)$/);
         if (!mat) {//Gen1:1
-            alert("edi save err:" + vid + ":" + txt);
+            alert("edi save err:" + xid + ":" + txt);
             return;
         }
         var dat = {}
@@ -1326,16 +1326,16 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         $("#externalinkMenu").css('top', y);
         //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
 
-        var vid = $(this).text();
-        $("#externalinkMenu").find("caption").text(vid).focus()
+        var bcvid = $(this).text();
+        $("#externalinkMenu").find("caption").text(bcvid).focus()
 
-        markHistory.addnew(vid)
+        markHistory.addnew(bcvid)
 
-        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
+        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: bcvid } };
         Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
-            Uti.Msg(vid + " is stored in history; and ref is available.");
+            Uti.Msg(bcvid + " is stored in history; and ref is available.");
         });
     });
 
@@ -1407,17 +1407,17 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
                 idx++;
-                var vid = `${vol}${chp}:${vrs}`;
-                var divbcv =`<div><a class='vid'>${vid}</a></div>`
+                var sbcv = `${vol}${chp}:${vrs}`;
+                var divbcv =`<div><a class='vid'>${sbcv}</a></div>`
                 st += `<tr><td>${divbcv}`;
                 if ("object" == typeof val) {
                     $.each(val, function (key, str) {
-                        var vid = vol + chp + ":" + vrs;
+                        //
                         var clsname = `class='tx tx${key}'`
                         if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && key === 'H_G') {
                             clsname = `dir='rtl' class='tx tx${key} tx_OT'` //
                         }
-                        st += `<div><sup  class='nbcVrsTxt' title='${key}'>${key} </sup> <a ${clsname} vid='${vid}'>${str}</a></div>`;
+                        st += `<div><sup  class='revtag' title='${key}'>${key}</sup><a ${clsname} vid='${sbcv}'>${str}</a></div>`;
                     });
                 }
                 if ("string" == typeof val) {
@@ -1584,19 +1584,19 @@ var Uti = {
         }
         return ops;
     },
-    vcv_parser: function (vid) {
-        vid = vid.replace(/\s/g, "");
-        if (vid.length === 0) return alert("please select an item first.");
+    vcv_parser: function (sbcv) {
+        sbcv = sbcv.replace(/\s/g, "");
+        if (sbcv.length === 0) return alert("please select an item first.");
         var ret = { vol: "", chp: "", vrs: "" };
-        var mat = vid.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
-        var mat = vid.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
-        var mat = vid.match(/^(\w{3})(\d+)\:(\d+)$/);
+        var mat = sbcv.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
+        var mat = sbcv.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
+        var mat = sbcv.match(/^(\w{3})(\d+)\:(\d+)$/);
         if (mat) {
             ret.vol = mat[1];
             ret.chp = mat[2];
             ret.vrs = mat[3];
         } else {
-            alert("vid=" + vid + "," + JSON.stringify(ret));
+            alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
         }
         ret.chp3 = ret.chp.padStart(3, "0");
         ret._vol = "_" + ret.vol;
