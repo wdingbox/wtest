@@ -104,7 +104,7 @@ OutputBibleExRapport.prototype.init_links = function () {
             $(".hiliExt").removeClass("hiliExt")
             $(_this).parent().addClass("hiliExt")
 
-            var sbcv = $(".vid.vmark").text();
+            var sbcv = $(".bcvTag.vmark").text();
             var ret = Uti.vcv_parser(sbcv);
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
@@ -1193,7 +1193,7 @@ BibleInputMenu.prototype.init = function () {
 BibleInputMenu.prototype.scrollToView_Vrs = function () {
     var parmBook = showup.get_selected_vcv_parm()
     var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
-    $(".vid").each(function () {
+    $(".bcvTag").each(function () {
         var txt = $(this).text()
         if (txt === bkchvr) {
             $(this)[0].scrollIntoViewIfNeeded()
@@ -1304,8 +1304,8 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     var tb = this.gen_output_table(ret);
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
-    table_sort("#BibOut");
-    $(this.m_tbid).find(".vid").bind("click", function (evt) {
+    //table_sort("#BibOut");
+    $(this.m_tbid).find(".bcvTag").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
         //solve confliction between toggle and hili
@@ -1316,7 +1316,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             $("#externalinkMenu").show();
         }
 
-        $(".vid.vmark").removeClass("vmark");
+        $(".bcvTag.vmark").removeClass("vmark");
         $(this).toggleClass("vmark");
 
         var bcr = $(this)[0].getBoundingClientRect();
@@ -1408,7 +1408,7 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var divbcv =`<div><a class='vid'>${sbcv}</a></div>`
+                var divbcv =`<div><a class='bcvTag'>${sbcv}</a></div>`
                 st += `<tr><td>${divbcv}`;
                 if ("object" == typeof val) {
                     $.each(val, function (key, str) {
@@ -1480,7 +1480,7 @@ function onclick_regex_match_next(incrs) {
     document.g_matchStrin = str;
     document.g_matchCount = 0;
     document.g_matchIndex = 0;
-    $("a[vid]").each(function (idx) {
+    $("a[bcvTag]").each(function (idx) {
         var ss = $(this).text();
         var mat = ss.match(reg);
         if (mat) {
