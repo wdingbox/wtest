@@ -1301,7 +1301,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     };
 
 
-    var tb = this.gen_clientBibleObj_table(ret);
+    var tb = this.gen_output_table(ret);
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     table_sort("#BibOut");
@@ -1400,7 +1400,7 @@ OutputBibleTable.prototype.incFontSize = function (n) {
     gBim.scrollToView_Vrs()
 }
 
-OutputBibleTable.prototype.gen_clientBibleObj_table = function (ret) {
+OutputBibleTable.prototype.gen_output_table = function (ret) {
     var idx = 0, st = "";
     $.each(ret, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
