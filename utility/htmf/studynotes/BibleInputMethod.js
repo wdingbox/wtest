@@ -13,6 +13,16 @@ var MyStorage = {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
         }
+
+
+        //auto set afer load for input
+        setTimeout(()=>{
+            ["acctname","username"].forEach(function(id,i){
+                var val = localStorage.getItem(id)
+                $("#"+id).val(val)
+            })
+        },3000)
+        
     },
     clear: function () {
         this.setRevList("")
@@ -55,6 +65,26 @@ var MyStorage = {
         var v = parseInt(localStorage.getItem("FontSize"));
         if (!v || !Number.isInteger(v) || v.length === 0) return 16
         return (v < 6) ? 6 : v
+    },
+    setAcctName: function (v) {
+        v = v.trim()
+        if (v.length === 0) v = "pub"
+        localStorage.setItem("acctname", v)
+    },
+    getAcctName: function () {
+        var v = localStorage.getItem("acctname");
+        if (!v || v.length === 0) v = "pub";
+        return v;
+    },
+    setUserName: function (v) {
+        v = v.trim()
+        if (v.length === 0) v = "peter"
+        localStorage.setItem("username", v)
+    },
+    getUserName: function () {
+        var v = localStorage.getItem("username");
+        if (!v || v.length === 0) v = "John";
+        return v;
     },
 }
 
@@ -1719,6 +1749,18 @@ var BibleInputMenuContainer = `
                         </tr>
                     </thead>
                     <tbody id="">
+                        <tr>
+                            <td></td>
+                            <td>AccontName</td>
+                            <td><input id="acctname"  onkeyup="alert($(this).val());MyStorage.setAcctName($(this).val());" value='pub' ></input></td>
+                            <td>note</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>UserName</td>
+                            <td><input id="username" onkeyup="MyStorage.setUserName($(this).val());" value='peter'></input></td>
+                            <td>user</td>
+                        </tr>
                         <tr>
                             <td></td>
                             <td>FontSize</td>
