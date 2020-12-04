@@ -69,17 +69,20 @@ var SvcUti = {
             var jstr_RestApi = JSON.stringify(restApi);
             var s = `
 var Jsonpster = {
+    inp:null,
+    api:null,
 Url: function (){
-        return 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
+        this.m_src = 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
+        return this.m_src;
     },
 Run : function (cbf) {
     if (!cbf) alert('callback Response null');
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
     this.Response = cbf;
-    this.s = document.createElement('script');
-    this.s.src = this.Url()
-    document.body.appendChild(this.s);
+    var s = document.createElement('script');
+    s.src = this.Url()
+    document.body.appendChild(s);
     console.log('Jsonpster:',this.s, Jsonpster);
     this.api = this.inp = null;
 }};
