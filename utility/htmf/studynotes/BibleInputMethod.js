@@ -1176,7 +1176,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    Jsonpster.inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
+    Jsonpster.inp = { fnames: fnamesArr, bibOj: bibOj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Jsonpster.Run(function (ret) {
         apiCallback_Gen_clientBibleObj_table(ret)
@@ -1196,7 +1196,7 @@ BibleInputMenu.prototype.get_search_inp = function () {
         return alert("no search str.")
     }
 
-    var inp = { fname: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
+    var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     return inp;
 };
 ///////////
@@ -1252,7 +1252,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         dat.txt = txt;
 
         //var _This = this;
-        Jsonpster.inp = { fname: [fil], vcvx: dat };
+        Jsonpster.inp = { fnames: [fil], vcvx: dat };
         Jsonpster.api = RestApi.ApiBibleObj_update_notes;
         Jsonpster.Run(function () {
             var stx = txt.substr(0, 5) + " ... " + txt.substr(txt.length - 15);

@@ -203,7 +203,7 @@ var BibleUti = {
 
 var BibleRestApi = {
     ApiBibleObj_update_notes: function (inpObj) {
-        var fil = inpObj.fname[0];
+        var fil = inpObj.fnames[0];
         var vol = inpObj.vcvx.vol;
         var chp = inpObj.vcvx.chp;
         var vrs = inpObj.vcvx.vrs;
@@ -218,17 +218,12 @@ var BibleRestApi = {
     ApiBibleObj_load_Bkns_Vols_Chp_Vrs: function (inpObj) {
         var ss = "", RetObj = {};
 
-        if ("string" === typeof inpObj.fname) {//old oobsoleted..
-            var bib = BibleUti.load_BibleObj(inpObj.fname);//.fname, inpObj.dat
-            var ret = BibleUti.Get_PartialBibleObj_by_VolChpVrs(bib.obj, inpObj.dat);
-            var srcO = {};
-            srcO[inpObj.fname] = ret.retObj;
-            BibleUti.merge_clientBibleObj(RetObj, srcO);
+        if ("string" === typeof inpObj.fnames) {//old oobsoleted..
             console.log("erro input dat *************", RetObj);
         }
-        if ("object" === typeof inpObj.fname) {
-            for (var i = 0; i < inpObj.fname.length; i++) {
-                var fnm = inpObj.fname[i];
+        if ("object" === typeof inpObj.fnames) {
+            for (var i = 0; i < inpObj.fnames.length; i++) {
+                var fnm = inpObj.fnames[i];
                 var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
                 var pat = BibleUti.Get_PartialBibleObj_by_xOj(bib.obj, inpObj.bibOj);
                 var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
