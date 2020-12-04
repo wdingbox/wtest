@@ -321,19 +321,19 @@ body {
 
 
 
-    #externalinkMenu{
+    #divPopupMenu_BcvTag{
         position: absolute;
         right: 10px;
         background-color: rgb(246, 126, 7);
         z-index: 9999;
     }
-    #externalinkMenu table tbody a{
+    #divPopupMenu_BcvTag table tbody a{
         text-decoration: none;
     }
-    #externalinkMenu table tbody a:visited{
+    #divPopupMenu_BcvTag table tbody a:visited{
         color: rgb(241, 245, 247);
     }
-    #externalinkMenu table{
+    #divPopupMenu_BcvTag table{
         caption-side: bottom;
     }
     .vmark{

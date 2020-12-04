@@ -95,10 +95,10 @@ var MyStorage = {
 
 
 
-function OutputBibleExRapport() {
-    this.m_id = "#externalinkMenu"
+function PopupMenu_BcvTag() {
+    this.m_id = "#divPopupMenu_BcvTag"
 }
-OutputBibleExRapport.prototype.init_links = function () {
+PopupMenu_BcvTag.prototype.init_links = function () {
     var Ext_Link_Menu = {
         HiliEx: function (_this) {
             $(".hiliExt").removeClass("hiliExt")
@@ -183,7 +183,7 @@ OutputBibleExRapport.prototype.init_links = function () {
     }
     Ext_Link_Menu.setup_links()
 }
-OutputBibleExRapport.prototype.init = function () {
+PopupMenu_BcvTag.prototype.init = function () {
     this.init_links()
 
     $(this.m_id).draggable()
@@ -191,7 +191,7 @@ OutputBibleExRapport.prototype.init = function () {
         //$(this.m_id).hide()
     }).hide()
 }
-OutputBibleExRapport.prototype.hide = function () {
+PopupMenu_BcvTag.prototype.hide = function () {
     if ($(this.m_id)[0].display === "none") {
         console.log("already hidden")
     } else {
@@ -1060,7 +1060,7 @@ var markHistory = new Tab_mark_bcv_history()
 
 var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 
-var obrapport = new OutputBibleExRapport()
+var obrapport = new PopupMenu_BcvTag()
 
 
 var BibleInputMenu = function () {
@@ -1311,9 +1311,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('vmark')
         if (alreadyHili) {
-            $("#externalinkMenu").slideToggle();
+            $("#divPopupMenu_BcvTag").slideToggle();
         } else {
-            $("#externalinkMenu").show();
+            $("#divPopupMenu_BcvTag").show();
         }
 
         $(".bcvTag.vmark").removeClass("vmark");
@@ -1321,13 +1321,13 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#externalinkMenu").height()
+        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#divPopupMenu_BcvTag").height()
 
-        $("#externalinkMenu").css('top', y);
-        //$("#externalinkMenu").toggle("'slide', {direction: 'up' }, 1000");//()
+        $("#divPopupMenu_BcvTag").css('top', y);
+        //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
 
         var bcvid = $(this).text();
-        $("#externalinkMenu").find("caption").text(bcvid).focus()
+        $("#divPopupMenu_BcvTag").find("caption").text(bcvid).focus()
 
         markHistory.addnew(bcvid)
 
@@ -1789,7 +1789,7 @@ var BibleInputMenuContainer = `
 
 
 
-<div id="externalinkMenu">
+<div id="divPopupMenu_BcvTag">
     <table id='refslist' border="1" align="left">
     
     <tbody>
