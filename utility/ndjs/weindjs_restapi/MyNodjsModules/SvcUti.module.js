@@ -74,8 +74,8 @@ Url: function (){
     },
 Run : function (cbf) {
     if (!cbf) alert('callback Response null');
-    if (!this.api) alert('api null');
-    if (!this.inp) alert('inp null');
+    if (!this.api) alert('api=null');
+    if (!this.inp) alert('inp=null');
     this.Response = cbf;
     var s = document.createElement('script');
     s.src = this.Url()
