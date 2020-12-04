@@ -933,9 +933,9 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
 
 Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime) {
     var _THIS = this
-    var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
-    var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-    Jsonpster.Run(prm, function (ret) {
+    Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
+    Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+    Jsonpster.Run(function (ret) {
         //history
         console.log(ret);
         _THIS.read_history_to_Obj(ret);
@@ -1176,17 +1176,15 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    var inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
-    var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    console.log("RestApi:", RestApi)
-    console.log("loadpar:", par)
-    Uti.Msg(par);
-    Jsonpster.Run(par, function (ret) {
+    Jsonpster.inp = { fname: fnamesArr, bibOj: bibOj, Search: null };
+    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Jsonpster.Run(function (ret) {
         apiCallback_Gen_clientBibleObj_table(ret)
-    });
-    setTimeout(function () {
-        _THIS.scrollToView_Vrs()
-    }, 2100)
+        setTimeout(function () {
+            _THIS.scrollToView_Vrs()
+        }, 2100)
+    })
+    Uti.Msg(Jsonpster);
     return bibOj;
 };///
 BibleInputMenu.prototype.get_search_inp = function () {
@@ -1254,10 +1252,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         dat.txt = txt;
 
         //var _This = this;
-        var inp = { fname: [fil], vcvx: dat };
-        var par = { api: RestApi.ApiBibleObj_update_notes, inp: inp };
-        Jsonpster.Run(par, function () {
-            Uti.Msg(par);
+        Jsonpster.inp = { fname: [fil], vcvx: dat };
+        Jsonpster.api = RestApi.ApiBibleObj_update_notes;
+        Jsonpster.Run(function () {
             var stx = txt.substr(0, 5) + " ... " + txt.substr(txt.length - 15);
             Uti.Msg(stx);
             $(_This).removeClass("edit_keydown").removeClass("editing");
@@ -1296,10 +1293,9 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
         markHistory.addnew(vid)
 
-        var inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
-        var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-        console.log(prm)
-        Jsonpster.Run(prm, function (ret) {
+        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: vid } };
+        Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+        Jsonpster.Run(function (ret) {
             Uti.Msg(vid + " is stored in history; and ref is available.");
         });
     });
@@ -1459,23 +1455,20 @@ function onclick_regex_match_next(incrs) {
     });
     Uti.Msg("tot:" + document.g_matchCount);
     if (document.g_matchCount > 0) {//save to history.
-        var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
-        var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-        console.log(prm)
-        Jsonpster.Run(prm, function () {
+        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
+        Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+        Jsonpster.Run(function () {
             Uti.Msg("found");
         });
     };
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    var inp = gBim.get_search_inp();
-    console.log(inp);
-    if (!inp) return
-    var par = { api: RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs, inp: inp };
-    console.log(par)
-    Uti.Msg(par);
-    Jsonpster.Run(par, apiCallback_Gen_clientBibleObj_table);
+    Jsonpster.inp = gBim.get_search_inp();
+    console.log(Jsonpster.inp);
+    if (!Jsonpster.inp) return
+    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Jsonpster.Run(apiCallback_Gen_clientBibleObj_table);
 
     console.log(Jsonpster);
     var unicds = "";
@@ -1491,9 +1484,9 @@ function onclick_BibleObj_search_str() {
 
 }
 function onclick_load_search_string_history(bSortByTime) {
-    var inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
-    var prm = { api: RestApi.ApiBibleObj_access_regex_search_history, inp: inp };
-    Jsonpster.Run(prm, function (ret) {
+    Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
+    Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+    Jsonpster.Run(function (ret) {
         //history
         console.log(ret);
         var ops = Uti.read_history_to_opt(ret, true);
@@ -1506,6 +1499,15 @@ function onclick_load_search_string_history(bSortByTime) {
 };
 
 
+function onclick_btn_set_jsonpster_svr_ip() {
+    var ip = $("#txtarea").val()
+    var src = `http://${ip}:7778/Jsonpster/`
+    console.log("jsonpster ipaddr", src)
+    var scp = document.createElement("script")
+    scp.src = ip
+    $("body").append(scp)
+    $("#txtarea").val(src)
+}
 
 
 
@@ -1519,9 +1521,9 @@ var Uti = {
         if ("object" === typeof dat) {
             str = JSON.stringify(dat, null, 4);
         }
-        var results = str + "\n" + $("#searchResult").val();
+        var results = str + "\n" + $("#txtarea").val();
         //results = results.substr(0, 60);
-        $("#searchResult").val(results);
+        $("#txtarea").val(results);
     },
 
     read_history_to_opt: function (ret, bSortByTime) {
@@ -1680,12 +1682,13 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
            
                 
-                <button onclick="$('#searchResult').val('');" title='clearout txt'>x</button>
+                <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
                 <button id="Compare_vcv">Compare_vcv</button>
                 <button id="oBible_indxer">indxer</button>
+                <button onclick="onclick_btn_set_jsonpster_svr_ip();">set jsonpster svr ip</button>
                 <a href='../index.htm'>ref</a>
                 <br>
-                <textarea id="searchResult" cols='50' rows='20'  value='search results...' title='load search history.'>
+                <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
             </div>

@@ -68,20 +68,21 @@ var SvcUti = {
             //////////////
             var jstr_RestApi = JSON.stringify(restApi);
             var s = `
-var Jsonpster = {};
-Jsonpster.Url = function () {
-    return 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
-};
-Jsonpster.Run = function (prm, cbf) {
-    Object.assign(this, prm);
-    if(!this.api) alert('api null');
-    if(!this.inp) alert('inp null');
-    this.Response = cbf;
+var Jsonpster = {
+Url: function (){
+        return 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
+    },
+Run : function (cbf) {
     if (!cbf) alert('callback Response null');
+    if (!this.api) alert('api null');
+    if (!this.inp) alert('inp null');
+    this.Response = cbf;
     var s = document.createElement('script');
-    s.src = this.Url();
+    s.src = this.Url()
     document.body.appendChild(s);
-};
+    console.log('pster:',s, Jsonpster)
+    this.api=this.inp=null;
+}};
 const RestApi = JSON.parse('${jstr_RestApi}');
 `;;;;;;;;;;;;;;
 
