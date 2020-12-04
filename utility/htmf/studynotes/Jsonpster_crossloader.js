@@ -1,6 +1,5 @@
 function Jsonpster_crossloader(ip) {
-    if("undefined" === typeof RestApi){
-    }else{
+    if("undefined" != typeof RestApi){
         return console.log("Jsonpster is already loaded. Ignore", ip)
     }
 
