@@ -113,6 +113,22 @@ var BibleUti = {
         }
         return retOb
     },
+    convert_rbcv_2_bcvR: function (ret) {
+        var bcvRobj = {}
+        for (const [rev, revObj] of Object.entries(ret)) {
+            for (const [vol, chpObj] of Object.entries(revObj)) {
+                if (!bcvRobj[vol]) bcvRobj[vol] = {}
+                for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                    if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
+                    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                        if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
+                        bcvRobj[vol][chp][vrs][rev] = txt
+                    };
+                };
+            };
+        };
+        return bcvRobj;
+    }
 }//// BibleUti /////
 
 
@@ -178,11 +194,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var fnm = inpObj.fnames[i];
                 var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
                 var bcObj = BibleUti.get_bc(bib.obj, inpObj.bibOj);
-                var bvcvObj = {};//{bkn:{vol:{chp:{vrs:txt,},},},}}
                 RbcObj[fnm] = bcObj;
             }
         }
-        var ss = JSON.stringify(RbcObj);
+        var ss = JSON.stringify(BibleUti.convert_rbcv_2_bcvR(RbcObj));
 
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");

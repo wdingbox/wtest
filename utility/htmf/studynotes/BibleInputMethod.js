@@ -1508,6 +1508,7 @@ OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
     return bcvRobj;
 }
 OutputBibleTable.prototype.create_htm_table = function (ret) {
+    //ret = this.convert_rbcv_2_bcvRobj(ret)
     var idx = 0, st = "", uuid = 1;
     $.each(ret, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
