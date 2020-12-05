@@ -201,6 +201,52 @@ PopupMenu_BcvTag.prototype.hide = function () {
 
 
 
+function PopupMenu_RevTag() {
+    this.m_id = "#divPopupMenu_RevTag"
+    this.m_par = null
+}
+PopupMenu_RevTag.prototype.popup = function (par) {
+    this.m_par = par
+
+    $(this.m_id).css('top', par.m_y);
+
+    //
+    if (par.m_alreadyHili) {
+        $(this.m_id).slideToggle();
+    } else {
+        $(this.m_id).show()
+            .find("caption").text(par.m_bcv);
+    }
+}
+PopupMenu_RevTag.prototype.hide = function () {
+    $(this.m_id).hide()
+}
+PopupMenu_RevTag.prototype.init = function () {
+
+    $(this.m_id).draggable()
+    $(this.m_id).bind("click", function () {
+        //$(this.m_id).hide()
+    }).hide()
+
+    var _THIS = this
+
+    $("#RevTag_Edit").bind("click", function () {
+        var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true").text()
+        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
+        _THIS.hide()
+    })
+
+    $("#RevTag_Save").bind("click", function () {
+        var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null).text()
+        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
+        console.log(tx)
+        _THIS.hide()
+    })
+}
+
+
+
+
 
 
 
@@ -1063,6 +1109,9 @@ var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 var obrapport = new PopupMenu_BcvTag()
 
 
+var popupMenu_RevTag = new PopupMenu_RevTag()
+
+
 var BibleInputMenu = function () {
 }
 BibleInputMenu.prototype.init = function () {
@@ -1082,6 +1131,8 @@ BibleInputMenu.prototype.init = function () {
     })
 
     grpmgr.gen_grp_bar()
+
+
 
 
     digi.init_digi(showup)
@@ -1173,6 +1224,11 @@ BibleInputMenu.prototype.init = function () {
         obrapport.hide()
     })
 
+    popupMenu_RevTag.init()
+    gBout.onclick_RevTag(function (par) {
+        popupMenu_RevTag.popup(par)
+    })
+
 
     $("#Compare_vcv").click(function () {
         $("#oBible table").find("tr").each(function () {
@@ -1257,6 +1313,9 @@ OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
         if (cbf) cbf()
     })
 }
+OutputBibleTable.prototype.onclick_RevTag = function (cbf) {
+    this.m_onclick_RevTag = cbf
+}
 OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
@@ -1301,6 +1360,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
     };
 
 
+    var _THIS = this;
     var tb = this.gen_output_table(ret);
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
@@ -1395,13 +1455,10 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
             return;
         }
 
-        var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
-        if (alreadyHili) {
-            $("#divPopupMenu_RevTag").slideToggle();
-        } else {
-            $("#divPopupMenu_RevTag").show();
-        }
+        var sbcv = $(this).attr("title")
+        var taguid = $(this).attr("revTagUid")
 
+        var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
         $(".revTag.hiliRevTag").removeClass("hiliRevTag");
         $(this).toggleClass("hiliRevTag");
 
@@ -1409,8 +1466,13 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
         console.log(bcr)
         var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#divPopupMenu_BcvTag").height()
 
-        $("#divPopupMenu_RevTag").css('top', y);
-        //
+        bcr.m_y = y
+        bcr.m_txuid = taguid
+        bcr.m_alreadyHili = alreadyHili
+        bcr.m_bcv = sbcv
+        bcr.m_rev = txt
+
+        _THIS.m_onclick_RevTag(bcr)
 
     });
 
@@ -1427,7 +1489,7 @@ OutputBibleTable.prototype.incFontSize = function (n) {
 }
 
 OutputBibleTable.prototype.gen_output_table = function (ret) {
-    var idx = 0, st = "";
+    var idx = 0, st = "", uuid = 1;
     $.each(ret, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
@@ -1443,7 +1505,8 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
                         if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
                             clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                         }
-                        st += `<div><sup  class='revTag' title='${revId}'>${revId}</sup><a ${clsname} vid='${sbcv}'>${str}</a></div>`;
+                        uuid++
+                        st += `<div><sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup><a id='${uuid}' ${clsname} vid='${sbcv}'>${str}</a></div>`;
                     });
                 }
                 if ("string" == typeof val) {
@@ -1861,20 +1924,24 @@ var BibleInputMenuContainer = `
 
 <div id="divPopupMenu_RevTag">
     <table id='refslist' border="1" align="left">
-    
+    <caption></caption>
     <tbody>
         <tr>
             <td>
-                <a id="Edit">Edit</a>
+                <a id="RevTag_Edit">Edit</a>
             </td>
         </tr>
         <tr>
             <td>
-                <a id="Save">Save</a>
+                <a id="RevTag_Save">Save</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Info">-</a>
             </td>
         </tr>
     </tbody>
-    <caption></caption>
     </table>
 </div>
 

@@ -362,6 +362,10 @@ body {
         caption-side: bottom;
     }
 
+    .tx[contenteditable]{
+        background-color: papayawhip;
+        color:black;
+    }
 
 
 
