@@ -257,6 +257,10 @@ body {
     #Tab_mark_bcv_history {
         background-color: rgb(29, 105, 149);
     }
+    #Tab_mark_bcv_history caption{
+        display: inline-block;
+        white-space: nowrap;
+    }
 
 
     #Tab_regex_history_lst td {
