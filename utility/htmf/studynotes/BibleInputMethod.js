@@ -834,7 +834,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
     var _THIS = this
-    $(this.m_tbid + " caption").bind("click", function () {
+    $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
         switch (txt) {
             case "Rev":
@@ -1760,7 +1760,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Rev</caption>
+                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Rev</button></caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
