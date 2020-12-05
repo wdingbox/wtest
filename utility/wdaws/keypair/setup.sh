@@ -40,9 +40,7 @@ sudo systemctl status apache2
 ##  
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Starting The Apache HTTP Server...
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Started The Apache HTTP Server.
-
-
-
+sudo npm install pm2 -g
 
 
 cd /var/www/html
@@ -52,5 +50,10 @@ git clone https://github.com/wdingbox/ham12.git
 git clone https://github.com/wdingbox/bible_obj_lib.git
 git clone https://github.com/wdingbox/bible_concordance.git
 git clone https://github.com/wdingbox/hebrew_ciu.git
+
+
+
+cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
+pm2 start a.node.js 
 
 
