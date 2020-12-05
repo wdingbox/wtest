@@ -323,7 +323,7 @@ body {
 
     #divPopupMenu_BcvTag{
         position: absolute;
-        right: 10px;
+        left: 10px;
         background-color: rgb(246, 126, 7);
         z-index: 9999;
     }
@@ -512,13 +512,14 @@ input[title='NIV']:checked:after {
  
     background-color: olive;
     position: relative;
-    float:right;
-    right: 0px;
+    float:left;
+   
     top: 0px;
-    width: 70px;
+   
     text-align: right;
     /*border: 1px solid #73AD21;*/
-    padding: 1px;
+    padding: 0 5px 0 0;
+    margin: 0 5px 0 0;
 }
 .revTag{
     font-size:xx-small;

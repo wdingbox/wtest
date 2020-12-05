@@ -1496,7 +1496,7 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var divbcv = `<div><a class='bcvTag'>${sbcv}</a></div>`
+                var divbcv = `<a class='bcvTag'>${sbcv}</a>`
                 st += `<tr><td>${divbcv}`;
                 if ("object" == typeof val) {
                     $.each(val, function (revId, str) {
