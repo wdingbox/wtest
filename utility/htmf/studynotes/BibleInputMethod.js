@@ -1491,7 +1491,22 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     this.incFontSize(0)
 }
 
-
+OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
+    var bcvRobj = {}
+    $.each(ret, function (rev, revObj) {
+        $.each(revObj, function (vol, chpObj) {
+            if (!bcvRobj[vol]) bcvRobj[vol] = {}
+            $.each(chpObj, function (chp, vrsObj) {
+                if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
+                $.each(vrsObj, function (vrs, txt) {
+                    if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
+                    bcvRobj[vol][chp][vrs][rev] = txt
+                });
+            });
+        });
+    });
+    return bcvRobj;
+}
 OutputBibleTable.prototype.create_htm_table = function (ret) {
     var idx = 0, st = "", uuid = 1;
     $.each(ret, function (vol, chpObj) {
@@ -1506,7 +1521,7 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                     $.each(val, function (revId, str) {
                         //
                         var tag = 'a'
-                        if(revId.match(/^_[b|c|x]/)) tag='div'
+                        if (revId.match(/^_[b|c|x]/)) tag = 'div'
                         var clsname = `class='tx tx${revId}'`
                         if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
                             clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //

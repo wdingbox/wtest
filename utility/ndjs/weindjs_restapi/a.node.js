@@ -6,6 +6,9 @@ var url = require('url');
 
 var Uti = require("./MyNodjsModules/Uti.module").Uti;
 var BibleObj = require("./MyNodjsModules/BibleObject.module").BibleObj;
+
+var {BibleObjJsonpApi} = require("./MyNodjsModules/BibleObjJsonpApi_mod");
+
 var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
 var BibDesk = require("./MyNodjsModules/BibDesk.module").BibDesk;
 
@@ -26,8 +29,8 @@ var uploadObj=new Upload_Object();
 uploadObj.upload_page(app);
 
 //// for BibleObjApi  with Jsonpster ////////
-var bii = new BibleObj();
-bii.BibleObjApi(app);
+//var bii = new BibleObj();
+BibleObjJsonpApi.init(app);
 
 //// For HebrewQ study /////
 var hbrq = new HebrewQ();
