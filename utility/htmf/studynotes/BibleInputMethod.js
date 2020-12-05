@@ -1306,6 +1306,15 @@ BibleInputMenu.prototype.get_search_inp = function () {
 function OutputBibleTable() {
     this.m_tbid = "#oBible"
 }
+OutputBibleTable.prototype.incFontSize = function (n) {
+    var fsz = MyStorage.getFontSize()
+    fsz += n;
+    $(this.m_tbid + " table .tx").css("font-size", fsz);
+    $("#fontsize").text(fsz)
+
+    MyStorage.setFontSize(fsz)
+    gBim.scrollToView_Vrs()
+}
 OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
     this.incFontSize(0);
 
@@ -1364,7 +1373,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
 
     var _THIS = this;
-    var tb = this.response_obj2htm(ret);
+    var tb = this.create_htm_table(ret);
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     //table_sort("#BibOut");
@@ -1481,17 +1490,9 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
     this.incFontSize(0)
 }
-OutputBibleTable.prototype.incFontSize = function (n) {
-    var fsz = MyStorage.getFontSize()
-    fsz += n;
-    $(this.m_tbid + " table .tx").css("font-size", fsz);
-    $("#fontsize").text(fsz)
 
-    MyStorage.setFontSize(fsz)
-    gBim.scrollToView_Vrs()
-}
 
-OutputBibleTable.prototype.response_obj2htm = function (ret) {
+OutputBibleTable.prototype.create_htm_table = function (ret) {
     var idx = 0, st = "", uuid = 1;
     $.each(ret, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
