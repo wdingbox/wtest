@@ -1272,7 +1272,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
-        apiCallback_Gen_clientBibleObj_table(ret)
+        apiCallback_Gen_output_table(ret)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
         }, 2100)
@@ -1316,7 +1316,10 @@ OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
 OutputBibleTable.prototype.onclick_RevTag = function (cbf) {
     this.m_onclick_RevTag = cbf
 }
-OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
+OutputBibleTable.prototype.onclick_BcvTag = function (cbf) {
+    this.m_onclick_BcvTag = cbf
+}
+OutputBibleTable.prototype.Gen_output_table = function (ret) {
     function editing_save(_This) {
         var old = $(_This).attr("oldtxt");
         var fil = $(_This).attr("title");
@@ -1361,7 +1364,7 @@ OutputBibleTable.prototype.Gen_clientBibleObj_table = function (ret) {
 
 
     var _THIS = this;
-    var tb = this.gen_output_table(ret);
+    var tb = this.response_obj2htm(ret);
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     //table_sort("#BibOut");
@@ -1488,7 +1491,7 @@ OutputBibleTable.prototype.incFontSize = function (n) {
     gBim.scrollToView_Vrs()
 }
 
-OutputBibleTable.prototype.gen_output_table = function (ret) {
+OutputBibleTable.prototype.response_obj2htm = function (ret) {
     var idx = 0, st = "", uuid = 1;
     $.each(ret, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
@@ -1530,9 +1533,9 @@ OutputBibleTable.prototype.gen_output_table = function (ret) {
 var gBim = new BibleInputMenu();
 var gBout = new OutputBibleTable()
 
-function apiCallback_Gen_clientBibleObj_table(ret) {
+function apiCallback_Gen_output_table(ret) {
     obrapport.hide()
-    gBout.Gen_clientBibleObj_table(ret)
+    gBout.Gen_output_table(ret)
 }
 
 
@@ -1598,7 +1601,7 @@ function onclick_BibleObj_search_str() {
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Uti.Msg(Jsonpster)
     if (!Jsonpster.inp) return
-    Jsonpster.Run(apiCallback_Gen_clientBibleObj_table);
+    Jsonpster.Run(apiCallback_Gen_output_table);
 
     //test
     var unicds = "";
