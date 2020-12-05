@@ -1505,12 +1505,14 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                 if ("object" == typeof val) {
                     $.each(val, function (revId, str) {
                         //
+                        var tag = 'a'
+                        if(revId.match(/^_[b|c|x]/)) tag='div'
                         var clsname = `class='tx tx${revId}'`
                         if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
                             clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                         }
                         uuid++
-                        st += `<div><sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup><a id='${uuid}' ${clsname} vid='${sbcv}'>${str}</a></div>`;
+                        st += `<div><sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup><${tag} id='${uuid}' ${clsname} vid='${sbcv}'>${str}</${tag}></div>`;
                     });
                 }
                 if ("string" == typeof val) {
