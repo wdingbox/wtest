@@ -57,3 +57,4 @@ cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
 pm2 start a.node.js 
 
 
+
