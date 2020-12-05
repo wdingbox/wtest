@@ -104,7 +104,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(".hiliExt").removeClass("hiliExt")
             $(_this).parent().addClass("hiliExt")
 
-            var sbcv = $(".bcvTag.vmark").text();
+            var sbcv = $(".bcvTag.bcvMark").text();
             var ret = Uti.vcv_parser(sbcv);
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
@@ -1381,15 +1381,15 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         evt.stopImmediatePropagation()
 
         //solve confliction between toggle and hili
-        var alreadyHili = $(this)[0].classList.contains('vmark')
+        var alreadyHili = $(this)[0].classList.contains('bcvMark')
         if (alreadyHili) {
             $("#divPopupMenu_BcvTag").slideToggle();
         } else {
             $("#divPopupMenu_BcvTag").show();
         }
 
-        $(".bcvTag.vmark").removeClass("vmark");
-        $(this).toggleClass("vmark");
+        $(".bcvTag.bcvMark").removeClass("bcvMark");
+        $(this).addClass("bcvMark");
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)

@@ -374,8 +374,9 @@ body {
 
 
 
-    .vmark{
+    .bcvMark{
         background-color: rgb(246, 126, 8);
+        border: 1px solid red;
     }
 
     #oBible {
