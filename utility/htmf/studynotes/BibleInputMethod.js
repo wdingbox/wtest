@@ -1617,7 +1617,7 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     Jsonpster.inp = gBim.get_search_inp();
-    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Jsonpster.api = RestApi.ApiBibleObj_search_txt; //ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Uti.Msg(Jsonpster)
     if (!Jsonpster.inp) return
     Jsonpster.Run(apiCallback_Gen_output_table);
