@@ -22,6 +22,13 @@ var BibleUti = {
         var ret = Uti.GetJsonStringFrmFile(spathfile);
         return ret;//{fname:spathfile,jstrn:content};
     },
+    get_usr_pathfile:function(username, RevCode){
+        var pthf  = `../../../../bible_obj_usr/accont/${username}/bi${RevCode}_json.js`
+        if(!fs.existsSync(pthf)){
+            Uti.MakePathDirOfFile(pthf)
+        }
+        return pthf;
+    },
     load_BibleObj: function (fname) {
         var ret = BibleUti.load_BibleJstrn(fname);
         var bobj = JSON.parse(ret.jstrn);
@@ -178,7 +185,8 @@ var BibleUti = {
             }
             return retOb
         }
-    }//// BibleUti /////
+    }
+    //// BibleUti /////
 }
 
 
@@ -268,6 +276,30 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var ss = JSON.stringify(bcvR2);
 
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + ss + ");");
+        res.end();
+    },
+    ApiBibleObj_write_UsrFileBkcChpVrs: function (req, res) {
+        var inpObj = BibleUti.GetApiInputParamObj(req)
+        inpObj.response_status = "WriteBegin"
+        var RbcObj = {};
+        if ("object" === typeof inpObj.fnames) {//['NIV','ESV']
+            var fnm = BibleUti.get_usr_pathfile(inpObj.username, inpObj.fnames[0])
+            if (fnm) {
+                for (const [bkc, bkcObj] of Object.entries(inpObj.inpObj)) {
+                    for (const [chp, chpObj] of Object.entries(bkcObj)) {
+                        for (const [vrs, txt] of Object.entries(chpObj)) {
+                            var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
+                            bib.obj[bkc][chp][vrs] = txt
+                            bib.writeback();
+                            inpObj.response_status += ":Success"
+                        }
+                    }
+                }
+            }
+        }
+        var ss = JSON.stringify(inpObj)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();

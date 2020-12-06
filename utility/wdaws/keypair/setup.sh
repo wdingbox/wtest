@@ -47,10 +47,10 @@ cd /var/www/html
 mkdir wdaws
 cd wdaws
 git clone https://github.com/wdingbox/ham12.git
-git clone https://github.com/wdingbox/bible_obj_lib.git
 git clone https://github.com/wdingbox/bible_concordance.git
+git clone https://github.com/wdingbox/bible_obj_lib.git
+git clone https://github.com/wdingbox/bible_obj_usr.git
 git clone https://github.com/wdingbox/hebrew_ciu.git
-
 
 
 cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
