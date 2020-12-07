@@ -1979,7 +1979,7 @@ file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham
         </tr>
         <tr>
             <td>
-                <a id="RevTag_Edit_External" target="_blank" href="../../../utility/pages/ckeditor/my_ckeditor.html">External Editor</a>
+                <a id="RevTag_Edit_External" target="_blank" href="myNoteEditor.htm">External Editor</a>
             </td>
         </tr>
         <tr>
