@@ -439,7 +439,7 @@ ${scmd}
             //$.get(ret.name, function (data) {
                 //alert(data);
                 setTimeout(() => {
-                    var par = localStorage.get("myNote")
+                    var par = JSON.parse(localStorage.getItem("myNote")) 
                     for(const[rev,chpObj] of Object.entries(par.inpObj)){
                         for(const[chp,vrsObj] of Object.entries(chpObj)){
                             for(const[vrs,txt] of Object.entries(vrsObj)){

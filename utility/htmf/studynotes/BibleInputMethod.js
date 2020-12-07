@@ -243,7 +243,7 @@ PopupMenu_RevTag.prototype.init = function () {
         var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
 
         var par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        localStorage.set("myNote", JSON.stringify(par))
+        localStorage.setItem("myNote", JSON.stringify(par))
         return par
     }
 
