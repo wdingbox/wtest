@@ -15,22 +15,21 @@ var BibleUti = {
         __history_verses_loaded: "__history_verses_loaded",
         __history_regex_search: "__history_regex_search"
     },
-
-    load_BibleJstrn: function (fname) {
-        var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
-        spathfile = "../../../../bible_obj_lib/jsdb/jsBibleObj/" + fname + ".json.js";
-        var ret = Uti.GetJsonStringFrmFile(spathfile);
-        return ret;//{fname:spathfile,jstrn:content};
-    },
-    get_usr_pathfile:function(username, RevCode){
-        var pthf  = `../../../../bible_obj_usr/accont/${username}/bi${RevCode}_json.js`
-        if(!fs.existsSync(pthf)){
+    get_usr_pathfile: function (username, RevCode) {
+        var pthf = `../../../../bible_obj_usr/account/${username}/${RevCode}_json.js`
+        if (!fs.existsSync(pthf)) {
             Uti.MakePathDirOfFile(pthf)
         }
         return pthf;
     },
-    load_BibleObj: function (fname) {
-        var ret = BibleUti.load_BibleJstrn(fname);
+    get_bibleObj_pathfilename: function (fname) {
+        var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
+        spathfile = "../../../../bible_obj_lib/jsdb/jsBibleObj/" + fname + ".json.js";
+        var ret = Uti.GetJsonStringFrmFile(spathfile);
+        return spathfile;
+    },
+    xxxxxload_BibleObj: function (fname) {
+        var ret = BibleUti.get_bibleObj_pathfilename(fname);
         var bobj = JSON.parse(ret.jstrn);
         ret.obj = bobj;
         ret.writeback = function () {
@@ -38,60 +37,39 @@ var BibleUti = {
         };
         return ret;
     },
-
-    //// NOT USED ///////
-    save_BibleObj: function (fname) {
-        var ret = BibleUti.load_BibleJstrn(fname);
-        var bobj = JSON.parse(ret.jstrn);
-        return bobj;
+    load_BibleMaxStruct: function () {
+        var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
+        return load_BibleObj(spathfile)
     },
+    load_BibleObj: function (revCode) {
+        var jsfnm = BibleUti.get_bibleObj_pathfilename(revCode);
+        var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", };
 
-    search_cliObj: function (cliObj, searchFile, searchStrn, cb) {
-        function gen_SrcDat(bkn, vol, chp, vrs, txt) {
-            var obj = {};
-            obj[bkn] = {};
-            obj[bkn][vol] = {};
-            obj[bkn][vol][chp] = {};
-            obj[bkn][vol][chp][vrs] = txt;
-            return obj;
+        if (!fs.existsSync(jsfnm)) {
+            return ret;
         }
-        var foundCliObj = {};
-        var _This = this;
-        Object.keys(cliObj).forEach(function (vol) {
-            Object.keys(cliObj[vol]).forEach(function (chp) {
-                Object.keys(cliObj[vol][chp]).forEach(function (vrs) {
-                    var bFound = false;
-                    //Object.keys(bibObj[vol][chp][vrs]).forEach(function (bkn) {
-                    var txt = cliObj[vol][chp][vrs][searchFile];
-                    var rep = new RegExp(searchStrn, "g");
-                    if ("string" === typeof txt) {
-                        if ("function" === typeof cb) {
-                            bFound = cb(txt, searchStrn);
-                        }
-                        else {
-                            var mat = txt.match(rep);
-                            if (mat) {
-                                txt = txt.replace(mat[0], "<font color='red'>" + mat[0] + "</font>");
-                                cliObj[vol][chp][vrs][searchFile] = txt;
-                                bFound = true;
-                            }
+        ret.fsize = Uti.GetFileSize(jsfnm);
+        if (ret.fsize > 0) {
+            var t = fs.readFileSync(jsfnm, "utf8");
+            var i = t.indexOf("{");
+            if (i > 0) {
+                ret.header = t.substr(0, i);
+                var s = t.substr(i);
+                ret.obj = JSON.parse(s);
+            }
+        }
 
-                        }
-                    }
-                    //});
-                    if (bFound) {//do merge.
-                        Object.keys(cliObj[vol][chp][vrs]).forEach(function (bkn) {
-                            var txt = cliObj[vol][chp][vrs][bkn];
-                            var srcDat = gen_SrcDat(bkn, vol, chp, vrs, txt);
-                            //Object.assign(srcDat, bibObj[vol][chp][vrs][bkn]);
-                            BibleUti.merge_clientBibleObj(foundCliObj, srcDat);
-                        });
-                    };
-                });
-            });
-        });
-        return foundCliObj;
+        ret.writeback = function () {
+            var s2 = JSON.stringify(this.obj, null, 4);
+            fs.writeFileSync(this.fname, this.header + s2);
+        }
+        return ret;
     },
+
+
+
+
+
 
     GetApiInputParamObj: function (req) {
         console.log("req.url=", req.url);
@@ -136,7 +114,7 @@ var BibleUti = {
         };
         return bcvRobj;
     },
-    search_str_in_bcv: function (bibObj, searchStrn, fileary) {
+    xxxxxxxxxxxxsearch_str_in_bcv: function (bibObj, searchStrn, fileary) {
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(bibObj)) {
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
@@ -250,7 +228,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if ("object" === typeof inpObj.fnames) {//['NIV','ESV']
             for (var i = 0; i < inpObj.fnames.length; i++) {
                 var fnm = inpObj.fnames[i];
+                if ("_" === fnm[0]) {
+                    fnm = BibleUti.get_usr_pathfile(inpObj.username, inpObj.fnames[i])
+                }
                 var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
+                if (!bib.size <= 0) {
+
+
+                }
                 var bcObj = BibleUti.get_bc(bib.obj, inpObj.bibOj);
                 RbcObj[fnm] = bcObj;
             }
