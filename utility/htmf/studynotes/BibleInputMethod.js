@@ -232,19 +232,22 @@ PopupMenu_RevTag.prototype.init = function () {
     }).hide()
 
     var _THIS = this
-    function _get_par(){
+    function _gen_pster() {
         var tx = $("#" + _THIS.m_par.m_txuid).text()
-        if (tx.length === 0) tx = "---"
-        $("#" + _THIS.m_par.m_txuid).text(tx)
+        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
+
+        var htm = $("#" + _THIS.m_par.m_txuid).html()
         _THIS.m_par.m_txt = tx
+        _THIS.m_par.m_htm = htm
         console.log(tx, _THIS.m_par)
         _THIS.hide()
 
-        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
+        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, htm)
 
-        var par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        localStorage.setItem("myNote", JSON.stringify(par))
-        return par
+        Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
+        localStorage.setItem("myNote", JSON.stringify(Jsonpster))
+        return Jsonpster
     }
 
     $("#RevTag_Edit_Local").bind("click", function () {
@@ -254,16 +257,15 @@ PopupMenu_RevTag.prototype.init = function () {
     })
 
     $("#RevTag_Edit_External").bind("click", function () {
-        _get_par()
+        _gen_pster()
         _THIS.hide()
     })
 
     $("#RevTag_Save").bind("click", function () {
         $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
 
-        Jsonpster.inp.par = _get_par()
-        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
-        console.log("inp:", Jsonpster.inp)
+        Jsonpster = _gen_pster()
+        console.log("inp:", Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret)
             if (ret.result.indexOf("success") > 0) {

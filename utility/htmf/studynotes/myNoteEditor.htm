@@ -16,12 +16,13 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     <!-------------- jq --------------------->
     <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
     <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
-    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js" note="selfseversite"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
+        note="selfseversite"></script>
     <!-------------- ckeditor only--------------------->
     <script src="../../../assets/ckeditor/ckeditor.js"></script>
     <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
-    <link  href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
-   
+    <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
+
 
     <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
     <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
@@ -155,6 +156,8 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
                 extraPlugins: 'wysiwygarea',
                 width: '100%',
 
+
+
                 enterMode: CKEDITOR.ENTER_DIV, //default mode. 
 
                 wordcount: {//not working.
@@ -183,11 +186,14 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
                 }
 
             });
+            //.execCommand('maximize');
 
 
 
             // wait until the editor has done initializing
             ckEditor.on("instanceReady", function (evt) {
+
+                evt.editor.execCommand('maximize');
 
                 // overwrite the default save function
                 evt.editor.addCommand("save", {
@@ -206,7 +212,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
                         return false;//disable
                     }
                 });
-     
+
 
 
 
@@ -254,7 +260,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
                         if (true === ckEditor.checkDirty()) {
                             var ret = confirm("It was changed. Continue to load?")
                             console.log("checkDirty : true", ret)
-                            if(ret === false){
+                            if (ret === false) {
                                 g_msg.pop(`no op`);
                                 return
                             }
@@ -376,8 +382,37 @@ ${scmd}
                 });
         }
         function __save() {
-            // get the editor content
+ 
             var theData = ckEditor.getData();
+            var sbody = "<body>"
+            var pos1 = theData.search(sbody) + sbody.length
+            var pos2 = theData.search(/\<\/body\>/)
+            var html = theData.substring(pos1,pos2)
+            if(pos1<0 || pos2<0){
+                return alert("body not found")
+            }
+
+            var pster = JSON.parse(localStorage.getItem("myNote"))
+            for (const [bkc, chpObj] of Object.entries(pster.inp.par.inpObj)) {
+                for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                        pster.inp.par.inpObj[bkc][chp][vrs] = html
+                    }
+                }
+            }
+            console.log(pster)
+            Jsonpster.inp = pster.inp
+            Jsonpster.api = pster.api
+            console.log("inp:", Jsonpster.inp)
+            Jsonpster.Run(function (ret) {
+                console.log("ret", ret)
+                if (ret.result.indexOf("success") > 0) {
+                    console.log("result", ret)
+                }
+            })
+            return
+
+
             if (false === ckEditor.checkDirty()) {
                 console.log("checkDirty : false")
                 g_msg.pop(` no change; no saving; len:${theData.length}`);
@@ -437,18 +472,18 @@ ${scmd}
             console.log(window.location)
             //var ret = get_pathname_fr_window_location()
             //$.get(ret.name, function (data) {
-                //alert(data);
-                setTimeout(() => {
-                    var par = JSON.parse(localStorage.getItem("myNote")) 
-                    for(const[rev,chpObj] of Object.entries(par.inpObj)){
-                        for(const[chp,vrsObj] of Object.entries(chpObj)){
-                            for(const[vrs,txt] of Object.entries(vrsObj)){
-                                CKEDITOR.instances.editor1.setData(txt)
-                            }
+            //alert(data);
+            setTimeout(() => {
+                var pster = JSON.parse(localStorage.getItem("myNote"))
+                for (const [rev, chpObj] of Object.entries(pster.inp.par.inpObj)) {
+                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                        for (const [vrs, txt] of Object.entries(vrsObj)) {
+                            CKEDITOR.instances.editor1.setData(txt)
                         }
                     }
-                    //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-                }, 1000)
+                }
+                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+            }, 1000)
             //});
             //return false;
         }
@@ -457,7 +492,7 @@ ${scmd}
 
 </html>
 <script>
-    if("undefined" === typeof localStorage){
+    if ("undefined" === typeof localStorage) {
         alert("localStorage not supported")
     }
     var typ = typeof require
