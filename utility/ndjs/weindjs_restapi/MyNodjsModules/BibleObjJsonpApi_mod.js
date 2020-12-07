@@ -99,7 +99,7 @@ var BibleUti = {
         return retOb
     },
     convert_rbcv_2_bcvR: function (rbcv, bcvRobj) {
-        if(null === bcvRobj) bcvRobj = {}
+        if (null === bcvRobj) bcvRobj = {}
         for (const [rev, revObj] of Object.entries(rbcv)) {
             for (const [vol, chpObj] of Object.entries(revObj)) {
                 if (!bcvRobj[vol]) bcvRobj[vol] = {}
@@ -144,19 +144,24 @@ var BibleUti = {
         for (const [bkc, chpObj] of Object.entries(bcvR)) {
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
                 for (const [vrs, revObj] of Object.entries(vrsObj)) {
+                    var bFound = false
                     for (const [rev, txt] of Object.entries(revObj)) {
-                        var txtFound = txt, bFound = false
                         if (rev === Fname) {
                             var rep = new RegExp(searchStrn, "g");
                             var mat = txt.match(rep);
                             if (mat) {
                                 bFound = true
-                                txtFound = txt.replace(mat[0], "<font color='red'>" + mat[0] + "</font>");
-                                if (!retOb[bkc]) retOb[bkc] = {}
-                                if (!retOb[bkc][chp]) retOb[bkc][chp] = {};//BibleObj[bkc][chp]
-                                if (!retOb[bkc][chp][vrs]) retOb[bkc][chp][vrs] = {};//BibleObj[bkc][chp]
-                                retOb[bkc][chp][vrs][rev] = txtFound
+                                var txtFound = txt.replace(mat[0], "<font color='red'>" + mat[0] + "</font>");
+                                bcvR[bkc][chp][vrs][rev] = txtFound
                             }
+                        }
+                    }
+                    if (bFound) {
+                        for (const [rev, txt] of Object.entries(revObj)) {
+                            if (!retOb[bkc]) retOb[bkc] = {}
+                            if (!retOb[bkc][chp]) retOb[bkc][chp] = {};//BibleObj[bkc][chp]
+                            if (!retOb[bkc][chp][vrs]) retOb[bkc][chp][vrs] = {};//BibleObj[bkc][chp]
+                            retOb[bkc][chp][vrs][rev] = txt
                         }
                     }
                 }
