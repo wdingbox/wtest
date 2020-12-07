@@ -248,10 +248,13 @@ PopupMenu_RevTag.prototype.init = function () {
 
         var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt 
-        console.log("inp:",Jsonpster.inp)
-        Jsonpster.Run(function(ret){
-            console.log("ret",ret)
+        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
+        console.log("inp:", Jsonpster.inp)
+        Jsonpster.Run(function (ret) {
+            console.log("ret", ret)
+            if (ret.result.indexOf("success") > 0) {
+
+            }
         })
     })
 }
