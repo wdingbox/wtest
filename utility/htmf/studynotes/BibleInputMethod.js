@@ -232,6 +232,20 @@ PopupMenu_RevTag.prototype.init = function () {
     }).hide()
 
     var _THIS = this
+    function _get_par(){
+        var tx = $("#" + _THIS.m_par.m_txuid).text()
+        if (tx.length === 0) tx = "---"
+        $("#" + _THIS.m_par.m_txuid).text(tx)
+        _THIS.m_par.m_txt = tx
+        console.log(tx, _THIS.m_par)
+        _THIS.hide()
+
+        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
+
+        var par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+        localStorage.set("myNote", JSON.stringify(par))
+        return par
+    }
 
     $("#RevTag_Edit_Local").bind("click", function () {
         var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true").text()
@@ -239,15 +253,15 @@ PopupMenu_RevTag.prototype.init = function () {
         _THIS.hide()
     })
 
-    $("#RevTag_Save").bind("click", function () {
-        var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null).text()
-        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
-        _THIS.m_par.m_txt = tx
-        console.log(tx, _THIS.m_par)
+    $("#RevTag_Edit_External").bind("click", function () {
+        _get_par()
         _THIS.hide()
+    })
 
-        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
-        Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+    $("#RevTag_Save").bind("click", function () {
+        $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
+
+        Jsonpster.inp.par = _get_par()
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
         console.log("inp:", Jsonpster.inp)
         Jsonpster.Run(function (ret) {
@@ -256,6 +270,7 @@ PopupMenu_RevTag.prototype.init = function () {
 
             }
         })
+        _THIS.hide()
     })
 }
 
@@ -1965,8 +1980,6 @@ var BibleInputMenuContainer = `
     <caption>ext link</caption>
     </table>
 </div>
-file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/pages/ckeditor/my_ckeditor.html
-file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/pages/ckeditor/my_ckeditor.html
 
 <div id="divPopupMenu_RevTag">
     <table id='refslist' border="1" align="left">

@@ -7,28 +7,16 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 <head>
     <meta charset="utf-8">
-    <title>Full Page Onsite HTML Visual Editing</title>
+    <title>Editing</title>
 
-    <meta name="ckeditor-sample-required-plugins" content="sourcearea">
-    </meta>
-    <meta name="ckeditor-sample-name" content="Full page support">
-    </meta>
-    <meta name="ckeditor-sample-group" content="Plugins">
-    </meta>
-    <meta name="ckeditor-sample-description"
-        content="CKEditor inserted with a JavaScript call and used to edit the whole page from &lt;html&gt; to &lt;/html&gt;.">
-    </meta>
-    <meta name="description"
-        content="Try the latest sample of CKEditor 4 and learn more about customizing your WYSIWYG editor with endless possibilities.">
-    </meta>
     <!-------------------------------------------->
     <!---- Insert this before scripts import; then restor back later -->
-    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
 
     <!-------------- jq --------------------->
     <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
-    <script ____src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
-    <script src="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js" note="selfseversite"></script>
+    <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js" note="selfseversite"></script>
     <!-------------- ckeditor only--------------------->
     <script src="../../../assets/ckeditor/ckeditor.js"></script>
     <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
@@ -39,7 +27,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
     <!-------------------------------------------->
     <!----- Insert this line after script imports -->
-    <script>if (window.module) module = window.module;</script>
+    <script>//if (window.module) module = window.module;</script>
     <!-------------------------------------------->
     <style>
         .editor_state_max {
@@ -447,22 +435,33 @@ ${scmd}
         }
         function load_page_by_parse_window_location() {
             console.log(window.location)
-            var ret = get_pathname_fr_window_location()
-            $.get(ret.name, function (data) {
+            //var ret = get_pathname_fr_window_location()
+            //$.get(ret.name, function (data) {
                 //alert(data);
                 setTimeout(() => {
-                    CKEDITOR.instances.editor1.setData(data)
-                    g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+                    var par = localStorage.get("myNote")
+                    for(const[rev,chpObj] of Object.entries(par.inpObj)){
+                        for(const[chp,vrsObj] of Object.entries(chpObj)){
+                            for(const[vrs,txt] of Object.entries(vrsObj)){
+                                CKEDITOR.instances.editor1.setData(txt)
+                            }
+                        }
+                    }
+                    //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
                 }, 1000)
-            });
-            return false;
+            //});
+            //return false;
         }
     </script>
 </body>
 
 </html>
 <script>
-    if (undefined !== require) {
+    if("undefined" === typeof localStorage){
+        alert("localStorage not supported")
+    }
+    var typ = typeof require
+    if ("undefined" !== typeof require) {
         // broswer is electron.
         const electron = require('electron');
         const path = require('path');
