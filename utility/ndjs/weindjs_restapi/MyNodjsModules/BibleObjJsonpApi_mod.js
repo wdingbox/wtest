@@ -267,7 +267,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         inp.response_status = "Write?"
-      
+
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var rev = inp.par.fnames[0]
             var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
@@ -275,11 +275,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (bib.fsize > 0) {
                 console.log("fsize:", bib.fsize)
                 for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
-                    console.log("chpObj",chpObj)
+                    console.log("chpObj", chpObj)
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        console.log("vrsObj",vrsObj)
+                        console.log("vrsObj", vrsObj)
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            console.log("vrs",txt)
+                            console.log("vrs", txt)
                             bib.obj[bkc][chp][vrs] = txt
                             bib.writeback();
                             inp.response_status += ":Success"
