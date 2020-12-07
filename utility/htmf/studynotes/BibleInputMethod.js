@@ -17,9 +17,12 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            ["acctname", "username"].forEach(function (id, i) {
+            ["acctname", "f_path"].forEach(function (id, i) {
                 var val = localStorage.getItem(id)
                 $("#" + id).val(val)
+                if( undefined !== typeof Jsonpster){
+                    Jsonpster.inp.usr[id] = val
+                }
             })
         }, 3000)
 
@@ -79,10 +82,10 @@ var MyStorage = {
     setUserName: function (v) {
         v = v.trim()
         if (v.length === 0) v = "peter"
-        localStorage.setItem("username", v)
+        localStorage.setItem("f_path", v)
     },
     getUserName: function () {
-        var v = localStorage.getItem("username");
+        var v = localStorage.getItem("f_path");
         if (!v || v.length === 0) v = "John";
         return v;
     },
@@ -1014,16 +1017,16 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
 
 Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime) {
     var _THIS = this
-    Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
-    Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
-    Uti.Msg(Jsonpster)
-    Jsonpster.Run(function (ret) {
-        //history
-        console.log(ret);
-        _THIS.read_history_to_Obj(ret);
-        _THIS.update_tab(bSortByTime)
-
-    });
+    // Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
+    // Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+    // Uti.Msg(Jsonpster)
+    // Jsonpster.Run(function (ret) {
+    //     //history
+    //     console.log(ret);
+    //     _THIS.read_history_to_Obj(ret);
+    //     _THIS.update_tab(bSortByTime)
+// 
+    // });
 };///
 Tab_mark_bcv_history.prototype.read_history_to_opt = function (ret, bSortByTime) {
     var ops = [];
@@ -1268,7 +1271,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    Jsonpster.inp = { fnames: fnamesArr, bibOj: bibOj, Search: null };
+    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
@@ -1360,7 +1363,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         dat.txt = txt;
 
         //var _This = this;
-        Jsonpster.inp = { fnames: [fil], vcvx: dat };
+        Jsonpster.inp.par = { fnames: [fil], vcvx: dat };
         Jsonpster.api = RestApi.ApiBibleObj_update_notes;
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function () {
@@ -1403,12 +1406,12 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         markHistory.addnew(bcvid)
 
-        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: bcvid } };
-        Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
-        Uti.Msg(Jsonpster)
-        Jsonpster.Run(function (ret) {
-            Uti.Msg(bcvid + " is stored in history; and ref is available.");
-        });
+        // Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: bcvid } };
+        // Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
+        // Uti.Msg(Jsonpster)
+        // Jsonpster.Run(function (ret) {
+        //     Uti.Msg(bcvid + " is stored in history; and ref is available.");
+        // });
     });
 
     //$(this.m_tbid).find(".tx").bind("focusout", editing_save);
@@ -1606,7 +1609,7 @@ function onclick_regex_match_next(incrs) {
     });
     Uti.Msg("tot:" + document.g_matchCount);
     if (document.g_matchCount > 0) {//save to history.
-        Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
+        Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: str } };
         Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function () {
@@ -1616,10 +1619,10 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    Jsonpster.inp = gBim.get_search_inp();
+    Jsonpster.inp.par = gBim.get_search_inp();
     Jsonpster.api = RestApi.ApiBibleObj_search_txt; //ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
     Uti.Msg(Jsonpster)
-    if (!Jsonpster.inp) return
+    if (!Jsonpster.inp.par) return
     Jsonpster.Run(apiCallback_Gen_output_table);
 
     //test
@@ -1635,7 +1638,7 @@ function onclick_BibleObj_search_str() {
 
 }
 function onclick_load_search_string_history(bSortByTime) {
-    Jsonpster.inp = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
+    Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
     Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
     Uti.Msg(Jsonpster)
     Jsonpster.Run(function (ret) {
@@ -1870,7 +1873,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>UserName</td>
-                            <td><input id="username" onkeyup="MyStorage.setUserName($(this).val());" value='peter'></input></td>
+                            <td><input id="f_path" onkeyup="MyStorage.setUserName($(this).val());" value='peter'></input></td>
                             <td>user</td>
                         </tr>
                         <tr>
