@@ -242,7 +242,7 @@ PopupMenu_RevTag.prototype.init = function () {
     $("#RevTag_Save").bind("click", function () {
         var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null).text()
         if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
-        console.log(tx)
+        console.log(tx, _THIS.m_par)
         _THIS.hide()
     })
 }

@@ -199,7 +199,7 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api:"",
-    inp:{usr:{account:"", f_path:""}, par:{}},
+    inp:{usr:{account:"", f_path:""}, par:null },
 Url: function (){
         this.m_src = 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
         return this.m_src;
@@ -264,12 +264,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
-    ApiBibleObj_write_UsrFileBkcChpVrs: function (req, res) {
+    ApiBibleObj_write_UsrFileBkcChpVrs_txt: function (req, res) {
         var inpObj = BibleUti.GetApiInputParamObj(req)
         inpObj.response_status = "WriteBegin"
         var RbcObj = {};
         if ("object" === typeof inpObj.par.fnames) {//['NIV','ESV']
-            var fnm = BibleUti.get_usr_pathfile(inpObj.usr.f_path, inpObj.par.fnames[0])
+            var fnm = BibleUti.get_usr_pathfile(inpObj.usr.f_path, inpObj.par.inpObj[0])
             if (fnm) {
                 for (const [bkc, bkcObj] of Object.entries(inpObj.par.inpObj)) {
                     for (const [chp, chpObj] of Object.entries(bkcObj)) {
