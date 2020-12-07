@@ -233,7 +233,7 @@ PopupMenu_RevTag.prototype.init = function () {
 
     var _THIS = this
 
-    $("#RevTag_Edit").bind("click", function () {
+    $("#RevTag_Edit_Local").bind("click", function () {
         var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true").text()
         if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
         _THIS.hide()
@@ -1965,6 +1965,8 @@ var BibleInputMenuContainer = `
     <caption>ext link</caption>
     </table>
 </div>
+file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/pages/ckeditor/my_ckeditor.html
+file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/pages/ckeditor/my_ckeditor.html
 
 <div id="divPopupMenu_RevTag">
     <table id='refslist' border="1" align="left">
@@ -1972,7 +1974,12 @@ var BibleInputMenuContainer = `
     <tbody>
         <tr>
             <td>
-                <a id="RevTag_Edit">Edit</a>
+                <a id="RevTag_Edit_Local">Edit</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Edit_External" target="_blank" href="../../../utility/pages/ckeditor/my_ckeditor.html">External Editor</a>
             </td>
         </tr>
         <tr>
