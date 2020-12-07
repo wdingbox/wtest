@@ -20,7 +20,7 @@ var MyStorage = {
             ["acctname", "f_path"].forEach(function (id, i) {
                 var val = localStorage.getItem(id)
                 $("#" + id).val(val)
-                if( undefined !== typeof Jsonpster){
+                if (undefined !== typeof Jsonpster) {
                     Jsonpster.inp.usr[id] = val
                 }
             })
@@ -108,7 +108,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(_this).parent().addClass("hiliExt")
 
             var sbcv = $(".bcvTag.bcvMark").text();
-            var ret = Uti.vcv_parser(sbcv);
+            var ret = Uti.bcv_parser(sbcv);
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
@@ -242,8 +242,17 @@ PopupMenu_RevTag.prototype.init = function () {
     $("#RevTag_Save").bind("click", function () {
         var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null).text()
         if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
+        _THIS.m_par.m_txt = tx
         console.log(tx, _THIS.m_par)
         _THIS.hide()
+
+        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, tx)
+        Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt 
+        console.log("inp:",Jsonpster.inp)
+        Jsonpster.Run(function(ret){
+            console.log("ret",ret)
+        })
     })
 }
 
@@ -327,7 +336,7 @@ ShowupBCV.prototype.init = function () {
 }
 
 ShowupBCV.prototype.update_showup = function (bcv) {
-    var par = Uti.vcv_parser(bcv)
+    var par = Uti.bcv_parser(bcv)
     this.m_Bki.set_showupBkc(par.vol)
     this.m_Chp.set_showupVal(par.chp)
     this.m_Vrs.set_showupVal(par.vrs)
@@ -1025,7 +1034,7 @@ Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime)
     //     console.log(ret);
     //     _THIS.read_history_to_Obj(ret);
     //     _THIS.update_tab(bSortByTime)
-// 
+    // 
     // });
 };///
 Tab_mark_bcv_history.prototype.read_history_to_opt = function (ret, bSortByTime) {
@@ -1698,7 +1707,7 @@ var Uti = {
         }
         return ops;
     },
-    vcv_parser: function (sbcv) {
+    bcv_parser: function (sbcv, txt) {
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
         var ret = { vol: "", chp: "", vrs: "" };
@@ -1714,6 +1723,13 @@ var Uti = {
         }
         ret.chp3 = ret.chp.padStart(3, "0");
         ret._vol = "_" + ret.vol;
+
+        var obj = {}
+        obj[ret.vol] = {}
+        obj[ret.vol][ret.chp] = {}
+        obj[ret.vol][ret.chp][ret.vrs] = txt
+        ret.bcvObj = obj
+
         return ret;
     },
 

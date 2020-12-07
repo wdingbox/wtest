@@ -43,7 +43,7 @@ var BibleUti = {
     },
     load_BibleMaxStruct: function () {
         var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
-        return load_BibleObj(spathfile)
+        return load_BibleObj(spathfile, "All_Max_struct")
     },
     load_BibleObj: function (username, revCode) {
         var jsfnm = BibleUti.get_pathfilenameOfRevID(username, revCode);
@@ -212,7 +212,7 @@ Run : function (cbf) {
     var s = document.createElement('script');
     s.src = this.Url()
     document.body.appendChild(s);
-    console.log('Jsonpster:',this.s, Jsonpster);
+    console.log('Jsonpster:', Jsonpster);
     this.api = this.inp.par = null;
 }};
 const RestApi = JSON.parse('${jstr_RestApi}');
@@ -264,26 +264,31 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
-    ApiBibleObj_write_UsrFileBkcChpVrs_txt: function (req, res) {
-        var inpObj = BibleUti.GetApiInputParamObj(req)
-        inpObj.response_status = "WriteBegin"
-        var RbcObj = {};
-        if ("object" === typeof inpObj.par.fnames) {//['NIV','ESV']
-            var fnm = BibleUti.get_usr_pathfile(inpObj.usr.f_path, inpObj.par.inpObj[0])
-            if (fnm) {
-                for (const [bkc, bkcObj] of Object.entries(inpObj.par.inpObj)) {
-                    for (const [chp, chpObj] of Object.entries(bkcObj)) {
-                        for (const [vrs, txt] of Object.entries(chpObj)) {
-                            var bib = BibleUti.load_BibleObj(fnm);//.fname, inpObj.dat
+    ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
+        var inp = BibleUti.GetApiInputParamObj(req)
+        inp.response_status = "Write?"
+      
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            var rev = inp.par.fnames[0]
+            var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+            inp.bio = bib
+            if (bib.fsize > 0) {
+                console.log("fsize:", bib.fsize)
+                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
+                    console.log("chpObj",chpObj)
+                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                        console.log("vrsObj",vrsObj)
+                        for (const [vrs, txt] of Object.entries(vrsObj)) {
+                            console.log("vrs",txt)
                             bib.obj[bkc][chp][vrs] = txt
                             bib.writeback();
-                            inpObj.response_status += ":Success"
+                            inp.response_status += ":Success"
                         }
                     }
                 }
             }
         }
-        var ss = JSON.stringify(inpObj)
+        var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
