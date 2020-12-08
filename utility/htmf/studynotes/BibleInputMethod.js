@@ -251,8 +251,20 @@ PopupMenu_RevTag.prototype.init = function () {
     }
 
     $("#RevTag_Edit_Local").bind("click", function () {
-        var tx = $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true").text()
-        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).html("<ol><li>--</li></ol>")
+        var txt = $(this).text()
+        var enabled = $(this).attr("enableEdit")
+        var disabled = $(this).attr("disableEdit")
+        if(txt === disabled){
+            $(this).text(enabled)
+            $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
+        }else{
+            $(this).text(disabled)
+            $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true")
+        }
+        var tx = $("#" + _THIS.m_par.m_txuid).text()
+        if (tx.length === 0) {
+            $("#" + _THIS.m_par.m_txuid).html("<ol><li>--</li></ol>")
+        }
         _THIS.hide()
     })
 
@@ -1301,7 +1313,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
     console.log("Obj=", bibOj);
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
-    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
         apiCallback_Gen_output_table(ret)
@@ -1554,7 +1566,7 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                     $.each(val, function (revId, str) {
                         //
                         var tag = 'a'
-                        if (revId.match(/^_[b|c|x]/)) tag = 'div'
+                        if (revId.match(/^_[a-zA-Z]/)) tag = 'div'
                         var clsname = `class='tx tx${revId}'`
                         if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
                             clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
@@ -1649,7 +1661,7 @@ function onclick_regex_match_next(incrs) {
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
     Jsonpster.inp.par = gBim.get_search_inp();
-    Jsonpster.api = RestApi.ApiBibleObj_search_txt; //ApiBibleObj_load_Bkns_Vols_Chp_Vrs;
+    Jsonpster.api = RestApi.ApiBibleObj_search_txt;
     Uti.Msg(Jsonpster)
     if (!Jsonpster.inp.par) return
     Jsonpster.Run(apiCallback_Gen_output_table);
@@ -1989,7 +2001,7 @@ var BibleInputMenuContainer = `
     <tbody>
         <tr>
             <td>
-                <a id="RevTag_Edit_Local">Edit</a>
+                <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
             </td>
         </tr>
         <tr>
@@ -2030,10 +2042,10 @@ CNST.FnameOfBibleObj =
     "NIV_Jw": "New International Version Jesus' Words",
     "STUS": "Studium Biblicum Version by Catholic,1968",
     "WLVS": "Wen Li Version. 文理和合本新約全書於1906年出版，新舊約全書於1919年出版.修訂新約後的新舊約全書，於1923年出版，至1934年印行最後一版, 原本分為官話、深文理、淺文理三種譯本，稱為「聖經唯一，譯本則三」。後來深淺文理合併為文理和合本 https://zh.wikisource.org/wiki/%E8%81%96%E7%B6%93_(%E5%92%8C%E5%90%88%E6%9C%AC) \n\nFor 1895 新約淺文理(包爾騰(John Shaw Burdon)、柏亨利(Henry Blodget)) https://bible.fhl.net/ob/nob.html?book=8 ",
-    "_CrossRef": "cross-references",
-    "_bnotes": "personal biblical study notes",
-    "_crf": "self added cross-references",
-    "_xrand": "personal extra random notes."
+    "cross_references": "cross-references",
+    "_myCrossRef": "self modified cross-references",
+    "_myNote": "personal biblical study notes",
+    "_myPrayer": "personal extra notes."
 };
 
 CNST.BiBookName = {

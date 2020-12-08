@@ -25,6 +25,10 @@ var BibleUti = {
     get_pathfilenameOfRevID: function (f_path, RevCode) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
         if ("_" === RevCode[0]) {
+            if ("_" === RevCode[1]) {
+                return ""
+            }
+            RevCode = RevCode.substr(1)
             spathfile = `../../../../bible_obj_usr/account/${f_path}/${RevCode}_json.js`
         } else {
             spathfile = `../../../../bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
@@ -223,23 +227,23 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
         //});
     },
-    ApiBibleObj_load_Bkns_Vols_Chp_Vrs: function (req, res) {
-        var inpObj = BibleUti.GetApiInputParamObj(req)
+    ApiBibleObj_load_Bkns_Vols_Chp: function (req, res) {
+        var inp = BibleUti.GetApiInputParamObj(req)
         var RbcObj = {};
-        if ("object" === typeof inpObj.par.fnames) {//['NIV','ESV']
-            for (var i = 0; i < inpObj.par.fnames.length; i++) {
-                var rev = inpObj.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inpObj.usr.f_path, rev);
-                var bcObj = BibleUti.get_bc(bib.obj, inpObj.par.bibOj);
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            for (var i = 0; i < inp.par.fnames.length; i++) {
+                var rev = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+                var bcObj = BibleUti.get_bc(bib.obj, inp.par.bibOj);
                 RbcObj[rev] = bcObj;
             }
         }
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        var ss = JSON.stringify(bcvR);
+        var sret = JSON.stringify(bcvR);
 
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
+        res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
     ApiBibleObj_search_txt: function (req, res) {

@@ -176,13 +176,14 @@ body {
     }
 
 
-    div[contenteditable] {
-        background-color: rgb(40, 49, 70);
+    .tx[contenteditable] {
+        background-color:wheat;
+        border: 2px solid red;
+        color: black;
     }
 
     /*** For ***/
-    a[contenteditable] {
-    }
+    
 
 
     #Tab_BibleSingleInputKey{
@@ -366,10 +367,7 @@ body {
         caption-side: bottom;
     }
 
-    .tx[contenteditable]{
-        background-color: papayawhip;
-        color:black;
-    }
+ 
 
 
 
