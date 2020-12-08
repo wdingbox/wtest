@@ -17,15 +17,18 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            ["acctname", "f_path"].forEach(function (id, i) {
-                var val = localStorage.getItem(id)
-                $("#" + id).val(val)
-                if (undefined !== typeof Jsonpster) {
-                    Jsonpster.inp.usr[id] = val
-                }
-            })
+            MyStorage.auto_setup()
         }, 3000)
 
+    },
+    auto_setup:function(){
+        ["acctname", "f_path"].forEach(function (id, i) {
+            var val = localStorage.getItem(id)
+            $("#" + id).val(val)
+            if (undefined !== typeof Jsonpster) {
+                Jsonpster.inp.usr[id] = val
+            }
+        })
     },
     clear: function () {
         this.setRevList("")
@@ -83,6 +86,11 @@ var MyStorage = {
         v = v.trim()
         if (v.length === 0) v = "peter"
         localStorage.setItem("f_path", v)
+
+        //////////////////////////////////////
+        if (undefined !== typeof Jsonpster) {
+            Jsonpster.inp.usr["f_path"] = v
+        }
     },
     getUserName: function () {
         var v = localStorage.getItem("f_path");
