@@ -406,8 +406,9 @@ ${scmd}
             console.log("inp:", Jsonpster.inp)
             Jsonpster.Run(function (ret) {
                 console.log("ret", ret)
-                if (ret.result.indexOf("success") > 0) {
+                if (ret.out.result.indexOf("success") > 0) {
                     console.log("result", ret)
+                    g_msg.pop(`Save OK by ajx.`);
                 }
             })
             return
@@ -494,22 +495,6 @@ ${scmd}
 <script>
     if ("undefined" === typeof localStorage) {
         alert("localStorage not supported")
-    }
-    var typ = typeof require
-    if ("undefined" !== typeof require) {
-        // broswer is electron.
-        const electron = require('electron');
-        const path = require('path');
-        const fs = require('fs');
-
-        const exec = require('child_process').exec;
-        const child_process = require('child_process');
-        const { assert } = require('console');
-
-
-
-        //const Store = require('electron-store');
-        //const electronStore_edited_files_history = new Store();
     }
 </script>
 <script>
