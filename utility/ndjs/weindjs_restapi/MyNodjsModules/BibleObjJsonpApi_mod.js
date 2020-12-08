@@ -22,6 +22,11 @@ var BibleUti = {
         }
         return pthf;
     },
+    load_BibleMaxStruct: function () {
+        var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
+        return load_BibleObj(spathfile, "All_Max_struct")
+    },
+
     get_pathfilenameOfRevID: function (f_path, RevCode) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
         if ("_" === RevCode[0]) {
@@ -35,19 +40,6 @@ var BibleUti = {
         }
 
         return spathfile;
-    },
-    xxxxxload_BibleObj: function (fname) {
-        var ret = BibleUti.get_pathfilenameOfRevID(fname);
-        var bobj = JSON.parse(ret.jstrn);
-        ret.obj = bobj;
-        ret.writeback = function () {
-            fs.writeFileSync(this.fname, this.header + JSON.stringify(this.obj, null, 4), "utf8");
-        };
-        return ret;
-    },
-    load_BibleMaxStruct: function () {
-        var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
-        return load_BibleObj(spathfile, "All_Max_struct")
     },
     load_BibleObj: function (username, revCode) {
         var jsfnm = BibleUti.get_pathfilenameOfRevID(username, revCode);

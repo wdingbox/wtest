@@ -1164,9 +1164,9 @@ var obrapport = new PopupMenu_BcvTag()
 var popupMenu_RevTag = new PopupMenu_RevTag()
 
 
-var BibleInputMenu = function () {
+var AppInstancesManager = function () {
 }
-BibleInputMenu.prototype.init = function () {
+AppInstancesManager.prototype.init = function () {
     var _This = this
 
     MyStorage.init()
@@ -1271,13 +1271,13 @@ BibleInputMenu.prototype.init = function () {
     })
 
     obrapport.init()
-    gBout.onclick_ob_table(function () {
+    g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
         obrapport.hide()
     })
 
     popupMenu_RevTag.init()
-    gBout.onclick_RevTag(function (par) {
+    g_obt.onclick_RevTag(function (par) {
         popupMenu_RevTag.popup(par)
     })
 
@@ -1298,7 +1298,7 @@ BibleInputMenu.prototype.init = function () {
 
 
 
-BibleInputMenu.prototype.scrollToView_Vrs = function () {
+AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var parmBook = showup.get_selected_vcv_parm()
     var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
     $(".bcvTag").each(function () {
@@ -1315,7 +1315,7 @@ BibleInputMenu.prototype.scrollToView_Vrs = function () {
 
 
 
-BibleInputMenu.prototype.loadBible_chp = function () {
+AppInstancesManager.prototype.loadBible_chp = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
@@ -1332,7 +1332,7 @@ BibleInputMenu.prototype.loadBible_chp = function () {
 
     return bibOj;
 };///
-BibleInputMenu.prototype.get_search_inp = function () {
+AppInstancesManager.prototype.get_search_inp = function () {
     //
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     var searchFileName = nambib.get_search_fname();
@@ -1365,7 +1365,7 @@ OutputBibleTable.prototype.incFontSize = function (n) {
     $("#fontsize").text(fsz)
 
     MyStorage.setFontSize(fsz)
-    gBim.scrollToView_Vrs()
+    g_aim.scrollToView_Vrs()
 }
 OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
     this.incFontSize(0);
@@ -1601,12 +1601,12 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
     return { htm: s, size: idx };
 }
 
-var gBim = new BibleInputMenu();
-var gBout = new OutputBibleTable()
+var g_aim = new AppInstancesManager();
+var g_obt = new OutputBibleTable()
 
 function apiCallback_Gen_output_table(ret) {
     obrapport.hide()
-    gBout.Gen_output_table(ret)
+    g_obt.Gen_output_table(ret)
 }
 
 
@@ -1668,7 +1668,7 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    Jsonpster.inp.par = gBim.get_search_inp();
+    Jsonpster.inp.par = g_aim.get_search_inp();
     Jsonpster.api = RestApi.ApiBibleObj_search_txt;
     Uti.Msg(Jsonpster)
     if (!Jsonpster.inp.par) return
@@ -1935,8 +1935,8 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>FontSize</td>
-                            <td><button onclick="gBout.incFontSize(2);" title='font-size plus'>f+</button>
-                            <button onclick="gBout.incFontSize(-2);" title='font-size minus'>f-</button></td>
+                            <td><button onclick="g_obt.incFontSize(2);" title='font-size plus'>f+</button>
+                            <button onclick="g_obt.incFontSize(-2);" title='font-size minus'>f-</button></td>
                             <td id='fontsize'></td>
                         </tr>
                         <tr>
