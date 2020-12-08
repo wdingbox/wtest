@@ -228,6 +228,11 @@ PopupMenu_RevTag.prototype.popup = function (par) {
         $(this.m_id).show()
             .find("caption").text(par.m_bcv);
     }
+
+    $("#RevTag_Info").text(Jsonpster.inp.usr["f_path"])
+
+    this.m_ediDiv.setId(par.m_txuid)
+    this.m_ediBtn.init_associate(this.m_ediDiv)
 }
 PopupMenu_RevTag.prototype.hide = function () {
     $(this.m_id).hide()
@@ -240,16 +245,9 @@ PopupMenu_RevTag.prototype.init = function () {
     }).hide()
 
     var _THIS = this
-    function _gen_pster() {
-        var tx = $("#" + _THIS.m_par.m_txuid).text()
-        if (tx.length === 0) $("#" + _THIS.m_par.m_txuid).text("---")
-
-        var htm = $("#" + _THIS.m_par.m_txuid).html()
-        _THIS.m_par.m_txt = tx
-        _THIS.m_par.m_htm = htm
-        console.log(tx, _THIS.m_par)
-        _THIS.hide()
-
+    function _gen_pster_write() {
+        _THIS.m_ediDiv.touch()
+        var htm = _THIS.m_ediDiv.html()
         var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, htm)
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
@@ -258,41 +256,106 @@ PopupMenu_RevTag.prototype.init = function () {
         return Jsonpster
     }
 
-    $("#RevTag_Edit_Local").bind("click", function () {
-        var txt = $(this).text()
-        var enabled = $(this).attr("enableEdit")
-        var disabled = $(this).attr("disableEdit")
-        if (txt === disabled) {
-            $(this).text(enabled)
-            $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
+    function DivEditTxt() {
+        this.m_id = null
+    }
+    DivEditTxt.prototype.setId = function (id) {
+        this.m_id = "#" + id
+    }
+    DivEditTxt.prototype.html = function (htm) {
+        if (undefined === htm) {
+            return $(this.m_id).html()
+        }
+        return $(this.m_id).html(htm)
+    }
+    DivEditTxt.prototype.enableEdit = function (bEnable) {
+        if (!this.m_id) return
+        if (bEnable) {
+            $(this.m_id).attr("contenteditable", "true")
         } else {
-            $(this).text(disabled)
-            $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true")
+            $(this.m_id).attr("contenteditable", null)
         }
-        var tx = $("#" + _THIS.m_par.m_txuid).text()
+    }
+    DivEditTxt.prototype.touch = function () {
+        var tx = $(this.m_id).text()
         if (tx.length === 0) {
-            $("#" + _THIS.m_par.m_txuid).html("<ol><li>--</li></ol>")
+            $(this.m_id).html("<ol><li>--</li></ol>")
         }
+    }
+    DivEditTxt.prototype.isEditable = function () {
+        return $(this.m_id).attr("contenteditable")
+    }
+
+
+    function EditBtn(id) {
+        this.m_elm = $(id)
+        this.m_edi_enabled = false
+        this.m_ediDiv = null
+
+    }
+    EditBtn.prototype.init_associate = function (edidiv) {
+        this.m_ediDiv = edidiv
+        var b = this.m_ediDiv.isEditable()
+        this.enable_edit(b)
+    }
+    EditBtn.prototype.enable_edit = function (bEnable) {
+        this.m_edi_enabled = bEnable
+        if (bEnable) {
+            $(this.m_elm).text("Disable Edit")
+        } else {
+            $(this.m_elm).text("Enable Edit")
+        }
+        if (this.m_ediDiv) {
+            this.m_ediDiv.touch()
+            this.m_ediDiv.enableEdit(bEnable)
+        }
+    }
+    EditBtn.prototype.toggle_enableEdit = function () {
+        this.m_edi_enabled = !this.m_edi_enabled
+        this.enable_edit(this.m_edi_enabled)
+    }
+    this.m_ediBtn = new EditBtn("#RevTag_Edit_Local")
+    this.m_ediDiv = new DivEditTxt()
+
+
+    $("#RevTag_Edit_Local").bind("click", function () {
+        _THIS.m_ediBtn.toggle_enableEdit()
         _THIS.hide()
     })
 
     $("#RevTag_Edit_External").bind("click", function () {
-        _gen_pster()
+        _gen_pster_write()
+        _THIS.m_ediBtn.enable_edit(false)
         _THIS.hide()
     })
 
     $("#RevTag_Save").bind("click", function () {
-        $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
-
-        Jsonpster = _gen_pster()
+        Jsonpster = _gen_pster_write()
         console.log("inp:", Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret)
-            if (ret.result.indexOf("success") > 0) {
-
+            Uti.Msg(ret)
+            if (ret.out.result.indexOf("success") > 0) {
+                _THIS.m_ediBtn.enable_edit(false)
+                _THIS.hide()
             }
         })
-        _THIS.hide()
+    })
+
+
+    $("#RevTag_Load").bind("click", function () {
+        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, "")
+        Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+        Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt
+        console.log("inp:", Jsonpster)
+        Jsonpster.Run(function (ret) {
+            console.log("ret", ret.out.data)
+            if (ret.out.result.indexOf("success") > 0) {
+                _THIS.m_ediDiv.html(ret.out.data.txt)
+                _THIS.m_ediBtn.enable_edit(false)
+                _THIS.hide()
+            }
+        })
     })
 }
 
@@ -1381,47 +1444,7 @@ OutputBibleTable.prototype.onclick_BcvTag = function (cbf) {
     this.m_onclick_BcvTag = cbf
 }
 OutputBibleTable.prototype.Gen_output_table = function (ret) {
-    function editing_save(_This) {
-        var old = $(_This).attr("oldtxt");
-        var fil = $(_This).attr("title");
-        var txt = $(_This).text();
-        var xid = $(_This).attr("vid");
-        if (!fil) {
-            return;
-        }
 
-        if (old === txt) {
-            Uti.Msg("no changes on text.");
-            $(_This).parent().append(`<a class='ok'> (NoChanges!)</a>`);
-            return;
-        } else {
-            if (!confirm("Save changes?")) {
-                return;
-            }
-        }
-
-        var mat = xid.match(/^(\w{3})(\d+)\:(\d+)$/);
-        if (!mat) {//Gen1:1
-            alert("edi save err:" + xid + ":" + txt);
-            return;
-        }
-        var dat = {}
-        dat.vol = mat[1];
-        dat.chp = mat[2];
-        dat.vrs = mat[3];
-        dat.txt = txt;
-
-        //var _This = this;
-        Jsonpster.inp.par = { fnames: [fil], vcvx: dat };
-        Jsonpster.api = RestApi.ApiBibleObj_update_notes;
-        Uti.Msg(Jsonpster)
-        Jsonpster.Run(function () {
-            var stx = txt.substr(0, 5) + " ... " + txt.substr(txt.length - 15);
-            Uti.Msg(stx);
-            $(_This).removeClass("edit_keydown").removeClass("editing");
-            $(_This).parent().append(`<a class='ok'> [${stx}](Saved!)</a>`);
-        });
-    };
 
 
     var _THIS = this;
@@ -1454,38 +1477,13 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         $("#divPopupMenu_BcvTag").find("caption").text(bcvid).focus()
 
         markHistory.addnew(bcvid)
-
-        // Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_verses_loaded, Strn: bcvid } };
-        // Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
-        // Uti.Msg(Jsonpster)
-        // Jsonpster.Run(function (ret) {
-        //     Uti.Msg(bcvid + " is stored in history; and ref is available.");
-        // });
     });
 
-    //$(this.m_tbid).find(".tx").bind("focusout", editing_save);
+
     $(this.m_tbid).find(".tx").bind("keydown", function () {
         $(this).addClass("edit_keydown");
     });
-    $(this.m_tbid).find("[type=checkbox]").bind("click", function () {
-        $(".ok").remove();
-        var stit = $(this).attr("title");
-        if (stit[0] != "_") { //"_bnotes") {
-            if ($(this).prop("checked")) {
-                if ("password123" != prompt("Only Authorized people can edit it. \nPlease enter password.", "password")) {
-                    return;
-                };
-            }
-        }
-        if ($(this).prop("checked")) {
-            $(this).next().attr("contenteditable", "true").addClass("editing").attr("title", stit);
-            var oldtxt = $(this).next().text();
-            $(this).next().attr("oldtxt", oldtxt);
-        } else {
-            $(this).next().attr("contenteditable", null).removeClass("editing");
-            editing_save($(this).next());
-        }
-    });
+
     $(this.m_tbid).find(".tx").bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
@@ -1561,8 +1559,9 @@ OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
 }
 OutputBibleTable.prototype.create_htm_table = function (ret) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
+    console.log("result:", ret.out.result)
     var idx = 0, st = "", uuid = 1;
-    $.each(ret, function (vol, chpObj) {
+    $.each(ret.out.data, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
@@ -1672,7 +1671,10 @@ function onclick_BibleObj_search_str() {
     Jsonpster.api = RestApi.ApiBibleObj_search_txt;
     Uti.Msg(Jsonpster)
     if (!Jsonpster.inp.par) return
-    Jsonpster.Run(apiCallback_Gen_output_table);
+    Jsonpster.Run(function (ret) {
+        apiCallback_Gen_output_table(ret);
+        Uti.Msg(ret.out.result);
+    })
 
     //test
     var unicds = "";
@@ -1693,7 +1695,7 @@ function onclick_load_search_string_history(bSortByTime) {
     Jsonpster.Run(function (ret) {
         //history
         console.log(ret);
-        var ops = Uti.read_history_to_opt(ret, true);
+        var ops = Uti.read_history_to_opt(ret.out.data, true);
         $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
             $(this).toggleClass("hili");
             var s = $(this).text().trim();
@@ -2024,7 +2026,12 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="RevTag_Info">-</a>
+                <a id="RevTag_Load">Load</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Info">user</a>
             </td>
         </tr>
     </tbody>

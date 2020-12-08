@@ -87,6 +87,7 @@ var BibleUti = {
         var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
         var inpObj = JSON.parse(s);
         console.log("inp=", inpObj);
+        inpObj.out = { result: "", data: null }
         return inpObj;
     },
     get_bc: function (BibleObj, oj) {
@@ -226,35 +227,42 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var rev = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+                if (!bib.obj) inp.out.result += ":err:" + rev
                 var bcObj = BibleUti.get_bc(bib.obj, inp.par.bibOj);
                 RbcObj[rev] = bcObj;
+                inp.out.result += ":" + rev
             }
         }
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        var sret = JSON.stringify(bcvR);
+        inp.out.result += ":success"
+        inp.out.data = bcvR
+        var sret = JSON.stringify(inp);
 
+        console.log(inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
     ApiBibleObj_search_txt: function (req, res) {
-        var inpObj = BibleUti.GetApiInputParamObj(req)
-        if (!inpObj.usr.f_path) inpObj.usr.f_path = ""
-        var RbcObj = {};
+        var inp = BibleUti.GetApiInputParamObj(req)
+        if (!inp.usr.f_path) inp.usr.f_path = ""
 
-        if ("object" === typeof inpObj.par.fnames) {//['NIV','ESV']
-            for (var i = 0; i < inpObj.par.fnames.length; i++) {
-                var rev = inpObj.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inpObj.usr.f_path, rev);
+        var RbcObj = {};
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            for (var i = 0; i < inp.par.fnames.length; i++) {
+                var rev = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
                 RbcObj[rev] = bib.obj;
+                inp.out.result += ":" + rev
             }
         }
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        var bcvR2 = BibleUti.search_str_in_bcvR(bcvR, inpObj.par.Search.File, inpObj.par.Search.Strn);
+        inp.out.data = BibleUti.search_str_in_bcvR(bcvR, inp.par.Search.File, inp.par.Search.Strn);
 
-        var ss = JSON.stringify(bcvR2);
+        inp.out.result += ":success."
+        var ss = JSON.stringify(inp);
 
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
@@ -262,7 +270,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
     ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
-        inp.result = "Write?"
+        inp.out.result = "Write?"
 
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var rev = inp.par.fnames[0]
@@ -278,7 +286,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                             console.log("vrs", txt)
                             bib.obj[bkc][chp][vrs] = txt
                             bib.writeback();
-                            inp.result += ":Success"
+                            inp.out.result += ":success"
+                            inp.out.data = txt
                         }
                     }
                 }
@@ -289,6 +298,39 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
+    ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
+        var inp = BibleUti.GetApiInputParamObj(req)
+        inp.out = { result: "", ret: null }
+        inp.out.result = "read:"
+
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            var rev = inp.par.fnames[0]
+            inp.out.result += rev
+            var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+            inp.bio = bib
+            if (bib.fsize > 0) {
+                console.log("fsize:", bib.fsize)
+                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
+                    console.log("chpObj", chpObj)
+                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                        console.log("vrsObj", vrsObj)
+                        for (const [vrs, txt] of Object.entries(vrsObj)) {
+                            var readtxt = bib.obj[bkc][chp][vrs]
+                            console.log("readtxt", readtxt)
+                            inp.out.data = { bcv: `${rev}~${bkc}${chp}:${vrs}`, txt: readtxt }
+                            inp.out.result += ":success"
+                        }
+                    }
+                }
+            }
+        }
+
+        var ss = JSON.stringify(inp)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + ss + ");");
+        res.end();
+    },
+
     ApiBibleObj_access_regex_search_history: function (req, res) {
         var inpObj = BibleUti.GetApiInputParamObj(req)
         console.log("ApiBibleObj_access_regex_search_history inpObj", inpObj);
