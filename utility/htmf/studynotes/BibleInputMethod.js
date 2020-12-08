@@ -17,11 +17,11 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            MyStorage.auto_setup()
+            MyStorage.auto_setup_Jsonpster()
         }, 3000)
 
     },
-    auto_setup:function(){
+    auto_setup_Jsonpster: function () {
         ["acctname", "f_path"].forEach(function (id, i) {
             var val = localStorage.getItem(id)
             $("#" + id).val(val)
@@ -262,10 +262,10 @@ PopupMenu_RevTag.prototype.init = function () {
         var txt = $(this).text()
         var enabled = $(this).attr("enableEdit")
         var disabled = $(this).attr("disableEdit")
-        if(txt === disabled){
+        if (txt === disabled) {
             $(this).text(enabled)
             $("#" + _THIS.m_par.m_txuid).attr("contenteditable", null)
-        }else{
+        } else {
             $(this).text(disabled)
             $("#" + _THIS.m_par.m_txuid).attr("contenteditable", "true")
         }
