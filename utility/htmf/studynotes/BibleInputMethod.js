@@ -1110,10 +1110,15 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
-        //$(this).parentsUntil("table").find(".hili").removeClass("hili")
         $(this).toggleClass("hili")
-        var vcv = $(this).text()
-        if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
+        var hiliary = []
+        $(this).parentsUntil("table").find(".hili").each(function () {
+            hiliary.push($(this).text())
+        })
+
+        if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(hiliary)
+
+
     })
 }
 
@@ -1302,11 +1307,16 @@ AppInstancesManager.prototype.init = function () {
 
 
 
-    markHistory.onClickHistoryItem(function (bcv) {
-        showup.update_showup(bcv)
-        digi.init_Chp_digiKeys_by_vol()
-        digi.init_Vrs_digiKeys_by_vol()
-        _This.loadBible_chp()
+    markHistory.onClickHistoryItem(function (bcvAry) {
+        if (bcvAry.length === 1) {
+            showup.update_showup(bcvAry[0])
+            digi.init_Chp_digiKeys_by_vol()
+            digi.init_Vrs_digiKeys_by_vol()
+            _This.loadBible_chp()
+        } else {
+            _This.loadBible_by_StdBcvStrn(bcvAry.join(","))
+        }
+
     })
 
     popupMenu_BcvTag.init()
@@ -1346,7 +1356,21 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
+AppInstancesManager.prototype.loadBible_by_StdBcvStrn = function (stdBcvStrn) {
+    var _THIS = this
 
+    console.log("stdBcvStrn=", stdBcvStrn);
+    var fnamesArr = nambib.get_selected_nb_fnamesArr();
+    Jsonpster.inp.par = { fnames: fnamesArr, StdBcvStrn: stdBcvStrn, bibOj: null, Search: null };
+    Jsonpster.api = RestApi.ApiBibleObj_load_by_StdBcvStrn;
+    Uti.Msg(Jsonpster);
+    Jsonpster.Run(function (ret) {
+        apiCallback_Gen_output_table(ret)
+        setTimeout(function () {
+            //_THIS.scrollToView_Vrs()
+        }, 2100)
+    })
+};///
 AppInstancesManager.prototype.loadBible_chp = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();

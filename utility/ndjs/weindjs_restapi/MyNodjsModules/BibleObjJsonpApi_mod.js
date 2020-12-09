@@ -219,18 +219,18 @@ var BibleUti = {
 
         return ret;
     },
-    load_bcvR_by_StdBcvStrn: function (bcvR, StdBcvStrn) {
-        var retOb = {}, stdBcvAr = StdBcvStrn.split(",")
+    load_bcvR_by_StdBcvStrn: function (bcvR, stdBcvStrn) {
+        var retOb = {}, stdBcvAr = stdBcvStrn.split(",")
 
         stdBcvAr.forEach(function (stdbcv) {
             var stdbcvs = stdbcv.trim()
             var ar2 = stdbcvs.split("-")
             var stdbcv = ar2[0].trim()
-            var ret = bcv_parser(stdbcv, '') //`${bkc}${chp}:${vrs}`
+            var ret = BibleUti.bcv_parser(stdbcv, '') //`${bkc}${chp}:${vrs}`
             if (!ret.err) {
-                if (!retOb[bkc]) retOb[bkc] = {}
-                if (!retOb[bkc][chp]) retOb[bkc][chp] = {};
-                retOb[bkc][chp][vrs] = bcvR[bkc][chp][vrs]
+                if (!retOb[ret.vol]) retOb[ret.vol] = {}
+                if (!retOb[ret.vol][ret.chp]) retOb[ret.vol][ret.chp] = {};
+                retOb[ret.vol][ret.chp][ret.vrs] = bcvR[ret.vol][ret.chp][ret.vrs]
             }
         })
 
@@ -320,7 +320,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        inp.out.data = BibleUti.load_bcvR_by_StdBcvStrn(bcvR, inp.par.StdBcvStrs)
+        inp.out.data = BibleUti.load_bcvR_by_StdBcvStrn(bcvR, inp.par.StdBcvStrn)
         inp.out.result += ":success"
 
         var sret = JSON.stringify(inp);
