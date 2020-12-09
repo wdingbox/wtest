@@ -31,9 +31,7 @@ var MyStorage = {
         })
     },
     clear: function () {
-        this.setRevList("")
-        this.setMarkHistory("")
-        this.setFontSize("")
+        localStorage.clear();
     },
     setRevList: function (arr) {
         localStorage.setItem("RevList", arr)
