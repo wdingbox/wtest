@@ -1086,7 +1086,7 @@ function Tab_mark_bcv_history() {
     this.m_bcvHistory = MyStorage.getMarkHistory()
 }
 Tab_mark_bcv_history.prototype.init = function () {
-    
+
 }
 
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
@@ -1095,9 +1095,9 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
     var idx = this.m_bcvHistory.indexOf(bcv)
-    if (idx >= 0) this.m_bcvHistory.splice(idx, 1)
+    if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
     this.m_bcvHistory.unshift(bcv);
-    this.m_bcvHistory = this.m_bcvHistory.slice(0,100) //:max size 100.
+    this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
     this.update_tab()
     MyStorage.setMarkHistory(this.m_bcvHistory)
 }
@@ -1802,21 +1802,60 @@ var Uti = {
             })
             return ar
         }
-        function _get_list(str) {
-            var ar = str.split(/\,\s{0,}/g)
-            for (var i = 0; i < ar.length; i++) {
-                ar[i] = ar[i].trim()
+        function get_Max_struct_stdbcv_ary() {
+            var ar = []
+            for (const [bkc, chpObj] of Object.entries(_Max_struct)) {
+                for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                        var stdbcv = `${bkc}${chp}:${vrs}`
+                        ar.push(stdbcv)
+                    }
+                }
             }
-            Uti.Msg(ar)
-            return ar;
+            return ar
         }
+        function _dash2ary(stdbcv) {
+            var retary = []
+            var ar2 = stdbcv.split("-")
+            var stdbcv = ar2[0].trim()
+            if (ar2.length === 1) {
+                retary.push(stdbcv)
+            } else {
+                var end_bcv = ar2[1].trim()
+
+
+            }
+            return retary
+        }
+        function _deplore_dash(stdbcvAry) {
+            var ar = []
+            stdbcvAry.forEach(function (stdbcv) {
+                var ar2 = stdbcv.split("-")
+                var stdbcv = ar2[0].trim()
+                if (ar2.length === 1) {
+                    ar.push(stdbcv)
+                } else {
+                    var endbcv = ar2[1].trim()
+                    var maxary = get_Max_struct_stdbcv_ary()
+                    var indx0 = maxary.indexOf(stdbcv)
+                    var indx1 = maxary.indexOf(endbcv)
+                    var ary = maxary.slice(indx0, indx1+1)
+                    ary.forEach(function(bcv){
+                        ar.push(bcv)
+                    })
+                }
+            })
+            return ar
+        }
+      
         //_Max_struct
         //std case1: "Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
         //std case2: "Gen1:3-Gen23:9, Gen23:5"
         //var hdry = _get_list(str)
         var ret = _check_std_bcv(str)
         var odr = _biblicalOrder(ret.pad3)
-        return odr
+        var dep = _deplore_dash(odr)
+        return dep
     }
 
 
