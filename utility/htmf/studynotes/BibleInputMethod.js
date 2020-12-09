@@ -55,7 +55,7 @@ var MyStorage = {
     getMarkHistory: function () {
         var ar = localStorage.getItem("MarkHistory")
         if (!ar || ar.length === 0) {
-            ar = {}
+            ar = []
         } else {
             ar = JSON.parse(ar)
         }
@@ -1087,49 +1087,31 @@ function Tab_mark_bcv_history() {
 }
 Tab_mark_bcv_history.prototype.init = function () {
     this.update_tab(true)
-
-    var _THIS = this
-    $("#loadhistory").bind("click", function (evt) {
-        evt.stopImmediatePropagation()
-        _THIS.onclick_load_vcv_history(true)
-    })
-    $("#sort_history_by_vcvID").bind("click", function (evt) {
-        evt.stopImmediatePropagation()
-        alert()
-        _THIS.onclick_load_vcv_history(false)
-    })
 }
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
-
-    this.init()
 }
-Tab_mark_bcv_history.prototype.addnew = function (vcv, tm) {
-    this.m_bcvHistory[vcv] = (!tm) ? (new Date()).toISOString() : tm
+Tab_mark_bcv_history.prototype.addnew = function (bcv, tm) {
+    var idx = this.m_bcvHistory.indexOf(bcv)
+    if (idx >= 0) this.m_bcvHistory.splice(idx, 1)
+    this.m_bcvHistory.unshift(bcv);
     this.update_tab(true)
     MyStorage.setMarkHistory(this.m_bcvHistory)
 }
 Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
-    var _THIS = this
-    var ar = []
-    Object.keys(this.m_bcvHistory).forEach(function (vcv, i) {
-        var tm = ""
-        if (bSortByTime) {
-            tm = _THIS.m_bcvHistory[vcv]
-        }
-        ar.push(`<tr><td title='${tm}'>${vcv}</td></tr>`)
-    });
-
-    ar.reverse()
-    return ar.join()
 }
 Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
     var _THIS = this
-    var trs = this.gen_trs_sort_by_time(bSortByTime)
+    var trs = ""
+    this.m_bcvHistory.forEach(function (vcv, i) {
+        trs += (`<tr><td>${vcv}</td></tr>`)
+    });
+
     $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function (evt) {
         evt.stopImmediatePropagation()
-        $(this).parentsUntil("table").find(".hili").removeClass("hili")
-        $(this).addClass("hili")
+
+        //$(this).parentsUntil("table").find(".hili").removeClass("hili")
+        $(this).toggleClass("hili")
         var vcv = $(this).text()
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(vcv)
     })
@@ -1149,34 +1131,7 @@ Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime)
     // });
 };///
 Tab_mark_bcv_history.prototype.read_history_to_opt = function (ret, bSortByTime) {
-    var ops = [];
-    $.each(ret, function (vol, chobj) {
-        $.each(chobj, function (chp, vrsObj) {
-            $.each(vrsObj, function (vrs, ob) {
-                $.each(ob, function (searchStr, tm) {
-                    if (!bSortByTime) tm = "";
-                    ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
-                });
-            });
-        });
-    });
-    ops.sort();
-    if (bSortByTime) {
-        ops.reverse();
-    }
-    return ops;
-}
-Tab_mark_bcv_history.prototype.read_history_to_Obj = function (ret) {
-    var _THIS = this
-    $.each(ret, function (vol, chobj) {
-        $.each(chobj, function (chp, vrsObj) {
-            $.each(vrsObj, function (vrs, ob) {
-                $.each(ob, function (searchStr, tm) {
-                    _THIS.addnew(searchStr, tm)
-                });
-            });
-        });
-    });
+
 }
 
 
@@ -1721,21 +1676,7 @@ function onclick_BibleObj_search_str() {
     Uti.Msg(unicds);
 
 }
-function onclick_load_search_string_history(bSortByTime) {
-    Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_regex_search, Strn: null } };//readonly.
-    Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
-    Uti.Msg(Jsonpster)
-    Jsonpster.Run(function (ret) {
-        //history
-        console.log(ret);
-        var ops = Uti.read_history_to_opt(ret.out.data, true);
-        $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
-            $(this).toggleClass("hili");
-            var s = $(this).text().trim();
-            $("#sinput").val(s);
-        });
-    });
-};
+
 
 
 function onclick_btn_set_jsonpster_svr_ip() {
@@ -1764,24 +1705,7 @@ var Uti = {
         $("#txtarea").val(results);
     },
 
-    read_history_to_opt: function (ret, bSortByTime) {
-        var ops = [];
-        $.each(ret, function (vol, chobj) {
-            $.each(chobj, function (chp, vrsObj) {
-                $.each(vrsObj, function (vrs, ob) {
-                    $.each(ob, function (searchStr, tm) {
-                        if (!bSortByTime) tm = "";
-                        ops.push("<tr><td class='option' time='" + tm + "'>" + searchStr + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
-                    });
-                });
-            });
-        });
-        ops.sort();
-        if (bSortByTime) {
-            ops.reverse();
-        }
-        return ops;
-    },
+
     bcv_parser: function (sbcv, txt) {
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
@@ -1844,7 +1768,7 @@ var Uti = {
                         Uti.Msg(ret)
                     } else {
                         var fixedbcv = ret.pad3.bcv
-                        if (ar2.length >= 2) fixedbcv += "-"+ar2[1]
+                        if (ar2.length >= 2) fixedbcv += "-" + ar2[1]
                         if (pad3.indexOf(fixedbcv) < 0) {
                             pad3.push(fixedbcv)
                         }
@@ -1865,7 +1789,7 @@ var Uti = {
                         var hdbcv = ar2[0].trim()
                         var ret = Uti.bcv_parser(hdbcv, "")
                         var stdbcv = ret.std_bcv
-                        if (ar2.length >= 2) stdbcv += "-"+ar2[1]
+                        if (ar2.length >= 2) stdbcv += "-" + ar2[1]
                         ar.push(stdbcv)
                     }
                 })
