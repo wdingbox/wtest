@@ -1094,9 +1094,16 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
     this.update_tab()
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
-    var idx = this.m_bcvHistory.indexOf(bcv)
-    if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
-    this.m_bcvHistory.unshift(bcv);
+    var ary = bcv
+    if ("string" === typeof bcv) {
+        ary = [bcv]
+    }
+    for (var i = 0; i < ary.length; i++) {
+        var idx = this.m_bcvHistory.indexOf(ary[i])
+        if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
+        this.m_bcvHistory.unshift(ary[i]);
+    }
+
     this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
     this.update_tab()
     MyStorage.setMarkHistory(this.m_bcvHistory)
@@ -1839,15 +1846,15 @@ var Uti = {
                     var maxary = get_Max_struct_stdbcv_ary()
                     var indx0 = maxary.indexOf(stdbcv)
                     var indx1 = maxary.indexOf(endbcv)
-                    var ary = maxary.slice(indx0, indx1+1)
-                    ary.forEach(function(bcv){
+                    var ary = maxary.slice(indx0, indx1 + 1)
+                    ary.forEach(function (bcv) {
                         ar.push(bcv)
                     })
                 }
             })
             return ar
         }
-      
+
         //_Max_struct
         //std case1: "Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
         //std case2: "Gen1:3-Gen23:9, Gen23:5"
