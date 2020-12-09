@@ -1398,7 +1398,7 @@ AppInstancesManager.prototype.loadBible_chp = function () {
     console.log("Obj=", bibOj);
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
-    Jsonpster.api = RestApi.ApiBibleObj_load_Bkns_Vols_Chp;
+    Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
         apiCallback_Gen_output_table(ret)

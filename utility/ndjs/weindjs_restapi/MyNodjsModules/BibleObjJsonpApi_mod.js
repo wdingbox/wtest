@@ -282,7 +282,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
         //});
     },
-    ApiBibleObj_load_Bkns_Vols_Chp: function (req, res) {
+    ApiBibleObj_load_by_bibOj: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
