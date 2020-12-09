@@ -1086,21 +1086,31 @@ function Tab_mark_bcv_history() {
     this.m_bcvHistory = MyStorage.getMarkHistory()
 }
 Tab_mark_bcv_history.prototype.init = function () {
-    this.update_tab(true)
+    
 }
+
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
+    this.update_tab()
 }
-Tab_mark_bcv_history.prototype.addnew = function (bcv, tm) {
+Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
     var idx = this.m_bcvHistory.indexOf(bcv)
     if (idx >= 0) this.m_bcvHistory.splice(idx, 1)
     this.m_bcvHistory.unshift(bcv);
-    this.update_tab(true)
+    this.m_bcvHistory = this.m_bcvHistory.slice(0,100) //:max size 100.
+    this.update_tab()
     MyStorage.setMarkHistory(this.m_bcvHistory)
 }
-Tab_mark_bcv_history.prototype.gen_trs_sort_by_time = function (bSortByTime) {
+Tab_mark_bcv_history.prototype.clearHistory = function () {
+    this.m_bcvHistory = []
+    this.update_tab()
+    MyStorage.setMarkHistory(this.m_bcvHistory)
 }
-Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
+Tab_mark_bcv_history.prototype.toggleSelAll = function () {
+    $(this.m_tabid + " tbody").find("td").toggleClass("hili")
+}
+
+Tab_mark_bcv_history.prototype.update_tab = function () {
     var _THIS = this
     var trs = ""
     this.m_bcvHistory.forEach(function (vcv, i) {
@@ -1117,27 +1127,13 @@ Tab_mark_bcv_history.prototype.update_tab = function (bSortByTime) {
         })
 
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(hiliary)
-
-
     })
 }
 
-Tab_mark_bcv_history.prototype.onclick_load_vcv_history = function (bSortByTime) {
-    var _THIS = this
-    // Jsonpster.inp.par = { Search: { File: RestApi.HistFile.__history_verses_loaded } };
-    // Jsonpster.api = RestApi.ApiBibleObj_access_regex_search_history;
-    // Uti.Msg(Jsonpster)
-    // Jsonpster.Run(function (ret) {
-    //     //history
-    //     console.log(ret);
-    //     _THIS.read_history_to_Obj(ret);
-    //     _THIS.update_tab(bSortByTime)
-    // 
-    // });
-};///
-Tab_mark_bcv_history.prototype.read_history_to_opt = function (ret, bSortByTime) {
 
-}
+
+
+
 
 
 
@@ -1237,7 +1233,7 @@ AppInstancesManager.prototype.init = function () {
         if (bload) {
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
-            _This.loadBible_chp();
+            _This.loadBible_chapter_by_bibOj();
         } else {
             digi.init_Vrs_digiKeys_by_vol()
         }
@@ -1247,7 +1243,7 @@ AppInstancesManager.prototype.init = function () {
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
         if (bload) {
-            _This.loadBible_chp();
+            _This.loadBible_chapter_by_bibOj();
         }
         $("#menuContainer").show()
     })
@@ -1257,7 +1253,7 @@ AppInstancesManager.prototype.init = function () {
     digi.m_Vrs.Gen_Digits("#DigitOfVerse", "vrs_num")
 
     digi.m_Chp.on_Click_Digit(function () {
-        _This.loadBible_chp();
+        _This.loadBible_chapter_by_bibOj();
     })
     digi.m_Vrs.on_Click_Digit(function () {
         _This.scrollToView_Vrs();
@@ -1274,7 +1270,7 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
 
             var bcv = `${vol}1:1`
-            markHistory.addnew(bcv)
+            markHistory.addnew2table(bcv)
             //d1.init_Chp_digiKeys_by_vol()
             //d2.disable_all_digiKey(true)
 
@@ -1301,20 +1297,20 @@ AppInstancesManager.prototype.init = function () {
 
     nambib.Init_NB_Table({
         onClickItm: function () {
-            _This.loadBible_chp();
+            _This.loadBible_chapter_by_bibOj();
         }
     });
 
 
-
+    markHistory.init()
     markHistory.onClickHistoryItem(function (bcvAry) {
         if (bcvAry.length === 1) {
             showup.update_showup(bcvAry[0])
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
-            _This.loadBible_chp()
+            _This.loadBible_chapter_by_bibOj()
         } else {
-            _This.loadBible_by_StdBcvStrn(bcvAry.join(","))
+            _This.loadBible_verses_by_StdBcvStrn(bcvAry.join(","))
         }
 
     })
@@ -1356,7 +1352,7 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
-AppInstancesManager.prototype.loadBible_by_StdBcvStrn = function (stdBcvStrn) {
+AppInstancesManager.prototype.loadBible_verses_by_StdBcvStrn = function (stdBcvStrn) {
     var _THIS = this
 
     console.log("stdBcvStrn=", stdBcvStrn);
@@ -1371,7 +1367,7 @@ AppInstancesManager.prototype.loadBible_by_StdBcvStrn = function (stdBcvStrn) {
         }, 2100)
     })
 };///
-AppInstancesManager.prototype.loadBible_chp = function () {
+AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
@@ -1456,23 +1452,9 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         var alreadyHili = $(this)[0].classList.contains('bcvMark')
         bcr.m_alreadyHili = alreadyHili
 
-        //  function popup(bcr) {
-        //      if (bcr.m_alreadyHili) {
-        //          $("#divPopupMenu_BcvTag").slideToggle();
-        //      } else {
-        //          $("#divPopupMenu_BcvTag").show();
-        //      }
-        //  
-        //      $("#divPopupMenu_BcvTag").css('top', bcr.m_y);
-        //      //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
-        //      $("#divPopupMenu_BcvTag").find("caption").text(bcr.m_bcv).focus()
-        //  }
-        //  
-        //  
-        //  popup(bcr)
         _THIS.m_onclick_BcvTag(bcr)
 
-        markHistory.addnew(bcvid)
+        markHistory.addnew2table(bcvid)
         $("title").text(bcvid)
 
         $(".bcvTag.bcvMark").removeClass("bcvMark");
@@ -1916,8 +1898,7 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                     <caption>
-                       <button id="loadhistory"  title='load history sort by time'>H</button>
-                       <button id="sort_history_by_vcvID"  title='load history sort by str'>^</button>
+                       HistoryRecords
                     </caption>
                     <thead></thead>
                     <tbody>
@@ -1929,6 +1910,10 @@ var BibleInputMenuContainer = `
                             </td>
                         </tr>
                     </tbody>
+                    <caption>
+                       <button onclick="markHistory.clearHistory();"  title='clear history'>clear</button>
+                       <button onclick="markHistory.toggleSelAll();"  title='toggle select all'>*</button>
+                    </caption>
                 </table>
             </div>
 
