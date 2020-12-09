@@ -174,7 +174,69 @@ var BibleUti = {
             }
         }
         return retOb
+    },
+    bcv_parser: function (sbcv, txt) {
+        sbcv = sbcv.replace(/\s/g, "");
+        if (sbcv.length === 0) return alert("please select an item first.");
+        var ret = { vol: "", chp: "", vrs: "" };
+        var mat = sbcv.match(/^(\w{3})\s{,+}(\d+)\s{,+}[\:]\s{,+}(\d+)\s{,+}$/);
+        var mat = sbcv.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
+        var mat = sbcv.match(/^(\w{3})(\d+)\:(\d+)$/);
+        if (mat) {
+            ret.vol = mat[1].trim();
+            ret.chp = "" + parseInt(mat[2]);
+            ret.vrs = "" + parseInt(mat[3]);
+        } else {
+            alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
+        }
+        ret.chp3 = ret.chp.padStart(3, "0");
+        ret._vol = "_" + ret.vol;
+
+        ret.std_bcv = `${ret.vol}${ret.chp}:${ret.vrs}`
+
+        var pad3 = {}
+        pad3.chp = ret.chp.padStart(3, "0");
+        pad3.vrs = ret.vrs.padStart(3, "0");
+        pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
+        ret.pad3 = pad3
+
+        var obj = {}
+        obj[ret.vol] = {}
+        obj[ret.vol][ret.chp] = {}
+        obj[ret.vol][ret.chp][ret.vrs] = txt
+        ret.bcvObj = obj
+
+        ///////validation for std bcv.
+        // if (undefined === _Max_struct[ret.vol]) {
+        //     ret.err = `bkc not exist: ${ret.vol}`
+        // } else if (undefined === _Max_struct[ret.vol][ret.chp]) {
+        //     ret.err = `chp not exist: ${ret.chp}`
+        // } else if (undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]) {
+        //     ret.err = `vrs not exist: ${ret.vrs}`
+        // } else {
+        //     ret.err = ""
+        // }
+
+        return ret;
+    },
+    load_bcvR_by_StdBcvStrn: function (bcvR, StdBcvStrn) {
+        var retOb = {}, stdBcvAr = StdBcvStrn.split(",")
+
+        stdBcvAr.forEach(function (stdbcv) {
+            var stdbcvs = stdbcv.trim()
+            var ar2 = stdbcvs.split("-")
+            var stdbcv = ar2[0].trim()
+            var ret = bcv_parser(stdbcv, '') //`${bkc}${chp}:${vrs}`
+            if (!ret.err) {
+                if (!retOb[bkc]) retOb[bkc] = {}
+                if (!retOb[bkc][chp]) retOb[bkc][chp] = {};
+                retOb[bkc][chp][vrs] = bcvR[bkc][chp][vrs]
+            }
+        })
+
+        return retOb
     }
+
     //// BibleUti /////
 }
 
@@ -237,6 +299,30 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
         inp.out.result += ":success"
         inp.out.data = bcvR
+        var sret = JSON.stringify(inp);
+
+        console.log(inp.out)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
+        res.end();
+    },
+    ApiBibleObj_load_by_StdBcvStrn: function (req, res) {
+        var inp = BibleUti.GetApiInputParamObj(req)
+        var RbcObj = {};
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            for (var i = 0; i < inp.par.fnames.length; i++) {
+                var rev = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+                if (!bib.obj) inp.out.result += ":err:" + rev
+                RbcObj[rev] = bib.obj;
+                inp.out.result += ":" + rev
+            }
+        }
+        var bcvR = {}
+        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
+        inp.out.data = BibleUti.load_bcvR_by_StdBcvStrn(bcvR, inp.par.StdBcvStrs)
+        inp.out.result += ":success"
+
         var sret = JSON.stringify(inp);
 
         console.log(inp.out)
