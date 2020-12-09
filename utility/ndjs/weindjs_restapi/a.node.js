@@ -4,8 +4,6 @@ var bodyParser = require('body-parser');
 //var stripe     = require("stripe")("CUSTOM_TEST_TOKEN");
 var url = require('url');
 
-var Uti = require("./MyNodjsModules/Uti.module").Uti;
-var BibleObj = require("./MyNodjsModules/BibleObject.module").BibleObj;
 
 var {BibleObjJsonpApi} = require("./MyNodjsModules/BibleObjJsonpApi_mod");
 
