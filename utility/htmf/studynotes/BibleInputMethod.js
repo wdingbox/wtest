@@ -1214,24 +1214,48 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
 
     /////
 
-    $("#Compare_vcv").click(function () {
+    $("#Check_bcv").click(function () {
+        function _check_std_bcv(str) {
+            var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
+            var pad3=[]
+            var mat = str.match(regexp)
+            if (mat) {
+                console.log(mat)
+                Uti.Msg(mat)
+                for (var i = 0; i < mat.length; i++) {
+                    var bcvStr = mat[i]
+                    var ret = Uti.bcv_parser(bcvStr, "")
+                    if (ret.err) {
+                        Uti.Msg(ret)
+                    }else{
+                        pad3.push(ret.pad3.bcv)
+                    }
+                }
+            } else {
+                Uti.Msg("not find")
+            }
+            return {mat:mat, pad3:pad3}
+        }
+        function _biblicalOrder(bcvList) {
+            bcvList.sort()
+            var ar = []
+            Object.keys(_Max_struct).forEach(function (bkn) {
+                bcvList.forEach(function (bcv) {
+                    if (bcv.indexOf(bkn) === 0) {
+                        var ret = Uti.bcv_parser(bcv, "")
+                        ar.push(ret.std_bcv)
+                    }
+                })
+            })
+            return ar
+        }
+        //_Max_struct
         //"Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
         var str = $("#txtarea").val()
-        var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
-        var mat = str.match(regexp)
-        if (mat) {
-            console.log(mat)
-            Uti.Msg(mat)
-            for (var i = 0; i < mat.length; i++) {
-                var bcvStr = mat[i]
-                var bcvObj = Uti.bcv_parser(bcvStr, "")
-                Uti.Msg(bcvObj)
+        var ret = _check_std_bcv(str)
+        var odr = _biblicalOrder(ret.pad3)
+        Uti.Msg(odr)
 
-            }
-
-        } else {
-            Uti.Msg("not find")
-        }
     });
     $("#oBible_indxer").click(function () {
         table_col_index("#oBible table");
@@ -1810,6 +1834,14 @@ var Uti = {
         ret.chp3 = ret.chp.padStart(3, "0");
         ret._vol = "_" + ret.vol;
 
+        ret.std_bcv = `${ret.vol}${ret.chp}:${ret.vrs}`
+
+        var pad3 = {}
+        pad3.chp = ret.chp.padStart(3, "0");
+        pad3.vrs = ret.vrs.padStart(3, "0");
+        pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
+        ret.pad3 = pad3
+
         var obj = {}
         obj[ret.vol] = {}
         obj[ret.vol][ret.chp] = {}
@@ -1817,14 +1849,14 @@ var Uti = {
         ret.bcvObj = obj
 
         ///////validation for std bcv.
-        if(undefined === _Max_struct[ret.vol]){
-            ret.err=`bkc not exist: ${ret.vol}`
-        }else if(undefined === _Max_struct[ret.vol][ret.chp]){
-            ret.err=`chp not exist: ${ret.chp}`
-        }else if(undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]){
-            ret.err=`vrs not exist: ${ret.vrs}`
-        }else{
-            ret.err=""
+        if (undefined === _Max_struct[ret.vol]) {
+            ret.err = `bkc not exist: ${ret.vol}`
+        } else if (undefined === _Max_struct[ret.vol][ret.chp]) {
+            ret.err = `chp not exist: ${ret.chp}`
+        } else if (undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]) {
+            ret.err = `vrs not exist: ${ret.vrs}`
+        } else {
+            ret.err = ""
         }
 
         return ret;
@@ -1950,7 +1982,7 @@ var BibleInputMenuContainer = `
            
                 
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
-                <button id="Compare_vcv">Compare_vcv</button>
+                <button id="Check_bcv">Check(bcv)</button>
                 <button id="oBible_indxer">indxer</button>
                 <button onclick="onclick_btn_set_jsonpster_svr_ip();">set jsonpster svr ip</button>
                 <a href='../index.htm'>ref</a>
