@@ -1445,8 +1445,6 @@ OutputBibleTable.prototype.onclick_BcvTag = function (cbf) {
 }
 OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
-
-
     var _THIS = this;
     var tb = this.create_htm_table(ret);
     Uti.Msg("tot_rows=" + tb.size);
@@ -1477,6 +1475,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         $("#divPopupMenu_BcvTag").find("caption").text(bcvid).focus()
 
         markHistory.addnew(bcvid)
+        $("title").text(bcvid)
     });
 
 
@@ -1484,28 +1483,35 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         $(this).addClass("edit_keydown");
     });
 
+
+    const copy2clipboard = (text) => {
+        const textarea = document.createElement('textarea')
+        document.body.appendChild(textarea)
+        textarea.value = text
+        textarea.select()
+        document.execCommand('copy')
+        textarea.remove()
+    }
+
+
     $(this.m_tbid).find(".tx").bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
-        $(".ok").remove();
         $(this).toggleClass("hiliVrsTxt");
-        var rsn = $(this).prev().attr("title");
+
+        //CopyTextToClipboard
         var txt = $(this).text();
-        var vcv = $(this).parentsUntil("tbody").find("td:eq(0)").text();
-        txt = `"${txt}" (${vcv} ${rsn})`;
-        Uti.Msg(txt + " (" + vcv + ")");
+        var bcv = $(this).parentsUntil("tbody").find("a.bcvTag").text();
+        var rev = $(this).prev().text()
+        txt = `"${txt}" (${bcv} ${rev})`;
+
         //copy to clipboard.
         if ($(this).attr("contenteditable")) {
             //noop
         } else {
-            //$("#CopyTextToClipboard").show();
-            $("#CopyTextToClipboard").val(txt);
-            $("#CopyTextToClipboard").select();//:must be focusable, like visible input element. 
-            document.execCommand("copy");
-            $("#CopyTextToClipboard").blur();//.hide();
-            $("body").focus()//focus back after copy.
-            $(this).focus()//focus back after copy.
+            copy2clipboard(txt)
         }
+        Uti.Msg(txt);
     });
 
 
@@ -1526,7 +1532,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#divPopupMenu_BcvTag").height()
+        var y = bcr.y + window.scrollY + $(this).height() + 5;
 
         bcr.m_y = y
         bcr.m_txuid = taguid
@@ -1569,21 +1575,25 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                 var sbcv = `${vol}${chp}:${vrs}`;
                 var divbcv = `<a class='bcvTag'>${sbcv}</a>`
                 st += `<tr><td>${divbcv}`;
-                if ("object" == typeof val) {
-                    $.each(val, function (revId, str) {
-                        //
-                        var tag = 'a'
-                        if (revId.match(/^_[a-zA-Z]/)) tag = 'div'
-                        var clsname = `class='tx tx${revId}'`
-                        if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
-                            clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
-                        }
-                        uuid++
-                        st += `<div><sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup><${tag} id='${uuid}' ${clsname} vid='${sbcv}'>${str}</${tag}></div>`;
-                    });
-                }
-                if ("string" == typeof val) {
-                    st += "<div>" + val + "</div>";
+                switch (typeof val) {
+                    case "object"://trn
+                        $.each(val, function (revId, txt) {
+                            var tag = 'a'
+                            if (revId.match(/^_[a-zA-Z]/)) tag = 'div'
+
+                            var clsname = `class='tx tx${revId}'`
+                            if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
+                                clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
+                            }
+                            uuid++
+                            var revTag = `<sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup>`
+                            var vrsTxt = `<${tag} id='${uuid}' ${clsname}>${txt}</${tag}>`
+                            st += `<div>${revTag}${vrsTxt}</div>`;
+                        });
+                        break;
+                    case "string":
+                        st += "<div>" + val + "</div>";
+                        break;
                 }
                 st += "</td></tr>";
             });
