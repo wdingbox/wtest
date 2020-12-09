@@ -209,7 +209,17 @@ PopupMenu_BcvTag.prototype.hide = function () {
         $(this.m_id).hide()
     }
 }
+PopupMenu_BcvTag.prototype.popup = function (bcr) {
+    if (bcr.m_alreadyHili) {
+        $(this.m_id).slideToggle();
+    } else {
+        $(this.m_id).show();
+    }
 
+    $(this.m_id).css('top', bcr.m_y);
+    //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
+    $(this.m_id).find("caption").text(bcr.m_bcv).focus()
+}
 
 
 function PopupMenu_RevTag() {
@@ -1221,9 +1231,7 @@ var markHistory = new Tab_mark_bcv_history()
 
 var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 
-var obrapport = new PopupMenu_BcvTag()
-
-
+var popupMenu_BcvTag = new PopupMenu_BcvTag()
 var popupMenu_RevTag = new PopupMenu_RevTag()
 
 
@@ -1242,7 +1250,7 @@ AppInstancesManager.prototype.init = function () {
     $("body").bind("click", function (evt) {
         evt.stopImmediatePropagation();
         $("#menuContainer").hide()
-        obrapport.hide()
+        popupMenu_BcvTag.hide()
     })
 
     grpmgr.gen_grp_bar()
@@ -1333,16 +1341,20 @@ AppInstancesManager.prototype.init = function () {
         _This.loadBible_chp()
     })
 
-    obrapport.init()
+    popupMenu_BcvTag.init()
     g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
-        obrapport.hide()
+        popupMenu_BcvTag.hide()
     })
 
     popupMenu_RevTag.init()
     g_obt.onclick_RevTag(function (par) {
         popupMenu_RevTag.popup(par)
     })
+    g_obt.onclick_BcvTag(function (par) {
+        popupMenu_BcvTag.popup(par)
+    })
+    
 
 
     $("#Compare_vcv").click(function () {
@@ -1453,29 +1465,37 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     $(this.m_tbid).find(".bcvTag").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
-        //solve confliction between toggle and hili
-        var alreadyHili = $(this)[0].classList.contains('bcvMark')
-        if (alreadyHili) {
-            $("#divPopupMenu_BcvTag").slideToggle();
-        } else {
-            $("#divPopupMenu_BcvTag").show();
-        }
-
-        $(".bcvTag.bcvMark").removeClass("bcvMark");
-        $(this).addClass("bcvMark");
-
+        var bcvid = $(this).text();
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-        var y = bcr.y + window.scrollY + $(this).height() + 5;//  $("#divPopupMenu_BcvTag").height()
+        bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
+        bcr.m_bcv = bcvid
 
-        $("#divPopupMenu_BcvTag").css('top', y);
-        //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
+        //solve confliction between toggle and hili
+        var alreadyHili = $(this)[0].classList.contains('bcvMark')
+        bcr.m_alreadyHili = alreadyHili
 
-        var bcvid = $(this).text();
-        $("#divPopupMenu_BcvTag").find("caption").text(bcvid).focus()
+        //  function popup(bcr) {
+        //      if (bcr.m_alreadyHili) {
+        //          $("#divPopupMenu_BcvTag").slideToggle();
+        //      } else {
+        //          $("#divPopupMenu_BcvTag").show();
+        //      }
+//  
+        //      $("#divPopupMenu_BcvTag").css('top', bcr.m_y);
+        //      //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
+        //      $("#divPopupMenu_BcvTag").find("caption").text(bcr.m_bcv).focus()
+        //  }
+//  
+//  
+        //  popup(bcr)
+        _THIS.m_onclick_BcvTag(bcr)
 
         markHistory.addnew(bcvid)
         $("title").text(bcvid)
+
+        $(".bcvTag.bcvMark").removeClass("bcvMark");
+        $(this).addClass("bcvMark");
     });
 
 
@@ -1614,7 +1634,7 @@ var g_aim = new AppInstancesManager();
 var g_obt = new OutputBibleTable()
 
 function apiCallback_Gen_output_table(ret) {
-    obrapport.hide()
+    popupMenu_BcvTag.hide()
     g_obt.Gen_output_table(ret)
 }
 
