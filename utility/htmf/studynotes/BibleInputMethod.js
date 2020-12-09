@@ -1211,6 +1211,32 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
             }
         })
     })
+
+    /////
+
+    $("#Compare_vcv").click(function () {
+        //"Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
+        var str = $("#txtarea").val()
+        var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
+        var mat = str.match(regexp)
+        if (mat) {
+            console.log(mat)
+            Uti.Msg(mat)
+            for (var i = 0; i < mat.length; i++) {
+                var bcvStr = mat[i]
+                var bcvObj = Uti.bcv_parser(bcvStr, "")
+                Uti.Msg(bcvObj)
+
+            }
+
+        } else {
+            Uti.Msg("not find")
+        }
+    });
+    $("#oBible_indxer").click(function () {
+        table_col_index("#oBible table");
+        table_sort("#oBible table");
+    });
 }
 
 var grpmgr = new GroupsMenuMgr()
@@ -1352,20 +1378,9 @@ AppInstancesManager.prototype.init = function () {
     g_obt.onclick_BcvTag(function (par) {
         popupMenu_BcvTag.popup(par)
     })
-    
 
 
-    $("#Compare_vcv").click(function () {
-        $("#oBible table").find("tr").each(function () {
-            var len = $(this).find("td:eq(2)").find("[type=checkbox]").length;
-            $(this).find("td:eq(0)").text(len);
-        });
-        table_sort("#oBible table");
-    });
-    $("#oBible_indxer").click(function () {
-        table_col_index("#oBible table");
-        table_sort("#oBible table");
-    });
+
 };
 
 
@@ -1479,13 +1494,13 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         //      } else {
         //          $("#divPopupMenu_BcvTag").show();
         //      }
-//  
+        //  
         //      $("#divPopupMenu_BcvTag").css('top', bcr.m_y);
         //      //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
         //      $("#divPopupMenu_BcvTag").find("caption").text(bcr.m_bcv).focus()
         //  }
-//  
-//  
+        //  
+        //  
         //  popup(bcr)
         _THIS.m_onclick_BcvTag(bcr)
 
@@ -1786,9 +1801,9 @@ var Uti = {
         var mat = sbcv.match(/^(\w{3})\s+(\d+)\s+[\:]\s+(\d+)\s+$/);
         var mat = sbcv.match(/^(\w{3})(\d+)\:(\d+)$/);
         if (mat) {
-            ret.vol = mat[1];
-            ret.chp = mat[2];
-            ret.vrs = mat[3];
+            ret.vol = mat[1].trim();
+            ret.chp = "" + parseInt(mat[2]);
+            ret.vrs = "" + parseInt(mat[3]);
         } else {
             alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
         }
@@ -1800,6 +1815,17 @@ var Uti = {
         obj[ret.vol][ret.chp] = {}
         obj[ret.vol][ret.chp][ret.vrs] = txt
         ret.bcvObj = obj
+
+        ///////validation for std bcv.
+        if(undefined === _Max_struct[ret.vol]){
+            ret.err=`bkc not exist: ${ret.vol}`
+        }else if(undefined === _Max_struct[ret.vol][ret.chp]){
+            ret.err=`chp not exist: ${ret.chp}`
+        }else if(undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]){
+            ret.err=`vrs not exist: ${ret.vrs}`
+        }else{
+            ret.err=""
+        }
 
         return ret;
     },
