@@ -54,7 +54,7 @@ git clone https://github.com/wdingbox/hebrew_ciu.git
 
 
 cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
-pm2 start a.node.js 
+pm2 start a.node.js --watch 
 
 
 
