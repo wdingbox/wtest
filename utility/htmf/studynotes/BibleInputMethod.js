@@ -1342,12 +1342,12 @@ AppInstancesManager.prototype.init = function () {
     })
 
     popupMenu_BcvTag.init()
+    popupMenu_RevTag.init()
     g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
         popupMenu_BcvTag.hide()
+        //popupMenu_RevTag.hide()
     })
-
-    popupMenu_RevTag.init()
     g_obt.onclick_RevTag(function (par) {
         popupMenu_RevTag.popup(par)
     })
@@ -1635,6 +1635,7 @@ var g_obt = new OutputBibleTable()
 
 function apiCallback_Gen_output_table(ret) {
     popupMenu_BcvTag.hide()
+    popupMenu_RevTag.hide()
     g_obt.Gen_output_table(ret)
 }
 
