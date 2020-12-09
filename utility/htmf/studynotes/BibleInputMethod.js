@@ -1215,9 +1215,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
     /////
 
     $("#Check_bcv").click(function () {
-        
+
         var str = $("#txtarea").val()
-        var odr = Uti.parse_bcv_str_to_std_sorted_ary(str)
+        var odr = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
         Uti.Msg(odr)
         Uti.Msg(odr.join(", "))
 
@@ -1826,29 +1826,34 @@ var Uti = {
 
         return ret;
     },
-    parse_bcv_str_to_std_sorted_ary:function(str){
+    convert_std_bcv_str_to_biblical_uniq_order_ary: function (str) {
         function _check_std_bcv(str) {
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
-            var pad3=[]
+            var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)\-(\w{3}\s{0,}\d+\:\d+)|(\w{3}\s{0,}\d+\:\d+)/g)
+            var pad3 = []
             var mat = str.match(regexp)
             if (mat) {
                 console.log(mat)
                 Uti.Msg(mat)
                 for (var i = 0; i < mat.length; i++) {
-                    var bcvStr = mat[i]
-                    var ret = Uti.bcv_parser(bcvStr, "")
+                    var bcvStr = mat[i].trim()
+                    var ar2 = bcvStr.split("-"); //case 'Gen1:1-Gen1:12'
+                    var hdbcv = ar2[0].trim()
+                    var ret = Uti.bcv_parser(hdbcv, "")
                     if (ret.err) {
                         Uti.Msg(ret)
-                    }else{
-                        if(pad3.indexOf(ret.pad3.bcv)<0){
-                            pad3.push(ret.pad3.bcv)
+                    } else {
+                        var fixedbcv = ret.pad3.bcv
+                        if (ar2.length >= 2) fixedbcv += "-"+ar2[1]
+                        if (pad3.indexOf(fixedbcv) < 0) {
+                            pad3.push(fixedbcv)
                         }
                     }
                 }
             } else {
                 Uti.Msg("not find")
             }
-            return {mat:mat, pad3:pad3}
+            return { std: mat, pad3: pad3 }
         }
         function _biblicalOrder(bcvList) {
             bcvList.sort()
@@ -1856,15 +1861,29 @@ var Uti = {
             Object.keys(_Max_struct).forEach(function (bkn) {
                 bcvList.forEach(function (bcv) {
                     if (bcv.indexOf(bkn) === 0) {
-                        var ret = Uti.bcv_parser(bcv, "")
-                        ar.push(ret.std_bcv)
+                        var ar2 = bcv.split("-")
+                        var hdbcv = ar2[0].trim()
+                        var ret = Uti.bcv_parser(hdbcv, "")
+                        var stdbcv = ret.std_bcv
+                        if (ar2.length >= 2) stdbcv += "-"+ar2[1]
+                        ar.push(stdbcv)
                     }
                 })
             })
             return ar
         }
+        function _get_list(str) {
+            var ar = str.split(/\,\s{0,}/g)
+            for (var i = 0; i < ar.length; i++) {
+                ar[i] = ar[i].trim()
+            }
+            Uti.Msg(ar)
+            return ar;
+        }
         //_Max_struct
-        //"Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
+        //std case1: "Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
+        //std case2: "Gen1:3-Gen23:9, Gen23:5"
+        //var hdry = _get_list(str)
         var ret = _check_std_bcv(str)
         var odr = _biblicalOrder(ret.pad3)
         return odr
