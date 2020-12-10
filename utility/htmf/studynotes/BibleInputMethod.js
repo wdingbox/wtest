@@ -47,7 +47,7 @@ var MyStorage = {
     },
     ////--------
     addHistoryMostRecentMarks: function (strn) {
-        if(!strn) return
+        if (!strn) return
         var ar = this.getHistoryMostRecentBook()
         Uti.addon_most_recent_ary(ar, strn)
         if (!ar) {
@@ -73,7 +73,7 @@ var MyStorage = {
     },
     ////////------
     addHistoryMostRecentBook: function (strn) {
-        if(!strn) return
+        if (!strn) return
         var ar = this.getHistoryMostRecentBook()
         Uti.addon_most_recent_ary(ar, strn)
         if (!ar) {
@@ -99,7 +99,7 @@ var MyStorage = {
     },
     /////////-----
     addMostRecentSearchStrn: function (strn) {
-        if(!strn) return
+        if (!strn) return
         var ar = this.getMostRecentSearchStrn()
         Uti.addon_most_recent_ary(ar, strn)
         if (!ar) {
@@ -525,7 +525,7 @@ ShowupBCV.prototype.get_selected_vcv_parm = function () {
 };
 ShowupBCV.prototype.get_selected_bc_bibOj = function () {
     var parm = this.get_selected_vcv_parm()
-    if(!parm.vol) return null
+    if (!parm.vol) return null
 
     var ob = {}
     ob[parm.vol] = {}
@@ -1148,22 +1148,26 @@ RevisionsOfBibleListTable.prototype.get_search_fname = function () {
 function Tab_HistoryMostRecentBody() {
     this.m_tbodyID = null; //"#Tab_mark_bcv_history"
 }
-Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_geHistoryMostRecentMarks, MyStorage_seHistoryMostRecentMarks) {
+Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_geHistoryMostRecent, MyStorage_seHistoryMostRecent) {
     this.m_tbodyID = tbodyID
-    this.m_bcvHistory = MyStorage_geHistoryMostRecentMarks()
-    this.MyStorage_seHistoryMostRecentMarks = MyStorage_seHistoryMostRecentMarks; //MyStorage.setHistoryMostRecentMarks
+    this.m_bcvHistory = MyStorage_geHistoryMostRecent()
+    this.MyStorage_geHistoryMostRecent = MyStorage_geHistoryMostRecent; 
+    this.MyStorage_seHistoryMostRecent = MyStorage_seHistoryMostRecent; 
 }
 Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
-    if(bShow) $(this.m_tbodyID).show()
-    else{
+    if (bShow) $(this.m_tbodyID).show()
+    else {
         $(this.m_tbodyID).hide()
     }
+    return bShow
 }
 Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
     this.update_tab()
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
+    this.m_bcvHistory = this.MyStorage_geHistoryMostRecent()
+
     var ary = bcv
     if ("string" === typeof bcv) {
         ary = [bcv]
@@ -1176,12 +1180,13 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
 
     this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
     this.update_tab()
-    this.MyStorage_seHistoryMostRecentMarks(this.m_bcvHistory)
+    this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
 }
 Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     this.m_bcvHistory = []
     this.update_tab()
-    this.MyStorage_seHistoryMostRecentMarks(this.m_bcvHistory)
+    this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
+    
 }
 Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
@@ -1213,32 +1218,57 @@ function Tab_mark_bcv_history() {
     this.m_tableID = "#Tab_mark_bcv_history"
 
 }
-Tab_mark_bcv_history.prototype.init = function () {
-    this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
-    this.m_Tab_HistoryMostRecentBodyMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
 
-    const RecentMarks = "RecentMarks"
-    var cap = $(this.m_tableID).find("caption button").text()
-    var bShow = (cap === RecentMarks)
-    this.m_Tab_HistoryMostRecentBodyMarks.show(!bShow)
+Tab_mark_bcv_history.prototype.init = function () {
+    this.m_tbody = { RecentMarks: new Tab_HistoryMostRecentBody(), RecentBooks: new Tab_HistoryMostRecentBody() }
+    //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
+    this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
+    this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
+
+    
+    var _THIS = this
+
+    var cap = _THIS.getCap()
+    _THIS.m_tbody.RecentBooks.show(false)
+    _THIS.m_tbody.RecentMarks.show(false)
+    _THIS.m_tbody[cap].show(true)
+
+    $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
+        _THIS.m_tbody.RecentBooks.show(false)
+        _THIS.m_tbody.RecentMarks.show(false)
+        var cap = $(this).text()
+        var ary = Object.keys(_THIS.m_tbody)
+        var idx = ary.indexOf(cap) === 0 ? 1 : 0
+        _THIS.m_tbody[ary[idx]].show(true)
+        $(this).text(ary[idx])
+    });
+
+    $("#clear_Sel").bind("click",function(){
+        var cap = _THIS.getCap()
+        _THIS.m_tbody[cap].show(true)
+
+    })
+}
+Tab_mark_bcv_history.prototype.getCap = function () {
+    var cap = $(this.m_tableID).find("caption:eq(0)").find("button").text().trim()
+    return cap
 }
 
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
-    this.m_Tab_HistoryMostRecentBodyMarks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbody.RecentMarks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbody.RecentBooks.onClickHistoryItem(onClickHistoryItm)
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
-    this.m_Tab_HistoryMostRecentBodyMarks.addnew2table(bcv)
+    this.m_tbody.RecentMarks.addnew2table(bcv)
+    this.m_tbody.RecentBooks.addnew2table(bcv)
 }
 Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
-    this.m_Tab_HistoryMostRecentBodyMarks.clearHistory(idtxtout)
+    var cap = this.getCap()
+    this.m_tbody[cap].clearHistory(idtxtout)
 }
 Tab_mark_bcv_history.prototype.toggleSelAll = function () {
-    this.m_Tab_HistoryMostRecentBodyMarks.toggleSelAll()
-  
-}
-
-Tab_mark_bcv_history.prototype.update_tab = function () {
-    this.m_Tab_HistoryMostRecentBodyMarks.update_tab()
+    var cap = this.getCap()
+    this.m_tbody[cap].toggleSelAll()
 }
 
 
@@ -1480,7 +1510,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
-    if(!bibOj) return null
+    if (!bibOj) return null
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
@@ -2106,8 +2136,8 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                     <caption>
-                       <button onclick="markHistory.clearHistory('#txtarea');"  title='clear history'>c</button>
-                       <button onclick="markHistory.toggleSelAll('#txtarea');"  title='toggle select all'>t</button>
+                       <button id="clear_Sel" title='clear unselected items'>x</button>
+                       <button id="toggleSel" title='toggle selected and unselected'>/</button>
                     </caption>
                 </table>
             </div>
