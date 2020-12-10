@@ -45,15 +45,25 @@ var MyStorage = {
         }
         return ar
     },
-    setMarkHistory: function (obj) {
-        if (!obj) {
-            localStorage.setItem("MarkHistory", "")
+    ////--------
+    addHistoryMostRecentMarks: function (strn) {
+        if(!strn) return
+        var ar = this.getHistoryMostRecentBook()
+        Uti.addon_most_recent_ary(ar, strn)
+        if (!ar) {
         } else {
-            localStorage.setItem("MarkHistory", JSON.stringify(obj))
+            localStorage.setItem("HistoryMostRecentMarks", JSON.stringify(ar))
         }
     },
-    getMarkHistory: function () {
-        var ar = localStorage.getItem("MarkHistory")
+    setHistoryMostRecentMarks: function (obj) {
+        if (!obj) {
+            localStorage.setItem("HistoryMostRecentMarks", "")
+        } else {
+            localStorage.setItem("HistoryMostRecentMarks", JSON.stringify(obj))
+        }
+    },
+    getHistoryMostRecentMarks: function () {
+        var ar = localStorage.getItem("HistoryMostRecentMarks")
         if (!ar || ar.length === 0) {
             ar = []
         } else {
@@ -61,7 +71,33 @@ var MyStorage = {
         }
         return ar
     },
-
+    ////////------
+    addHistoryMostRecentBook: function (strn) {
+        if(!strn) return
+        var ar = this.getHistoryMostRecentBook()
+        Uti.addon_most_recent_ary(ar, strn)
+        if (!ar) {
+        } else {
+            localStorage.setItem("HistoryMostRecentBooks", JSON.stringify(ar))
+        }
+    },
+    setHistoryMostRecentBooks: function (obj) {
+        if (!obj) {
+            localStorage.setItem("HistoryMostRecentBooks", "")
+        } else {
+            localStorage.setItem("HistoryMostRecentBooks", JSON.stringify(obj))
+        }
+    },
+    getHistoryMostRecentBooks: function () {
+        var ar = localStorage.getItem("HistoryMostRecentBooks")
+        if (!ar || ar.length === 0) {
+            ar = []
+        } else {
+            ar = JSON.parse(ar)
+        }
+        return ar
+    },
+    /////////-----
     addMostRecentSearchStrn: function (strn) {
         if(!strn) return
         var ar = this.getMostRecentSearchStrn()
@@ -1109,20 +1145,25 @@ RevisionsOfBibleListTable.prototype.get_search_fname = function () {
 
 
 
-
-function Tab_mark_bcv_history() {
-    this.m_tabid = "#Tab_mark_bcv_history"
-    this.m_bcvHistory = MyStorage.getMarkHistory()
+function Tab_HistoryMostRecentBody() {
+    this.m_tbodyID = null; //"#Tab_mark_bcv_history"
 }
-Tab_mark_bcv_history.prototype.init = function () {
-
+Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_geHistoryMostRecentMarks, MyStorage_seHistoryMostRecentMarks) {
+    this.m_tbodyID = tbodyID
+    this.m_bcvHistory = MyStorage_geHistoryMostRecentMarks()
+    this.MyStorage_seHistoryMostRecentMarks = MyStorage_seHistoryMostRecentMarks; //MyStorage.setHistoryMostRecentMarks
 }
-
-Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
+Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
+    if(bShow) $(this.m_tbodyID).show()
+    else{
+        $(this.m_tbodyID).hide()
+    }
+}
+Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
     this.update_tab()
 }
-Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
+Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ary = bcv
     if ("string" === typeof bcv) {
         ary = [bcv]
@@ -1135,25 +1176,25 @@ Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
 
     this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
     this.update_tab()
-    MyStorage.setMarkHistory(this.m_bcvHistory)
+    this.MyStorage_seHistoryMostRecentMarks(this.m_bcvHistory)
 }
-Tab_mark_bcv_history.prototype.clearHistory = function () {
+Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     this.m_bcvHistory = []
     this.update_tab()
-    MyStorage.setMarkHistory(this.m_bcvHistory)
+    this.MyStorage_seHistoryMostRecentMarks(this.m_bcvHistory)
 }
-Tab_mark_bcv_history.prototype.toggleSelAll = function () {
-    $(this.m_tabid + " tbody").find("td").toggleClass("hili")
+Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
+    $(this.m_tbodyID).find("td").toggleClass("hili")
 }
 
-Tab_mark_bcv_history.prototype.update_tab = function () {
+Tab_HistoryMostRecentBody.prototype.update_tab = function () {
     var _THIS = this
     var trs = ""
     this.m_bcvHistory.forEach(function (vcv, i) {
         trs += (`<tr><td>${vcv}</td></tr>`)
     });
 
-    $(this.m_tabid + " tbody").html(trs).find("td").bind("click", function (evt) {
+    $(this.m_tbodyID).html(trs).find("td").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
         $(this).toggleClass("hili")
@@ -1166,6 +1207,39 @@ Tab_mark_bcv_history.prototype.update_tab = function () {
     })
 }
 
+
+
+function Tab_mark_bcv_history() {
+    this.m_tableID = "#Tab_mark_bcv_history"
+
+}
+Tab_mark_bcv_history.prototype.init = function () {
+    this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
+    this.m_Tab_HistoryMostRecentBodyMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
+
+    const RecentMarks = "RecentMarks"
+    var cap = $(this.m_tableID).find("caption button").text()
+    var bShow = (cap === RecentMarks)
+    this.m_Tab_HistoryMostRecentBodyMarks.show(!bShow)
+}
+
+Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
+    this.m_Tab_HistoryMostRecentBodyMarks.onClickHistoryItem(onClickHistoryItm)
+}
+Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
+    this.m_Tab_HistoryMostRecentBodyMarks.addnew2table(bcv)
+}
+Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
+    this.m_Tab_HistoryMostRecentBodyMarks.clearHistory(idtxtout)
+}
+Tab_mark_bcv_history.prototype.toggleSelAll = function () {
+    this.m_Tab_HistoryMostRecentBodyMarks.toggleSelAll()
+  
+}
+
+Tab_mark_bcv_history.prototype.update_tab = function () {
+    this.m_Tab_HistoryMostRecentBodyMarks.update_tab()
+}
 
 
 
@@ -2010,10 +2084,19 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                     <caption>
-                       <button>Recent</button>
+                       <button>RecentBooks</button>
                     </caption>
                     <thead></thead>
-                    <tbody>
+                    <tbody id='RecentBooks'>
+                        <tr>
+                            <td>
+                                Pleas click H button <br>for History.<br>
+                                <br>
+                                Pleas click ^ button <br>sort by str.<br>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody id='RecentMarks'>
                         <tr>
                             <td>
                                 Pleas click H button <br>for History.<br>
@@ -2023,8 +2106,8 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                     <caption>
-                       <button onclick="markHistory.clearHistory();"  title='clear history'>clear</button>
-                       <button onclick="markHistory.toggleSelAll();"  title='toggle select all'>*</button>
+                       <button onclick="markHistory.clearHistory('#txtarea');"  title='clear history'>c</button>
+                       <button onclick="markHistory.toggleSelAll('#txtarea');"  title='toggle select all'>t</button>
                     </caption>
                 </table>
             </div>
@@ -2050,15 +2133,17 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Dbg"  style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Uti"  style="float:left;display:none;">
            
                 
-                <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
+                
                 <button id="Check_bcv">Check(bcv)</button>
-                <button id="oBible_indxer">indxer</button>
-                <button onclick="onclick_btn_set_jsonpster_svr_ip();">set jsonpster svr ip</button>
-                <a href='../index.htm'>ref</a>
+                <button id="oBible_indxer">Export(bcv)</button>
+                <button onclick="onclick_btn_set_jsonpster_svr_ip();">Import(bcv)</button>
+                
                 <br>
+                <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
+                <a href='../index.htm'>ref</a><br>
                 <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 
