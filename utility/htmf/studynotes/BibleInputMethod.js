@@ -1148,11 +1148,11 @@ RevisionsOfBibleListTable.prototype.get_search_fname = function () {
 function Tab_HistoryMostRecentBody() {
     this.m_tbodyID = null; //"#Tab_mark_bcv_history"
 }
-Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_geHistoryMostRecent, MyStorage_seHistoryMostRecent) {
+Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, MyStorage_setHistoryMostRecent) {
     this.m_tbodyID = tbodyID
-    this.m_bcvHistory = MyStorage_geHistoryMostRecent()
-    this.MyStorage_geHistoryMostRecent = MyStorage_geHistoryMostRecent;
-    this.MyStorage_seHistoryMostRecent = MyStorage_seHistoryMostRecent;
+    this.m_bcvHistory = MyStorage_getHistoryMostRecent()
+    this.MyStorage_getHistoryMostRecent = MyStorage_getHistoryMostRecent;
+    this.MyStorage_setHistoryMostRecent = MyStorage_setHistoryMostRecent;
 }
 Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
     if (bShow) $(this.m_tbodyID).show()
@@ -1166,7 +1166,7 @@ Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistor
     this.update_tab()
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
-    this.m_bcvHistory = this.MyStorage_geHistoryMostRecent()
+    this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
 
     var ary = bcv
     if ("string" === typeof bcv) {
@@ -1180,7 +1180,7 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
 
     this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
     this.update_tab()
-    this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
+    this.MyStorage_setHistoryMostRecent(this.m_bcvHistory)
 }
 Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     var _THIS = this
@@ -1194,7 +1194,7 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
         }
     })
 
-    this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
+    this.MyStorage_setHistoryMostRecent(this.m_bcvHistory)
 
     var std_bcv_strn = this.m_bcvHistory.join(", ")
     Uti.Msg(std_bcv_strn)
