@@ -1962,11 +1962,11 @@ var Uti = {
         //biblical-sort
         //consectives are compressed to dash. Gen1:1,Gen1:2,Gen1:3 ==>> Gen1:1-Gen1:3
         var dashary = []
-        for (var i = 0; i <= ary.length; i++) {
+        for (var i = 0; i < ary.length; i++) {
             var bcv = ary[i]
             var ret = Uti.parser_bcv(bcv)
 
-            var iStart = i, iStop = -1
+            var iStart = i, ilastConsective = -1
             for (++i; i <= ary.length - 1; i++) {
                 var nextbcv = ary[i]
                 var next = Uti.parser_bcv(nextbcv)
@@ -1975,17 +1975,18 @@ var Uti = {
                     break
                 }
                 if (1 + parseInt(ret.vrs) === parseInt(next.vrs) && ret.chp === next.chp && ret.vol === next.vol) {
-                    iStop = i
+                    ilastConsective = i
+                    ret = next
                 } else {
                     --i;//restore back.
                     break
                 }
             }
-            if (iStop > 0) {
-                dashary.push(ary[iStart] + "-" + ary[iStop])
-                iStop = -1
+            if (ilastConsective > 0) {
+                dashary.push(ary[iStart] + "-" + ary[ilastConsective])
+                ilastConsective = -1
             } else {
-                dashary.push(ary[i])
+                dashary.push(ary[iStart])
             }
         }
 
