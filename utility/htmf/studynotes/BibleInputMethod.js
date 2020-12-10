@@ -1324,7 +1324,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
 
     $("#Check_bcv").click(function () {
         var str = $("#txtarea").val()
-        var odr = Uti.convert_std_bcv_str_TO_biblical_uniq_order_ary(str)
+        var odr = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
         Uti.Msg(odr)
         Uti.Msg(odr.join(", "))
         hist.addnew2table(odr)
@@ -1947,7 +1947,7 @@ var Uti = {
     },
     convert_std_bcv_biblical_uniq_order_ary_TO_dashed_strn: function (ary) {
     },
-    convert_std_bcv_str_TO_biblical_uniq_order_ary: function (str) {
+    convert_std_bcv_str_to_biblical_uniq_order_ary: function (str) {
         function _check_std_bcv(str) {
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)\-(\w{3}\s{0,}\d+\:\d+)|(\w{3}\s{0,}\d+\:\d+)/g)
