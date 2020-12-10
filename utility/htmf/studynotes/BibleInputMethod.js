@@ -178,7 +178,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(_this).parent().addClass("hiliExt")
 
             var sbcv = $(".bcvTag.bcvMark").text();
-            var ret = Uti.bcv_parser(sbcv);
+            var ret = Uti.parser_bcv(sbcv);
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
@@ -320,7 +320,7 @@ PopupMenu_RevTag.prototype.init = function () {
     function _gen_pster_write() {
         _THIS.m_ediDiv.touch()
         var htm = _THIS.m_ediDiv.html()
-        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, htm)
+        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htm)
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
@@ -416,7 +416,7 @@ PopupMenu_RevTag.prototype.init = function () {
 
 
     $("#RevTag_Load").bind("click", function () {
-        var ret = Uti.bcv_parser(_THIS.m_par.m_bcv, "")
+        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, "")
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt
         console.log("inp:", Jsonpster)
@@ -511,7 +511,7 @@ ShowupBCV.prototype.init = function () {
 }
 
 ShowupBCV.prototype.update_showup = function (bcv) {
-    var par = Uti.bcv_parser(bcv)
+    var par = Uti.parser_bcv(bcv)
     this.m_Bki.set_showupBkc(par.vol)
     this.m_Chp.set_showupVal(par.chp)
     this.m_Vrs.set_showupVal(par.vrs)
@@ -1183,10 +1183,19 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
 }
 Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
+    var _THIS =this
     this.m_bcvHistory = []
-    this.update_tab()
+    $(this.m_tbodyID).find("td").each(function(){
+        var tx  = $(this).text().trim()
+        if($(this)[0].classList.contains("hili")){
+            _THIS.m_bcvHistory.push(tx)
+        }else{
+            $(this).parent().hide()
+        }
+    })
+
+    Uti.Msg(this.m_bcvHistory.join(", "))
     this.MyStorage_seHistoryMostRecent(this.m_bcvHistory)
-    
 }
 Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
@@ -1243,10 +1252,13 @@ Tab_mark_bcv_history.prototype.init = function () {
         $(this).text(ary[idx])
     });
 
-    $("#clear_Sel").bind("click",function(){
+    $("#clearUnse").bind("click",function(){
         var cap = _THIS.getCap()
-        _THIS.m_tbody[cap].show(true)
-
+        _THIS.m_tbody[cap].clearHistory()
+    })
+    $("#toggleSel").bind("click",function(){
+        var cap = _THIS.getCap()
+        _THIS.m_tbody[cap].toggleSelAll()
     })
 }
 Tab_mark_bcv_history.prototype.getCap = function () {
@@ -1312,7 +1324,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
 
     $("#Check_bcv").click(function () {
         var str = $("#txtarea").val()
-        var odr = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
+        var odr = Uti.convert_std_bcv_str_TO_biblical_uniq_order_ary(str)
         Uti.Msg(odr)
         Uti.Msg(odr.join(", "))
         hist.addnew2table(odr)
@@ -1889,7 +1901,7 @@ var Uti = {
     },
 
 
-    bcv_parser: function (sbcv, txt) {
+    parser_bcv: function (sbcv, txt) {
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
         var ret = { vol: "", chp: "", vrs: "" };
@@ -1933,7 +1945,9 @@ var Uti = {
 
         return ret;
     },
-    convert_std_bcv_str_to_biblical_uniq_order_ary: function (str) {
+    convert_std_bcv_biblical_uniq_order_ary_TO_dashed_strn: function (ary) {
+    },
+    convert_std_bcv_str_TO_biblical_uniq_order_ary: function (str) {
         function _check_std_bcv(str) {
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)\-(\w{3}\s{0,}\d+\:\d+)|(\w{3}\s{0,}\d+\:\d+)/g)
@@ -1946,7 +1960,7 @@ var Uti = {
                     var bcvStr = mat[i].trim()
                     var ar2 = bcvStr.split("-"); //case 'Gen1:1-Gen1:12'
                     var hdbcv = ar2[0].trim()
-                    var ret = Uti.bcv_parser(hdbcv, "")
+                    var ret = Uti.parser_bcv(hdbcv, "")
                     if (ret.err) {
                         Uti.Msg(ret)
                     } else {
@@ -1970,7 +1984,7 @@ var Uti = {
                     if (bcv.indexOf(bkn) === 0) {
                         var ar2 = bcv.split("-")
                         var hdbcv = ar2[0].trim()
-                        var ret = Uti.bcv_parser(hdbcv, "")
+                        var ret = Uti.parser_bcv(hdbcv, "")
                         var stdbcv = ret.std_bcv
                         if (ar2.length >= 2) stdbcv += "-" + ar2[1]
                         ar.push(stdbcv)
@@ -2136,8 +2150,8 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                     <caption>
-                       <button id="clear_Sel" title='clear unselected items'>x</button>
-                       <button id="toggleSel" title='toggle selected and unselected'>/</button>
+                       <button id="clearUnse" title='clear unselected items'>x</button>
+                       <button id="toggleSel" title='toggle selected and unselected'>~</button>
                     </caption>
                 </table>
             </div>
