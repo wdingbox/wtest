@@ -1199,6 +1199,7 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     var std_bcv_strn = this.m_bcvHistory.join(", ")
     Uti.Msg(std_bcv_strn)
     var ret = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(std_bcv_strn)
+    Uti.Msg(ret)
 }
 Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
@@ -1329,8 +1330,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
         var str = $("#txtarea").val()
         var ret = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
         Uti.Msg(ret)
-        Uti.Msg(ret.splitted_bcv_ary.join(", "))
-        hist.m_tbody.RecentMarks.addnew2table(odr.splitted_bcv_ary)
+        Uti.Msg(ret.biblical_order_splitted_ary.join(", "))
+        hist.m_tbody.RecentMarks.addnew2table(odr.biblical_order_splitted_ary)
     });
     //// $("#oBible_indxer").click(function () {
     ////     table_col_index("#oBible table");
@@ -2048,7 +2049,7 @@ var Uti = {
         //var hdry = _get_list(str)
         var ret = _check_std_bcv(str)
         ret.biblical_order_dash_ary = _biblicalOrder(ret.pad3)
-        ret.splitted_bcv_ary = _deplore_dash(ret.biblical_order_dash_ary)
+        ret.biblical_order_splitted_ary = _deplore_dash(ret.biblical_order_dash_ary)
         return ret
     }
 
