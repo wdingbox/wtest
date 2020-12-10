@@ -1149,7 +1149,7 @@ Tab_mark_bcv_history.prototype.update_tab = function () {
 function GroupsMenuMgr() {
     this.m_grpContainerID = "#GroupsContainer"
 }
-GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
+GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".hiddenGrpMenu").each(function () {
         var sid = $(this).attr("id")
@@ -1178,17 +1178,16 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer) {
     /////
 
     $("#Check_bcv").click(function () {
-
         var str = $("#txtarea").val()
         var odr = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
         Uti.Msg(odr)
         Uti.Msg(odr.join(", "))
-
+        hist.addnew2table(odr)
     });
-    $("#oBible_indxer").click(function () {
-        table_col_index("#oBible table");
-        table_sort("#oBible table");
-    });
+    //// $("#oBible_indxer").click(function () {
+    ////     table_col_index("#oBible table");
+    ////     table_sort("#oBible table");
+    //// });
 }
 
 var grpmgr = new GroupsMenuMgr()
@@ -1229,7 +1228,7 @@ AppInstancesManager.prototype.init = function () {
         popupMenu_BcvTag.hide()
     })
 
-    grpmgr.gen_grp_bar()
+    grpmgr.gen_grp_bar("", markHistory)
 
 
 
@@ -1944,7 +1943,7 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_mark_bcv_history" border="1" style="float:left;">
                     <caption>
-                       HistoryRecords
+                       <button>Recent</button>
                     </caption>
                     <thead></thead>
                     <tbody>
