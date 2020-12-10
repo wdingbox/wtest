@@ -1421,7 +1421,7 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
 
             var bcv = `${vol}1:1`
-            markHistory.addnew2table(bcv)
+            markHistory.m_tbody.RecentBooks.addnew2table(bcv)
             //d1.init_Chp_digiKeys_by_vol()
             //d2.disable_all_digiKey(true)
 
@@ -1606,7 +1606,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         _THIS.m_onclick_BcvTag(bcr)
 
-        markHistory.addnew2table(bcvid)
+        markHistory.m_tbody.RecentMarks.addnew2table(bcvid)
         $("title").text(bcvid)
 
         $(".bcvTag.bcvMark").removeClass("bcvMark");
