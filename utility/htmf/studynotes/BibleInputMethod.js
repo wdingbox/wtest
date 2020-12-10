@@ -1702,6 +1702,18 @@ function onclick_btn_set_jsonpster_svr_ip() {
 }
 
 
+function onclick_load_search_string_history() {
+
+    //history
+    console.log(ret);
+    var ops = Uti.read_history_to_opt(ret.out.data, true);
+    $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
+        $(this).toggleClass("hili");
+        var s = $(this).text().trim();
+        $("#sinput").val(s);
+    });
+
+};
 
 
 
