@@ -1198,8 +1198,10 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
 
     var std_bcv_strn = this.m_bcvHistory.join(", ")
     Uti.Msg(std_bcv_strn)
-    var ret = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(std_bcv_strn)
+    var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(std_bcv_strn)
     Uti.Msg(ret)
+    var stdbcv = Uti.convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn(ret.biblical_order_splitted_ary)
+    Uti.Msg(stdbcv)
 }
 Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
@@ -1328,7 +1330,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
 
     $("#Check_bcv").click(function () {
         var str = $("#txtarea").val()
-        var ret = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
+        var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         Uti.Msg(ret)
         Uti.Msg(ret.biblical_order_splitted_ary.join(", "))
         hist.m_tbody.RecentMarks.addnew2table(odr.biblical_order_splitted_ary)
@@ -1906,6 +1908,8 @@ var Uti = {
 
 
     parser_bcv: function (sbcv, txt) {
+        if(!sbcv) return null
+
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
         var ret = { vol: "", chp: "", vrs: "" };
@@ -1949,9 +1953,45 @@ var Uti = {
 
         return ret;
     },
-    convert_std_bcv_biblical_uniq_order_ary_TO_dashed_strn: function (ary) {
+    convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn: function (ary) {
+        var str = ary.join(", ")
+        var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
+        var ary = ret.biblical_order_splitted_ary
+        ary.push("")
+
+        //biblical-sort
+        //consectives are compressed to dash. Gen1:1,Gen1:2,Gen1:3 ==>> Gen1:1-Gen1:3
+        var dashary = []
+        for (var i = 0; i <= ary.length; i++) {
+            var bcv = ary[i]
+            var ret = Uti.parser_bcv(bcv)
+
+            var iStart = i, iStop = -1
+            for (++i; i <= ary.length - 1; i++) {
+                var nextbcv = ary[i]
+                var next = Uti.parser_bcv(nextbcv)
+                if(!next) {
+                    --i;
+                    break
+                }
+                if (1 + parseInt(ret.vrs) === parseInt(next.vrs) && ret.chp === next.chp && ret.vol === next.vol) {
+                    iStop = i
+                } else {
+                    --i;//restore back.
+                    break
+                }
+            }
+            if (iStop > 0) {
+                dashary.push(ary[iStart] + "-" + ary[iStop])
+                iStop = -1
+            } else {
+                dashary.push(ary[i])
+            }
+        }
+
+        return dashary.join(", ")
     },
-    convert_std_bcv_str_to_biblical_uniq_order_ary: function (str) {
+    convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary: function (str) {
         function _check_std_bcv(str) {
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)\-(\w{3}\s{0,}\d+\:\d+)|(\w{3}\s{0,}\d+\:\d+)/g)
