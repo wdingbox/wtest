@@ -1333,7 +1333,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         Uti.Msg(ret)
         Uti.Msg(ret.biblical_order_splitted_ary.join(", "))
-        hist.m_tbody.RecentMarks.addnew2table(odr.biblical_order_splitted_ary)
+        hist.m_tbody.RecentMarks.addnew2table(ret.biblical_order_splitted_ary)
     });
     //// $("#oBible_indxer").click(function () {
     ////     table_col_index("#oBible table");
