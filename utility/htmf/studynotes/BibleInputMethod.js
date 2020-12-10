@@ -1327,7 +1327,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
         var odr = Uti.convert_std_bcv_str_to_biblical_uniq_order_ary(str)
         Uti.Msg(odr)
         Uti.Msg(odr.join(", "))
-        hist.addnew2table(odr)
+        hist.m_tbody.RecentMarks.addnew2table(odr)
     });
     //// $("#oBible_indxer").click(function () {
     ////     table_col_index("#oBible table");
