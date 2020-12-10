@@ -285,7 +285,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     ApiBibleObj_load_by_bibOj: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         var RbcObj = {};
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+        if ("object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var rev = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);

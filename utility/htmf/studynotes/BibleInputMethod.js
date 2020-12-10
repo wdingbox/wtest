@@ -61,6 +61,34 @@ var MyStorage = {
         }
         return ar
     },
+
+    addMostRecentSearchStrn: function (strn) {
+        if(!strn) return
+        var ar = this.getMostRecentSearchStrn()
+        Uti.addon_most_recent_ary(ar, strn)
+        if (!ar) {
+        } else {
+            localStorage.setItem("MostRecentSearchStrn", JSON.stringify(ar))
+        }
+    },
+    setMostRecentSearchStrn: function (obj) {
+        if (!obj) {
+            localStorage.setItem("MostRecentSearchStrn", "")
+        } else {
+            localStorage.setItem("MostRecentSearchStrn", JSON.stringify(obj))
+        }
+    },
+    getMostRecentSearchStrn: function () {
+        var ar = localStorage.getItem("MostRecentSearchStrn")
+        if (!ar || ar.length === 0) {
+            ar = []
+        } else {
+            ar = JSON.parse(ar)
+        }
+        return ar
+    },
+
+
     setFontSize: function (v) {
         if (parseInt(v) < 6) v = 6
         localStorage.setItem("FontSize", v)
@@ -461,6 +489,7 @@ ShowupBCV.prototype.get_selected_vcv_parm = function () {
 };
 ShowupBCV.prototype.get_selected_bc_bibOj = function () {
     var parm = this.get_selected_vcv_parm()
+    if(!parm.vol) return null
 
     var ob = {}
     ob[parm.vol] = {}
@@ -1377,6 +1406,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
     var _THIS = this
     var bibOj = showup.get_selected_bc_bibOj();
     console.log("Obj=", bibOj);
+    if(!bibOj) return null
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
@@ -1667,6 +1697,9 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
+    onclick_load_search_string_history(s)
+
+
     Jsonpster.inp.par = g_aim.get_search_inp();
     Jsonpster.api = RestApi.ApiBibleObj_search_txt;
     Uti.Msg(Jsonpster)
@@ -1688,6 +1721,24 @@ function onclick_BibleObj_search_str() {
     Uti.Msg(unicds);
 
 }
+function onclick_load_search_string_history(searchStr) {
+
+    MyStorage.addMostRecentSearchStrn(searchStr)
+    var trs = ""
+    var ar = MyStorage.getMostRecentSearchStrn()
+    ar.forEach(function (strn) {
+        trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+    })
+
+    //history
+    //console.log(ret);
+    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
+        $(this).toggleClass("hili");
+        var s = $(this).text().trim();
+        $("#sinput").val(s);
+    });
+
+};
 
 
 
@@ -1702,18 +1753,7 @@ function onclick_btn_set_jsonpster_svr_ip() {
 }
 
 
-function onclick_load_search_string_history() {
 
-    //history
-    console.log(ret);
-    var ops = Uti.read_history_to_opt(ret.out.data, true);
-    $("#Tab_regex_history_lst tbody").html(ops.join("")).find(".option").bind("click", function () {
-        $(this).toggleClass("hili");
-        var s = $(this).text().trim();
-        $("#sinput").val(s);
-    });
-
-};
 
 
 
@@ -1727,6 +1767,21 @@ var Uti = {
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + $("#txtarea").val();
         //results = results.substr(0, 60);
         $("#txtarea").val(results);
+    },
+
+
+    addon_most_recent_ary: function (targetary, addon) {
+        var ary = addon
+        if ("string" === typeof addon) {
+            ary = [addon]
+        }
+        for (var i = 0; i < ary.length; i++) {
+            var idx = targetary.indexOf(ary[i])
+            if (idx >= 0) targetary.splice(idx, 1) //remove at idx, size=1
+            targetary.unshift(ary[i]);
+        }
+
+        targetary = targetary.slice(0, 100) //:fetch idx range [0, 100].
     },
 
 
@@ -1977,7 +2032,7 @@ var BibleInputMenuContainer = `
 
             <div class="GrpMenu hiddenGrpMenu" id="grp_Explore" style="float:left;display:none;">
 
-                <input id="sinput" cols='50' onclick="onclick_load_search_string_history();" ></input><br>
+                <input id="sinput" cols='50' onclick="" ></input><br>
 
                 <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
                 <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
