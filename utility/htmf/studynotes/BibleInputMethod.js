@@ -258,30 +258,18 @@ PopupMenu_BcvTag.prototype.init_links = function () {
 }
 PopupMenu_BcvTag.prototype.init = function () {
     this.init_links()
-
-    var _THIS = this
-    $(this.m_id).draggable()
-    $(this.m_id).bind("click", function () {
-        //$(_THIS.m_id).hide()
-    }).hide()
 }
-PopupMenu_BcvTag.prototype.hide = function () {
-    if ($(this.m_id)[0].display === "none") {
-        console.log("already hidden")
-    } else {
-        $(this.m_id).hide()
-    }
-}
-PopupMenu_BcvTag.prototype.popup = function (bcr) {
-    if (bcr.m_alreadyHili) {
-        $(this.m_id).slideToggle();
-    } else {
-        $(this.m_id).show();
-    }
 
-    $(this.m_id).css('top', bcr.m_y);
+PopupMenu_BcvTag.prototype.init_popup = function (bcr) {
+    // if (bcr.m_alreadyHili) {
+    //     $(this.m_id).slideToggle();
+    // } else {
+    $(this.m_id).show();
+    // }
+
+    //$(this.m_id).css('top', bcr.m_y);
     //$("#divPopupMenu_BcvTag").toggle("'slide', {direction: 'up' }, 1000");//()
-    $(this.m_id).find("caption").text(bcr.m_bcv).focus()
+    //$(this.m_id).find("caption").text(bcr.m_bcv).focus()
 }
 
 
@@ -289,34 +277,24 @@ function PopupMenu_RevTag() {
     this.m_id = "#divPopupMenu_RevTag"
     this.m_par = null
 }
-PopupMenu_RevTag.prototype.popup = function (par) {
+PopupMenu_RevTag.prototype.init_popup = function (par) {
     this.m_par = par
-
-    $(this.m_id).css('top', par.m_y);
-
-    //
-    if (par.m_alreadyHili) {
-        $(this.m_id).slideToggle();
-    } else {
-        $(this.m_id).show()
-            .find("caption").text(par.m_bcv);
-    }
 
     $("#RevTag_Info").text(Jsonpster.inp.usr["f_path"])
 
     this.m_ediDiv.setId(par.m_txuid)
     this.m_ediBtn.init_associate(this.m_ediDiv)
+
+    $(this.m_id).show()
 }
-PopupMenu_RevTag.prototype.hide = function () {
-    $(this.m_id).hide()
-}
+
 PopupMenu_RevTag.prototype.init = function () {
 
-    var _THIS=this
-    $(this.m_id).draggable()
-    $(this.m_id).bind("click", function () {
-        //$(_THIS.m_id).slideToggle()
-    }).hide()
+    var _THIS = this
+    // $(this.m_id).draggable()
+    // $(this.m_id).bind("click", function () {
+    //     //$(_THIS.m_id).slideToggle()
+    // }).hide()
 
     var _THIS = this
     function _gen_pster_write() {
@@ -394,13 +372,13 @@ PopupMenu_RevTag.prototype.init = function () {
 
     $("#RevTag_Edit_Local").bind("click", function () {
         _THIS.m_ediBtn.toggle_enableEdit()
-        _THIS.hide()
+        //_THIS.hide()
     })
 
     $("#RevTag_Edit_External").bind("click", function () {
         _gen_pster_write()
         _THIS.m_ediBtn.enable_edit(false)
-        _THIS.hide()
+        //_THIS.hide()
     })
 
     $("#RevTag_Save").bind("click", function () {
@@ -411,7 +389,7 @@ PopupMenu_RevTag.prototype.init = function () {
             Uti.Msg(ret)
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediBtn.enable_edit(false)
-                _THIS.hide()
+                //_THIS.hide()
             }
         })
     })
@@ -427,7 +405,7 @@ PopupMenu_RevTag.prototype.init = function () {
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediDiv.html(ret.out.data.txt)
                 _THIS.m_ediBtn.enable_edit(false)
-                _THIS.hide()
+                //_THIS.hide()
             }
         })
     })
@@ -438,16 +416,16 @@ PopupMenu_RevTag.prototype.init = function () {
 
 
 function PopupMenu() {
-    this.m_id = "#divPopupMenu_RevTag"
+    this.m_id = "#divPopupMenu"
     this.m_par = null
 }
 
 PopupMenu.prototype.init = function () {
-    var _THIS=this
-    $(this.m_id).draggable()
-    $(this.m_id).bind("click", function () {
-        //$(_THIS.m_id).slideToggle()
-    }).hide()
+    var _THIS = this
+    $(this.m_id).draggable().hide()
+    $(this.m_id).find("a").bind("click", function () {
+        $(_THIS.m_id).hide()
+    })
 
     this.popupMenu_BcvTag = new PopupMenu_BcvTag()
     this.popupMenu_RevTag = new PopupMenu_RevTag()
@@ -458,14 +436,23 @@ PopupMenu.prototype.init = function () {
 PopupMenu.prototype.popup = function (par) {
     this.m_par = par
 
-    $(this.m_id).css('top', par.m_y);
+    $(this.m_id).css('top', par.m_y-25);
 
-    //
+    $(this.popupMenu_BcvTag.m_id).hide()
+    $(this.popupMenu_RevTag.m_id).hide()
+
+    var txuid = par.m_txuid
+    if (!txuid) {
+        this.popupMenu_BcvTag.init_popup(par)
+    } else {
+        this.popupMenu_RevTag.init_popup(par)
+    }
+    $(this.m_id).find("caption").text(par.m_bcv)
+
     if (par.m_alreadyHili) {
-        $(this.m_id).slideToggle();
+        $(this.m_id).toggle();
     } else {
         $(this.m_id).show()
-            .find("caption").text(par.m_bcv);
     }
 }
 PopupMenu.prototype.hide = function () {
@@ -1397,8 +1384,8 @@ var markHistory = new Tab_mark_bcv_history()
 
 var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 
-var popupMenu_BcvTag = new PopupMenu_BcvTag()
-var popupMenu_RevTag = new PopupMenu_RevTag()
+var popupMenu = new PopupMenu()
+//var popupMenu_RevTag = new PopupMenu_RevTag()
 
 
 var AppInstancesManager = function () {
@@ -1416,7 +1403,7 @@ AppInstancesManager.prototype.init = function () {
     $("body").bind("click", function (evt) {
         evt.stopImmediatePropagation();
         $("#menuContainer").hide()
-        popupMenu_BcvTag.hide()
+        //popupMenu.hide()
     })
 
     grpmgr.gen_grp_bar("", markHistory)
@@ -1512,18 +1499,17 @@ AppInstancesManager.prototype.init = function () {
 
     })
 
-    popupMenu_BcvTag.init()
-    popupMenu_RevTag.init()
+    popupMenu.init()
     g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
-        popupMenu_BcvTag.hide()
+        //popupMenu.hide()
         //popupMenu_RevTag.hide()
     })
     g_obt.onclick_RevTag(function (par) {
-        popupMenu_RevTag.popup(par)
+        popupMenu.popup(par)
     })
     g_obt.onclick_BcvTag(function (par) {
-        popupMenu_BcvTag.popup(par)
+        popupMenu.popup(par)
     })
 
 
@@ -1645,8 +1631,8 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
 
 
-       
-       
+
+
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('bcvMark')
@@ -1657,7 +1643,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         console.log(bcr)
 
 
-    
+
 
         bcr.m_alreadyHili = alreadyHili
         bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
@@ -1667,7 +1653,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         var ret = Uti.parser_bcv(bcr.m_tag_txt)
         bcr.m_rev = ""
-        if(ret){
+        if (ret) {
             bcr.m_rev = bcr.m_tag_txt
         }
 
@@ -1676,7 +1662,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
         $("title").text(bcr.m_bcv)
 
-       
+
     });
 
 
@@ -1724,7 +1710,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         //    return;
         //}
 
-        
+
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
@@ -1733,7 +1719,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-     
+
 
 
 
@@ -1745,7 +1731,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         var ret = Uti.parser_bcv(bcr.m_tag_txt)
         bcr.m_rev = ""
-        if(ret){
+        if (ret) {
             bcr.m_rev = bcr.m_tag_txt
         }
 
@@ -1826,8 +1812,8 @@ var g_aim = new AppInstancesManager();
 var g_obt = new OutputBibleTable()
 
 function apiCallback_Gen_output_table(ret) {
-    popupMenu_BcvTag.hide()
-    popupMenu_RevTag.hide()
+    //popupMenu_BcvTag.hide()
+    popupMenu.hide()
     g_obt.Gen_output_table(ret)
 }
 
@@ -2172,11 +2158,11 @@ var Uti = {
         if (!ip) {
             var shr = "" + window.location.href
             var ary = shr.split("=")
-            if(ary.length!==2){
+            if (ary.length !== 2) {
                 return alert("?ip= is missed", shr)
             }
             ip = ary[1]
-            console.log("ip:",ip)
+            console.log("ip:", ip)
         }
 
         if ("undefined" != typeof RestApi) {
@@ -2388,10 +2374,10 @@ var BibleInputMenuContainer = `
 
 
 
-<div id="divPopupMenu_BcvTag">
+<div id="divPopupMenu">
     <table id='refslist' border="1" align="left">
     
-    <tbody>
+    <tbody id="divPopupMenu_BcvTag">
         <tr>
             <td>
                 <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
@@ -2428,14 +2414,7 @@ var BibleInputMenuContainer = `
             </td>
         </tr>
     </tbody>
-    <caption>ext link</caption>
-    </table>
-</div>
-
-<div id="divPopupMenu_RevTag">
-    <table id='refslist' border="1" align="left">
-    <caption></caption>
-    <tbody>
+    <tbody id="divPopupMenu_RevTag">
         <tr>
             <td>
                 <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
