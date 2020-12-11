@@ -559,6 +559,11 @@ ShowupBCV.prototype.init = function () {
     Showup_Bk.prototype.init = function (val_id) {
         this.m_showupBkiID = val_id
     }
+    Showup_Bk.prototype.onclick_bkc = function (cbf) {
+        $(this.m_showupBkiID).bind("click", function () {
+            cbf()
+        })
+    }
     Showup_Bk.prototype.set_showupBkc = function (bkc) {
         var Bkname = CNST.BibVolNameEngChn(bkc)
         $(this.m_showupBkiID).text(Bkname).attr("volcode", bkc);
@@ -579,6 +584,8 @@ ShowupBCV.prototype.init = function () {
     this.m_Bki = new Showup_Bk(this.m_showupBknID)
     this.m_Chp = new Showup_CV(this.m_showupChpId)
     this.m_Vrs = new Showup_CV(this.m_showupVrsId)
+
+
 }
 
 ShowupBCV.prototype.update_showup = function (bcv) {
@@ -1472,6 +1479,13 @@ AppInstancesManager.prototype.init = function () {
         } else {
             digi.init_Vrs_digiKeys_by_vol()
         }
+        $("#menuContainer").show()
+    })
+    showup.m_Bki.onclick_bkc(function () {
+        showup.m_Chp.set_showupVal("")
+        showup.m_Vrs.set_showupVal("")
+        digi.init_Chp_digiKeys_by_vol()
+        digi.init_Vrs_digiKeys_by_vol()
         $("#menuContainer").show()
     })
     showup.onclick_Chp(function (bload) {
