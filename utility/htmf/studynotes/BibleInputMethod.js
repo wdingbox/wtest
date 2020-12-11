@@ -1841,14 +1841,14 @@ function apiCallback_Gen_output_table(ret) {
 
 
 
-function onclick_regex_match_next(incrs,_this) {
+function onclick_regex_match_next(incrs, _this) {
     var str = $("#sinput").val();
     var reg = new RegExp(str, "g");
 
     if (undefined === document.g_indexNext) document.g_indexNext = 0
     document.g_indexNext += incrs
     var matSize = $(".mat").length;
-    if (document.g_indexNext < 0) document.g_indexNext = matSize -1
+    if (document.g_indexNext < 0) document.g_indexNext = matSize - 1
     if (document.g_indexNext >= matSize) document.g_indexNext = 0
     $(".matIndex").removeClass("matIndex");
     $(".mat").each(function (i, v) {
@@ -1859,7 +1859,7 @@ function onclick_regex_match_next(incrs,_this) {
     });
 
     var disp = `${document.g_indexNext}/${matSize}`
-    $("#searchNextresult").text(disp).css("color","black")
+    $("#searchNextresult").text(disp).css("color", "black")
     Uti.Msg("tot:" + document.g_indexNext);
 };
 function onclick_BibleObj_search_str() {
