@@ -257,10 +257,11 @@ var ApiJsonp_BibleObj = {
         var jstr_RestApi = JSON.stringify(RestApi);
         var s = `
 var Jsonpster = {
-    api:"",
-    inp:{usr:{account:"", f_path:""}, par:null },
+    url: "http://${res.req.headers.host}/",
+    api: "",
+    inp: {usr:{account:"", f_path:""}, par:null },
 Url: function (){
-        this.m_src = 'http://${res.req.headers.host}/'+this.api+'?inp='+encodeURIComponent(JSON.stringify(this.inp));
+        this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
         return this.m_src;
     },
 Run : function (cbf) {
