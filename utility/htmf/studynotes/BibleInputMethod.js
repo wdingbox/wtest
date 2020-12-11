@@ -1908,7 +1908,7 @@ var Uti = {
 
 
     parser_bcv: function (sbcv, txt) {
-        if(!sbcv) return null
+        if (!sbcv) return null
 
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
@@ -1970,7 +1970,7 @@ var Uti = {
             for (++i; i <= ary.length - 1; i++) {
                 var nextbcv = ary[i]
                 var next = Uti.parser_bcv(nextbcv)
-                if(!next) {
+                if (!next) {
                     --i;
                     break
                 }
@@ -2092,8 +2092,30 @@ var Uti = {
         ret.biblical_order_dash_ary = _biblicalOrder(ret.pad3)
         ret.biblical_order_splitted_ary = _deplore_dash(ret.biblical_order_dash_ary)
         return ret
-    }
+    },
 
+
+
+    Jsonpster_crossloader: function (ip) {
+        if (!ip) {
+            var shr = "" + window.location.href
+            var ary = shr.split("=")
+            if(ary.length!==2){
+                return alert("?ip= is missed", shr)
+            }
+            ip = ary[1]
+            console.log("ip:",ip)
+        }
+
+        if ("undefined" != typeof RestApi) {
+            return console.log("Jsonpster is already loaded. Ignore", ip)
+        }
+
+        var e = document.createElement("script");
+        e.src = `http://${ip}:7778/Jsonpster/`;
+        document.body.appendChild(e);
+        console.log("crossload:", e.src)
+    }
 
 
 };////  Uti
@@ -2232,7 +2254,7 @@ var BibleInputMenuContainer = `
                 
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
-                <a href='../index.htm'>ref</a><br>
+                <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a><br>
                 <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='load search history.'>
                 </textarea><br>
 

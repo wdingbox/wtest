@@ -1,19 +1,16 @@
 <HTML manifest___xxx="BiblePad-2015.appcache">
 
 <HEAD>
-    <TITLE>Bii</TITLE>
+    <TITLE>Bindx</TITLE>
     <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" href="./BibleInputMethod.css?v=2020dec2a">
+    <link rel="stylesheet" xxhref="./BibleInputMethod.css?v=2020dec2a">
     </link>
 
 
-    <script>
-        var gStartDate = (new Date()).getTime();
-    </script>
 
 
 
@@ -34,18 +31,13 @@
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
 
+    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
     <script language="javascript"
-        xxxxxsrc="../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
-    <script language="javascript"
-        src="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
+        xxxxxsrc="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
 
     <!---------->
     <script language="javascript" src="./BibleInputMethod.js?v=20.12.4"></script>
     <!------ api ---->
-    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://54.227.156.235:7778/Jsonpster/"></script>
-    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://104.188.182.128:7778/Jsonpster/"></script>
-    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://localhost:7778/Jsonpster/"></script>
-
 
 
 
@@ -58,35 +50,31 @@
 
 
     <script language="javascript">
-        console.log(window.location);
+        function gen_cross_svr_link() {
+            var ss = "<h3>cross_svr</h3><ol>";
+            [
+                "localhost",
+                "104.188.182.128",
+                "54.227.156.235"
+            ].forEach(function (ip) {
+                ss += `<li><a target='_blank' href='./BibleInputMethod_ip.htm?ip=${ip}'>${ip}</a></li>`
+            })
+            ss + "<br></ol>"
+            $("body").append(ss)
+        }
+
 
         $(document).ready(function () {
-        
-            g_aim.init();
+            gen_cross_svr_link()
 
-
-
-            //table_sort();
-            //table_col_index();
-
-            Uti.Msg("start ...");
-            setTimeout(() => {
-                if ("undefined" === typeof Jsonpster) {
-                    alert("Jsonpster server down.");
-                }
-                Uti.Msg(Jsonpster.Url());
-            }, 3000)
         });/////////////
 
     </script>
 
 </HEAD>
 
-<BODY onbeforeunload="return 'leave?';">
+<BODY xonbeforeunload="return 'leave?';">
 
 </BODY>
 
 </HTML>
-<script>
-    Uti.Jsonpster_crossloader()
-</script>
