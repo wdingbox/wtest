@@ -273,11 +273,11 @@ PopupMenu_BcvTag.prototype.init_popup = function (bcr) {
 }
 
 
-function PopupMenu_RevTag() {
-    this.m_id = "#divPopupMenu_RevTag"
+function PopupMenu_EdiTag() {
+    this.m_id = "#divPopupMenu_EdiTag"
     this.m_par = null
 }
-PopupMenu_RevTag.prototype.init_popup = function (par) {
+PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
     $("#RevTag_Info").text(Jsonpster.inp.usr["f_path"])
@@ -288,7 +288,7 @@ PopupMenu_RevTag.prototype.init_popup = function (par) {
     $(this.m_id).show()
 }
 
-PopupMenu_RevTag.prototype.init = function () {
+PopupMenu_EdiTag.prototype.init = function () {
 
     var _THIS = this
     // $(this.m_id).draggable()
@@ -411,7 +411,27 @@ PopupMenu_RevTag.prototype.init = function () {
     })
 }
 
+function PopupMenu_RevTag() {
+    this.m_id = "#divPopupMenu_RevTag"
+    this.m_par = null
+}
+PopupMenu_RevTag.prototype.init_popup = function (par) {
+    this.m_par = par
 
+    $(this.m_id).show()
+}
+
+PopupMenu_RevTag.prototype.init = function () {
+    var _THIS = this
+    $("#Copy2clipboard").bind("click", function () {
+        var txt = $("#"+_THIS.m_par.m_txuid).text()
+        var bcv = _THIS.m_par.m_bcv
+        var rev = _THIS.m_par.m_tag_txt
+        txt = `"${txt}" (${bcv} ${rev})`;
+        Uti.copy2clipboard(txt)
+        Uti.Msg(txt);
+    })
+}
 
 
 
@@ -428,9 +448,11 @@ PopupMenu.prototype.init = function () {
     })
 
     this.popupMenu_BcvTag = new PopupMenu_BcvTag()
+    this.popupMenu_EdiTag = new PopupMenu_EdiTag()
     this.popupMenu_RevTag = new PopupMenu_RevTag()
 
     this.popupMenu_BcvTag.init()
+    this.popupMenu_EdiTag.init()
     this.popupMenu_RevTag.init()
 }
 PopupMenu.prototype.popup = function (par) {
@@ -438,14 +460,19 @@ PopupMenu.prototype.popup = function (par) {
 
     $(this.m_id).css('top', par.m_y);
 
-    $(this.popupMenu_BcvTag.m_id).hide()
-    $(this.popupMenu_RevTag.m_id).hide()
+    $(this.m_id).find("tbody").hide()
 
-    var txuid = par.m_txuid
-    if (!txuid) {
+
+    var ret = Uti.parser_bcv(par.m_tag_txt)
+    //var txuid = par.m_txuid
+    if (ret) {
         this.popupMenu_BcvTag.init_popup(par)
     } else {
-        this.popupMenu_RevTag.init_popup(par)
+        if ("_" === par.m_tag_txt[0]) {
+            this.popupMenu_EdiTag.init_popup(par)
+        } else {
+            this.popupMenu_RevTag.init_popup(par)
+        }
     }
     $(this.m_id).find("caption").text(par.m_bcv)
 
@@ -1385,7 +1412,7 @@ var markHistory = new Tab_mark_bcv_history()
 var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
 
 var popupMenu = new PopupMenu()
-//var popupMenu_RevTag = new PopupMenu_RevTag()
+
 
 
 var AppInstancesManager = function () {
@@ -1503,13 +1530,11 @@ AppInstancesManager.prototype.init = function () {
     g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
         //popupMenu.hide()
-        //popupMenu_RevTag.hide()
     })
-    g_obt.onclick_RevTag(function (par) {
+
+    g_obt.onclick_popupLabel(function (par) {
         popupMenu.popup(par)
-    })
-    g_obt.onclick_BcvTag(function (par) {
-        popupMenu.popup(par)
+        markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
     })
 
 
@@ -1610,11 +1635,9 @@ OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
         if (cbf) cbf()
     })
 }
-OutputBibleTable.prototype.onclick_RevTag = function (cbf) {
-    this.m_onclick_RevTag = cbf
-}
-OutputBibleTable.prototype.onclick_BcvTag = function (cbf) {
-    this.m_onclick_BcvTag = cbf
+
+OutputBibleTable.prototype.onclick_popupLabel = function (cbf) {
+    this.m_onclick_popupLabel = cbf
 }
 OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
@@ -1658,7 +1681,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
             bcr.m_rev = bcr.m_tag_txt
         }
 
-        _THIS.m_onclick_BcvTag(bcr)
+        _THIS.m_onclick_popupLabel(bcr)
 
         markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
         $("title").text(bcr.m_bcv)
@@ -1672,16 +1695,6 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     });
 
 
-    const copy2clipboard = (text) => {
-        const textarea = document.createElement('textarea')
-        document.body.appendChild(textarea)
-        textarea.value = text
-        textarea.select()
-        document.execCommand('copy')
-        textarea.remove()
-    }
-
-
     $(this.m_tbid).find(".tx").bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
@@ -1693,54 +1706,8 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         var rev = $(this).prev().text()
         txt = `"${txt}" (${bcv} ${rev})`;
 
-        //copy to clipboard.
-        if ($(this).attr("contenteditable")) {
-            //noop
-        } else {
-            copy2clipboard(txt)
-        }
+       
         Uti.Msg(txt);
-    });
-
-
-    $(this.m_tbid).find("sup_xxxxxxxxxxrevTag").bind("click", function (evt) {
-        //evt.stopImmediatePropagation();
-
-        //var txt = $(this).text();
-        //if ("_" !== txt[0]) {
-        //    return;
-        //}
-
-
-
-        //solve confliction between toggle and hili
-        var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
-        $(".revTag.hiliRevTag").removeClass("hiliRevTag");
-        $(this).toggleClass("hiliRevTag");
-
-        var bcr = $(this)[0].getBoundingClientRect();
-        console.log(bcr)
-
-
-
-
-        bcr.m_alreadyHili = alreadyHili
-        bcr.m_y = bcr.y + window.scrollY + $(this).height() - 20;
-        bcr.m_bcv = $(this).attr("title")
-        bcr.m_txuid = $(this).attr("txuid")
-        bcr.m_tag_txt = $(this).text();
-
-        var ret = Uti.parser_bcv(bcr.m_tag_txt)
-        bcr.m_rev = ""
-        if (ret) {
-            bcr.m_rev = bcr.m_tag_txt
-        }
-
-        _THIS.m_onclick_RevTag(bcr)
-
-        markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
-        $("title").text(bcr.m_bcv)
-
     });
 
     this.incFontSize(0)
@@ -2174,6 +2141,15 @@ var Uti = {
         e.src = `http://${ip}:7778/Jsonpster/`;
         document.body.appendChild(e);
         console.log("crossload:", e.src)
+    },
+
+     copy2clipboard :function  (text) {
+        const textarea = document.createElement('textarea')
+        document.body.appendChild(textarea)
+        textarea.value = text
+        textarea.select()
+        document.execCommand('copy')
+        textarea.remove()
     }
 
 
@@ -2187,7 +2163,7 @@ const CNST = {
 var BibleInputMenuContainer = `
 <style>
 </style>
-<input id="CopyTextToClipboard" title="CopyTextToClipboard" readonly='true'></input>
+
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
     <a id="bk_name">Biblic Input Keyboard</a>
     <a id="minus_ChpVal" op='—'>--</a>
@@ -2415,7 +2391,7 @@ var BibleInputMenuContainer = `
             </td>
         </tr>
     </tbody>
-    <tbody id="divPopupMenu_RevTag">
+    <tbody id="divPopupMenu_EdiTag">
         <tr>
             <td>
                 <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
@@ -2439,6 +2415,13 @@ var BibleInputMenuContainer = `
         <tr>
             <td>
                 <a id="RevTag_Info">user</a>
+            </td>
+        </tr>
+    </tbody>
+    <tbody id="divPopupMenu_RevTag">
+        <tr>
+            <td>
+                <a id="Copy2clipboard">Copy2Clipboard</a>
             </td>
         </tr>
     </tbody>
