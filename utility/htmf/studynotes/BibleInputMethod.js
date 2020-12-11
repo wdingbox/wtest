@@ -1676,9 +1676,9 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         bcr.m_tag_txt = $(this).text();
 
         var ret = Uti.parser_bcv(bcr.m_tag_txt)
-        bcr.m_rev = ""
+        bcr.m_rev = bcr.m_tag_txt
         if (ret) {
-            bcr.m_rev = bcr.m_tag_txt
+            bcr.m_rev = ""
         }
 
         _THIS.m_onclick_popupLabel(bcr)
