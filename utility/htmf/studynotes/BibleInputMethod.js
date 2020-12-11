@@ -259,9 +259,10 @@ PopupMenu_BcvTag.prototype.init_links = function () {
 PopupMenu_BcvTag.prototype.init = function () {
     this.init_links()
 
+    var _THIS = this
     $(this.m_id).draggable()
     $(this.m_id).bind("click", function () {
-        //$(this.m_id).hide()
+        //$(_THIS.m_id).hide()
     }).hide()
 }
 PopupMenu_BcvTag.prototype.hide = function () {
@@ -311,9 +312,10 @@ PopupMenu_RevTag.prototype.hide = function () {
 }
 PopupMenu_RevTag.prototype.init = function () {
 
+    var _THIS=this
     $(this.m_id).draggable()
     $(this.m_id).bind("click", function () {
-        //$(this.m_id).hide()
+        //$(_THIS.m_id).slideToggle()
     }).hide()
 
     var _THIS = this
@@ -431,6 +433,44 @@ PopupMenu_RevTag.prototype.init = function () {
     })
 }
 
+
+
+
+
+function PopupMenu() {
+    this.m_id = "#divPopupMenu_RevTag"
+    this.m_par = null
+}
+
+PopupMenu.prototype.init = function () {
+    var _THIS=this
+    $(this.m_id).draggable()
+    $(this.m_id).bind("click", function () {
+        //$(_THIS.m_id).slideToggle()
+    }).hide()
+
+    this.popupMenu_BcvTag = new PopupMenu_BcvTag()
+    this.popupMenu_RevTag = new PopupMenu_RevTag()
+
+    this.popupMenu_BcvTag.init()
+    this.popupMenu_RevTag.init()
+}
+PopupMenu.prototype.popup = function (par) {
+    this.m_par = par
+
+    $(this.m_id).css('top', par.m_y);
+
+    //
+    if (par.m_alreadyHili) {
+        $(this.m_id).slideToggle();
+    } else {
+        $(this.m_id).show()
+            .find("caption").text(par.m_bcv);
+    }
+}
+PopupMenu.prototype.hide = function () {
+    $(this.m_id).hide()
+}
 
 
 
@@ -1600,23 +1640,43 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     $(this.m_tbid).find(".bcvTag").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
-        var bcvid = $(this).text();
-        var bcr = $(this)[0].getBoundingClientRect();
-        console.log(bcr)
-        bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
-        bcr.m_bcv = bcvid
+
+
+
+
+
+       
+       
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('bcvMark')
+        $(".bcvTag.bcvMark").removeClass("bcvMark");
+        $(this).addClass("bcvMark");
+
+        var bcr = $(this)[0].getBoundingClientRect();
+        console.log(bcr)
+
+
+    
+
         bcr.m_alreadyHili = alreadyHili
+        bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
+        bcr.m_bcv = $(this).attr("title")
+        bcr.m_txuid = $(this).attr("txuid")
+        bcr.m_tag_txt = $(this).text();
+
+        var ret = Uti.parser_bcv(bcr.m_tag_txt)
+        bcr.m_rev = ""
+        if(ret){
+            bcr.m_rev = bcr.m_tag_txt
+        }
 
         _THIS.m_onclick_BcvTag(bcr)
 
-        markHistory.m_tbody.RecentMarks.addnew2table(bcvid)
-        $("title").text(bcvid)
+        markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
+        $("title").text(bcr.m_bcv)
 
-        $(".bcvTag.bcvMark").removeClass("bcvMark");
-        $(this).addClass("bcvMark");
+       
     });
 
 
@@ -1659,29 +1719,40 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     $(this.m_tbid).find("sup.revTag").bind("click", function (evt) {
         //evt.stopImmediatePropagation();
 
-        var txt = $(this).text();
-        if ("_" !== txt[0]) {
-            return;
-        }
+        //var txt = $(this).text();
+        //if ("_" !== txt[0]) {
+        //    return;
+        //}
 
-        var sbcv = $(this).attr("title")
-        var taguid = $(this).attr("revTagUid")
+        
 
+        //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('hiliRevTag')
         $(".revTag.hiliRevTag").removeClass("hiliRevTag");
         $(this).toggleClass("hiliRevTag");
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-        var y = bcr.y + window.scrollY + $(this).height() + 5;
+     
 
-        bcr.m_y = y
-        bcr.m_txuid = taguid
+
+
         bcr.m_alreadyHili = alreadyHili
-        bcr.m_bcv = sbcv
-        bcr.m_rev = txt
+        bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
+        bcr.m_bcv = $(this).attr("title")
+        bcr.m_txuid = $(this).attr("txuid")
+        bcr.m_tag_txt = $(this).text();
+
+        var ret = Uti.parser_bcv(bcr.m_tag_txt)
+        bcr.m_rev = ""
+        if(ret){
+            bcr.m_rev = bcr.m_tag_txt
+        }
 
         _THIS.m_onclick_RevTag(bcr)
+
+        markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
+        $("title").text(bcr.m_bcv)
 
     });
 
@@ -1714,8 +1785,8 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var divbcv = `<a class='bcvTag'>${sbcv}</a>`
-                st += `<tr><td>${divbcv}`;
+                var BcvTag = `<a class='bcvTag' title='${sbcv}'>${sbcv}</a>`
+                st += `<tr><td>${BcvTag}`;
                 switch (typeof val) {
                     case "object"://trn
                         $.each(val, function (revId, txt) {
@@ -1727,7 +1798,7 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                                 clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                             }
                             uuid++
-                            var revTag = `<sup revTagUid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup>`
+                            var revTag = `<sup txuid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup>`
                             var vrsTxt = `<${tag} id='${uuid}' ${clsname}>${txt}</${tag}>`
                             st += `<div>${revTag}${vrsTxt}</div>`;
                         });
@@ -1921,7 +1992,8 @@ var Uti = {
             ret.chp = "" + parseInt(mat[2]);
             ret.vrs = "" + parseInt(mat[3]);
         } else {
-            alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
+            //alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
+            return null
         }
         ret.chp3 = ret.chp.padStart(3, "0");
         ret._vol = "_" + ret.vol;
