@@ -124,6 +124,23 @@ var MyStorage = {
         return ar
     },
 
+    setMostRecentSearchFile: function (str) {
+        if (!str) {
+            localStorage.setItem("MostRecentSearchFile", "")
+        } else {
+            localStorage.setItem("MostRecentSearchFile", str)
+            $("#Tab_regex_history_lst").find("caption").text(str)
+        }
+    },
+    getMostRecentSearchFile: function () {
+        var ar = localStorage.getItem("MostRecentSearchFile")
+        if (!ar || ar.length === 0) {
+            ar = "NIV"
+        } 
+        return ar
+    },
+    ////-----
+
 
     setFontSize: function (v) {
         if (parseInt(v) < 6) v = 6
@@ -424,7 +441,7 @@ PopupMenu_RevTag.prototype.init_popup = function (par) {
 PopupMenu_RevTag.prototype.init = function () {
     var _THIS = this
     $("#Copy2clipboard").bind("click", function () {
-        var txt = $("#"+_THIS.m_par.m_txuid).text()
+        var txt = $("#" + _THIS.m_par.m_txuid).text()
         var bcv = _THIS.m_par.m_bcv
         var rev = _THIS.m_par.m_tag_txt
         txt = `"${txt}" (${bcv} ${rev})`;
@@ -1084,10 +1101,10 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary)
                 break;
             case "Seq":
-                $(this).text("Rev")
-                _THIS.Gen_Table(bknArr)
+                $(this).text("Find")
+                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
                 break;
-            case "Dn":
+            case "Find":
                 $(this).text("Rev")
                 _THIS.Gen_Table(bknArr)
                 break;
@@ -1103,9 +1120,12 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     var str = "";
     var _THIS = this
     //var bknArr = Object.keys(CNST.FnameOfBibleObj);
+
+    var sFile = MyStorage.getMostRecentSearchFile()
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
+        if(sFile === v) hil +=" searchFile"
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
@@ -1128,9 +1148,6 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         if (nsel === 0) {//keep at least one.
             $(_this).addClass("hili")
         }
-
-        $(".searchFile").removeClass("searchFile");
-        $(_this).toggleClass("searchFile");
     }
     function update_data(_this) {
         update_seletedItems(_this)
@@ -1165,12 +1182,19 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
         _THIS.Gen_Table(_THIS.m_selectedItems_ary)
         _THIS.m_onClickItm2Select()
     }
+    function update_Finditem(_this, i) {
+        $(".searchFile").removeClass("searchFile");
+        $(_this).addClass("searchFile");
+        var txt = $(_this).text().trim()
+        MyStorage.setMostRecentSearchFile(txt)
+    }
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
             case "Rev": update_data(this); break;
             case "Seq": moveup_selitm(this, +1); break;
+            case "Find": update_Finditem(this); break;
             //case "Dn": moveup_selitm(this, -1); break;
         }
     });
@@ -1186,10 +1210,7 @@ RevisionsOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
     }
     return fnamesArr;
 };///
-RevisionsOfBibleListTable.prototype.get_search_fname = function () {
-    var searchFileName = $(".cbkn.hili.searchFile").text();
-    return searchFileName; //{ File: searchFileName, Strn: searchStrn };
-};///
+ 
 
 
 
@@ -1395,6 +1416,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
     //// });
 }
 
+
+
+
 var grpmgr = new GroupsMenuMgr()
 
 
@@ -1538,6 +1562,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
 
+    this.gen_search_strn_history()
 
 };
 
@@ -1596,7 +1621,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
 AppInstancesManager.prototype.get_search_inp = function () {
     //
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    var searchFileName = nambib.get_search_fname();
+    var searchFileName = MyStorage.getMostRecentSearchFile();// nambib.get_search_fname();
     var searchStrn = $("#sinput").val();
     if (searchStrn.length === 0) {
         return alert("no search str.")
@@ -1605,6 +1630,26 @@ AppInstancesManager.prototype.get_search_inp = function () {
     var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     return inp;
 };
+AppInstancesManager.prototype.gen_search_strn_history =  function () {
+    var trs = ""
+    var ar = MyStorage.getMostRecentSearchStrn()
+    ar.forEach(function (strn) {
+        if (strn.trim().length > 0) {
+            trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+        }
+    })
+
+    //history
+    //console.log(ret);
+    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
+        $(this).toggleClass("hili");
+        var s = $(this).text().trim();
+        $("#sinput").val(s);
+    });
+
+    var str = MyStorage.getMostRecentSearchFile()
+    $("#Tab_regex_history_lst").find("caption").text(str)
+}
 ///////////
 //////////
 //////////
@@ -1706,7 +1751,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
         var rev = $(this).prev().text()
         txt = `"${txt}" (${bcv} ${rev})`;
 
-       
+
         Uti.Msg(txt);
     });
 
@@ -1844,7 +1889,9 @@ function onclick_regex_match_next(incrs) {
 };
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
-    onclick_load_search_string_history(s)
+ 
+    MyStorage.addMostRecentSearchStrn(s)
+    g_aim.gen_search_strn_history()
 
 
     Jsonpster.inp.par = g_aim.get_search_inp();
@@ -1868,24 +1915,6 @@ function onclick_BibleObj_search_str() {
     Uti.Msg(unicds);
 
 }
-function onclick_load_search_string_history(searchStr) {
-
-    MyStorage.addMostRecentSearchStrn(searchStr)
-    var trs = ""
-    var ar = MyStorage.getMostRecentSearchStrn()
-    ar.forEach(function (strn) {
-        trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
-    })
-
-    //history
-    //console.log(ret);
-    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
-        $(this).toggleClass("hili");
-        var s = $(this).text().trim();
-        $("#sinput").val(s);
-    });
-
-};
 
 
 
@@ -2143,7 +2172,7 @@ var Uti = {
         console.log("crossload:", e.src)
     },
 
-     copy2clipboard :function  (text) {
+    copy2clipboard: function (text) {
         const textarea = document.createElement('textarea')
         document.body.appendChild(textarea)
         textarea.value = text
@@ -2259,7 +2288,7 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Explore" style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Find" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onclick="" ></input><br>
 
@@ -2267,6 +2296,7 @@ var BibleInputMenuContainer = `
                 <button onclick="onclick_regex_match_next(-1);" title="find on page">Prev</button>
                 <button onclick="onclick_regex_match_next(1);" title="find on page">Next</button>
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                <caption>CUVS</caption>
                 <tbody>
                     <tr>
                         <td>
