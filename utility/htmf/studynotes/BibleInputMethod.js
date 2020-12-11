@@ -2292,8 +2292,8 @@ var BibleInputMenuContainer = `
                 
                 
                 <button id="Check_bcv">Check(bcv)</button>
-                <button id="oBible_indxer">Export(bcv)</button>
-                <button onclick="onclick_btn_set_jsonpster_svr_ip();">Import(bcv)</button>
+                <button id=""></button>
+                <button onclick=""></button>
                 
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
