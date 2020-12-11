@@ -1098,15 +1098,15 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
         switch (txt) {
             case "Rev":
                 $(this).text("Seq")
-                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+                _THIS.Gen_Table(_THIS.m_selectedItems_ary, "")
                 break;
             case "Seq":
                 $(this).text("Find")
-                _THIS.Gen_Table(_THIS.m_selectedItems_ary)
+                _THIS.Gen_Table(_THIS.m_selectedItems_ary, "searchFile")
                 break;
             case "Find":
                 $(this).text("Rev")
-                _THIS.Gen_Table(bknArr)
+                _THIS.Gen_Table(bknArr, "")
                 break;
             default:
                 alert("er")
@@ -1116,7 +1116,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
 
 }
 
-RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
+RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
     var str = "";
     var _THIS = this
     //var bknArr = Object.keys(CNST.FnameOfBibleObj);
@@ -1125,7 +1125,7 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr) {
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
-        if (sFile === v) hil += " searchFile"
+        if (sFile === v) hil += " " + searchFileClass
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
