@@ -1698,10 +1698,17 @@ OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
 OutputBibleTable.prototype.onclick_popupLabel = function (cbf) {
     this.m_onclick_popupLabel = cbf
 }
-OutputBibleTable.prototype.Gen_output_table = function (ret) {
+OutputBibleTable.prototype.set_data = function (ret) {
+    this.m_data = ret
+}
+OutputBibleTable.prototype.set_findstrn = function (str) {
+    this.m_findstrn = str
+}
+
+OutputBibleTable.prototype.Gen_output_table = function () {
 
     var _THIS = this;
-    var tb = this.create_htm_table(ret);
+    var tb = this.create_htm_table();
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     //table_sort("#BibOut");
@@ -1788,11 +1795,29 @@ OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
     });
     return bcvRobj;
 }
-OutputBibleTable.prototype.create_htm_table = function (ret) {
+OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
-    console.log("result:", ret.out.result)
+    if(!this.m_findstrn) return txt
+    var findstrn = this.m_findstrn
+    var reg = new RegExp(findstrn, "g")
+
+    var mat = txt.match(reg)
+    if (mat) {
+        mat.forEach(function (val) {
+            var rep = `<a class='mat'>${findstrn}</a>`
+            txt = txt.replace(reg, rep)
+        })
+    }
+    return txt
+
+}
+OutputBibleTable.prototype.create_htm_table = function () {
+    //ret = this.convert_rbcv_2_bcvRobj(ret)
+   var _THIS = this
+
+    console.log("result:", this.m_data.out.result)
     var idx = 0, st = "", uuid = 1;
-    $.each(ret.out.data, function (vol, chpObj) {
+    $.each(this.m_data.out.data, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
@@ -1803,6 +1828,8 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                 switch (typeof val) {
                     case "object"://trn
                         $.each(val, function (revId, txt) {
+                            txt = _THIS.get_matched_txt(txt)
+
                             var tag = 'a'
                             if (revId.match(/^_[a-zA-Z]/)) tag = 'div'
 
@@ -1841,7 +1868,8 @@ var g_obt = new OutputBibleTable()
 function apiCallback_Gen_output_table(ret) {
     //popupMenu_BcvTag.hide()
     popupMenu.hide()
-    g_obt.Gen_output_table(ret)
+    g_obt.set_data(ret)
+    g_obt.Gen_output_table("")
 }
 
 
@@ -1876,6 +1904,12 @@ function onclick_regex_match_next(incrs, _this) {
     $("#searchNextresult").text(disp).css("color", "black")
     Uti.Msg("tot:" + document.g_indexNext);
 };
+
+function onclick_local_find_str() {
+    var s = $("#sinput").val().trim();
+    g_obt.set_findstrn(s)
+    g_obt.Gen_output_table()
+}
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
 
@@ -2278,11 +2312,12 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Find" style="float:left;display:none;">
+            <div class="GrpMenu hiddenGrpMenu" id="grp_Search" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
 
-                <button onclick="onclick_BibleObj_search_str();" title="search on svr">search</button>
+                <button onclick="onclick_BibleObj_search_str();" title="search on servr">search</button>
+                <button onclick="onclick_local_find_str();" title="search on local">find</button>
                 <button onclick="onclick_regex_match_next(-1,this);" title="find on page">Prev</button>
                 <span id="searchNextresult">0/0</span>
                 <button onclick="onclick_regex_match_next(1,this);" title="find on page">Next</button>
