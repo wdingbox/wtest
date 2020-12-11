@@ -51,13 +51,17 @@
 
     <script language="javascript">
         function gen_cross_svr_link() {
-            var ss = "<h3>cross_svr</h3><ol>";
-            [
-                "localhost",
-                "104.188.182.128",
-                "54.227.156.235"
-            ].forEach(function (ip) {
-                ss += `<li><a target='_blank' href='./BibleInputMethod_ip.htm?ip=${ip}'>${ip}</a></li>`
+            var ss = "<h3>home : cross_svr</h3><ol>";
+            var ip_home={
+                "localhost":"file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm",
+                "104.188.182.128":"",
+                "54.227.156.235":"http://54.227.156.235/wdaws/ham12/utility/htmf/studynotes/index.htm",
+                "wdingbox.github.io":"https://wdingbox.github.io/ham12/utility/htmf/studynotes/index.htm"
+            }
+            Object.keys(ip_home).forEach(function (ip) {
+                var home = `<a target='_blank' href='${ip_home[ip]}'>home</a>`
+                var serv = `<a target='_blank' href='./BibleInputMethod_ip.htm?ip=${ip}'>${ip}</a>`
+                ss += `<li>${home} : ${serv}</li>`
             })
             ss + "<br></ol>"
             $("body").append(ss)
