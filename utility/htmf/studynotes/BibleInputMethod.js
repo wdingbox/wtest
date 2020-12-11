@@ -436,7 +436,7 @@ PopupMenu.prototype.init = function () {
 PopupMenu.prototype.popup = function (par) {
     this.m_par = par
 
-    $(this.m_id).css('top', par.m_y-25);
+    $(this.m_id).css('top', par.m_y);
 
     $(this.popupMenu_BcvTag.m_id).hide()
     $(this.popupMenu_RevTag.m_id).hide()
@@ -1623,7 +1623,8 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     Uti.Msg("tot_rows=" + tb.size);
     $(this.m_tbid).html(tb.htm);
     //table_sort("#BibOut");
-    $(this.m_tbid).find(".bcvTag").bind("click", function (evt) {
+    //popupclicklabel. bcvTag
+    $(this.m_tbid).find(".popupclicklabel").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
 
@@ -1636,7 +1637,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('bcvMark')
-        $(".bcvTag.bcvMark").removeClass("bcvMark");
+        $(".bcvMark").removeClass("bcvMark");
         $(this).addClass("bcvMark");
 
         var bcr = $(this)[0].getBoundingClientRect();
@@ -1702,7 +1703,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
     });
 
 
-    $(this.m_tbid).find("sup.revTag").bind("click", function (evt) {
+    $(this.m_tbid).find("sup_xxxxxxxxxxrevTag").bind("click", function (evt) {
         //evt.stopImmediatePropagation();
 
         //var txt = $(this).text();
@@ -1724,7 +1725,7 @@ OutputBibleTable.prototype.Gen_output_table = function (ret) {
 
 
         bcr.m_alreadyHili = alreadyHili
-        bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
+        bcr.m_y = bcr.y + window.scrollY + $(this).height() - 20;
         bcr.m_bcv = $(this).attr("title")
         bcr.m_txuid = $(this).attr("txuid")
         bcr.m_tag_txt = $(this).text();
@@ -1771,7 +1772,7 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var BcvTag = `<a class='bcvTag' title='${sbcv}'>${sbcv}</a>`
+                var BcvTag = `<a class='popupclicklabel bcvTag' title='${sbcv}'>${sbcv}</a>`
                 st += `<tr><td>${BcvTag}`;
                 switch (typeof val) {
                     case "object"://trn
@@ -1784,7 +1785,7 @@ OutputBibleTable.prototype.create_htm_table = function (ret) {
                                 clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                             }
                             uuid++
-                            var revTag = `<sup txuid='${uuid}' class='revTag' title='${sbcv}'>${revId}</sup>`
+                            var revTag = `<sup txuid='${uuid}' class='popupclicklabel revTag' title='${sbcv}'>${revId}</sup>`
                             var vrsTxt = `<${tag} id='${uuid}' ${clsname}>${txt}</${tag}>`
                             st += `<div>${revTag}${vrsTxt}</div>`;
                         });
@@ -2375,7 +2376,7 @@ var BibleInputMenuContainer = `
 
 
 <div id="divPopupMenu">
-    <table id='refslist' border="1" align="left">
+    <table id='xxrefslist' border="1" align="left">
     
     <tbody id="divPopupMenu_BcvTag">
         <tr>
@@ -2441,6 +2442,7 @@ var BibleInputMenuContainer = `
             </td>
         </tr>
     </tbody>
+    <caption>--</caption>
     </table>
 </div>
 

@@ -326,19 +326,19 @@ body {
 
 
 
-    #divPopupMenu_BcvTag{
+    #divPopupMenu{
         position: absolute;
         left: 10px;
         background-color: rgb(246, 126, 7);
         z-index: 9999;
     }
-    #divPopupMenu_BcvTag table tbody a{
+    #divPopupMenu table tbody a{
         text-decoration: none;
     }
-    #divPopupMenu_BcvTag table tbody a:visited{
+    #divPopupMenu table tbody a:visited{
         color: rgb(241, 245, 247);
     }
-    #divPopupMenu_BcvTag table{
+    #divPopupMenu table{
         caption-side: bottom;
     }
 
@@ -350,20 +350,20 @@ body {
         padding-bottom:2px;
         border: 1px solid gold;
     }
-    #divPopupMenu_RevTag{
+    #divPopupMenu_RevTagx{
         position: absolute;
         left: 10px;
         background-color: rgb(246, 126, 7);
         z-index: 9999;
         display:none;
     }
-    #divPopupMenu_RevTag table tbody a{
+    #divPopupMenu_RevTagx table tbody a{
         text-decoration: none;
     }
-    #divPopupMenu_RevTag table tbody a:visited{
+    #divPopupMenu_RevTagx table tbody a:visited{
         color: rgb(241, 245, 247);
     }
-    #divPopupMenu_RevTag table{
+    #divPopupMenu_RevTagx table{
         caption-side: bottom;
     }
 
