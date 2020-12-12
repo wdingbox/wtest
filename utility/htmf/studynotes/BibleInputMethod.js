@@ -1485,10 +1485,17 @@ AppInstancesManager.prototype.init = function () {
         $("#menuContainer").show()
     })
     showup.m_Bki.onclick_bkc(function () {
+        //store before clear
+        var ret = showup.get_selected_vcv_parm()
+        var bcv = ret.vol+ret.chp+":"+ret.vrs
+        markHistory.m_tbody.RecentMarks.addnew2table(bcv)
+
+        //clear
         showup.m_Chp.set_showupVal("")
         showup.m_Vrs.set_showupVal("")
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
+        
         $("#menuContainer").show()
     })
     showup.onclick_Chp(function (bload) {
@@ -1807,7 +1814,7 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
     var mat = txt.match(reg)
     if (mat) {
         mat.forEach(function (val) {
-            var rep = `<font class='mat'>${findstrn}</font>`
+            var rep = `<font class='matlocal'>${findstrn}</font>`
             txt = txt.replace(reg, rep)
         })
     }

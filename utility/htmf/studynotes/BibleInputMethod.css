@@ -143,6 +143,9 @@ body {
         background-color: chartreuse;
         color: black;
     }
+    .matlocal{
+        background-color: rgb(71, 125, 206);
+    }
 
     .matIndex {
         border: 5px solid red;
