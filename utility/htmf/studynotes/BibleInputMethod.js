@@ -1807,7 +1807,7 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
     var mat = txt.match(reg)
     if (mat) {
         mat.forEach(function (val) {
-            var rep = `<a class='mat'>${findstrn}</a>`
+            var rep = `<font class='mat'>${findstrn}</font>`
             txt = txt.replace(reg, rep)
         })
     }
@@ -1912,6 +1912,10 @@ function onclick_local_find_str() {
     var s = $("#sinput").val().trim();
     g_obt.set_findstrn(s)
     g_obt.Gen_output_table()
+
+    MyStorage.addMostRecentSearchStrn(s)
+    g_aim.gen_search_strn_history()
+    document.g_indexNext = -1
 }
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
