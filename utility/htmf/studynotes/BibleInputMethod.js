@@ -401,6 +401,7 @@ PopupMenu_EdiTag.prototype.init = function () {
     $("#RevTag_Save").bind("click", function () {
         Jsonpster = _gen_pster_write()
         console.log("inp:", Jsonpster)
+        Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret)
             Uti.Msg(ret)
@@ -417,11 +418,13 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt
         console.log("inp:", Jsonpster)
+        Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediDiv.html(ret.out.data.txt)
                 _THIS.m_ediBtn.enable_edit(false)
+                Uti.Msg(ret.out.data.txt)
                 //_THIS.hide()
             }
         })
@@ -2347,7 +2350,7 @@ var BibleInputMenuContainer = `
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
                 <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a><br>
-                <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='load search history.'>
+                <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='log.'>
                 </textarea><br>
 
             </div>
