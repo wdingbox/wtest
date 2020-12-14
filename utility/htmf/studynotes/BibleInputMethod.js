@@ -814,13 +814,19 @@ SingleKeyOutputBooksTable.prototype.ary_To_trs = function (vol_arr) {
     });
     return trarr.join("");
 }
+SingleKeyOutputBooksTable.prototype.show = function (bShow) {
+   if(bShow){
+       $(this.m_id).show()
+   }else{
+    $(this.m_id).hide()
+   }
+}
 
-
-SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr, alreadyhili) {
+SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (Yoffset, vol_arr, alreadyhili) {
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
-    var h2 = $("#SingleKeywordsBody").height();
+    var h2 = parseInt(Yoffset);
 
     var trs = this.ary_To_trs(vol_arr);
 
@@ -1385,7 +1391,7 @@ Tab_mark_bcv_history.prototype.toggleSelAll = function () {
 function GroupsMenuMgr() {
     this.m_grpContainerID = "#GroupsContainer"
 }
-GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
+GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".GrpMenu").each(function () {
         var sid = $(this).attr("id")
@@ -1406,6 +1412,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
             var sid = $(this).attr("sid")
             $(sid).hide()
         })
+        popupBookList.show(false)
     })
 
     /////
@@ -1422,7 +1429,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
     ////     table_sort("#oBible table");
     //// });
 }
-
+GroupsMenuMgr.prototype.sel_default = function () {
+    $(this.m_grpContainerID).find("a:eq(0)").trigger("click")
+    //$("#grp_Keyboard").show()
+}
 
 
 
@@ -1464,7 +1474,7 @@ AppInstancesManager.prototype.init = function () {
         //popupMenu.hide()
     })
 
-    grpmgr.gen_grp_bar("", markHistory)
+    grpmgr.gen_grp_bar(skout, markHistory)
 
 
 
@@ -1494,6 +1504,7 @@ AppInstancesManager.prototype.init = function () {
         digi.init_Vrs_digiKeys_by_vol()
         
         $("#menuContainer").show()
+        grpmgr.sel_default()
     })
     showup.onclick_Chp(function (bload) {
         digi.init_Chp_digiKeys_by_vol()
@@ -1536,7 +1547,7 @@ AppInstancesManager.prototype.init = function () {
 
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
-            skout.Gen_BookList_Table(ch, volary, alreadyhili)
+            skout.Popup_BookList_Table(78, volary, alreadyhili)
 
             bibcat.rm_hili()
         }
@@ -1544,7 +1555,7 @@ AppInstancesManager.prototype.init = function () {
 
     bibcat.Gen_Cat_Table({
         onClickItm: function (scat, volary, alreadyHili) {
-            skout.Gen_BookList_Table(scat, volary, alreadyHili);
+            skout.Popup_BookList_Table(2, volary, alreadyHili);
             skinp.rm_hili()
         }
     })
@@ -2229,7 +2240,7 @@ var BibleInputMenuContainer = `
 </style>
 
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
-    <a id="bk_name">Name of Book</a>
+    <a id="bk_name">Select A Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
     <div class='chapvrsnum' id='chp_num'>chap</div> : <div class='chapvrsnum' id='vrs_num'>ver</div>
 </div>
@@ -2239,8 +2250,9 @@ var BibleInputMenuContainer = `
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
         <div id="GroupsContainer" style="display:visual">
+
+
             <div class="GrpMenu" id="grp_Keyboard" style="float:left;display:none;">
-                <!----------------------------->
                 <table border="1">
                     <tbody id="SingleKeywordsBody">
                     </tbody>
@@ -2249,11 +2261,10 @@ var BibleInputMenuContainer = `
                     <tbody id='DigitOfVerse'>
                     </tbody>
                 </table>
-                <!----------------------------->
+                
             </div>
 
-
-        
+            <!----------------------------->
 
             <div class="GrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
@@ -2306,6 +2317,7 @@ var BibleInputMenuContainer = `
                 </table>
             </div>
 
+            <!----------------------------->
 
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
 
@@ -2331,10 +2343,9 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
+            <!----------------------------->
+
             <div class="GrpMenu" id="grp_Uti"  style="float:left;display:none;">
-           
-                
-                
                 <button id="Check_bcv">Check(bcv)</button>
                 <button id=""></button>
                 <button onclick=""></button>
@@ -2346,6 +2357,8 @@ var BibleInputMenuContainer = `
                 </textarea><br>
 
             </div>
+
+            <!----------------------------->
 
             <div class="GrpMenu" id="grp_Config"  style="float:left;display:none;">
                 <table id='tmpsel2ref' border="1" align="left">
