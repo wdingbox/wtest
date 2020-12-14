@@ -803,7 +803,7 @@ SingleKeyOutputBooksTable.prototype.get_selary = function () {
     });
     return vol_arr
 }
-SingleKeyOutputBooksTable.prototype.Gen_Vol_trs = function (vol_arr) {
+SingleKeyOutputBooksTable.prototype.ary_To_trs = function (vol_arr) {
     var trarr = [];
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
@@ -822,7 +822,7 @@ SingleKeyOutputBooksTable.prototype.Gen_BookList_Table = function (cap, vol_arr,
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
     var h2 = $("#SingleKeywordsBody").height();
 
-    var trs = this.Gen_Vol_trs(vol_arr);
+    var trs = this.ary_To_trs(vol_arr);
 
     $(tid).html(trs).find(".v3").bind("click", function () {
         //$(".v3.hili").removeClass("hili");
