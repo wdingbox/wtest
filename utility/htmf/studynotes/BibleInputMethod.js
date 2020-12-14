@@ -2243,6 +2243,88 @@ var BibleInputMenuContainer = `
 <style>
 </style>
 
+<!----------------------------->
+<div id="divPopupMenu">
+    <table id='xxrefslist' border="1" align="left">
+    
+    <tbody id="divPopupMenu_BcvTag">
+        <tr>
+            <td>
+                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="qbible_com" ref="http://www.qbible.com/" sample="hebrew-old-testament/genesis/50.html#1" title='http://www.qbible.com/hebrew-old-testament/genesis/50.html#1'>qbible.com</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="h_g" ref="../../../../bible_concordance/rel/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
+            </td>
+        </tr>
+    </tbody>
+    <tbody id="divPopupMenu_EdiTag">
+        <tr>
+            <td>
+                <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Edit_External" target="_blank" href="myNoteEditor.htm">External Editor</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Save">Save</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Load">Load</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="RevTag_Info">user</a>
+            </td>
+        </tr>
+    </tbody>
+    <tbody id="divPopupMenu_RevTag">
+        <tr>
+            <td>
+                <a id="Copy2clipboard">Copy2Clipboard</a>
+            </td>
+        </tr>
+    </tbody>
+    <caption>--</caption>
+    </table>
+</div>
+
+<!--------------------------------------->
+
+
 <div id="MainMenuToggler">
     <a id="bk_name">Select A Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
@@ -2432,84 +2514,7 @@ var BibleInputMenuContainer = `
     </tbody>
 </table>
 <!----------------------------->
-<!----------------------------->
-<div id="divPopupMenu">
-    <table id='xxrefslist' border="1" align="left">
-    
-    <tbody id="divPopupMenu_BcvTag">
-        <tr>
-            <td>
-                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="qbible_com" ref="http://www.qbible.com/" sample="hebrew-old-testament/genesis/50.html#1" title='http://www.qbible.com/hebrew-old-testament/genesis/50.html#1'>qbible.com</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="h_g" ref="../../../../bible_concordance/rel/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="gtw" ref="https://www.biblegateway.com/passage/?search=" title='biblegateway.com'>gateway</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="studylight" ref="https://www.studylight.org/commentary/" title='studylight.org'>studylight</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="ccel_org" ref="http://www.ccel.org/study/" title='ChristianClassicEtherealLib'>ccel</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="divPopupMenu_EdiTag">
-        <tr>
-            <td>
-                <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="RevTag_Edit_External" target="_blank" href="myNoteEditor.htm">External Editor</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="RevTag_Save">Save</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="RevTag_Load">Load</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a id="RevTag_Info">user</a>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="divPopupMenu_RevTag">
-        <tr>
-            <td>
-                <a id="Copy2clipboard">Copy2Clipboard</a>
-            </td>
-        </tr>
-    </tbody>
-    <caption>--</caption>
-    </table>
-</div>
+
 
 <div id='oBible'>----</div>
         `;//////backtick for multiple lines. 
