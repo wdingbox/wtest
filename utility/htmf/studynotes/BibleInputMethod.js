@@ -2546,7 +2546,7 @@ CNST.FnameOfBibleObj =
     "cross_references": "cross-references",
     "_myCrossRef": "self modified cross-references",
     "_myNote": "personal biblical study notes",
-    "_myQ": "personal questions, queries"
+    "_myPage": "personal page, prayer, preach, prophect, paper, project,,,"
 };
 
 CNST.BiBookName = {
