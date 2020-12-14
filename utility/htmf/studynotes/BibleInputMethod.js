@@ -1429,10 +1429,11 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     ////     table_col_index("#oBible table");
     ////     table_sort("#oBible table");
     //// });
+
+    $("#NewPage").attr("href",  window.location.href)
 }
 GroupsMenuMgr.prototype.sel_default = function () {
     $(this.m_grpContainerID).find("a:eq(0)").trigger("click")
-    //$("#grp_Keyboard").show()
 }
 
 
@@ -2441,7 +2442,8 @@ var BibleInputMenuContainer = `
                 
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
-                <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a><br>
+                <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a>
+                | <a id='NewPage' target='_blank'>New</a><br>
                 <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='log.'>
                 </textarea><br>
 
