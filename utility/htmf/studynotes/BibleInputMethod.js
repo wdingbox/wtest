@@ -1727,8 +1727,8 @@ OutputBibleTable.prototype.onclick_popupLabel = function (cbf) {
 OutputBibleTable.prototype.set_data = function (ret) {
     this.m_data = ret
 }
-OutputBibleTable.prototype.set_findstrn = function (str) {
-    this.m_findstrn = str
+OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
+    this.m_inpage_findstrn = str
 }
 
 OutputBibleTable.prototype.Gen_output_table = function () {
@@ -1823,14 +1823,14 @@ OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
 }
 OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
-    if(!this.m_findstrn) return txt
-    var findstrn = this.m_findstrn
+    if(!this.m_inpage_findstrn) return txt
+    var findstrn = this.m_inpage_findstrn
     var reg = new RegExp(findstrn, "g")
 
     var mat = txt.match(reg)
     if (mat) {
         mat.forEach(function (val) {
-            var rep = `<font class='matlocal'>${findstrn}</font>`
+            var rep = `<font class='matInPage'>${findstrn}</font>`
             txt = txt.replace(reg, rep)
         })
     }
@@ -1909,43 +1909,46 @@ function apiCallback_Gen_output_table(ret) {
 
 
 
-function onclick_regex_match_next(incrs, _this) {
+function onclick_inpage_find_next(incrs, _this) {
     var str = $("#sinput").val();
     var reg = new RegExp(str, "g");
 
-    if (undefined === document.g_indexNext) document.g_indexNext = 0
-    document.g_indexNext += incrs
-    var matSize = $(".mat").length;
-    if (document.g_indexNext < 0) document.g_indexNext = matSize - 1
-    if (document.g_indexNext >= matSize) document.g_indexNext = 0
-    $(".matIndex").removeClass("matIndex");
-    $(".mat").each(function (i, v) {
-        if (document.g_indexNext === i) {
-            $(this).addClass("matIndex")
+    if (undefined === document.g_NextIndex) document.g_NextIndex = 0
+    document.g_NextIndex += incrs
+    var matSize = $(".matInPage").length;
+    if (document.g_NextIndex < 0) document.g_NextIndex = matSize - 1
+    if (document.g_NextIndex >= matSize) document.g_NextIndex = 0
+    $(".matNextIdx").removeClass("matNextIdx");
+    $(".matInPage").each(function (i, v) {
+        if (document.g_NextIndex === i) {
+            $(this).addClass("matNextIdx")
             $(this)[0].scrollIntoViewIfNeeded(true)
         }
     });
 
-    var disp = `${document.g_indexNext}/${matSize}`
+    var disp = `${document.g_NextIndex}/${matSize}`
     $("#searchNextresult").text(disp).css("color", "black")
-    Uti.Msg("tot:" + document.g_indexNext);
+    Uti.Msg("tot:" + document.g_NextIndex);
 };
 
-function onclick_local_find_str() {
+function onclick_inpage_find_strn() {
     var s = $("#sinput").val().trim();
-    g_obt.set_findstrn(s)
+    g_obt.set_inpage_findstrn(s)
     g_obt.Gen_output_table()
 
     MyStorage.addMostRecentSearchStrn(s)
     g_aim.gen_search_strn_history()
-    document.g_indexNext = -1
+    document.g_NextIndex = -1
+
+    var nFound = $(".matInPage").length;
+    $("#searchNextresult").text("0/"+nFound)
 }
 function onclick_BibleObj_search_str() {
     var s = $("#sinput").val().trim();
 
     MyStorage.addMostRecentSearchStrn(s)
     g_aim.gen_search_strn_history()
-    document.g_indexNext = -1
+    document.g_NextIndex = -1
 
 
     Jsonpster.inp.par = g_aim.get_search_inp();
@@ -2413,11 +2416,11 @@ var BibleInputMenuContainer = `
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
 
-                <button onclick="onclick_BibleObj_search_str();" title="search on servr">search</button>
-                <button onclick="onclick_local_find_str();" title="search on local">find</button>
-                <button onclick="onclick_regex_match_next(-1,this);" title="find on page">Prev</button>
+                <button onclick="onclick_BibleObj_search_str();" title="search on servr">InSvr</button>
+                <button onclick="onclick_inpage_find_strn();" title="search on local">InPage</button>
+                <button onclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
+                <button onclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
                 <span id="searchNextresult">0/0</span>
-                <button onclick="onclick_regex_match_next(1,this);" title="find on page">Next</button>
                 <br>
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>CUVS</caption>

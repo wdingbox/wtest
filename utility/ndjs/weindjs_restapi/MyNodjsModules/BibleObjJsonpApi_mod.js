@@ -157,7 +157,7 @@ var BibleUti = {
                             var mat = txt.match(rep);
                             if (mat) {
                                 bFound = true
-                                var txtFound = txt.replace(mat[0], "<font color='red' class='mat'>" + mat[0] + "</font>");
+                                var txtFound = txt.replace(mat[0], "<font class='matInSvr'>" + mat[0] + "</font>");
                                 bcvR[bkc][chp][vrs][rev] = txtFound
                             }
                         }
