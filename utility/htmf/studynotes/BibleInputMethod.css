@@ -513,15 +513,17 @@ input[title='NIV']:checked:after {
     font-size: small;
  
     background-color: olive;
-    position: relative;
-    float:left;
-   
+
     top: 0px;
    
     text-align: right;
     /*border: 1px solid #73AD21;*/
     padding: 0 5px 0 0;
     margin: 0 5px 0 0;
+
+    
+    float:left;
+
 }
 .revTag{
     font-size:xx-small;
