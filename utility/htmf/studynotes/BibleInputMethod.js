@@ -2240,17 +2240,16 @@ var BibleInputMenuContainer = `
     <div id="BibInputMenuHolder">
         <div id="GroupsContainer" style="display:visual">
             <div class="GrpMenu" id="grp_Keyboard" style="float:left;display:none;">
-
                 <!----------------------------->
-                <table border="1" id="inputkey">
+                <table border="1">
                     <tbody id="SingleKeywordsBody">
                     </tbody>
                     <tbody id='DigitOfChapt'>
                     </tbody>
                     <tbody id='DigitOfVerse'>
                     </tbody>
-
                 </table>
+                <!----------------------------->
             </div>
 
 
