@@ -1488,6 +1488,7 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
         }
         $("#menuContainer").show()
+        grpmgr.sel_default()
     })
     showup.m_Bki.onclick_bkc(function () {
         //store before clear
@@ -1511,6 +1512,7 @@ AppInstancesManager.prototype.init = function () {
             _This.loadBible_chapter_by_bibOj();
         }
         $("#menuContainer").show()
+        grpmgr.sel_default()
     })
     showup.onclick_face(function(){
         skout.show(false)
