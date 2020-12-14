@@ -30,7 +30,7 @@ body {
         overflow: visible;
         display: block;
 
-        height: 138px;
+        height: 25px;
         width:350px;
         
 
@@ -70,10 +70,9 @@ body {
         background-color: gray;
     }
     
+   
     .GrpMenu{
         background-color: gray;
-    }
-    .hiddenGrpMenu{
         display:none;
     }
    

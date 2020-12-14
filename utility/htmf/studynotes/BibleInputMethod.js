@@ -1387,7 +1387,7 @@ function GroupsMenuMgr() {
 }
 GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
     var eBar = document.createElement("div")
-    $(this.m_grpContainerID).find(".hiddenGrpMenu").each(function () {
+    $(this.m_grpContainerID).find(".GrpMenu").each(function () {
         var sid = $(this).attr("id")
         var name = " " + sid.substr(4)
         var eac = document.createElement("a")
@@ -2232,7 +2232,7 @@ var BibleInputMenuContainer = `
 </style>
 
 <div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
-    <a id="bk_name">Biblic Input Keyboard</a>
+    <a id="bk_name">Name of Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
     <div class='chapvrsnum' id='chp_num'>chap</div> : <div class='chapvrsnum' id='vrs_num'>ver</div>
 </div>
@@ -2241,40 +2241,25 @@ var BibleInputMenuContainer = `
 
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
-        <div id="ID_BibleInputMenuContainer">
-
-            <!----------------------------->
-
-            <table border="1" id="inputkey">
-                <tbody id="SingleKeywordsBody">
-                </tbody>
-                <tbody id='DigitOfChapt'>
-                </tbody>
-                <tbody id='DigitOfVerse'>
-                </tbody>
-                
-            </table>
-
-            <!----------------------------->
-
-            <!----------------------------->
-            <table id="Tab_OutputBooksList" border="1">
-                <caption></caption>
-                <thead id="">
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <!----------------------------->
-        </div>
-
-
-
-
-       
         <div id="GroupsContainer" style="display:visual">
+            <div class="GrpMenu" id="grp_Keyboard" style="float:left;display:none;">
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Cluster" style="float:left;display:none;">
+                <!----------------------------->
+                <table border="1" id="inputkey">
+                    <tbody id="SingleKeywordsBody">
+                    </tbody>
+                    <tbody id='DigitOfChapt'>
+                    </tbody>
+                    <tbody id='DigitOfVerse'>
+                    </tbody>
+
+                </table>
+            </div>
+
+
+        
+
+            <div class="GrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
                     <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
                     <thead id=""></thead>
@@ -2326,7 +2311,7 @@ var BibleInputMenuContainer = `
             </div>
 
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Search" style="float:left;display:none;">
+            <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
 
@@ -2350,7 +2335,7 @@ var BibleInputMenuContainer = `
             </table>
             </div>
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Uti"  style="float:left;display:none;">
+            <div class="GrpMenu" id="grp_Uti"  style="float:left;display:none;">
            
                 
                 
@@ -2366,7 +2351,7 @@ var BibleInputMenuContainer = `
 
             </div>
 
-            <div class="GrpMenu hiddenGrpMenu" id="grp_Config"  style="float:left;display:none;">
+            <div class="GrpMenu" id="grp_Config"  style="float:left;display:none;">
                 <table id='tmpsel2ref' border="1" align="left">
                     <thead></thead>
                     <tbody>
@@ -2422,6 +2407,19 @@ var BibleInputMenuContainer = `
 
 
 
+
+
+<!----------------------------->
+<!----------------------------->
+<table id="Tab_OutputBooksList" border="1">
+    <caption></caption>
+    <thead id="">
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<!----------------------------->
+<!----------------------------->
 <div id="divPopupMenu">
     <table id='xxrefslist' border="1" align="left">
     
