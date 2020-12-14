@@ -1389,25 +1389,22 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (idGroupsContainer, hist) {
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".GrpMenu").each(function () {
         var sid = $(this).attr("id")
-        var name = " " + sid.substr(4)
+        var name = " " + sid.substr(4) //:grp_Keyboard
         var eac = document.createElement("a")
         $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
         $(eBar).append(eac).append(" | ")
     });
 
-    $(this.m_grpContainerID).prepend(eBar).find("a").bind("click", function () {
+    $(this.m_grpContainerID).prepend(eBar).find("a[sid]").bind("click", function () {
         var sid = $(this).attr("sid");
 
         $(sid).slideToggle()
-        $(this).toggleClass("GroupsMenuMgrHili")
+        $(this).toggleClass("GrpMenuItemHili")
 
         //close others
-        $(".GroupsMenuMgrHili").each(function () {
-            var _sid = $(this).attr("sid");
-            if (_sid != sid) {
-                $(_sid).hide()
-                $(this).removeClass("GroupsMenuMgrHili")
-            }
+        $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function(){
+            var sid = $(this).attr("sid")
+            $(sid).hide()
         })
     })
 
