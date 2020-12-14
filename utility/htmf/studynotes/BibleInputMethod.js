@@ -587,8 +587,6 @@ ShowupBCV.prototype.init = function () {
     this.m_Bki = new Showup_Bk(this.m_showupBknID)
     this.m_Chp = new Showup_CV(this.m_showupChpId)
     this.m_Vrs = new Showup_CV(this.m_showupVrsId)
-
-
 }
 
 ShowupBCV.prototype.update_showup = function (bcv) {
@@ -676,14 +674,14 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
             _This.m_Vrs.set_showupVal("")
             cbfLoadBible(0)
         }
-
-        //_This.m_Chp.set_showupVal("")
-        //_This.init_Chp_digiKeys_by_vol()
-
-        //_This.m_nextDigiMenu.disable_all_digiKey(true)
-
-        //cbfLoadBible()
     });
+}
+ShowupBCV.prototype.onclick_face = function (cbfLoadBible) {
+    var _This = this
+
+    $("#MainMenuToggler").bind("click",function(){
+        cbfLoadBible()
+    })
 }
 ////////////////-------------------////////////////////////////////
 
@@ -1514,6 +1512,10 @@ AppInstancesManager.prototype.init = function () {
         }
         $("#menuContainer").show()
     })
+    showup.onclick_face(function(){
+        skout.show(false)
+        $('#menuContainer').slideToggle();
+    })
 
 
     digi.m_Chp.Gen_Digits("#DigitOfChapt", "chp_num")
@@ -2239,7 +2241,7 @@ var BibleInputMenuContainer = `
 <style>
 </style>
 
-<div id="menuToggler" onclick="$('#menuContainer').slideToggle();">
+<div id="MainMenuToggler">
     <a id="bk_name">Select A Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
     <div class='chapvrsnum' id='chp_num'>chap</div> : <div class='chapvrsnum' id='vrs_num'>ver</div>
