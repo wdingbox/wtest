@@ -466,6 +466,13 @@ PopupMenu.prototype.init = function () {
     $(this.m_id).find("a").bind("click", function () {
         $(_THIS.m_id).hide()
     })
+    $(this.m_id).find("caption").bind("click",function(){
+        var tx = $(this).text().trim()
+        if(tx.length>0){
+            Uti.copy2clipboard(tx)
+        }
+        _THIS.hide()
+    })
 
     this.popupMenu_BcvTag = new PopupMenu_BcvTag()
     this.popupMenu_EdiTag = new PopupMenu_EdiTag()
