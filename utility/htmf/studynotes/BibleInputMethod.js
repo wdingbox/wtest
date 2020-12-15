@@ -49,7 +49,7 @@ var MyStorage = {
     addHistoryMostRecentMarks: function (strn) {
         if (!strn) return
         var ar = this.getHistoryMostRecentBook()
-        Uti.addon_most_recent_ary(ar, strn)
+        Uti.addonTopOfAry(ar, strn)
         if (!ar) {
         } else {
             localStorage.setItem("HistoryMostRecentMarks", JSON.stringify(ar))
@@ -75,7 +75,7 @@ var MyStorage = {
     addHistoryMostRecentBook: function (strn) {
         if (!strn) return
         var ar = this.getHistoryMostRecentBook()
-        Uti.addon_most_recent_ary(ar, strn)
+        Uti.addonTopOfAry(ar, strn)
         if (!ar) {
         } else {
             localStorage.setItem("HistoryMostRecentBooks", JSON.stringify(ar))
@@ -101,7 +101,7 @@ var MyStorage = {
     addMostRecentSearchStrn: function (strn) {
         if (!strn) return
         var ar = this.getMostRecentSearchStrn()
-        Uti.addon_most_recent_ary(ar, strn)
+        Uti.addonTopOfAry(ar, strn)
         if (!ar) {
         } else {
             localStorage.setItem("MostRecentSearchStrn", JSON.stringify(ar))
@@ -679,7 +679,7 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
 ShowupBCV.prototype.onclick_face = function (cbfLoadBible) {
     var _This = this
 
-    $("#MainMenuToggler").bind("click",function(){
+    $("#MainMenuToggler").bind("click", function () {
         cbfLoadBible()
     })
 }
@@ -813,11 +813,11 @@ SingleKeyOutputBooksTable.prototype.ary_To_trs = function (vol_arr) {
     return trarr.join("");
 }
 SingleKeyOutputBooksTable.prototype.show = function (bShow) {
-   if(bShow){
-       $(this.m_id).show()
-   }else{
-    $(this.m_id).hide()
-   }
+    if (bShow) {
+        $(this.m_id).show()
+    } else {
+        $(this.m_id).hide()
+    }
 }
 
 SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (Yoffset, vol_arr, alreadyhili) {
@@ -1256,7 +1256,7 @@ Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistor
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parser_bcv(bcv)
-    if(!ret || ret.err) return Uti.Msg("addnew is not valid: "+bcv)
+    if (!ret || ret.err) return Uti.Msg("addnew is not valid: " + bcv)
 
     this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
 
@@ -1409,7 +1409,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $(this).toggleClass("GrpMenuItemHili")
 
         //close others
-        $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function(){
+        $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function () {
             var sid = $(this).attr("sid")
             $(sid).hide()
         })
@@ -1430,7 +1430,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     ////     table_sort("#oBible table");
     //// });
 
-    $("#NewPage").attr("href",  window.location.href)
+    $("#NewPage").attr("href", window.location.href)
 }
 GroupsMenuMgr.prototype.sel_default = function () {
     $(this.m_grpContainerID).find("a:eq(0)").trigger("click")
@@ -1497,7 +1497,7 @@ AppInstancesManager.prototype.init = function () {
     showup.m_Bki.onclick_bkc(function () {
         //store before clear
         var ret = showup.get_selected_vcv_parm()
-        var bcv = ret.vol+ret.chp+":"+ret.vrs
+        var bcv = ret.vol + ret.chp + ":" + ret.vrs
         markHistory.m_tbody.RecentMarks.addnew2table(bcv)
 
         //clear
@@ -1505,7 +1505,7 @@ AppInstancesManager.prototype.init = function () {
         showup.m_Vrs.set_showupVal("")
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
-        
+
         $("#menuContainer").show()
         grpmgr.sel_default()
     })
@@ -1518,7 +1518,7 @@ AppInstancesManager.prototype.init = function () {
         $("#menuContainer").show()
         grpmgr.sel_default()
     })
-    showup.onclick_face(function(){
+    showup.onclick_face(function () {
         skout.show(false)
         $('#menuContainer').slideToggle();
     })
@@ -1602,8 +1602,8 @@ AppInstancesManager.prototype.init = function () {
     })
 
 
-    this.gen_search_strn_history()
-
+    
+    this.onclicks_btns_in_grpMenu_search()
 };
 
 
@@ -1670,26 +1670,128 @@ AppInstancesManager.prototype.get_search_inp = function () {
     var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     return inp;
 };
-AppInstancesManager.prototype.gen_search_strn_history = function () {
-    var trs = ""
-    var ar = MyStorage.getMostRecentSearchStrn()
-    ar.forEach(function (strn) {
-        if (strn.trim().length > 0) {
-            trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
+
+    function onclick_inpage_find_next(incrs, _this) {
+        var str = $("#sinput").val();
+        var reg = new RegExp(str, "g");
+
+        if (undefined === document.g_NextIndex) document.g_NextIndex = 0
+        document.g_NextIndex += incrs
+        var matSize = $(".matInPage").length;
+        if (document.g_NextIndex < 0) document.g_NextIndex = matSize - 1
+        if (document.g_NextIndex >= matSize) document.g_NextIndex = 0
+        $(".matNextIdx").removeClass("matNextIdx");
+        $(".matInPage").each(function (i, v) {
+            if (document.g_NextIndex === i) {
+                $(this).addClass("matNextIdx")
+                $(this)[0].scrollIntoViewIfNeeded(true)
+            }
+        });
+
+        var disp = `${document.g_NextIndex}/${matSize}`
+        $("#searchNextresult").text(disp).css("color", "black")
+        Uti.Msg("tot:" + document.g_NextIndex);
+    };
+
+    function onclick_inpage_find_strn() {
+        var s = $("#sinput").val().trim();
+        g_obt.set_inpage_findstrn(s)
+        g_obt.Gen_output_table()
+
+        MyStorage.addMostRecentSearchStrn(s)
+        g_aim.gen_search_strn_history()
+        document.g_NextIndex = -1
+
+        var nFound = $(".matInPage").length;
+        $("#searchNextresult").text("0/" + nFound)
+    }
+    function onclick_BibleObj_search_str() {
+        var s = $("#sinput").val().trim();
+
+        MyStorage.addMostRecentSearchStrn(s)
+        g_aim.gen_search_strn_history()
+        document.g_NextIndex = -1
+
+
+        Jsonpster.inp.par = g_aim.get_search_inp();
+        Jsonpster.api = RestApi.ApiBibleObj_search_txt;
+        Uti.Msg(Jsonpster)
+        if (!Jsonpster.inp.par) return
+        Jsonpster.Run(function (ret) {
+            apiCallback_Gen_output_table(ret);
+            Uti.Msg(ret.out.result);
+        })
+
+        //test
+        var unicds = "";
+        for (var i = 0; i < s.length; i++) {
+            var ch = s.charCodeAt(i);
+            if (ch > 512) {
+                unicds += "\\u" + ch.toString(16);
+            }
         }
+        Uti.Msg(s);
+        Uti.Msg(unicds);
+    }
+
+    function gen_search_strn_history  () {
+        var trs = ""
+        var ar = MyStorage.getMostRecentSearchStrn()
+        ar.forEach(function (strn) {
+            if (strn.trim().length > 0) {
+                trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+            }
+        })
+    
+        //history
+        //console.log(ret);
+        $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
+            $(this).toggleClass("hili");
+            var s = $(this).text().trim();
+            $("#sinput").val(s);
+        });
+    
+        var str = MyStorage.getMostRecentSearchFile()
+        $("#Tab_regex_history_lst").find("caption").text(str)
+    }
+
+
+    $("#Btn_Prev").bind("click", function () {
+        onclick_inpage_find_next(-1, this)
     })
-
-    //history
-    //console.log(ret);
-    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
-        $(this).toggleClass("hili");
-        var s = $(this).text().trim();
-        $("#sinput").val(s);
-    });
-
-    var str = MyStorage.getMostRecentSearchFile()
-    $("#Tab_regex_history_lst").find("caption").text(str)
+    $("#Btn_Next").bind("click", function () {
+        onclick_inpage_find_next(+1, this)
+    })
+    $("#Btn_InPage").bind("click", function () {
+        onclick_inpage_find_strn()
+    })
+    $("#Btn_InSvr").bind("click", function () {
+        onclick_BibleObj_search_str()
+    })
+    $("#searchNextresult").bind("click", function () {
+        $(this).text("0/0")
+        $("#sinput").val("")
+    })
+    $("#RemoveSearchStrn").bind("click", function () {
+        var ar=[]
+        $("#Tab_regex_history_lst").find(".option").each(function () {
+            var tx = $(this).text().trim()
+            if($(this).hasClass("hili")){
+                $(this).parentsUntil("tbody").empty()
+            }else{
+                ar.push(tx)
+            }
+        })
+        MyStorage.setMostRecentSearchStrn(ar)
+    })
+    gen_search_strn_history()
 }
+
+
+
+
+
 ///////////
 //////////
 //////////
@@ -1823,7 +1925,7 @@ OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
 }
 OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
-    if(!this.m_inpage_findstrn) return txt
+    if (!this.m_inpage_findstrn) return txt
     var findstrn = this.m_inpage_findstrn
     var reg = new RegExp(findstrn, "g")
 
@@ -1839,7 +1941,7 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
 }
 OutputBibleTable.prototype.create_htm_table = function () {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
-   var _THIS = this
+    var _THIS = this
 
     console.log("result:", this.m_data.out.result)
     var idx = 0, st = "", uuid = 1;
@@ -1909,82 +2011,6 @@ function apiCallback_Gen_output_table(ret) {
 
 
 
-function onclick_inpage_find_next(incrs, _this) {
-    var str = $("#sinput").val();
-    var reg = new RegExp(str, "g");
-
-    if (undefined === document.g_NextIndex) document.g_NextIndex = 0
-    document.g_NextIndex += incrs
-    var matSize = $(".matInPage").length;
-    if (document.g_NextIndex < 0) document.g_NextIndex = matSize - 1
-    if (document.g_NextIndex >= matSize) document.g_NextIndex = 0
-    $(".matNextIdx").removeClass("matNextIdx");
-    $(".matInPage").each(function (i, v) {
-        if (document.g_NextIndex === i) {
-            $(this).addClass("matNextIdx")
-            $(this)[0].scrollIntoViewIfNeeded(true)
-        }
-    });
-
-    var disp = `${document.g_NextIndex}/${matSize}`
-    $("#searchNextresult").text(disp).css("color", "black")
-    Uti.Msg("tot:" + document.g_NextIndex);
-};
-
-function onclick_inpage_find_strn() {
-    var s = $("#sinput").val().trim();
-    g_obt.set_inpage_findstrn(s)
-    g_obt.Gen_output_table()
-
-    MyStorage.addMostRecentSearchStrn(s)
-    g_aim.gen_search_strn_history()
-    document.g_NextIndex = -1
-
-    var nFound = $(".matInPage").length;
-    $("#searchNextresult").text("0/"+nFound)
-}
-function onclick_BibleObj_search_str() {
-    var s = $("#sinput").val().trim();
-
-    MyStorage.addMostRecentSearchStrn(s)
-    g_aim.gen_search_strn_history()
-    document.g_NextIndex = -1
-
-
-    Jsonpster.inp.par = g_aim.get_search_inp();
-    Jsonpster.api = RestApi.ApiBibleObj_search_txt;
-    Uti.Msg(Jsonpster)
-    if (!Jsonpster.inp.par) return
-    Jsonpster.Run(function (ret) {
-        apiCallback_Gen_output_table(ret);
-        Uti.Msg(ret.out.result);
-    })
-
-    //test
-    var unicds = "";
-    for (var i = 0; i < s.length; i++) {
-        var ch = s.charCodeAt(i);
-        if (ch > 512) {
-            unicds += "\\u" + ch.toString(16);
-        }
-    }
-    Uti.Msg(s);
-    Uti.Msg(unicds);
-
-}
-
-
-
-function onclick_btn_set_jsonpster_svr_ip() {
-    var ip = $("#txtarea").val()
-    var src = `http://${ip}:7778/Jsonpster/`
-    console.log("jsonpster ipaddr", src)
-    var scp = document.createElement("script")
-    scp.src = ip
-    $("body").append(scp)
-    $("#txtarea").val(src)
-}
-
 
 
 
@@ -2003,7 +2029,7 @@ var Uti = {
     },
 
 
-    addon_most_recent_ary: function (targetary, addon) {
+    addonTopOfAry: function (targetary, addon) {
         var ary = addon
         if ("string" === typeof addon) {
             ary = [addon]
@@ -2011,10 +2037,9 @@ var Uti = {
         for (var i = 0; i < ary.length; i++) {
             var idx = targetary.indexOf(ary[i])
             if (idx >= 0) targetary.splice(idx, 1) //remove at idx, size=1
-            targetary.unshift(ary[i]);
+            targetary.unshift(ary[i]);//on top
         }
-
-        targetary = targetary.slice(0, 100) //:fetch idx range [0, 100].
+        targetary = targetary.slice(0, 100) //:max len 100. fetch idx range [0, 100].
     },
 
 
@@ -2415,12 +2440,13 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
-
-                <button onclick="onclick_BibleObj_search_str();" title="search on servr">InSvr</button>
-                <button onclick="onclick_inpage_find_strn();" title="search on local">InPage</button>
-                <button onclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
-                <button onclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
-                <span id="searchNextresult">0/0</span>
+                <a>In</a>
+                <button id="Btn_InSvr" xonclick="onclick_BibleObj_search_str();" title="search on servr">Svr</button>
+                <button id="Btn_InPage" xonclick="onclick_inpage_find_strn();" title="search on local">Page</button>
+                <button id="Btn_Prev" xonclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
+                <button id="Btn_Next" xonclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
+                <span id="searchNextresult">0/0</span><br>  
+                <span id="RemoveSearchStrn">Delete selected in list</span>
                 <br>
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>CUVS</caption>
