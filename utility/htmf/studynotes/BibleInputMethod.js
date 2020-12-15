@@ -1256,7 +1256,7 @@ Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistor
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parser_bcv(bcv)
-    if(!ret) Uti.Msg("addnew is not valid: "+bcv)
+    if(!ret || ret.err) return Uti.Msg("addnew is not valid: "+bcv)
 
     this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
 
