@@ -317,6 +317,9 @@ PopupMenu_EdiTag.prototype.init = function () {
     function _gen_pster_write() {
         _THIS.m_ediDiv.touch()
         var htm = _THIS.m_ediDiv.html()
+        htm = Uti.convert_std_bcv_in_text_To_linked(htm)
+        _THIS.m_ediDiv.html(htm)
+
         var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htm)
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
@@ -2049,11 +2052,17 @@ var Uti = {
         $("#txtarea").val(results);
     },
 
-    convert_std_bcv_in_text_To_linked:function(str){
+    convert_std_bcv_in_text_To_linked: function (str) {
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
             var sln = `<a href='#${v}'>${v}</a>`
-            var reg = new RegExp(`[^\>\#\;]${v}[^\<\&]`,"g")
+            var reg = new RegExp(`[^\>\#\;]${v}`, "g") //issue: in <div>Gen1:1</div>
+            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // negative lookahead =(?!regex here).
+            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // (?: # begin non-capturing group
+            reg = new RegExp(`(?:(?![v][\>])(?![\d][\;])(?!.[\#]))${v}`, "g")  // (?: # begin non-capturing group
+            reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
+            reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
+            reg = new RegExp(`[^\>\#\;]\s{0,}(${v})`, "g")  // 
             str = str.replace(reg, sln)
         })
         Uti.Msg(str)
