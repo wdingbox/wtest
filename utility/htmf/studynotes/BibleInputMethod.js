@@ -1525,6 +1525,8 @@ AppInstancesManager.prototype.init = function () {
         grpmgr.sel_default()
     })
     showup.m_Bki.onclick_bkc(function () {
+        _This.scrollToView_Vrs() //before clearup.
+
         //store before clear
         var ret = showup.get_selected_vcv_parm()
         var bcv = ret.vol + ret.chp + ":" + ret.vrs
