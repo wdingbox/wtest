@@ -466,9 +466,9 @@ PopupMenu.prototype.init = function () {
     $(this.m_id).find("a").bind("click", function () {
         $(_THIS.m_id).hide()
     })
-    $(this.m_id).find("caption").bind("click",function(){
+    $(this.m_id).find("caption").bind("click", function () {
         var tx = $(this).text().trim()
-        if(tx.length>0){
+        if (tx.length > 0) {
             Uti.copy2clipboard(tx)
         }
         _THIS.hide()
@@ -1430,7 +1430,19 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         Uti.Msg(ret)
         Uti.Msg(ret.biblical_order_splitted_ary.join(", "))
-        hist.m_tbody.RecentMarks.addnew2table(ret.biblical_order_splitted_ary)
+
+
+        ////
+        //const urlParams = new URLSearchParams(window.location.search);
+        //const ip = urlParams.get('ip');
+        var htm = ""
+        //var href = "" + window.location.href
+        ret.biblical_order_splitted_ary.forEach(function (v, i) {
+            hist.m_tbody.RecentMarks.addnew2table(v)
+            htm += `<a href='#'>${v}</a> | `
+        })
+        $("#txtdiv").html(htm)
+        Uti.Msg(htm)
     });
     //// $("#oBible_indxer").click(function () {
     ////     table_col_index("#oBible table");
@@ -1609,7 +1621,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
 
-    
+
     this.onclicks_btns_in_grpMenu_search()
 };
 
@@ -1742,7 +1754,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg(unicds);
     }
 
-    function gen_search_strn_history  () {
+    function gen_search_strn_history() {
         var trs = ""
         var ar = MyStorage.getMostRecentSearchStrn()
         ar.forEach(function (strn) {
@@ -1750,7 +1762,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
                 trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
             }
         })
-    
+
         //history
         //console.log(ret);
         $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
@@ -1758,7 +1770,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
             var s = $(this).text().trim();
             $("#sinput").val(s);
         });
-    
+
         var str = MyStorage.getMostRecentSearchFile()
         $("#Tab_regex_history_lst").find("caption").text(str)
     }
@@ -1781,12 +1793,12 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         $("#sinput").val("")
     })
     $("#RemoveSearchStrn").bind("click", function () {
-        var ar=[]
+        var ar = []
         $("#Tab_regex_history_lst").find(".option").each(function () {
             var tx = $(this).text().trim()
-            if($(this).hasClass("hili")){
+            if ($(this).hasClass("hili")) {
                 $(this).parentsUntil("tbody").empty()
-            }else{
+            } else {
                 ar.push(tx)
             }
         })
@@ -2242,13 +2254,19 @@ var Uti = {
 
     Jsonpster_crossloader: function (ip) {
         if (!ip) {
-            var shr = "" + window.location.href
-            var ary = shr.split("=")
-            if (ary.length !== 2) {
-                return alert("?ip= is missed", shr)
+            const urlParams = new URLSearchParams(window.location.search);
+            ip = urlParams.get('ip');
+            if (!ip) {
+                return alert("[missed in url] ?ip=x.x.x.x", shr)
             }
-            ip = ary[1]
-            console.log("ip:", ip)
+            var idx = ip.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
+            var bcv = ""
+            if (idx >= 0) {
+                ip = ip.substr(0, idx)
+                bcv = ip.substr(1 + idx)
+                window.m_bcv = bcv
+            }
+            console.log("ip,pcv:", ip, bcv)
         }
 
         if ("undefined" != typeof RestApi) {
@@ -2473,13 +2491,13 @@ var BibleInputMenuContainer = `
 
             <div class="GrpMenu" id="grp_Uti"  style="float:left;display:none;">
                 <button id="Check_bcv">Check(bcv)</button>
-                <button id=""></button>
-                <button onclick=""></button>
+                <a id="txtdiv"></a>
                 
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
                 <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a>
                 | <a id='NewPage' target='_blank'>New</a><br>
+                
                 <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='log.'>
                 </textarea><br>
 
