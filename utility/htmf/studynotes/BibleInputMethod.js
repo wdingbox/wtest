@@ -2078,7 +2078,6 @@ var Uti = {
         var oldtxt = $("#txtarea").val();
         if (oldtxt.length > 1000) oldtxt.substr(0, 1000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
-        //results = results.substr(0, 60);
 
         $("#txtarea").val(results);
     },
