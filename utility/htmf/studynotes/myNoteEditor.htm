@@ -269,7 +269,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
                         console.log("langauge-code:", lancode)
                         switch (lancode) {
-                            case "ar": return load_page_by_parse_window_location()
+                            case "ar": return load_page_by_parent_wind()
                             case "fr":
                             case "es":
                         }
@@ -382,13 +382,13 @@ ${scmd}
                 });
         }
         function __save() {
- 
+
             var theData = ckEditor.getData();
             var sbody = "<body>"
             var pos1 = theData.search(sbody) + sbody.length
             var pos2 = theData.search(/\<\/body\>/)
-            var html = theData.substring(pos1,pos2)
-            if(pos1<0 || pos2<0){
+            var html = theData.substring(pos1, pos2)
+            if (pos1 < 0 || pos2 < 0) {
                 return alert("body not found")
             }
 
@@ -469,13 +469,15 @@ ${scmd}
             $("#gen_sh_cmd").append(`<option>open ./${ret.name}___wordfreq.htm</option>`)
             console.log(ret.name)
         }
-        function load_page_by_parse_window_location() {
+        function load_page_by_parent_wind() {
             console.log(window.location)
-            //var ret = get_pathname_fr_window_location()
-            //$.get(ret.name, function (data) {
-            //alert(data);
+         
+            var pster = JSON.parse(localStorage.getItem("myNote"))
+            console.log("Storage myNode", pster)
+            var e = document.createElement("script");
+            e.src = `${pster.url}Jsonpster/`;
+            document.body.appendChild(e);
             setTimeout(() => {
-                var pster = JSON.parse(localStorage.getItem("myNote"))
                 for (const [rev, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
@@ -501,9 +503,8 @@ ${scmd}
     $(function () {
         init_CKEditor()
         init_ui_cmd()
-        load_page_by_parse_window_location()
+        load_page_by_parent_wind()
 
 
     })
 </script>
-<script src="./Jsonpster_crossloader.js"></script>
