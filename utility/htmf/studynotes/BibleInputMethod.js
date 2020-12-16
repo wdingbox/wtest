@@ -1123,7 +1123,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
-    var clr={Rev:"orange", Seq:"lightblue", Find:""}
+    var clr = { Rev: "orange", Seq: "lightblue", Find: "" }
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
@@ -2075,8 +2075,11 @@ var Uti = {
         if ("object" === typeof dat) {
             str = JSON.stringify(dat, null, 4);
         }
-        var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + $("#txtarea").val();
+        var oldtxt = $("#txtarea").val();
+        if (oldtxt.length > 1000) oldtxt.substr(0, 1000)
+        var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
         //results = results.substr(0, 60);
+
         $("#txtarea").val(results);
     },
 
