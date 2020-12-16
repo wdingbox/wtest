@@ -1724,7 +1724,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         g_obt.Gen_output_table()
 
         MyStorage.addMostRecentSearchStrn(s)
-        g_aim.gen_search_strn_history()
+        gen_search_strn_history()
         document.g_NextIndex = -1
 
         var nFound = $(".matInPage").length;
@@ -1734,7 +1734,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         var s = $("#sinput").val().trim();
 
         MyStorage.addMostRecentSearchStrn(s)
-        g_aim.gen_search_strn_history()
+        gen_search_strn_history()
         document.g_NextIndex = -1
 
 
@@ -2055,14 +2055,14 @@ var Uti = {
     convert_std_bcv_in_text_To_linked: function (str) {
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
-            var sln = `<a href='#${v}'>${v}</a>`
+            var sln = ` <a href='#${v}'>${v}</a>`
             var reg = new RegExp(`[^\>\#\;]${v}`, "g") //issue: in <div>Gen1:1</div>
             reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // negative lookahead =(?!regex here).
             reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // (?: # begin non-capturing group
-            reg = new RegExp(`(?:(?![v][\>])(?![\d][\;])(?!.[\#]))${v}`, "g")  // (?: # begin non-capturing group
-            reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
-            reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
-            reg = new RegExp(`[^\>\#\;]\s{0,}(${v})`, "g")  // 
+            reg = new RegExp(`(?:(?!([\"\'][\>])([\"\'][\#])))${v}`, "g")  // (?: # begin non-capturing group
+            //reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
+            //reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
+            reg = new RegExp(`[^\>\#\;](${v})`, "g")  //bug: div>Gen1:1 
             str = str.replace(reg, sln)
         })
         Uti.Msg(str)
