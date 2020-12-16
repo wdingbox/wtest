@@ -1400,6 +1400,7 @@ Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
 Tab_mark_bcv_history.prototype.toggleSelAll = function () {
     var cap = this.getCap()
     this.m_tbody[cap].toggleSelAll()
+    this.m_tbody[cap]
 }
 
 
@@ -1634,7 +1635,9 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chapter_by_bibOj()
         } else {
-            _This.loadBible_verses_by_StdBcvStrn(bcvAry.join(","))
+            var str = bcvAry.join(",")
+            Uti.Msg(str)
+            _This.loadBible_verses_by_StdBcvStrn(str)
         }
 
     })
