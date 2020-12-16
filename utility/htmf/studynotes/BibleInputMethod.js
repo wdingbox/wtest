@@ -472,7 +472,7 @@ PopupMenu.prototype.init = function () {
     $(this.m_id).find("caption").bind("click", function () {
         var tx = $(this).text().trim()
         if (tx.length > 0) {
-            Uti.copy2clipboard(tx)
+            Uti.copy2clipboard("(" + tx + ")")
         }
         _THIS.hide()
     })
