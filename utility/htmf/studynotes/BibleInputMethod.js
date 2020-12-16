@@ -526,6 +526,7 @@ PopupMenu.prototype.hide = function () {
 
 //Showup Bookcode - Chapter:Verses
 function ShowupBCV() {
+    this.m_MainMenuToggler = "#MainMenuToggler"
     this.m_showupBknID = "#bk_name"
     this.m_showupChpId = "#chp_num"
     this.m_showupVrsId = "#vrs_num"
@@ -689,9 +690,14 @@ ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
 ShowupBCV.prototype.onclick_face = function (cbfLoadBible) {
     var _This = this
 
-    $("#MainMenuToggler").bind("click", function () {
+    $(this.m_MainMenuToggler).bind("click", function () {
         cbfLoadBible()
     })
+}
+ShowupBCV.prototype.setAsChildren = function () {
+    var _This = this
+
+    $(this.m_MainMenuToggler).css("background-color", "#00aaaa")
 }
 ////////////////-------------------////////////////////////////////
 
@@ -1580,6 +1586,7 @@ AppInstancesManager.prototype.init = function () {
     if (window.m_bcv) {//frm url. 
         var ret = Uti.parser_bcv(window.m_bcv)
         if (ret && !ret.err) {
+            showup.setAsChildren()
             showup.update_showup(window.m_bcv)
             setTimeout(function () {
                 //_This.loadBible_verses_by_StdBcvStrn(window.m_bcv)
