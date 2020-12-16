@@ -1123,9 +1123,11 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
+    var clr={Rev:"orange", Seq:"lightblue", Find:""}
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
+        $(this).css("background-color", clr[txt])
         switch (txt) {
             case "Rev":
                 $(this).text("Seq")
@@ -1357,6 +1359,8 @@ Tab_mark_bcv_history.prototype.init = function () {
     _THIS.m_tbody.RecentMarks.show(false)
     _THIS.m_tbody[cap].show(true)
 
+    var clry = ["cyan", ""]
+
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.m_tbody.RecentBooks.show(false)
         _THIS.m_tbody.RecentMarks.show(false)
@@ -1364,7 +1368,7 @@ Tab_mark_bcv_history.prototype.init = function () {
         var ary = Object.keys(_THIS.m_tbody)
         var idx = ary.indexOf(cap) === 0 ? 1 : 0
         _THIS.m_tbody[ary[idx]].show(true)
-        $(this).text(ary[idx])
+        $(this).text(ary[idx]).css("background-color", clry[idx])
     });
 
     $("#clearUnse").bind("click", function () {
@@ -2074,16 +2078,22 @@ var Uti = {
     },
 
     convert_std_bcv_in_text_To_linked: function (str) {
+        Uti.Msg(str)
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
-            var sln = ` <a href='#${v}'>${v}</a>`
+            var sln = `$1<a href='#${v}'>${v}</a>`
             var reg = new RegExp(`[^\>\#\;]${v}`, "g") //issue: in <div>Gen1:1</div>
             reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // negative lookahead =(?!regex here).
             reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // (?: # begin non-capturing group
             reg = new RegExp(`(?:(?!([\"\'][\>])([\"\'][\#])))${v}`, "g")  // (?: # begin non-capturing group
             //reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
             //reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
-            reg = new RegExp(`[^\>\#\;](${v})`, "g")  //bug: div>Gen1:1 
+            reg = new RegExp(`(?:([^\>\#\;]))(${v})`, "g")  //bug: div>Gen1:1 
+            reg = new RegExp(`(?:((div[>])|(.[^\>\#\;])))(${v})`, "g")  //bug: div>Gen1:1 
+            reg = new RegExp(`(([\"\']\s{0,}[\>]\s{0,}){0,}|([^\>\#]))(${v})`, "g")  //seems fix bug: div>Gen1:1 
+            reg = new RegExp(`([^\>\#])${v}|^${v}`, "g")  //fixed for crossRef
+            //reg = new RegExp(`${v}(?:((?!([\<][\/]a[\>])(?!([\"\'])))`, "g") 
+            //reg = new RegExp(`(?:(?!(${sln}))`, "g")  
             str = str.replace(reg, sln)
         })
         Uti.Msg(str)
