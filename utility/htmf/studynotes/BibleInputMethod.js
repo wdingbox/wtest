@@ -698,6 +698,7 @@ ShowupBCV.prototype.setAsChildren = function () {
     var _This = this
 
     $(this.m_MainMenuToggler).css("background-color", "#00aaaa")
+    $("body").attr("onbeforeunload", null)
 }
 ////////////////-------------------////////////////////////////////
 
