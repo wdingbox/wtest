@@ -1577,6 +1577,16 @@ AppInstancesManager.prototype.init = function () {
         }
     })
 
+    if (window.m_bcv) {//frm url. 
+        var ret = Uti.parser_bcv(window.m_bcv)
+        if (ret && !ret.err) {
+            showup.update_showup(window.m_bcv)
+            setTimeout(function () {
+                _This.loadBible_verses_by_StdBcvStrn(window.m_bcv)
+            }, 3000)
+        }
+    }
+
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
             skout.Popup_BookList_Table(78, volary, alreadyhili)
@@ -2279,11 +2289,11 @@ var Uti = {
             if (!ip) {
                 return alert("[missed in url] ?ip=x.x.x.x", shr)
             }
-            var idx = ip.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
+            var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
             var bcv = ""
             if (idx >= 0) {
-                ip = ip.substr(0, idx)
-                bcv = ip.substr(1 + idx)
+                //ip = window.location.href.substr(0, idx)
+                bcv = window.location.href.substr(1 + idx)
                 window.m_bcv = bcv
             }
             console.log("ip,pcv:", ip, bcv)
