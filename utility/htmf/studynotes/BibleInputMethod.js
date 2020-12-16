@@ -1432,6 +1432,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Uti.Msg(ret.biblical_order_splitted_ary.join(", "))
 
 
+        
+
         ////
         //const urlParams = new URLSearchParams(window.location.search);
         //const ip = urlParams.get('ip');
@@ -1439,10 +1441,21 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //var href = "" + window.location.href
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
             hist.m_tbody.RecentMarks.addnew2table(v)
-            htm += `<a href='#'>${v}</a> | `
+            var sln = `<a href='#${v}'>${v}</a>`
+            htm += `${sln} | `
+
+            var reg = new RegExp(`[^\>\#\;]${v}[^\<\&]`,"g")
+            str = str.replace(reg, sln)
         })
         $("#txtdiv").html(htm)
         Uti.Msg(htm)
+
+        Uti.Msg(str)
+
+
+        
+        
+
     });
     //// $("#oBible_indxer").click(function () {
     ////     table_col_index("#oBible table");
