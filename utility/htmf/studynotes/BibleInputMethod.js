@@ -1582,7 +1582,8 @@ AppInstancesManager.prototype.init = function () {
         if (ret && !ret.err) {
             showup.update_showup(window.m_bcv)
             setTimeout(function () {
-                _This.loadBible_verses_by_StdBcvStrn(window.m_bcv)
+                //_This.loadBible_verses_by_StdBcvStrn(window.m_bcv)
+                _This.loadBible_chapter_by_bibOj()
             }, 3000)
         }
     }
