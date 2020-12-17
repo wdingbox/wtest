@@ -101,10 +101,12 @@ body {
 
 
 
-    #minus_ChpVal{
+    #minus_ChpVal, #plus_ChpVal{
         color: black;
       
         cursor: pointer;
+        padding: 0px 2px 5px 2px;
+        margin: 0 0 0 0;
     }
 
 

@@ -268,6 +268,12 @@ PopupMenu_BcvTag.prototype.init_links = function () {
                 //http://www.ccel.org/study/1_Samuel%202:11-4:18 
                 var bok = CNST.BlueLetterBibleCode[ret.vol];
                 ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + "");
+
+            });
+
+            $("#BibleInput").click(function () {
+                var ret = Ext_Link_Menu.HiliEx(this)
+                ret.set_href(ret.vol + ret.chp + ":" + ret.vrs);
             });
         }
     }
@@ -531,6 +537,7 @@ function ShowupBCV() {
     this.m_showupChpId = "#chp_num"
     this.m_showupVrsId = "#vrs_num"
     this.m_minus_ChpId = "#minus_ChpVal"//:--
+    this.m_plus_ChpId = "#plus_ChpVal"
 
     this.init()
 }
@@ -668,6 +675,17 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
 
         _This.m_Vrs.set_showupVal("")
         _This.goNextChp(-1)
+        cbfLoadBible(1)
+    });
+
+    $(this.m_plus_ChpId).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
+
+        var maxChp = _This.m_Bki.get_showup_bkn_info().maxChp
+        if (maxChp < 1) return
+
+        _This.m_Vrs.set_showupVal("")
+        _This.goNextChp(+1)
         cbfLoadBible(1)
     });
 }
@@ -1469,7 +1487,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#NewPage").attr("href", window.location.href)
 }
 GroupsMenuMgr.prototype.sel_default = function () {
-    $(this.m_grpContainerID).find("a:eq(0)").trigger("click")
+    //$(this.m_grpContainerID).find("a:eq(0)").addnew2table("GrpMenuItemHili")//trigger("click")
 }
 
 
@@ -2396,6 +2414,11 @@ var BibleInputMenuContainer = `
                 <a id="crossReference" ref="https://www.openbible.info/labs/cross-references/search?q=" title='cross-references'>cross-references</a>
             </td>
         </tr>
+        <tr>
+            <td>
+                <a id="BibleInput" ref="#" title='self open'>New</a>
+            </td>
+        </tr>
     </tbody>
     <tbody id="divPopupMenu_EdiTag">
         <tr>
@@ -2441,7 +2464,7 @@ var BibleInputMenuContainer = `
 <div id="MainMenuToggler">
     <a id="bk_name">Select A Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
-    <div class='chapvrsnum' id='chp_num'>chap</div> : <div class='chapvrsnum' id='vrs_num'>ver</div>
+    <div class='chapvrsnum' id='chp_num'>chap</div><a id="plus_ChpVal"> : </a><div class='chapvrsnum' id='vrs_num'>ver</div>
 </div>
 
 <!----------------------------->
