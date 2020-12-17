@@ -11,23 +11,20 @@ var Uti = require("./Uti.module").Uti;
 
 
 var BibleUti = {
-    ValideBibleObjFiles: {
-        __history_verses_loaded: "__history_verses_loaded",
-        __history_regex_search: "__history_regex_search"
-    },
-    get_usr_pathfile: function (username, RevCode) {
+   
+    xxxxxxxxxxxget_usr_pathfile: function (username, RevCode) {
         var pthf = `../../../../bible_obj_usr/account/${username}/${RevCode}_json.js`
         if (!fs.existsSync(pthf)) {
             Uti.MakePathDirOfFile(pthf)
         }
         return pthf;
     },
-    load_BibleMaxStruct: function () {
+    xxxxxxxxxxxxxload_BibleMaxStruct: function () {
         var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
         return load_BibleObj(spathfile, "All_Max_struct")
     },
 
-    get_pathfilenameOfRevID: function (f_path, RevCode) {
+    get_pathfilenameOfTranslationID: function (f_path, RevCode) {
         var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
         if ("_" === RevCode[0]) {
             if ("_" === RevCode[1]) {
@@ -42,7 +39,7 @@ var BibleUti = {
         return spathfile;
     },
     load_BibleObj: function (username, revCode) {
-        var jsfnm = BibleUti.get_pathfilenameOfRevID(username, revCode);
+        var jsfnm = BibleUti.get_pathfilenameOfTranslationID(username, revCode);
         var ret = BibleUti.load_BibleObj_by_fname(jsfnm)
         return ret;
     },
@@ -90,7 +87,7 @@ var BibleUti = {
         inpObj.out = { result: "", data: null }
         return inpObj;
     },
-    fetch_bc: function (BibleObj, oj) {
+    xxxxxxxxxxxxxxxxxxxxxxfetch_bc: function (BibleObj, oj) {
         console.log("oj",oj)
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
@@ -250,7 +247,7 @@ var BibleUti = {
 
         return ret;
     },
-    load_bcvR_by_StdBcvStrn: function (bcvR, stdBcvStrn) {
+    xxxxxxxxxxxxxxxxload_bcvR_by_StdBcvStrn: function (bcvR, stdBcvStrn) {
         var retOb = {}, stdBcvAr = stdBcvStrn.split(",")
 
         stdBcvAr.forEach(function (stdbcv) {
@@ -338,7 +335,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    ApiBibleObj_load_by_StdBcvStrn: function (req, res) {
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxApiBibleObj_load_by_StdBcvStrn: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -450,40 +447,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
-    ApiBibleObj_access_regex_search_history: function (req, res) {
-        var inpObj = BibleUti.GetApiInputParamObj(req)
-        console.log("ApiBibleObj_access_regex_search_history inpObj", inpObj);
-        var sret = JSON.stringify(inpObj);
-        if (!inpObj || !inpObj.par.Search || !inpObj.par.Search.File || 0 === inpObj.par.Search.File.length) {
-            console.log("return null.");
-            return sret;
-        }
-        var fname = inpObj.par.Search.File;//
-        if (undefined === BibleUti.ValideBibleObjFiles[fname]) {
-            console.log("Invalide Filename to save ************* inpObj", inpObj);
-            console.log("ValideBibleObjFiles=", ValideBibleObjFile);
-            return sret;
-        }
-
-        var ret = BibleUti.load_BibleObj(fname);
-        if (!inpObj.par.Search.Strn) {//only read no write.
-            console.log("only read no write...fname=", fname);
-            return ret.jstrn;
-        }
-        var srchstr = inpObj.par.Search.Strn;
-        if (srchstr.length > 0) {//write to history.
-            ret.obj["Gen"]["1"]["1"][srchstr] = Uti.getDateTime();
-            ret.writeback();
-            console.log("saved str=" + srchstr, " in file=", fname);
-            return sret;
-        }
-        console.log("ret=", ret);
-        ss = JSON.stringify(RbcObj);
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
-        res.end();
-        return ret;
-    },
+   
 }//// BibleRestApi ////
 
 var BibleObjJsonpApi = {

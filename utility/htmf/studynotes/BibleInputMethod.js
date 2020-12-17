@@ -1709,21 +1709,7 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
-AppInstancesManager.prototype.loadBible_verses_by_StdBcvStrn = function (stdBcvStrn) {
-    var _THIS = this
 
-    console.log("stdBcvStrn=", stdBcvStrn);
-    var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    Jsonpster.inp.par = { fnames: fnamesArr, StdBcvStrn: stdBcvStrn, bibOj: null, Search: null };
-    Jsonpster.api = RestApi.ApiBibleObj_load_by_StdBcvStrn;
-    Uti.Msg(Jsonpster);
-    Jsonpster.Run(function (ret) {
-        apiCallback_Gen_output_table(ret)
-        setTimeout(function () {
-            //_THIS.scrollToView_Vrs()
-        }, 2100)
-    })
-};///
 AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     var _THIS = this
     if (!oj) {
