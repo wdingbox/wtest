@@ -94,6 +94,10 @@ var BibleUti = {
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
             retOb[bkc] = {}
+            if (!chpObj || Object.keys(chpObj).length === 0) {
+                retOb[bkc] = BibleObj[bkc]
+                continue
+            }
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
                 retOb[bkc][chp] = BibleObj[bkc][chp]
                 console.log("bc", bkc, chp)

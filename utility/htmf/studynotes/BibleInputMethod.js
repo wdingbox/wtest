@@ -657,7 +657,7 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         //if (maxChp < 1) return
 
         var vrs = _This.m_Vrs.get_showupVal()
-       
+
         _This.m_Vrs.detchback()
         cbfLoadBible(1)
     });
@@ -1676,9 +1676,12 @@ AppInstancesManager.prototype.init = function () {
     g_obt.onclick_popupLabel(function (par) {
         popupMenu.popup(par)
         markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
+        $("title").text(par.m_bcv)
+
+        showup.update_showup(par.m_bcv)
+        digi.init_Chp_digiKeys_by_vol()
+        digi.init_Vrs_digiKeys_by_vol()
     })
-
-
 
     this.onclicks_btns_in_grpMenu_search()
 };
@@ -1831,7 +1834,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
 
         var str = MyStorage.getMostRecentSearchFile()
         $("#Tab_regex_history_lst").find("caption").text(str)
-        $("#Tab_regex_history_lst").find("caption").bind("click",function(){
+        $("#Tab_regex_history_lst").find("caption").bind("click", function () {
             //goto Cluster tab.
             grpmgr.sel_default("Cluster")
         })
@@ -1958,8 +1961,8 @@ OutputBibleTable.prototype.Gen_output_table = function () {
 
         _THIS.m_onclick_popupLabel(bcr)
 
-        markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
-        $("title").text(bcr.m_bcv)
+        //markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
+        //$("title").text(bcr.m_bcv)
 
 
     });
