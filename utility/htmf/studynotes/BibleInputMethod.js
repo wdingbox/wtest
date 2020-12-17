@@ -1490,8 +1490,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#NewPage").attr("href", window.location.href)
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
-    if (!sid) sid = "grp_Keyboard"
-    var sid = "#" + sid
+    if (!sid) sid = "Keyboard"
+    var sid = "#grp_" + sid
     $(this.m_grpContainerID).find(`a[sid='${sid}']`).addClass("GrpMenuItemHili")
     $(sid).show();
     this.close_others_of(sid)
@@ -1831,6 +1831,10 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
 
         var str = MyStorage.getMostRecentSearchFile()
         $("#Tab_regex_history_lst").find("caption").text(str)
+        $("#Tab_regex_history_lst").find("caption").bind("click",function(){
+            //goto Cluster tab.
+            grpmgr.sel_default("Cluster")
+        })
     }
 
 
@@ -2556,9 +2560,8 @@ var BibleInputMenuContainer = `
                 <button id="Btn_InPage" xonclick="onclick_inpage_find_strn();" title="search on local">Page</button>
                 <button id="Btn_Prev" xonclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
                 <button id="Btn_Next" xonclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
-                <span id="searchNextresult">0/0</span><br>  
-                <span id="RemoveSearchStrn">Delete selected in list</span>
-                <br>
+                <span id="searchNextresult">0/0</span>
+                <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>CUVS</caption>
                 <tbody>
@@ -2571,6 +2574,8 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
+            <br>
+            <button id="RemoveSearchStrn">Delete selected</button>
             </div>
 
             <!----------------------------->
