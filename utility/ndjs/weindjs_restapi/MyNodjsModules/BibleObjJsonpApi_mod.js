@@ -91,6 +91,8 @@ var BibleUti = {
         return inpObj;
     },
     fetch_bc: function (BibleObj, oj) {
+        console.log("oj",oj)
+        if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
             retOb[bkc] = {}
@@ -99,8 +101,8 @@ var BibleUti = {
                 continue
             }
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                retOb[bkc][chp] = BibleObj[bkc][chp]
                 console.log("bc", bkc, chp)
+                retOb[bkc][chp] = BibleObj[bkc][chp]
                 for (const [vrs, txt] of Object.entries(vrsObj)) {
                     //console.log(`${key}: ${value}`);
                 }
@@ -344,7 +346,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
-                RbcObj[trn] = bib.obj;
+                var bcObj = BibleUti.fetch_bc(bib.obj, inp.par.bibOj);
+                RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
             }
         }

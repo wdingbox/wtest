@@ -613,25 +613,26 @@ ShowupBCV.prototype.update_showup = function (bcv) {
     this.m_Chp.set_showupVal(par.chp)
     this.m_Vrs.set_showupVal(par.vrs)
 }
-ShowupBCV.prototype.get_selected_vcv_parm = function () {
+ShowupBCV.prototype.get_selected_bcv_parm = function () {
     var vol = this.m_Bki.get_showupBkc()
     var chp = this.m_Chp.get_showupVal()
     var vrs = this.m_Vrs.get_showupVal()
-    var ob = { vol: vol, chp: chp, vrs: vrs }
-    return ob;
-};
-ShowupBCV.prototype.get_selected_bc_bibOj = function () {
-    var parm = this.get_selected_vcv_parm()
-    if (!parm.vol) return null
-
-    var ob = {}
-    ob[parm.vol] = {}
-    ob[parm.vol][parm.chp] = {}
-    if (parm.vrs) {
-        //ob[parm.vol][parm.chp][parm.vrs] = parm.vrs
+    if (!vol || vol.length === 0) {
+        return null
     }
-    return ob;
+    var ret = { m_oj: {} }
+    ret.m_oj[vol] = {}
+    if (chp === 0) {
+        return ret
+    }
+    ret.m_oj[vol][chp] = {}
+    if (vrs > 0) {
+        ret.m_oj[vol][chp][vrs] = ""
+        ret.m_bcv = vol + chp + ":" + vrs
+    }
+    return ret;
 };
+
 
 
 ShowupBCV.prototype.goNextChp = function (i) {
@@ -1559,9 +1560,8 @@ AppInstancesManager.prototype.init = function () {
         _This.scrollToView_Vrs() //before clearup.
 
         //store before clear
-        var ret = showup.get_selected_vcv_parm()
-        var bcv = ret.vol + ret.chp + ":" + ret.vrs
-        markHistory.m_tbody.RecentMarks.addnew2table(bcv)
+        var ret = showup.get_selected_bcv_parm()
+        if (ret.m_bcv) markHistory.m_tbody.RecentMarks.addnew2table(ret.m_bcv)
 
         //clear
         showup.m_Chp.set_showupVal("")
@@ -1691,11 +1691,10 @@ AppInstancesManager.prototype.init = function () {
 
 
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
-    var parmBook = showup.get_selected_vcv_parm()
-    var bkchvr = parmBook.vol + parmBook.chp + ":" + parmBook.vrs
+    var ret = showup.get_selected_bcv_parm()
     $(".bcvTag").each(function () {
         var txt = $(this).text()
-        if (txt === bkchvr) {
+        if (txt === ret.m_bcv) {
             $(this)[0].scrollIntoViewIfNeeded()
             $(this).addClass("hiliScroll2View");
         }
@@ -1723,11 +1722,11 @@ AppInstancesManager.prototype.loadBible_verses_by_StdBcvStrn = function (stdBcvS
 };///
 AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
     var _THIS = this
-    var bibOj = showup.get_selected_bc_bibOj();
-    console.log("Obj=", bibOj);
-    if (!bibOj) return null
+    var res = showup.get_selected_bcv_parm();
+    console.log("res=", res);
+    if (!res.m_oj) return null
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: bibOj, Search: null };
+    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: res.m_oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
@@ -1737,7 +1736,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
         }, 2100)
     })
 
-    return bibOj;
+    return res;
 };///
 AppInstancesManager.prototype.get_search_inp = function () {
     //
@@ -1748,7 +1747,8 @@ AppInstancesManager.prototype.get_search_inp = function () {
         return alert("no search str.")
     }
 
-    var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
+    var res = showup.get_selected_bcv_parm();
+    var inp = { fnames: fnamesArr, bibOj: res.m_oj, Search: { File: searchFileName, Strn: searchStrn } };
     return inp;
 };
 AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
