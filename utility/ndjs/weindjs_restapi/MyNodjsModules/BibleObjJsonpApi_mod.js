@@ -282,7 +282,7 @@ var BibleUti = {
                             console.log("origtxt", readtxt)
 
                             if (bWrite) {
-                                console.log("vrs", txt)
+                                console.log("newtxt", txt)
                                 bib.obj[bkc][chp][vrs] = txt
                                 bib.writeback();
                                 inp.out.result += ":Write-success"
