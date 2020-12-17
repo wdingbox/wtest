@@ -90,7 +90,7 @@ var BibleUti = {
         inpObj.out = { result: "", data: null }
         return inpObj;
     },
-    get_bc: function (BibleObj, oj) {
+    fetch_bc: function (BibleObj, oj) {
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
             retOb[bkc] = {}
@@ -291,7 +291,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var trn = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
                 if (!bib.obj) inp.out.result += ":err:" + trn
-                var bcObj = BibleUti.get_bc(bib.obj, inp.par.bibOj);
+                var bcObj = BibleUti.fetch_bc(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
             }
