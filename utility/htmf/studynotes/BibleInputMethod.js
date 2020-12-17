@@ -1267,8 +1267,9 @@ RevisionsOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
 
 
 
-function Tab_HistoryMostRecentBody() {
+function Tab_HistoryMostRecentBody(bSingpleSel) {
     this.m_tbodyID = null; //"#Tab_mark_bcv_history"
+    this.m_bSingleSel = bSingpleSel
 }
 Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, MyStorage_setHistoryMostRecent) {
     this.m_tbodyID = tbodyID
@@ -1342,6 +1343,10 @@ Tab_HistoryMostRecentBody.prototype.update_tab = function () {
     $(this.m_tbodyID).html(trs).find("td").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
+        if(_THIS.m_bSingleSel){
+            $(_THIS.m_tbodyID).find(".hili").removeClass("hili")
+        }
+
         $(this).toggleClass("hili")
         var hiliary = []
         $(this).parentsUntil("table").find(".hili").each(function () {
@@ -1360,7 +1365,7 @@ function Tab_mark_bcv_history() {
 }
 
 Tab_mark_bcv_history.prototype.init = function () {
-    this.m_tbody = { RecentMarks: new Tab_HistoryMostRecentBody(), RecentBooks: new Tab_HistoryMostRecentBody() }
+    this.m_tbody = { RecentMarks: new Tab_HistoryMostRecentBody(false), RecentBooks: new Tab_HistoryMostRecentBody(true) }
     //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
     this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
     this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
@@ -1656,6 +1661,7 @@ AppInstancesManager.prototype.init = function () {
     markHistory.onClickHistoryItem(function (bcvAry) {
         if (bcvAry.length === 1) {
             showup.update_showup(bcvAry[0])
+            showup.m_Vrs.set_showupVal("")
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chapter_by_bibOj()
