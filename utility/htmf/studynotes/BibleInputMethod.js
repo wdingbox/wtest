@@ -654,16 +654,12 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         evt.stopImmediatePropagation();
 
         var maxChp = _This.m_Bki.get_showup_bkn_info().maxChp
-        if (maxChp < 1) return
+        //if (maxChp < 1) return
 
         var vrs = _This.m_Vrs.get_showupVal()
-        if (0 === vrs) {
-            _This.goNextChp(1)
-            cbfLoadBible(1)
-        } else {
-            _This.m_Vrs.detchback()
-            cbfLoadBible(1)
-        }
+       
+        _This.m_Vrs.detchback()
+        cbfLoadBible(1)
     });
 
 
@@ -1141,22 +1137,22 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
-    var clr = { Rev: "orange", Seq: "lightblue", Find: "" }
+    var clr = { Translation: "orange", Seq: "lightblue", SearchIn: "" }
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
         $(this).css("background-color", clr[txt])
         switch (txt) {
-            case "Rev":
+            case "Translation":
                 $(this).text("Seq")
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary, "")
                 break;
             case "Seq":
-                $(this).text("Find")
+                $(this).text("SearchIn")
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary, "searchFile")
                 break;
-            case "Find":
-                $(this).text("Rev")
+            case "SearchIn":
+                $(this).text("Translation")
                 _THIS.Gen_Table(bknArr, "")
                 break;
             default:
@@ -1243,9 +1239,9 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClas
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
-            case "Rev": update_data(this); break;
+            case "Translation": update_data(this); break;
             case "Seq": moveup_selitm(this, +1); break;
-            case "Find": update_Finditem(this); break;
+            case "SearchIn": update_Finditem(this); break;
             //case "Dn": moveup_selitm(this, -1); break;
         }
     });
@@ -1494,8 +1490,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#NewPage").attr("href", window.location.href)
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
-    if(!sid) sid = "grp_Keyboard"
-    var sid = "#"+sid
+    if (!sid) sid = "grp_Keyboard"
+    var sid = "#" + sid
     $(this.m_grpContainerID).find(`a[sid='${sid}']`).addClass("GrpMenuItemHili")
     $(sid).show();
     this.close_others_of(sid)
@@ -2511,7 +2507,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Rev</button></caption>
+                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Translation</button></caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
