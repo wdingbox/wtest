@@ -620,12 +620,14 @@ ShowupBCV.prototype.get_selected_bcv_parm = function () {
     if (!vol || vol.length === 0) {
         return null
     }
-    var ret = { m_oj: {} }
+    var ret = { m_oj: {}, oj_bc:{} }
     ret.m_oj[vol] = {}
+    ret.oj_bc[vol] = {}
     if (chp === 0) {
         return ret
     }
     ret.m_oj[vol][chp] = {}
+    ret.oj_bc[vol][chp] = {}
     if (vrs > 0) {
         ret.m_oj[vol][chp][vrs] = ""
         ret.m_bcv = vol + chp + ":" + vrs
@@ -1659,9 +1661,11 @@ AppInstancesManager.prototype.init = function () {
 
     markHistory.init()
     markHistory.onClickHistoryItem(function (bcvAry) {
-        if (bcvAry.length === 1) {
+        if (bcvAry.length === 0) {
+            return
+        }else if (bcvAry.length === 1) {
             showup.update_showup(bcvAry[0])
-            showup.m_Vrs.set_showupVal("")
+            //showup.m_Vrs.set_showupVal("")
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chapter_by_bibOj()
@@ -1722,9 +1726,10 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     if (!oj) {
         var res = showup.get_selected_bcv_parm();
         console.log("res=", res);
-        if (!res || !res.m_oj) return null
-        oj = res.m_oj
+        if (!res || !res.oj_bc) return null
+        oj = res.oj_bc
     }
+    if(!oj || Object.keys(oj)===0) return alert("oj is null")
 
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -1751,7 +1756,7 @@ AppInstancesManager.prototype.get_search_inp = function () {
     var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     var res = showup.get_selected_bcv_parm();
     if (res) {
-        inp.bibOj = res.m_oj
+        inp.bibOj = res.oj_bc
     }
     return inp;
 };
