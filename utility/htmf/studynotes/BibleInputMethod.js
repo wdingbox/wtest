@@ -1432,7 +1432,20 @@ Tab_mark_bcv_history.prototype.toggleSelAll = function () {
 function GroupsMenuMgr() {
     this.m_grpContainerID = "#GroupsContainer"
 }
+GroupsMenuMgr.prototype.close_others_of = function (sid) {
+    var _THIS = this
+    //close others
+    $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function () {
+        var sid = $(this).attr("sid")
+        $(sid).hide()
+    })
+    _THIS.m_popupBookList.show(false)
+}
 GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
+    this.m_popupBookList = popupBookList
+
+    var _THIS = this
+
     var eBar = document.createElement("div")
     $(this.m_grpContainerID).find(".GrpMenu").each(function () {
         var sid = $(this).attr("id")
@@ -1444,16 +1457,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $(this.m_grpContainerID).prepend(eBar).find("a[sid]").bind("click", function () {
         var sid = $(this).attr("sid");
-
         $(sid).slideToggle()
-        $(this).toggleClass("GrpMenuItemHili")
+        _THIS.close_others_of(sid)
 
-        //close others
-        $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function () {
-            var sid = $(this).attr("sid")
-            $(sid).hide()
-        })
-        popupBookList.show(false)
+        $(this).toggleClass("GrpMenuItemHili")
     })
 
     /////
@@ -1486,8 +1493,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $("#NewPage").attr("href", window.location.href)
 }
-GroupsMenuMgr.prototype.sel_default = function () {
-    //$(this.m_grpContainerID).find("a:eq(0)").addnew2table("GrpMenuItemHili")//trigger("click")
+GroupsMenuMgr.prototype.sel_default = function (sid) {
+    if(!sid) sid = "grp_Keyboard"
+    var sid = "#"+sid
+    $(this.m_grpContainerID).find(`a[sid='${sid}']`).addClass("GrpMenuItemHili")
+    $(sid).show();
+    this.close_others_of(sid)
 }
 
 
