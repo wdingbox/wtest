@@ -338,10 +338,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
-                var rev = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
-                RbcObj[rev] = bib.obj;
-                inp.out.result += ":" + rev
+                var trn = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+                RbcObj[trn] = bib.obj;
+                inp.out.result += ":" + trn
             }
         }
         var bcvR = {}
