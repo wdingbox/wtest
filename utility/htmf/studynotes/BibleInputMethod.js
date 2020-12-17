@@ -648,7 +648,7 @@ ShowupBCV.prototype.goNextChp = function (i) {
 }
 
 
-ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
+ShowupBCV.prototype.onclick_Vrs = function (cbfLoadBible) {
     var _This = this
 
     $(this.m_Vrs.m_showupValID).bind("click", function (evt) {
@@ -660,9 +660,24 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         var vrs = _This.m_Vrs.get_showupVal()
 
         _This.m_Vrs.detchback()
-        cbfLoadBible(1)
+        cbfLoadBible(0)
     });
+}
+ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
+    var _This = this
+    $(this.m_Chp.m_showupValID).bind("click", function (evt) {
+        evt.stopImmediatePropagation();
 
+        var vrs = "" + _This.m_Chp.get_showupVal()
+        if (vrs.length > 0) {
+            _This.m_Chp.detchback()
+            _This.m_Vrs.set_showupVal("")
+            cbfLoadBible(1)
+        } else {
+            _This.m_Vrs.set_showupVal("")
+            cbfLoadBible(0)
+        }
+    });
 
     $(this.m_minus_ChpId).bind("click", function (evt) {
         evt.stopImmediatePropagation();
@@ -684,22 +699,6 @@ ShowupBCV.prototype.onclick_Vrs2_plus_minus = function (cbfLoadBible) {
         _This.m_Vrs.set_showupVal("")
         _This.goNextChp(+1)
         cbfLoadBible(1)
-    });
-}
-ShowupBCV.prototype.onclick_Chp = function (cbfLoadBible) {
-    var _This = this
-    $(this.m_Chp.m_showupValID).bind("click", function (evt) {
-        evt.stopImmediatePropagation();
-
-        var vrs = "" + _This.m_Chp.get_showupVal()
-        if (vrs.length > 0) {
-            _This.m_Chp.detchback()
-            _This.m_Vrs.set_showupVal("")
-            cbfLoadBible(1)
-        } else {
-            _This.m_Vrs.set_showupVal("")
-            cbfLoadBible(0)
-        }
     });
 }
 ShowupBCV.prototype.onclick_face = function (cbfLoadBible) {
@@ -1545,7 +1544,7 @@ AppInstancesManager.prototype.init = function () {
 
     digi.init_digi(showup)
 
-    showup.onclick_Vrs2_plus_minus(function (bload) {
+    showup.onclick_Vrs(function (bload) {
         if (bload) {
             digi.init_Chp_digiKeys_by_vol()
             digi.init_Vrs_digiKeys_by_vol()
@@ -1555,6 +1554,7 @@ AppInstancesManager.prototype.init = function () {
         }
         $("#menuContainer").show()
         grpmgr.sel_default()
+        _This.scrollToView_Vrs() //before clearup.
     })
     showup.m_Bki.onclick_bkc(function () {
         _This.scrollToView_Vrs() //before clearup.
@@ -1571,6 +1571,7 @@ AppInstancesManager.prototype.init = function () {
 
         $("#menuContainer").show()
         grpmgr.sel_default()
+
     })
     showup.onclick_Chp(function (bload) {
         digi.init_Chp_digiKeys_by_vol()
@@ -1622,7 +1623,6 @@ AppInstancesManager.prototype.init = function () {
             showup.setAsChildren()
             showup.update_showup(window.m_bcv)
             setTimeout(function () {
-                //_This.loadBible_verses_by_StdBcvStrn(window.m_bcv)
                 _This.loadBible_chapter_by_bibOj()
             }, 3000)
         }
