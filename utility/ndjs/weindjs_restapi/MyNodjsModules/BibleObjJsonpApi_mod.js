@@ -11,7 +11,7 @@ var Uti = require("./Uti.module").Uti;
 
 
 var BibleUti = {
-   
+
     xxxxxxxxxxxget_usr_pathfile: function (username, RevCode) {
         var pthf = `../../../../bible_obj_usr/account/${username}/${RevCode}_json.js`
         if (!fs.existsSync(pthf)) {
@@ -88,7 +88,7 @@ var BibleUti = {
         return inpObj;
     },
     xxxxxxxxxxxxxxxxxxxxxxfetch_bc: function (BibleObj, oj) {
-        console.log("oj",oj)
+        console.log("oj", oj)
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
@@ -108,7 +108,7 @@ var BibleUti = {
         return retOb
     },
     fetch_bcv: function (BibleObj, oj) {
-        console.log("oj",oj)
+        console.log("oj", oj)
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
@@ -263,6 +263,38 @@ var BibleUti = {
         })
 
         return retOb
+    },
+    Write2vrs_txt: function (inp, bWrite) {
+        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            var trn = inp.par.fnames[0]
+            inp.out.result += trn
+            var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+            inp.bio = bib
+            if (bib.fsize > 0) {
+                console.log("fsize:", bib.fsize)
+                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
+                    console.log("chpObj", chpObj)
+                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                        console.log("vrsObj", vrsObj)
+                        for (const [vrs, txt] of Object.entries(vrsObj)) {
+                            var readtxt = bib.obj[bkc][chp][vrs]
+                            inp.out.data = { bcv: `${trn}~${bkc}${chp}:${vrs}`, txt: readtxt }
+                            console.log("origtxt", readtxt)
+
+                            if (bWrite) {
+                                console.log("vrs", txt)
+                                bib.obj[bkc][chp][vrs] = txt
+                                bib.writeback();
+                                inp.out.result += ":Write-success"
+                            } else {
+                                inp.out.result += ":Read-success"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return inp
     }
 
     //// BibleUti /////
@@ -388,27 +420,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
         inp.out.result = "Write?"
 
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            var trn = inp.par.fnames[0]
-            var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
-            inp.bio = bib
-            if (bib.fsize > 0) {
-                console.log("fsize:", bib.fsize)
-                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
-                    console.log("chpObj", chpObj)
-                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        console.log("vrsObj", vrsObj)
-                        for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            console.log("vrs", txt)
-                            bib.obj[bkc][chp][vrs] = txt
-                            bib.writeback();
-                            inp.out.result += ":success"
-                            inp.out.data = txt
-                        }
-                    }
-                }
-            }
-        }
+        inp = BibleUti.Write2vrs_txt(inp, true)
+
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
@@ -416,30 +429,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
     ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
-        inp.out = { result: "", ret: null }
         inp.out.result = "read:"
 
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            var rev = inp.par.fnames[0]
-            inp.out.result += rev
-            var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
-            inp.bio = bib
-            if (bib.fsize > 0) {
-                console.log("fsize:", bib.fsize)
-                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
-                    console.log("chpObj", chpObj)
-                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        console.log("vrsObj", vrsObj)
-                        for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            var readtxt = bib.obj[bkc][chp][vrs]
-                            console.log("readtxt", readtxt)
-                            inp.out.data = { bcv: `${rev}~${bkc}${chp}:${vrs}`, txt: readtxt }
-                            inp.out.result += ":success"
-                        }
-                    }
-                }
-            }
-        }
+        inp = BibleUti.Write2vrs_txt(inp, false)
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -447,7 +439,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
-   
+
 }//// BibleRestApi ////
 
 var BibleObjJsonpApi = {
