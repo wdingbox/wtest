@@ -1561,7 +1561,7 @@ AppInstancesManager.prototype.init = function () {
 
         //store before clear
         var ret = showup.get_selected_bcv_parm()
-        if (ret.m_bcv) markHistory.m_tbody.RecentMarks.addnew2table(ret.m_bcv)
+        if (ret && ret.m_bcv) markHistory.m_tbody.RecentMarks.addnew2table(ret.m_bcv)
 
         //clear
         showup.m_Chp.set_showupVal("")
@@ -1696,6 +1696,7 @@ AppInstancesManager.prototype.init = function () {
 
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var ret = showup.get_selected_bcv_parm()
+    if (!ret) return
     $(".bcvTag").each(function () {
         var txt = $(this).text()
         if (txt === ret.m_bcv) {
@@ -1715,7 +1716,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     if (!oj) {
         var res = showup.get_selected_bcv_parm();
         console.log("res=", res);
-        if (!res.m_oj) return null
+        if (!res || !res.m_oj) return null
         oj = res.m_oj
     }
 
@@ -1741,8 +1742,11 @@ AppInstancesManager.prototype.get_search_inp = function () {
         return alert("no search str.")
     }
 
+    var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     var res = showup.get_selected_bcv_parm();
-    var inp = { fnames: fnamesArr, bibOj: res.m_oj, Search: { File: searchFileName, Strn: searchStrn } };
+    if (res) {
+        inp.bibOj = res.m_oj
+    }
     return inp;
 };
 AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
