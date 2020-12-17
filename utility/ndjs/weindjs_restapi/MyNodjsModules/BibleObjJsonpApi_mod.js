@@ -288,12 +288,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
-                var rev = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
-                if (!bib.obj) inp.out.result += ":err:" + rev
+                var trn = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+                if (!bib.obj) inp.out.result += ":err:" + trn
                 var bcObj = BibleUti.get_bc(bib.obj, inp.par.bibOj);
-                RbcObj[rev] = bcObj;
-                inp.out.result += ":" + rev
+                RbcObj[trn] = bcObj;
+                inp.out.result += ":" + trn
             }
         }
         var bcvR = {}
@@ -312,11 +312,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
-                var rev = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
-                if (!bib.obj) inp.out.result += ":err:" + rev
-                RbcObj[rev] = bib.obj;
-                inp.out.result += ":" + rev
+                var trn = inp.par.fnames[i];
+                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+                if (!bib.obj) inp.out.result += ":err:" + trn
+                RbcObj[trn] = bib.obj;
+                inp.out.result += ":" + trn
             }
         }
         var bcvR = {}
@@ -360,8 +360,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.result = "Write?"
 
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            var rev = inp.par.fnames[0]
-            var bib = BibleUti.load_BibleObj(inp.usr.f_path, rev);
+            var trn = inp.par.fnames[0]
+            var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
             inp.bio = bib
             if (bib.fsize > 0) {
                 console.log("fsize:", bib.fsize)
