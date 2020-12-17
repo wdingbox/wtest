@@ -1681,6 +1681,7 @@ AppInstancesManager.prototype.init = function () {
         showup.update_showup(par.m_bcv)
         digi.init_Chp_digiKeys_by_vol()
         digi.init_Vrs_digiKeys_by_vol()
+        //_This.scrollToView_Vrs()
     })
 
     this.onclicks_btns_in_grpMenu_search()
