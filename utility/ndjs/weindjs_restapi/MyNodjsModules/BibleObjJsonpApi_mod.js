@@ -110,6 +110,31 @@ var BibleUti = {
         }
         return retOb
     },
+    fetch_bcv: function (BibleObj, oj) {
+        console.log("oj",oj)
+        if (!oj || Object.keys(oj).length === 0) return BibleObj
+        var retOb = {}
+        for (const [bkc, chpObj] of Object.entries(oj)) {
+            retOb[bkc] = {}
+            if (!chpObj || Object.keys(chpObj).length === 0) {
+                retOb[bkc] = BibleObj[bkc]
+                continue
+            }
+            for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                console.log("bc", bkc, chp)
+                if (!vrsObj || Object.keys(vrsObj).length === 0) {
+                    retOb[bkc][chp] = BibleObj[bkc][chp]
+                    continue
+                }
+                retOb[bkc][chp] = {}
+                for (const [vrs, txt] of Object.entries(vrsObj)) {
+                    //console.log(`${key}: ${value}`);
+                    retOb[bkc][chp][vrs] = BibleObj[bkc][chp][vrs]
+                }
+            }
+        }
+        return retOb
+    },
     convert_rbcv_2_bcvR: function (rbcv, bcvRobj) {
         if (null === bcvRobj) bcvRobj = {}
         for (const [rev, revObj] of Object.entries(rbcv)) {
@@ -297,7 +322,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var trn = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
                 if (!bib.obj) inp.out.result += ":err:" + trn
-                var bcObj = BibleUti.fetch_bc(bib.obj, inp.par.bibOj);
+                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
             }
@@ -346,7 +371,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
-                var bcObj = BibleUti.fetch_bc(bib.obj, inp.par.bibOj);
+                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
             }

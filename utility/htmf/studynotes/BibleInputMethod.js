@@ -1662,7 +1662,11 @@ AppInstancesManager.prototype.init = function () {
         } else {
             var str = bcvAry.join(",")
             Uti.Msg(str)
-            _This.loadBible_verses_by_StdBcvStrn(str)
+            var oj = {}
+            bcvAry.forEach(function (bcv) {
+                var ret = Uti.parser_bcv(bcv, "", oj)
+            })
+            _This.loadBible_chapter_by_bibOj(oj)
         }
 
     })
@@ -1720,13 +1724,17 @@ AppInstancesManager.prototype.loadBible_verses_by_StdBcvStrn = function (stdBcvS
         }, 2100)
     })
 };///
-AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function () {
+AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     var _THIS = this
-    var res = showup.get_selected_bcv_parm();
-    console.log("res=", res);
-    if (!res.m_oj) return null
+    if (!oj) {
+        var res = showup.get_selected_bcv_parm();
+        console.log("res=", res);
+        if (!res.m_oj) return null
+        oj = res.m_oj
+    }
+
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
-    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: res.m_oj, Search: null };
+    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
@@ -2151,7 +2159,7 @@ var Uti = {
     },
 
 
-    parser_bcv: function (sbcv, txt) {
+    parser_bcv: function (sbcv, txt, outOj) {
         if (!sbcv) return null
 
         sbcv = sbcv.replace(/\s/g, "");
@@ -2183,6 +2191,12 @@ var Uti = {
         obj[ret.vol] = {}
         obj[ret.vol][ret.chp] = {}
         obj[ret.vol][ret.chp][ret.vrs] = txt
+        if (outOj) {
+            if (!outOj[ret.vol]) outOj[ret.vol] = {}
+            if (!outOj[ret.vol][ret.chp]) outOj[ret.vol][ret.chp] = {}
+            outOj[ret.vol][ret.chp][ret.vrs] = txt
+        }
+
         ret.bcvObj = obj
 
         ///////validation for std bcv.
