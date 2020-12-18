@@ -151,6 +151,7 @@ var MyStorage = {
         if (!v || !Number.isInteger(v) || v.length === 0) return 16
         return (v < 6) ? 6 : v
     },
+
     setAcctName: function (v) {
         v = v.trim()
         if (v.length === 0) v = "pub"
@@ -177,7 +178,7 @@ var MyStorage = {
         return v;
     },
 
-   
+
     setCustomCatAry: function (obj) {
         if (!obj) {
             localStorage.setItem("CustomCatAry", "")
@@ -195,6 +196,17 @@ var MyStorage = {
         }
         CNST.Cat2VolArr.Custom = ar
         return ar
+    },
+
+    onChange_BookNameLanguage: function () {
+        var v = $("#LanguageSel").val()
+        Uti.Msg(v)
+        localStorage.setItem("BookNameLanguage", v)
+    },
+    getBookNameLanguage: function () {
+        var v = localStorage.getItem("BookNameLanguage")
+        $("#LanguageSel").val(v)
+        return v
     },
 }
 
@@ -1768,6 +1780,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     this.onclicks_btns_in_grpMenu_search()
+    MyStorage.getBookNameLanguage()
 };
 
 
@@ -2722,6 +2735,11 @@ var BibleInputMenuContainer = `
                         </tr>
                         <tr>
                             <td></td>
+                            <td>Language</td>
+                            <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option></option><option>Chinese</option><option>India</option></select></td>
+                        </tr>
+                        <tr>
+                            <td></td>
                             <td>clear setting</td>
                             <td><input type="radio" onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</input></td>
                         </tr>
@@ -2848,7 +2866,11 @@ CNST.BiBookName = {
     "Rev": ['Revelation', 'revelation', '启示录',],
 };
 CNST.BibVolNameEngChn = function (Vid) {
-    return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
+    var slan = MyStorage.getBookNameLanguage()
+    switch(slan){
+        case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2]; 
+    }
+    return CNST.BiBookName[Vid][0]
 };
 CNST.isNT = function (Vid) {
     return (CNST.BibVol_OTorNT(Vid) === "t_NT")
