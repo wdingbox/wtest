@@ -1846,6 +1846,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
 
     function onclick_inpage_find_next(incrs, _this) {
         var str = $("#sinput").val();
+
         var reg = new RegExp(str, "g");
 
         if (undefined === document.g_NextIndex) document.g_NextIndex = 0
@@ -1867,18 +1868,26 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     };
 
     function onclick_inpage_find_strn() {
-        var s = $("#sinput").val().trim();
-        g_obt.set_inpage_findstrn(s)
+        $("#Btn_Prev, #Btn_Next").hide()
+        var s = $("#sinput").val();
+        var err = g_obt.set_inpage_findstrn(s)
+        if(err) return alert(err)
         g_obt.Gen_output_table()
+        if (s.length === 0) return alert("reset ok.")
 
         MyStorage.addMostRecentSearchStrn(s)
         gen_search_strn_history()
         document.g_NextIndex = -1
 
         var nFound = $(".matInPage").length;
+        if (nFound > 0) {
+            $("#Btn_Prev, #Btn_Next").show()
+        }
         $("#searchNextresult").text("0/" + nFound)
     }
-    function onclick_BibleObj_search_str() {
+    function onclick_inSvr_BibleObj_search_str() {
+        $("#Btn_Prev, #Btn_Next").hide()
+
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty input")
 
@@ -1934,7 +1943,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         })
     }
 
-
+    $("#Btn_Prev, #Btn_Next").hide()
     $("#Btn_Prev").bind("click", function () {
         onclick_inpage_find_next(-1, this)
     })
@@ -1945,10 +1954,10 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         onclick_inpage_find_strn()
     })
     $("#Btn_InSvr").bind("click", function () {
-        onclick_BibleObj_search_str()
+        onclick_inSvr_BibleObj_search_str()
     })
     $("#searchNextresult").bind("click", function () {
-        $(this).text("0/0")
+        $(this).text("In:")
         $("#sinput").val("")
     })
     $("#RemoveSearchStrn").bind("click", function () {
@@ -2008,7 +2017,17 @@ OutputBibleTable.prototype.set_data = function (ret) {
     this.m_data = ret
 }
 OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
-    this.m_inpage_findstrn = str
+    var ret = ""
+    var InSvrSerachStr = $(".matInSvr:eq(0)").text()
+    this.m_inpage_findstrn = ""
+
+    if(str.length === 0 ) return ret
+    if(InSvrSerachStr === str) {
+        ret = "already have for in Svr"
+    }else{
+        this.m_inpage_findstrn = str
+    }
+    return ret
 }
 
 OutputBibleTable.prototype.Gen_output_table = function (cbf) {
@@ -2121,6 +2140,9 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
 OutputBibleTable.prototype.create_htm_table = function () {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     var _THIS = this
+    if(!this.m_data || !this.m_data.out || !this.m_data.out.data){
+        return{ htm: "", size: 0 };
+    }
 
     console.log("result:", this.m_data.out.result)
     var idx = 0, st = "", uuid = 1;
@@ -2667,12 +2689,12 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
-                <a>In</a>
+                <a id="searchNextresult">In:</a>
                 <button id="Btn_InSvr" xonclick="onclick_BibleObj_search_str();" title="search on servr">Svr</button>
                 <button id="Btn_InPage" xonclick="onclick_inpage_find_strn();" title="search on local">Page</button>
                 <button id="Btn_Prev" xonclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
                 <button id="Btn_Next" xonclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
-                <span id="searchNextresult">0/0</span>
+                
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>CUVS</caption>
