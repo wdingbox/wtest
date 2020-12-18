@@ -269,7 +269,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
                         console.log("langauge-code:", lancode)
                         switch (lancode) {
-                            case "ar": return load_page_by_parent_wind()
+                            case "ar": //return load_page_by_parent_storage()
                             case "fr":
                             case "es":
                         }
@@ -389,68 +389,44 @@ ${scmd}
             var pos2 = theData.search(/\<\/body\>/)
             var html = theData.substring(pos1, pos2)
             if (pos1 < 0 || pos2 < 0) {
-                return alert("body not found")
+                return alert("<body> not found")
             }
 
-            var pster = JSON.parse(localStorage.getItem("myNote"))
+            var pster = JSON.parse(document.m_myNotes)
+            var bcv = ""
             for (const [bkc, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                 for (const [chp, vrsObj] of Object.entries(chpObj)) {
                     for (const [vrs, txt] of Object.entries(vrsObj)) {
-                        pster.inp.par.inpObj[bkc][chp][vrs] = html
+                        pster.inp.par.inpObj[bkc][chp][vrs] = html.trim()
+                        bcv = bkc + chp + ":" + vrs
                     }
                 }
             }
+
+            if (false === ckEditor.checkDirty()) {
+                document.m_iEdiDataLen = theData.length;
+                console.log("checkDirty : false")
+                g_msg.pop(`<br>${bcv} <br> * No change; No saving; len:${theData.length} `);
+                return
+            }
+
+
+
             console.log(pster)
             Jsonpster.inp = pster.inp
             Jsonpster.api = pster.api
-            console.log("inp:", Jsonpster.inp)
+            console.log("inp:", pster.inp)
             Jsonpster.Run(function (ret) {
                 console.log("ret", ret)
                 if (ret.out.result.indexOf("success") > 0) {
                     console.log("result", ret)
-                    g_msg.pop(`Save OK.`);
+                    var dlt = theData.length - document.m_iEdiDataLen
+                    g_msg.pop(`<br>${bcv} <br>${ret.out.result}<br>* * * OK ! Saved * * *<br>nDlt= ${dlt}`);
+                    document.m_iEdiDataLen = theData.length
+                    ckEditor.resetDirty()
                 }
             })
             return
-
-
-            if (false === ckEditor.checkDirty()) {
-                console.log("checkDirty : false")
-                g_msg.pop(` no change; no saving; len:${theData.length}`);
-                return
-            }
-
-
-            if (undefined !== require) {
-                const fs = require('fs');
-                fs.writeFileSync(get_pathname_fr_window_location().pathname, theData, "utf8")
-                g_msg.pop(`Save OK by fs.writeFileSync:` + g_msg.dlt(theData.length));
-                ckEditor.resetDirty()
-                return
-            }
-
-            g_msg.pop(` to save.` + g_msg.dlt(theData.length));
-            //alert(theData);
-            $.post("http://localhost:7878/save",
-                {
-                    "pathname": get_pathname_fr_window_location().pathname,
-                    "htm": theData
-                },
-                function (result) {
-                    var dataloss = theData.length - result.len
-                    var ms = `data loss:${theData.length}-${result.len}=${theData.length - result.len}`
-                    if (dataloss != 0) {
-                        alert(ms)
-                        return g_msg.pop('ERROR:' + ms, 'warning');
-                    }
-                    console.log("ret:", result.len);
-                    g_msg.pop(`Save OK by ajx. ${ms}`);
-                    ckEditor.resetDirty()
-                }).fail(function (er) {
-                    g_msg.pop(`*** saved failed:${er}`, "warning")
-                }).done(function (ret) {
-                    console.log("done:", ret)
-                });
         }
         function get_pathname_fr_window_location() {
             var regex = new RegExp("/___maverick.editor.html$")
@@ -469,19 +445,27 @@ ${scmd}
             $("#gen_sh_cmd").append(`<option>open ./${ret.name}___wordfreq.htm</option>`)
             console.log(ret.name)
         }
-        function load_page_by_parent_wind() {
+        function load_page_by_parent_storage() {
             console.log(window.location)
-         
-            var pster = JSON.parse(localStorage.getItem("myNote"))
+            document.m_myNotes = localStorage.getItem("myNote")
+            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+
+            var pster = JSON.parse(document.m_myNotes)
+            localStorage.setItem("myNote", "")
             console.log("Storage myNode", pster)
             var e = document.createElement("script");
             e.src = `${pster.url}Jsonpster/`;
             document.body.appendChild(e);
+
             setTimeout(() => {
                 for (const [rev, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
                             CKEDITOR.instances.editor1.setData(txt)
+                            var theData = ckEditor.getData();
+                            document.m_iEdiDataLen = theData.length;
+                            g_msg.pop(`<br>${rev}${chp}:${vrs}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
+                            ckEditor.resetDirty()
                         }
                     }
                 }
@@ -503,7 +487,7 @@ ${scmd}
     $(function () {
         init_CKEditor()
         init_ui_cmd()
-        load_page_by_parent_wind()
+        load_page_by_parent_storage()
 
 
     })
