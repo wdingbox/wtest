@@ -147,6 +147,9 @@ body {
     .matInPage{
         background-color: rgb(199, 187, 7);
     }
+    .SearchStrnInPage{
+        background-color: rgb(199, 187, 7);
+    }
 
     .matNextIdx {
         border: 5px solid red;

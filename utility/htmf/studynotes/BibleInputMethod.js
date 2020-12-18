@@ -1867,24 +1867,6 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg("tot:" + document.g_NextIndex);
     };
 
-    function onclick_inpage_find_strn() {
-        $("#Btn_Prev, #Btn_Next").hide()
-        var s = $("#sinput").val();
-        var err = g_obt.set_inpage_findstrn(s)
-        if(err) return alert(err)
-        g_obt.Gen_output_table()
-        if (s.length === 0) return alert("reset ok.")
-
-        MyStorage.addMostRecentSearchStrn(s)
-        gen_search_strn_history()
-        document.g_NextIndex = -1
-
-        var nFound = $(".matInPage").length;
-        if (nFound > 0) {
-            $("#Btn_Prev, #Btn_Next").show()
-        }
-        $("#searchNextresult").text("0/" + nFound)
-    }
     function onclick_inSvr_BibleObj_search_str() {
         $("#Btn_Prev, #Btn_Next").hide()
 
@@ -1919,11 +1901,15 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     }
 
     function gen_search_strn_history() {
+        if(undefined === document.m_SearchStrnInPage) document.m_SearchStrnInPage  = ""
+        var s = document.m_SearchStrnInPage
+
         var trs = ""
         var ar = MyStorage.getMostRecentSearchStrn()
         ar.forEach(function (strn) {
+            var matcls = (s === strn.trim()) ? "SearchStrnInPage" : ""
             if (strn.trim().length > 0) {
-                trs += ("<tr><td class='option'>" + strn + " &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>");
+                trs += (`<tr><td class='option ${matcls}'>${strn}</td></tr>`);
             }
         })
 
@@ -1951,7 +1937,23 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         onclick_inpage_find_next(+1, this)
     })
     $("#Btn_InPage").bind("click", function () {
-        onclick_inpage_find_strn()
+        $("#Btn_Prev, #Btn_Next").hide()
+        var s = $("#sinput").val();
+        var err = g_obt.set_inpage_findstrn(s)
+        if (err) return alert(err)
+        g_obt.Gen_output_table()
+
+        document.m_SearchStrnInPage = s
+        gen_search_strn_history()
+        if (s.length === 0) return alert("reset ok.")
+        MyStorage.addMostRecentSearchStrn(s)
+        document.g_NextIndex = -1
+
+        var nFound = $(".matInPage").length;
+        if (nFound > 0) {
+            $("#Btn_Prev, #Btn_Next").show()
+        }
+        $("#searchNextresult").text("0/" + nFound)
     })
     $("#Btn_InSvr").bind("click", function () {
         onclick_inSvr_BibleObj_search_str()
@@ -2021,10 +2023,10 @@ OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
     var InSvrSerachStr = $(".matInSvr:eq(0)").text()
     this.m_inpage_findstrn = ""
 
-    if(str.length === 0 ) return ret
-    if(InSvrSerachStr === str) {
+    if (str.length === 0) return ret
+    if (InSvrSerachStr === str) {
         ret = "already have for in Svr"
-    }else{
+    } else {
         this.m_inpage_findstrn = str
     }
     return ret
@@ -2140,8 +2142,8 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
 OutputBibleTable.prototype.create_htm_table = function () {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     var _THIS = this
-    if(!this.m_data || !this.m_data.out || !this.m_data.out.data){
-        return{ htm: "", size: 0 };
+    if (!this.m_data || !this.m_data.out || !this.m_data.out.data) {
+        return { htm: "", size: 0 };
     }
 
     console.log("result:", this.m_data.out.result)
@@ -2689,11 +2691,11 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
-                <a id="searchNextresult">In:</a>
-                <button id="Btn_InSvr" xonclick="onclick_BibleObj_search_str();" title="search on servr">Svr</button>
-                <button id="Btn_InPage" xonclick="onclick_inpage_find_strn();" title="search on local">Page</button>
-                <button id="Btn_Prev" xonclick="onclick_inpage_find_next(-1,this);" title="find on page">Prev</button>
-                <button id="Btn_Next" xonclick="onclick_inpage_find_next(1,this);" title="find on page">Next</button>
+                <div id="searchNextresult" style="width:50px;float:left;">In:</div>
+                <button id="Btn_InSvr" title="search on servr">Svr</button>
+                <button id="Btn_InPage" title="search on local table">Page</button>
+                <button id="Btn_Prev"  title="hili prev in page">Prev</button>
+                <button id="Btn_Next"  title="hili next in page">Next</button>
                 
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
@@ -2769,7 +2771,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>Language</td>
-                            <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option></option><option>Chinese</option><option>India</option></select></td>
+                            <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option>English</option><option>Chinese</option><option>India</option></select></td>
                         </tr>
                         <tr>
                             <td></td>
