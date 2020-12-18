@@ -600,7 +600,7 @@ ShowupBCV.prototype.init = function () {
     Showup_Bk.prototype.get_showup_bkn_info = function (b) {
         var booknamecode = this.get_showupBkc()
         var iMaxChap = -1
-        if (booknamecode && booknamecode.length > 0) {
+        if (booknamecode && booknamecode.length > 0 && _Max_struct[booknamecode]) {
             iMaxChap = Object.keys(_Max_struct[booknamecode]).length;
         }
         return { bkn: booknamecode, maxChp: iMaxChap }
