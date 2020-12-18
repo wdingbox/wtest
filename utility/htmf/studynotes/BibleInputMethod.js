@@ -2200,7 +2200,7 @@ var Uti = {
             str = JSON.stringify(dat, null, 4);
         }
         var oldtxt = $("#txtarea").val();
-        if (oldtxt.length > 1000) oldtxt.substr(0, 1000)
+        if (oldtxt.length > 1000) oldtxt = oldtxt.substr(0, 1000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
         $("#txtarea").val(results);
@@ -2690,7 +2690,7 @@ var BibleInputMenuContainer = `
                 <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a>
                 | <a id='NewPage' target='_blank'>New</a><br>
                 
-                <textarea id="txtarea" cols='50' rows='20'  value='search results...' title='log.'>
+                <textarea id="txtarea" cols='40' rows='20'  value='search results...' title='log.'>
                 </textarea><br>
 
             </div>
