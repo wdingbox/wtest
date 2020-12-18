@@ -586,7 +586,12 @@ ShowupBCV.prototype.init = function () {
         })
     }
     Showup_Bk.prototype.set_showupBkc = function (bkc) {
-        var Bkname = CNST.BibVolNameEngChn(bkc)
+        var Bkname = ""
+        if (CNST.Cat2VolArr[bkc]) {
+            Bkname = bkc
+        } else {
+            Bkname = CNST.BibVolNameEngChn(bkc)
+        }
         $(this.m_showupBkiID).text(Bkname).attr("volcode", bkc);
     }
     Showup_Bk.prototype.get_showupBkc = function () {
@@ -609,27 +614,48 @@ ShowupBCV.prototype.init = function () {
 
 ShowupBCV.prototype.update_showup = function (bcv) {
     var par = Uti.parser_bcv(bcv)
-    this.m_Bki.set_showupBkc(par.vol)
-    this.m_Chp.set_showupVal(par.chp)
-    this.m_Vrs.set_showupVal(par.vrs)
+    if (par) {
+        this.m_Bki.set_showupBkc(par.vol)
+        this.m_Chp.set_showupVal(par.chp)
+        this.m_Vrs.set_showupVal(par.vrs)
+    } else {
+        this.m_Bki.set_showupBkc(bcv)
+        this.m_Chp.set_showupVal('')
+        this.m_Vrs.set_showupVal('')
+    }
+
 }
 ShowupBCV.prototype.get_selected_bcv_parm = function () {
     var vol = this.m_Bki.get_showupBkc()
     var chp = this.m_Chp.get_showupVal()
     var vrs = this.m_Vrs.get_showupVal()
+
+    var ret = { oj_search: {} }
+
     if (!vol || vol.length === 0) {
-        return null
+        return ret
     }
-    var ret = { m_oj: {}, oj_bc:{} }
-    ret.m_oj[vol] = {}
+
+    if (CNST.Cat2VolArr[vol]) { //for category: OT
+        CNST.Cat2VolArr[vol].forEach(function (bkc) {
+            ret.oj_search[bkc] = {}
+        })
+        return ret;
+    }
+
+    ret.oj_search = {}
+    ret.oj_search[vol] = {}
+
+    ret.oj_bc = {}
     ret.oj_bc[vol] = {}
     if (chp === 0) {
         return ret
     }
-    ret.m_oj[vol][chp] = {}
+
     ret.oj_bc[vol][chp] = {}
+    ret.oj_search[vol][chp] = {}
+
     if (vrs > 0) {
-        ret.m_oj[vol][chp][vrs] = ""
         ret.m_bcv = vol + chp + ":" + vrs
     }
     return ret;
@@ -1017,7 +1043,7 @@ DigitNumberInputZone.prototype.init_Chp_digiKeys_by_vol = function () {
     var chp = this.m_showup.m_Chp.get_showupVal();  //()
     var _THIS = this
 
-    if (!vol) {
+    if (!vol || CNST.Cat2VolArr[vol]) {
         this.m_Chp.disable_all_digiKey(true)
         return
     }
@@ -1086,13 +1112,13 @@ DigitNumberInputZone.prototype.init_Vrs_digiKeys_by_vol = function () {
 
 
 
-function Tab_Cat() {
+function Tab_Category() {
     this.m_tabid = "#Tab_CatagryOfBooks"
 }
-Tab_Cat.prototype.rm_hili = function () {
+Tab_Category.prototype.rm_hili = function () {
     $(".cat").removeClass("hili");
 }
-Tab_Cat.prototype.Gen_Cat_Table = function (par) {
+Tab_Category.prototype.Gen_Cat_Table = function (par) {
 
     $(this.m_tabid + " caption").click(function () {
         $(".cat").removeClass("hili");
@@ -1345,7 +1371,7 @@ Tab_HistoryMostRecentBody.prototype.update_tab = function () {
     $(this.m_tbodyID).html(trs).find("td").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
-        if(_THIS.m_bSingleSel){
+        if (_THIS.m_bSingleSel) {
             $(_THIS.m_tbodyID).find(".hili").removeClass("hili")
         }
 
@@ -1517,7 +1543,7 @@ var skinp = new SingleKeyInputPanel()
 var digi = new DigitNumberInputZone()
 var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 
-var bibcat = new Tab_Cat()
+var tab_category = new Tab_Category()
 var markHistory = new Tab_mark_bcv_history()
 
 var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
@@ -1639,14 +1665,17 @@ AppInstancesManager.prototype.init = function () {
         onClickItm: function (ch, volary, alreadyhili) {
             skout.Popup_BookList_Table(78, volary, alreadyhili)
 
-            bibcat.rm_hili()
+            tab_category.rm_hili()
         }
     })
 
-    bibcat.Gen_Cat_Table({
+    tab_category.Gen_Cat_Table({
         onClickItm: function (scat, volary, alreadyHili) {
             skout.Popup_BookList_Table(2, volary, alreadyHili);
             skinp.rm_hili()
+
+            //showup.m_Bki.set_showupBkc(scat);
+            showup.update_showup(scat)
         }
     })
 
@@ -1663,7 +1692,7 @@ AppInstancesManager.prototype.init = function () {
     markHistory.onClickHistoryItem(function (bcvAry) {
         if (bcvAry.length === 0) {
             return
-        }else if (bcvAry.length === 1) {
+        } else if (bcvAry.length === 1) {
             showup.update_showup(bcvAry[0])
             //showup.m_Vrs.set_showupVal("")
             digi.init_Chp_digiKeys_by_vol()
@@ -1706,7 +1735,7 @@ AppInstancesManager.prototype.init = function () {
 
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var ret = showup.get_selected_bcv_parm()
-    if (!ret) return
+    if (!ret.m_bcv) return
     $(".bcvTag").each(function () {
         var txt = $(this).text()
         if (txt === ret.m_bcv) {
@@ -1729,7 +1758,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
         if (!res || !res.oj_bc) return null
         oj = res.oj_bc
     }
-    if(!oj || Object.keys(oj)===0) return alert("oj is null")
+    if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -1756,7 +1785,7 @@ AppInstancesManager.prototype.get_search_inp = function () {
     var inp = { fnames: fnamesArr, bibOj: null, Search: { File: searchFileName, Strn: searchStrn } };
     var res = showup.get_selected_bcv_parm();
     if (res) {
-        inp.bibOj = res.oj_bc
+        inp.bibOj = res.oj_search
     }
     return inp;
 };
