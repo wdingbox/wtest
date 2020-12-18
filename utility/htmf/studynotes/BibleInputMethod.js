@@ -1880,6 +1880,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     }
     function onclick_BibleObj_search_str() {
         var s = $("#sinput").val().trim();
+        if (s.length === 0) return alert("empty input")
 
         MyStorage.addMostRecentSearchStrn(s)
         gen_search_strn_history()
@@ -1891,7 +1892,9 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
         Jsonpster.Run(function (ret) {
-            apiCallback_Gen_output_table(ret);
+            apiCallback_Gen_output_table(ret, function (size) {
+                $("#searchNextresult").text("0/" + size)
+            });
             Uti.Msg(ret.out.result);
         })
 
@@ -1903,8 +1906,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
                 unicds += "\\u" + ch.toString(16);
             }
         }
-        Uti.Msg(s);
-        Uti.Msg(unicds);
+        Uti.Msg(s, "unicode:", unicds);
     }
 
     function gen_search_strn_history() {
@@ -2009,11 +2011,12 @@ OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
     this.m_inpage_findstrn = str
 }
 
-OutputBibleTable.prototype.Gen_output_table = function () {
+OutputBibleTable.prototype.Gen_output_table = function (cbf) {
 
     var _THIS = this;
     var tb = this.create_htm_table();
-    Uti.Msg("tot_rows=" + tb.size);
+    Uti.Msg("tot_rows:", tb.size);
+    if (cbf) cbf(tb.size)
     $(this.m_tbid).html(tb.htm);
     //table_sort("#BibOut");
     //popupclicklabel. bcvTag
@@ -2169,11 +2172,11 @@ OutputBibleTable.prototype.create_htm_table = function () {
 var g_aim = new AppInstancesManager();
 var g_obt = new OutputBibleTable()
 
-function apiCallback_Gen_output_table(ret) {
+function apiCallback_Gen_output_table(ret, cbf) {
     //popupMenu_BcvTag.hide()
     popupMenu.hide()
     g_obt.set_data(ret)
-    g_obt.Gen_output_table("")
+    g_obt.Gen_output_table(cbf)
 }
 
 
@@ -2194,13 +2197,21 @@ function apiCallback_Gen_output_table(ret) {
 
 var Uti = {
     Msg_Idx: 0,
-    Msg: function (dat) {
-        var str = dat;
-        if ("object" === typeof dat) {
-            str = JSON.stringify(dat, null, 4);
-        }
-        var oldtxt = $("#txtarea").val();
-        if (oldtxt.length > 1000) oldtxt = oldtxt.substr(0, 1000)
+    Msg: function (...args) {
+        var str = ""
+        args.forEach(function (dat) {
+            if ("object" === typeof dat) {
+                str += JSON.stringify(dat, null, 4);
+            } else {
+                str += dat
+            }
+            str += " "
+        })
+        // var str = dat;
+        // if ("object" === typeof dat) {
+        //     str = JSON.stringify(dat, null, 4);
+        // }
+        var oldtxt = $("#txtarea").val().substr(0, 1000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
         $("#txtarea").val(results);
@@ -2867,8 +2878,8 @@ CNST.BiBookName = {
 };
 CNST.BibVolNameEngChn = function (Vid) {
     var slan = MyStorage.getBookNameLanguage()
-    switch(slan){
-        case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2]; 
+    switch (slan) {
+        case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
     }
     return CNST.BiBookName[Vid][0]
 };
