@@ -224,7 +224,8 @@ body {
 
 
     #Tab_CatagryOfBooks tbody tr:nth-child(1),
-    #Tab_CatagryOfBooks tbody tr:nth-child(7) {
+    #Tab_CatagryOfBooks tbody tr:nth-child(7),
+    #Tab_CatagryOfBooks tbody tr:nth-child(11) {
         background-color: rgb(24, 117, 117);
     }
 

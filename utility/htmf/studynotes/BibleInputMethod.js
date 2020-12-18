@@ -879,7 +879,7 @@ SingleKeyOutputBooksTable.prototype.show = function (bShow) {
     }
 }
 
-SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (Yoffset, vol_arr, alreadyhili) {
+SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (scat, vol_arr, alreadyhili, Yoffset) {
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -1138,6 +1138,9 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
         var scat = $(this).addClass("hili").text();
 
         var vol_arr = CNST.Cat2VolArr[scat];
+        if("Custom" === scat){
+            vol_arr = Object.keys(_Max_struct)
+        }
 
         if (par && par.onClickItm) par.onClickItm(scat, vol_arr, alreadyHili)
     });
@@ -1663,7 +1666,7 @@ AppInstancesManager.prototype.init = function () {
 
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
-            skout.Popup_BookList_Table(78, volary, alreadyhili)
+            skout.Popup_BookList_Table(ch, volary, alreadyhili, 78)
 
             tab_category.rm_hili()
         }
@@ -1671,7 +1674,7 @@ AppInstancesManager.prototype.init = function () {
 
     tab_category.Gen_Cat_Table({
         onClickItm: function (scat, volary, alreadyHili) {
-            skout.Popup_BookList_Table(2, volary, alreadyHili);
+            skout.Popup_BookList_Table(scat, volary, alreadyHili, 2);
             skinp.rm_hili()
 
             //showup.m_Bki.set_showupBkc(scat);
@@ -3044,7 +3047,8 @@ CNST.Cat2VolArr = {
     "NT": CNST.NT_Bkc_Ary,
     "Gospel": ["Mat", "Mak", "Luk", "Jhn"],
     "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
-    "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"]
+    "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"],
+    "Custom":[]
 };
 var BookJsFlavor = {
     OTNT: ['#510000', 'wholistic Bible', '圣经全书'],
