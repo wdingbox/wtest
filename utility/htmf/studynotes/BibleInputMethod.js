@@ -176,6 +176,26 @@ var MyStorage = {
         if (!v || v.length === 0) v = "John";
         return v;
     },
+
+   
+    setCustomCatAry: function (obj) {
+        if (!obj) {
+            localStorage.setItem("CustomCatAry", "")
+        } else {
+            localStorage.setItem("CustomCatAry", JSON.stringify(obj))
+        }
+        CNST.Cat2VolArr.Custom = obj
+    },
+    getCustomCatAry: function () {
+        var ar = localStorage.getItem("CustomCatAry")
+        if (!ar || ar.length === 0) {
+            ar = []
+        } else {
+            ar = JSON.parse(ar)
+        }
+        CNST.Cat2VolArr.Custom = ar
+        return ar
+    },
 }
 
 
@@ -862,12 +882,19 @@ SingleKeyOutputBooksTable.prototype.get_selary = function () {
 }
 SingleKeyOutputBooksTable.prototype.ary_To_trs = function (vol_arr) {
     var trarr = [];
+    var custom_cat_ary = MyStorage.getCustomCatAry()
     vol_arr.forEach(function (vol, i) {
         var hili = "";//(0 === i) ? "hili" : ""
         var cls = `class='v3 ${hili} ${CNST.BibVol_OTorNT(vol)}' vol='${vol}'`;
         //<td align='right'>"+BiBookName[vol][0]+"</td>
         var iMaxChap = Object.keys(_Max_struct[vol]).length;
-        trarr.push(`<tr ${cls}><td title=' ${CNST.BibVolNameEngChn(vol)}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
+
+        var cls_custom = 'custom_cat'
+        if (custom_cat_ary.indexOf(vol) >= 0) {
+            cls_custom += ' Custom_Selected_Book_Category'
+        }
+
+        trarr.push(`<tr ${cls}><td class='${cls_custom}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
     });
     return trarr.join("");
 }
@@ -888,12 +915,22 @@ SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (scat, vol_a
     var trs = this.ary_To_trs(vol_arr);
 
     $(tid).html(trs).find(".v3").bind("click", function () {
-        //$(".v3.hili").removeClass("hili");
-        //$(this).addClass("hili");
 
-        var vol = $(this).attr("vol");
-        _THIS.cbf_onClickItm(vol)
-        $(_THIS.m_id).hide()
+        if ("Custom" === scat) {
+            //$(".v3.hili").removeClass("hili");
+            $(this).find("td.custom_cat").toggleClass("Custom_Selected_Book_Category");
+            var custom_cat_ary = []
+            $(".custom_cat.Custom_Selected_Book_Category").each(function () {
+                var tx = $(this).text()
+                custom_cat_ary.push(tx)
+            })
+            Uti.Msg(custom_cat_ary)
+            MyStorage.setCustomCatAry(custom_cat_ary)
+        } else {
+            var vol = $(this).attr("vol");
+            _THIS.cbf_onClickItm(vol)
+            $(_THIS.m_id).hide()
+        }
     });
 
     if (alreadyhili) {
@@ -1138,7 +1175,7 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
         var scat = $(this).addClass("hili").text();
 
         var vol_arr = CNST.Cat2VolArr[scat];
-        if("Custom" === scat){
+        if ("Custom" === scat) {
             vol_arr = Object.keys(_Max_struct)
         }
 
@@ -3048,7 +3085,7 @@ CNST.Cat2VolArr = {
     "Gospel": ["Mat", "Mak", "Luk", "Jhn"],
     "Paulines": ["Rom", "1Co", "2Co", "Gal", "Eph", "Phl", "Col", "1Ts", "2Ts", "1Ti", "2Ti", "Tit", "Phm"],
     "Epistles": ["Heb", "Jas", "1Pe", "2Pe", "1Jn", "2Jn", "3Jn", "Jud"],
-    "Custom":[]
+    "Custom": []
 };
 var BookJsFlavor = {
     OTNT: ['#510000', 'wholistic Bible', '圣经全书'],

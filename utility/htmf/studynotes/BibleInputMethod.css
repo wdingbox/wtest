@@ -223,6 +223,8 @@ body {
     }
 
 
+
+
     #Tab_CatagryOfBooks tbody tr:nth-child(1),
     #Tab_CatagryOfBooks tbody tr:nth-child(7),
     #Tab_CatagryOfBooks tbody tr:nth-child(11) {
@@ -497,6 +499,10 @@ input[title='NIV']:checked:after {
 .v3.t_OT{
     background-color:rgb(29, 29, 87);
 }
+.Custom_Selected_Book_Category{
+    border: 3px solid red;
+}
+
 .vinNum{
     background-color: rgb(163, 17, 207);
 }
