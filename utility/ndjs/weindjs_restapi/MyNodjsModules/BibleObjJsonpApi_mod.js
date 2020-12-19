@@ -11,7 +11,27 @@ var Uti = require("./Uti.module").Uti;
 
 
 var BibleUti = {
-
+    exec_git_cmd: async function (command, res) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                //command = "ls"
+                console.log('cmd:', command)
+                exec(command, (err, stdout, stderr) => {
+                    if (err) {
+                        //some err occurred
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        // the *entire* stdout and stderr (buffered)
+                        console.log('cmd output ', stdout)
+                        resolve(stdout);
+                    }
+                });
+            } catch (err) {
+                console.log(err)
+            }
+        })
+    },
     xxxxxxxxxxxget_usr_pathfile: function (username, RevCode) {
         var pthf = `../../../../bible_obj_usr/account/${username}/${RevCode}_json.js`
         if (!fs.existsSync(pthf)) {
@@ -41,6 +61,7 @@ var BibleUti = {
     load_BibleObj: function (username, revCode) {
         var jsfnm = BibleUti.get_pathfilenameOfTranslationID(username, revCode);
         var ret = BibleUti.load_BibleObj_by_fname(jsfnm)
+        ret.m_fname = jsfnm
         return ret;
     },
     load_BibleObj_by_fname: function (jsfnm) {
@@ -269,6 +290,7 @@ var BibleUti = {
             var trn = inp.par.fnames[0]
             inp.out.result += trn
             var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+            inp.out.m_fname = bib.m_fname
             inp.bio = bib
             if (bib.fsize > 0) {
                 console.log("fsize:", bib.fsize)
@@ -421,6 +443,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.result = "Write?"
 
         inp = BibleUti.Write2vrs_txt(inp, true)
+        inp.out.m_fname
+        BibleUti.exec_git_cmd("git add * | git commit -m ")
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
