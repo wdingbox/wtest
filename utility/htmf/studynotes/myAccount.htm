@@ -67,7 +67,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
         <label for="editor1">
             github proj
         </label>
-        <input id="proj_url" value="https://github.com/wdingbox/Bible_obj_weid.git"></input>
+        <input id="proj_url" value="https://github.com/wdingbox/bible_obj_weid.git"></input>
         <label for="editor1">
             github passcode
         </label>
@@ -95,6 +95,9 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
             Jsonpster.inp.usr.passcode = pcode;
             Jsonpster.api = RestApi.ApiAccout_setup_usr
             dbg_pster()
+            Jsonpster.Run(function (ret) {
+                dbg_pster(ret)
+            })
 
         }
     </script>
@@ -103,8 +106,12 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 </html>
 <script>
     Uti.Jsonpster_crossloader()
-    function dbg_pster() {
-        var ss = "Jsonpster = " + JSON.stringify(Jsonpster, null, 4)
+    function dbg_pster(dat) {
+        var ss = dat
+        if ("object" === typeof dat) {
+            var ss = "dat=" + JSON.stringify(dat)
+        }
+        ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
         ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
         $("#txa").val(ss)
     }

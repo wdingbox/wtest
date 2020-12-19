@@ -388,31 +388,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    ApiAccout_setup_usr: function (req, res) {
-        var inp = BibleUti.GetApiInputParamObj(req)
-        console.log(inp)
 
-        if ("object" === typeof inp.par.usr) {//['NIV','ESV']
-            var proj_url = inp.par.usr.proj_url
-            var passcode = inp.par.usr.passcode
-
-            //https://github.com/wdingbox/Bible_obj_weid.git
-            var reg = new RegExp("https://github.com/(\w+)/(\w+).git", "g")
-            var mat = projname.match(reg)
-            if (mat) {
-                console.log(mat)
-                var username = mat[1]
-                var projname = mat[2]
-            }
-
-        }
-
-
-        console.log(inp.out)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
-        res.end();
-    },
     ApiBibleObj_search_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         if (!inp.usr.f_path) inp.usr.f_path = ""
@@ -463,6 +439,51 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
+        res.end();
+    },
+
+    ///////////////////////////////////
+    ApiAccout_setup_usr: async function (req, res) {
+        var inp = BibleUti.GetApiInputParamObj(req)
+        console.log(inp)
+
+        function parse_proj_url(proj_url) {
+            //https://github.com/wdingbox/Bible_obj_weid.git
+            var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
+
+            var mat = proj_url.match(reg)
+            console.log("mat", mat)
+            if (mat) {
+                console.log(mat)
+                var username = mat[1]
+                var projname = mat[2]
+            }
+            return mat
+        }
+
+        if ("object" === typeof inp.usr) {//['NIV','ESV']
+            var proj_url = inp.usr.proj_url
+            var passcode = inp.usr.passcode
+
+            var ret = parse_proj_url(proj_url)
+
+            var password = "ubuntu"
+            var cmd = `
+#!/bin/sh
+#cd ../../../../
+echo ${password} | sudo -S git clone ${proj_url}
+#cd -
+`
+            inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
+
+
+        }
+        var sret = JSON.stringify(inp, null, 4)
+
+
+        console.log(inp.out)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
 
