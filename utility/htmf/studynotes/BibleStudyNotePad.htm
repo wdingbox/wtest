@@ -1,16 +1,19 @@
 <HTML manifest___xxx="BiblePad-2015.appcache">
 
 <HEAD>
-    <TITLE>Bindx</TITLE>
+    <TITLE>Bii</TITLE>
     <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" xxhref="./BibleInputMethod.css?v=2020dec2a">
+    <link rel="stylesheet" href="./BibleInputMethod.css?v=2020dec2a">
     </link>
 
 
+    <script>
+        var gStartDate = (new Date()).getTime();
+    </script>
 
 
 
@@ -31,13 +34,18 @@
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
     <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
 
-    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
     <script language="javascript"
-        xxxxxsrc="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
+        xxxxxsrc="../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
+    <script language="javascript"
+        src="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
 
     <!---------->
     <script language="javascript" src="./BibleInputMethod.js?v=20.12.4"></script>
     <!------ api ---->
+    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://54.227.156.235:7778/Jsonpster/"></script>
+    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://104.188.182.128:7778/Jsonpster/"></script>
+    <script xxxxsrc="http://localhost:7778/Jsonpster/" xsrc="http://localhost:7778/Jsonpster/"></script>
+
 
 
 
@@ -50,37 +58,35 @@
 
 
     <script language="javascript">
-        function gen_cross_svr_link() {
-            var ss = "<h3>home : cross_svr</h3><ol>";
-            var ip_home={
-                "localhost":"file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm",
-                "104.188.182.128":"",
-                "54.227.156.235":"http://54.227.156.235/wdaws/ham12/utility/htmf/studynotes/index.htm",
-                "wdingbox.github.io":"https://wdingbox.github.io/ham12/utility/htmf/studynotes/index.htm"
-            }
-            Object.keys(ip_home).forEach(function (ip) {
-                var home = `<a target='_blank' href='${ip_home[ip]}'>home</a>`
-                var serv = `<a target='_blank' href='./BibleStudyNotePad.htm?ip=${ip}'>${ip}</a>`
-                ss += `<li>${home} : ${serv}</li>`
-            })
-            ss + "<br></ol>"
-            $("body").append(ss)
-        }
-
+        console.log(window.location);
 
         $(document).ready(function () {
-            gen_cross_svr_link()
+        
+            g_aim.init();
 
+
+
+            //table_sort();
+            //table_col_index();
+
+            Uti.Msg("start ...");
+            setTimeout(() => {
+                if ("undefined" === typeof Jsonpster) {
+                    alert("Jsonpster server down.");
+                }
+                Uti.Msg(Jsonpster.Url());
+            }, 3000)
         });/////////////
 
     </script>
 
 </HEAD>
 
-<BODY xonbeforeunload="return 'leave?';">
-    <p>Open link in a new window or tab: <a href="#bcv=gen1:1">Visit!</a></p>
-    <a> file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm </a>
+<BODY onbeforeunload="return 'leave?';">
 
 </BODY>
 
 </HTML>
+<script>
+    Uti.Jsonpster_crossloader()
+</script>
