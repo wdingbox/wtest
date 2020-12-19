@@ -458,14 +458,16 @@ ${scmd}
             document.body.appendChild(e);
 
             setTimeout(() => {
-                for (const [rev, chpObj] of Object.entries(pster.inp.par.inpObj)) {
+                for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
                             CKEDITOR.instances.editor1.setData(txt)
                             var theData = ckEditor.getData();
                             document.m_iEdiDataLen = theData.length;
-                            g_msg.pop(`<br>${rev}${chp}:${vrs}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
+                            var bcv = `${bkn}${chp}:${vrs}`
+                            g_msg.pop(`<br>${bcv}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
                             ckEditor.resetDirty()
+                            $("title").text(bcv)
                         }
                     }
                 }

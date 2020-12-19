@@ -1670,6 +1670,7 @@ AppInstancesManager.prototype.init = function () {
     showup.onclick_face(function () {
         skout.show(false)
         $('#menuContainer').slideToggle();
+        _This.scrollToView_Vrs() //before clearup.
     })
 
 
