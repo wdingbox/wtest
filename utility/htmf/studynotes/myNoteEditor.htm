@@ -56,7 +56,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     </style>
 </head>
 
-<body>
+<body onbeforeunload="return 'leave?';">
 
     <form action="http://localhost:7878/save" method="post">
         <label for="editor1">
@@ -382,6 +382,7 @@ ${scmd}
                 });
         }
         function __save() {
+            if (!document.m_myNotes) return alert("No parent storage for myNote.")
 
             var theData = ckEditor.getData();
             var sbody = "<body>"
