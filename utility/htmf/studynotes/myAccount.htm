@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Editing</title>
+
+    <!-------------------------------------------->
+    <!---- Insert this before scripts import; then restor back later -->
+    <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <!-------------- jq --------------------->
+    <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
+    <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
+        note="selfseversite"></script>
+    <!-------------- ckeditor only--------------------->
+    <script src="../../../assets/ckeditor/ckeditor.js"></script>
+    <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
+    <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
+
+
+    <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
+    <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
+    <!-------------------------------------------->
+    <!----- Insert this line after script imports -->
+    <script>//if (window.module) module = window.module;</script>
+    <!-------------------------------------------->
+    <style>
+        .editor_state_max {
+            z-index: 999999;
+            position: absolute;
+            right: 20px;
+            background-color: antiquewhite;
+        }
+
+        #input,
+        #output {
+            background-color: black;
+            color: white;
+            overflow: auto
+        }
+
+
+        #idbtn_exec_cmd {
+            background-color: grey;
+        }
+
+        .white_space_nowrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form action="http://localhost:7878/" method="post">
+        <label for="editor1">
+            
+        </label>
+        <input></input>
+        <p>
+            <input></input>
+        </p>
+        
+    </form>
+   
+
+
+
+    <div id="footer">
+        <hr>
+    </div>
+
+
+
+
+
+    <script>
+        function load_page_by_parent_storage() {
+            console.log(window.location)
+            document.m_myNotes = localStorage.getItem("myNote")
+            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+
+            var pster = JSON.parse(document.m_myNotes)
+            localStorage.setItem("myNote", "")
+            console.log("Storage myNode", pster)
+            var e = document.createElement("script");
+            e.src = `${pster.url}Jsonpster/`;
+            document.body.appendChild(e);
+
+            setTimeout(() => {
+                for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
+                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                        for (const [vrs, txt] of Object.entries(vrsObj)) {
+                            CKEDITOR.instances.editor1.setData(txt)
+                            var theData = ckEditor.getData();
+                            document.m_iEdiDataLen = theData.length;
+                            var bcv = `${bkn}${chp}:${vrs}`
+                            //g_msg.pop(`<br>${bcv}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
+                            //ckEditor.resetDirty()
+                            $("title").text("+" + bcv)
+                        }
+                    }
+                }
+                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+            }, 1000)
+            //});
+            //return false;
+        }
+    </script>
+</body>
+
+</html>
+<script>
+    Uti.Jsonpster_crossloader()
+</script>
+<script>
+    $(function () {
+        //init_CKEditor()
+        //init_ui_cmd()
+        load_page_by_parent_storage()
+
+
+    })
+</script>

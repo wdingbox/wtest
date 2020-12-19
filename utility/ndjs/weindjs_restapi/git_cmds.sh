@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+# https://github.com/wdingbox/bible_obj_usr.git
 password="lll"
 cd ../../../../bible_obj_usr/account
 echo ${password} | sudo -S git status
