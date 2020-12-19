@@ -29,6 +29,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     <!-------------------------------------------->
     <!----- Insert this line after script imports -->
     <script>//if (window.module) module = window.module;</script>
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
     <style>
         .editor_state_max {
@@ -53,27 +54,33 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
         .white_space_nowrap {
             white-space: nowrap;
         }
+
+        input {
+            width: 100%;
+        }
     </style>
 </head>
 
 <body>
 
-    <form action="http://localhost:7878/" method="post">
+    <form action="" method="post">
         <label for="editor1">
-            
+            github proj
         </label>
-        <input></input>
-        <p>
-            <input></input>
-        </p>
-        
+        <input id="proj_url" value="https://github.com/wdingbox/Bible_obj_weid.git"></input>
+        <label for="editor1">
+            github passcode
+        </label>
+        <input id="passcode" value="3edcFDSA"></input>
     </form>
-   
+    <button onclick="run();">Submit</button>
+
 
 
 
     <div id="footer">
         <hr>
+        <textarea id="txa" cols="100" , rows="25"></textarea>
     </div>
 
 
@@ -81,36 +88,14 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 
     <script>
-        function load_page_by_parent_storage() {
-            console.log(window.location)
-            document.m_myNotes = localStorage.getItem("myNote")
-            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+        function run() {
+            var pname = $("#proj_url").val()
+            var pcode = $("#passcode").val()
+            Jsonpster.inp.usr.proj_url = pname;
+            Jsonpster.inp.usr.passcode = pcode;
+            Jsonpster.api = RestApi.ApiAccout_setup_usr
+            dbg_pster()
 
-            var pster = JSON.parse(document.m_myNotes)
-            localStorage.setItem("myNote", "")
-            console.log("Storage myNode", pster)
-            var e = document.createElement("script");
-            e.src = `${pster.url}Jsonpster/`;
-            document.body.appendChild(e);
-
-            setTimeout(() => {
-                for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
-                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            CKEDITOR.instances.editor1.setData(txt)
-                            var theData = ckEditor.getData();
-                            document.m_iEdiDataLen = theData.length;
-                            var bcv = `${bkn}${chp}:${vrs}`
-                            //g_msg.pop(`<br>${bcv}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
-                            //ckEditor.resetDirty()
-                            $("title").text("+" + bcv)
-                        }
-                    }
-                }
-                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-            }, 1000)
-            //});
-            //return false;
         }
     </script>
 </body>
@@ -118,12 +103,27 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 </html>
 <script>
     Uti.Jsonpster_crossloader()
+    function dbg_pster() {
+        var ss = "Jsonpster = " + JSON.stringify(Jsonpster, null, 4)
+        ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
+        $("#txa").val(ss)
+    }
+    setTimeout(() => {
+        if (undefined === Jsonpster) {
+            alert("Jsonpster not exist.")
+        }
+        else {
+            $("title").text("acct")
+            dbg_pster()
+        }
+        //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+    }, 1000)
 </script>
 <script>
     $(function () {
         //init_CKEditor()
         //init_ui_cmd()
-        load_page_by_parent_storage()
+        //load_page_by_parent_storage()
 
 
     })

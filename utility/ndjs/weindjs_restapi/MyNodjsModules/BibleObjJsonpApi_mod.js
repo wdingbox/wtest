@@ -388,24 +388,25 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    xxxxxxxxxxxxxxxxxxxxxxxxxxxxApiBibleObj_load_by_StdBcvStrn: function (req, res) {
+    ApiAccout_setup_usr: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
-        var RbcObj = {};
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            for (var i = 0; i < inp.par.fnames.length; i++) {
-                var trn = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
-                if (!bib.obj) inp.out.result += ":err:" + trn
-                RbcObj[trn] = bib.obj;
-                inp.out.result += ":" + trn
-            }
-        }
-        var bcvR = {}
-        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        inp.out.data = BibleUti.load_bcvR_by_StdBcvStrn(bcvR, inp.par.StdBcvStrn)
-        inp.out.result += ":success"
+        console.log(inp)
 
-        var sret = JSON.stringify(inp);
+        if ("object" === typeof inp.par.usr) {//['NIV','ESV']
+            var proj_url = inp.par.usr.proj_url
+            var passcode = inp.par.usr.passcode
+
+            //https://github.com/wdingbox/Bible_obj_weid.git
+            var reg = new RegExp("https://github.com/(\w+)/(\w+).git", "g")
+            var mat = projname.match(reg)
+            if (mat) {
+                console.log(mat)
+                var username = mat[1]
+                var projname = mat[2]
+            }
+
+        }
+
 
         console.log(inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -444,7 +445,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp = BibleUti.Write2vrs_txt(inp, true)
 
         console.log(inp.out.m_fname)
-        inp.out.exec_git_result =  BibleUti.exec_git_cmd("./git_cmds.sh", res)
+        inp.out.exec_git_result = BibleUti.exec_git_cmd("./git_cmds.sh", res)
         //console.log(inp)
 
 
