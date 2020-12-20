@@ -44,7 +44,7 @@ var BibleUti = {
 
 
     load_bibleObj_by_inp: function (inp) {
-        var proj = BibleUti.git_proj_parse(inp)
+        var proj = userProject.git_proj_parse(inp)
         if (!proj) {
             console.log("fatal error")
             return null
@@ -218,7 +218,8 @@ var BibleUti = {
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var trn = inp.par.fnames[0]
             inp.out.result += trn
-            var bib = BibleUti.load_bibleObj_by_inp(inp);
+            var jsfname = userProject.get_jsfname(trn)
+            var bib = BibleUti.load_BibleObj_by_fname(jsfname);
             inp.out.m_fname = bib.fname
             inp.bio = bib
             if (bib.fsize > 0) {
@@ -248,78 +249,8 @@ var BibleUti = {
         return inp
     },
 
-    git_proj_parse: function (inp) {
-        if ("object" !== typeof inp.usr) {
-            return null
-        }
-        function _parse_proj_url(proj_url) {
-            //https://github.com/wdingbox/Bible_obj_weid.git
-            var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
-
-            var mat = proj_url.match(reg)
-            console.log("mat", mat)
-            if (mat) {
-                console.log(mat)
-                var username = mat[1]
-                var projname = mat[2]
-                return { username: username, projname: projname }
-            }
-            return null
-        }
-        var proj_url = inp.usr.proj_url
-        var passcode = inp.usr.passcode
 
 
-
-        inp.usr.proj = _parse_proj_url(proj_url)
-        if (inp.usr.proj) {
-            var baseDir = "bible_usrs_dat"
-            var acctname = "account"
-
-            inp.usr.proj.baseDir = baseDir
-            inp.usr.proj.acctname = acctname
-            inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
-            inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
-            inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
-
-
-
-            if (inp.par && inp.par.fnames) {
-                var RevCode = inp.par.fnames[0]
-                if ("_" === RevCode[0]) {
-                    RevCode = RevCode.substr(1)
-                    inp.usr.proj.dest_pfname = `${inp.usr.proj.dest_dir}/${RevCode}_json.js`
-                } else {
-                    inp.usr.proj.dest_pfname = `../../../../bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
-                }
-            }
-
-
-            console.log("inp.usr.proj=", inp.usr.proj)
-        }
-
-        return inp.usr.proj
-    },
-    git_proj_setup: async function (inp, res) {
-
-        var proj = BibleUti.git_proj_parse(inp)
-        if (!proj) return console.log("failed git setup")
-        var password = "lll"
-
-        console.log("proj", proj)
-        var cmd = `
-#!/bin/sh
-cd ../../../../
-echo ${password} | sudo -S mkdir -p ${proj.git_dir}
-echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
-echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
-echo "begin to cp"
-echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.acct_dir}
-#cd -
-`
-        inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
-
-    },
 
     //// BibleUti /////
 }
@@ -328,6 +259,18 @@ var UserProject = function () {
 }
 UserProject.prototype.set_rootDir = function (rootDir) {
     this.m_rootDir = rootDir
+}
+UserProject.prototype.get_jsfname = function (RevCode) {
+    var inp = this.m_inp
+    //var RevCode = inp.par.fnames[0]
+    var dest_pfname = ""
+    if ("_" === RevCode[0]) {
+        RevCode = RevCode.substr(1)
+        dest_pfname = `${this.m_rootDir}${inp.usr.proj.dest_dir}/${RevCode}_json.js`
+    } else {
+        dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
+    }
+    return dest_pfname 
 }
 UserProject.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
@@ -366,24 +309,12 @@ UserProject.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
 
 
-
-        if (inp.par && inp.par.fnames) {
-            var RevCode = inp.par.fnames[0]
-            if ("_" === RevCode[0]) {
-                RevCode = RevCode.substr(1)
-                inp.usr.proj.dest_pfname = `${inp.usr.proj.dest_dir}/${RevCode}_json.js`
-            } else {
-                inp.usr.proj.dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
-            }
-        }
-
-
         console.log("inp.usr.proj=", inp.usr.proj)
     }
 
     return inp.usr.proj
 }
-UserProject.prototype.git_proj_setup =  async function (res) {
+UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) return console.log("failed git setup")
@@ -454,11 +385,13 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
     ApiBibleObj_load_by_bibOj: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
+        var proj = userProject.git_proj_parse(inp)
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var bib = BibleUti.load_bibleObj_by_inp(inp);
+                var jsfname = userProject.get_jsfname(trn)
+                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
                 if (!bib.obj) inp.out.result += ":err:" + trn
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
@@ -480,12 +413,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     ApiBibleObj_search_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
         if (!inp.usr.f_path) inp.usr.f_path = ""
+        var proj = userProject.git_proj_parse(inp)
 
         var RbcObj = {};
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var bib = BibleUti.load_bibleObj_by_inp(inp);
+                var jsfname = userProject.get_jsfname(trn)
+                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
@@ -504,6 +439,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
     ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
+        var proj = userProject.git_proj_parse(inp)
         inp.out.result = "Write?"
 
         inp = BibleUti.Write2vrs_txt(inp, true)
@@ -520,6 +456,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
     ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
+        var proj = userProject.git_proj_parse(inp)
         inp.out.result = "read:"
 
         inp = BibleUti.Write2vrs_txt(inp, false)

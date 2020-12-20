@@ -17,19 +17,52 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            MyStorage.auto_setup_Jsonpster()
+            MyStorage.getProj_url()
+            MyStorage.getPasscode()
         }, 3000)
 
     },
-    auto_setup_Jsonpster: function () {
-        ["acctname", "f_path"].forEach(function (id, i) {
-            var val = localStorage.getItem(id)
-            $("#" + id).val(val)
-            if (undefined !== typeof Jsonpster) {
-                Jsonpster.inp.usr[id] = val
-            }
-        })
+
+    setProj_url: function (v) {
+        v = v.trim()
+        if (v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git"
+        localStorage.setItem("proj_url", v)
+        $("#proj_url").val(v)
+        if (undefined !== typeof Jsonpster) {
+            Jsonpster.inp.usr["proj_url"] = v
+        }
     },
+    getProj_url: function () {
+        var v = localStorage.getItem("proj_url");
+        if (!v || v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git";
+        $("#proj_url").val(v)
+        if (undefined !== typeof Jsonpster) {
+            Jsonpster.inp.usr["proj_url"] = v
+        }
+        return v;
+    },
+    setPasscode: function (v) {
+        v = v.trim()
+        if (v.length === 0) v = "3edcFDSA"
+        localStorage.setItem("passcode", v)
+
+        //////////////////////////////////////
+        $("#passcode").val(v)
+        if (undefined !== typeof Jsonpster) {
+            Jsonpster.inp.usr["passcode"] = v
+        }
+    },
+    getPasscode: function () {
+        var v = localStorage.getItem("passcode");
+        if (!v || v.length === 0) v = "3edcFDSA";
+        $("#passcode").val(v)
+        if (undefined !== typeof Jsonpster) {
+            Jsonpster.inp.usr["passcode"] = v
+        }
+        return v;
+    },
+
+
     clear: function () {
         localStorage.clear();
     },
@@ -150,32 +183,6 @@ var MyStorage = {
         var v = parseInt(localStorage.getItem("FontSize"));
         if (!v || !Number.isInteger(v) || v.length === 0) return 16
         return (v < 6) ? 6 : v
-    },
-
-    setAcctName: function (v) {
-        v = v.trim()
-        if (v.length === 0) v = "pub"
-        localStorage.setItem("acctname", v)
-    },
-    getAcctName: function () {
-        var v = localStorage.getItem("acctname");
-        if (!v || v.length === 0) v = "pub";
-        return v;
-    },
-    setUserName: function (v) {
-        v = v.trim()
-        if (v.length === 0) v = "peter"
-        localStorage.setItem("f_path", v)
-
-        //////////////////////////////////////
-        if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["f_path"] = v
-        }
-    },
-    getUserName: function () {
-        var v = localStorage.getItem("f_path");
-        if (!v || v.length === 0) v = "John";
-        return v;
     },
 
 
@@ -335,7 +342,7 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    $("#RevTag_Info").text(Jsonpster.inp.usr["f_path"])
+    $("#RevTag_Info").text(Jsonpster.inp.usr["proj_url"])
 
     this.m_ediDiv.setId(par.m_txuid)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -2752,14 +2759,14 @@ var BibleInputMenuContainer = `
                     <tbody id="">
                         <tr>
                             <td></td>
-                            <td>AccontName</td>
-                            <td><input id="acctname"  onkeyup="alert($(this).val());MyStorage.setAcctName($(this).val());" value='pub' ></input></td>
+                            <td>proj_url</td>
+                            <td><input id="proj_url"  onkeyup="alert($(this).val());MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></input></td>
                             <td>note</td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td>UserName</td>
-                            <td><input id="f_path" onkeyup="MyStorage.setUserName($(this).val());" value='peter'></input></td>
+                            <td>passcode</td>
+                            <td><input id="passcode" onkeyup="MyStorage.setPasscode($(this).val());" value='3edcFDSA'></input></td>
                             <td>user</td>
                         </tr>
                         <tr>
