@@ -1,16 +1,23 @@
-//2018/05/12 MyNodejsModuels/Uti.module.js
+
 
 const fs = require('fs');
 const path = require('path');
 var url = require('url');
 
-var Uti = require("./Uti.module").Uti;
+//var Uti = require("./Uti.module").Uti;
 //var SvcUti = require("./SvcUti.module").SvcUti;
 const exec = require('child_process').exec;
 
 
 
 var BibleUti = {
+    GetFileSize: function (fnm) {
+        if (fs.existsSync(fnm)) {
+            const stats = fs.statSync(fnm);
+            return stats.size;
+        }
+        return -1;
+    },
     exec_git_cmd: async function (command, res) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -32,35 +39,17 @@ var BibleUti = {
             }
         })
     },
-    xxxxxxxxxxxget_usr_pathfile: function (username, RevCode) {
-        var pthf = `../../../../bible_obj_usr/account/${username}/${RevCode}_json.js`
-        if (!fs.existsSync(pthf)) {
-            Uti.MakePathDirOfFile(pthf)
-        }
-        return pthf;
-    },
-    xxxxxxxxxxxxxload_BibleMaxStruct: function () {
-        var spathfile = "../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"
-        return load_BibleObj(spathfile, "All_Max_struct")
-    },
 
-    get_pathfilenameOfTranslationID: function (f_path, RevCode) {
-        var spathfile = "../../../jsdb/jsBibleObj/H_G.json.js";
-        if ("_" === RevCode[0]) {
-            if ("_" === RevCode[1]) {
-                return ""
-            }
-            RevCode = RevCode.substr(1)
-            spathfile = `../../../../bible_obj_usr/account/${f_path}/${RevCode}_json.js`
-        } else {
-            spathfile = `../../../../bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
-        }
 
-        return spathfile;
-    },
-    load_BibleObj: function (username, revCode) {
-        var jsfnm = BibleUti.get_pathfilenameOfTranslationID(username, revCode);
-        var ret = BibleUti.load_BibleObj_by_fname(jsfnm)
+ 
+    
+    load_bibleObj_by_inp: function (inp) {
+        var proj = BibleUti.git_proj_parse(inp)
+        if (!proj) {
+            console.log("fatal error")
+            return null
+        }
+        var ret = BibleUti.load_BibleObj_by_fname(inp.usr.proj.dest_pfname)
         return ret;
     },
     load_BibleObj_by_fname: function (jsfnm) {
@@ -70,7 +59,7 @@ var BibleUti = {
             console.log("f not exit:", jsfnm)
             return ret;
         }
-        ret.fsize = Uti.GetFileSize(jsfnm);
+        ret.fsize = BibleUti.GetFileSize(jsfnm);
         if (ret.fsize > 0) {
             var t = fs.readFileSync(jsfnm, "utf8");
             var i = t.indexOf("{");
@@ -272,7 +261,7 @@ var BibleUti = {
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var trn = inp.par.fnames[0]
             inp.out.result += trn
-            var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+            var bib = BibleUti.load_bibleObj_by_inp(inp);
             inp.out.m_fname = bib.fname
             inp.bio = bib
             if (bib.fsize > 0) {
@@ -323,6 +312,8 @@ var BibleUti = {
         var proj_url = inp.usr.proj_url
         var passcode = inp.usr.passcode
 
+
+
         inp.usr.proj = _parse_proj_url(proj_url)
         if (inp.usr.proj) {
             var baseDir = "bible_usrs_dat"
@@ -330,8 +321,23 @@ var BibleUti = {
 
             inp.usr.proj.baseDir = baseDir
             inp.usr.proj.acctname = acctname
-            inp.usr.proj.gitdir = `${baseDir}/${inp.usr.proj.projname}`
-            inp.usr.proj.destdir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
+            inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
+            inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
+            inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
+
+
+
+            if (inp.par && inp.par.fnames) {
+                var RevCode = inp.par.fnames[0]
+                if ("_" === RevCode[0]) {
+                    RevCode = RevCode.substr(1)
+                    inp.usr.proj.dest_pfname = `${inp.usr.proj.dest_dir}/${RevCode}_json.js`
+                } else {
+                    inp.usr.proj.dest_pfname = `../../../../bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
+                }
+            }
+
+
             console.log("inp.usr.proj=", inp.usr.proj)
         }
 
@@ -347,11 +353,11 @@ var BibleUti = {
         var cmd = `
 #!/bin/sh
 cd ../../../../
-echo ${password} | sudo -S mkdir -p ${proj.gitdir}
-echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.gitdir}
-echo ${password} | sudo -S mkdir -p ${proj.destdir}
+echo ${password} | sudo -S mkdir -p ${proj.git_dir}
+echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
+echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo "begin to cp"
-echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.destdir}
+echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.acct_dir}
 #cd -
 `
         inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
@@ -410,7 +416,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if ("object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+                var bib = BibleUti.load_bibleObj_by_inp(inp);
                 if (!bib.obj) inp.out.result += ":err:" + trn
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
@@ -437,7 +443,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var bib = BibleUti.load_BibleObj(inp.usr.f_path, trn);
+                var bib = BibleUti.load_bibleObj_by_inp(inp);
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
