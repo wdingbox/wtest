@@ -457,8 +457,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 console.log(mat)
                 var username = mat[1]
                 var projname = mat[2]
+                return {username:username, projname:projname}
             }
-            return mat
+            return null
         }
 
         if ("object" === typeof inp.usr) {//['NIV','ESV']
@@ -467,11 +468,19 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var ret = parse_proj_url(proj_url)
 
-            var password = "ubuntu"
+            var password = "lll"
+            var baseDir = "bible_usrs_dat"
+            var acctname = "account"
             var cmd = `
 #!/bin/sh
-#cd ../../../../
-echo ${password} | sudo -S git clone ${proj_url}
+cd ../../../../
+mkdir ${baseDir}
+cd ${baseDir}
+echo ${password} | sudo -S git clone  ${proj_url}
+cd ${ret.projname}
+mkdir ${acctname}
+echo "begin to cp"
+echo ${password} | sudo cp -Ra  ../../bible_obj_usr/template/wd  .
 #cd -
 `
             inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
