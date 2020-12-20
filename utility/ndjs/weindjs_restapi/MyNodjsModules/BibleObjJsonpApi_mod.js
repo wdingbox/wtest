@@ -267,23 +267,7 @@ var BibleUti = {
 
         return ret;
     },
-    xxxxxxxxxxxxxxxxload_bcvR_by_StdBcvStrn: function (bcvR, stdBcvStrn) {
-        var retOb = {}, stdBcvAr = stdBcvStrn.split(",")
 
-        stdBcvAr.forEach(function (stdbcv) {
-            var stdbcvs = stdbcv.trim()
-            var ar2 = stdbcvs.split("-")
-            var stdbcv = ar2[0].trim()
-            var ret = BibleUti.bcv_parser(stdbcv, '') //`${bkc}${chp}:${vrs}`
-            if (!ret.err) {
-                if (!retOb[ret.vol]) retOb[ret.vol] = {}
-                if (!retOb[ret.vol][ret.chp]) retOb[ret.vol][ret.chp] = {};
-                retOb[ret.vol][ret.chp][ret.vrs] = bcvR[ret.vol][ret.chp][ret.vrs]
-            }
-        })
-
-        return retOb
-    },
     Write2vrs_txt: function (inp, bWrite) {
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var trn = inp.par.fnames[0]
@@ -316,7 +300,63 @@ var BibleUti = {
             }
         }
         return inp
-    }
+    },
+
+    git_proj_parse: function (inp) {
+        if ("object" !== typeof inp.usr) {
+            return null
+        }
+        function _parse_proj_url(proj_url) {
+            //https://github.com/wdingbox/Bible_obj_weid.git
+            var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
+
+            var mat = proj_url.match(reg)
+            console.log("mat", mat)
+            if (mat) {
+                console.log(mat)
+                var username = mat[1]
+                var projname = mat[2]
+                return { username: username, projname: projname }
+            }
+            return null
+        }
+        var proj_url = inp.usr.proj_url
+        var passcode = inp.usr.passcode
+
+        inp.usr.proj = _parse_proj_url(proj_url)
+        if (inp.usr.proj) {
+            var baseDir = "bible_usrs_dat"
+            var acctname = "account"
+
+            inp.usr.proj.baseDir = baseDir
+            inp.usr.proj.acctname = acctname
+            inp.usr.proj.gitdir = `${baseDir}/${inp.usr.proj.projname}`
+            inp.usr.proj.destdir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
+            console.log("inp.usr.proj=", inp.usr.proj)
+        }
+
+        return inp.usr.proj
+    },
+    git_proj_setup: async function (inp, res) {
+
+        var proj = BibleUti.git_proj_parse(inp)
+        if (!proj) return console.log("failed git setup")
+        var password = "lll"
+
+        console.log("proj", proj)
+        var cmd = `
+#!/bin/sh
+cd ../../../../
+mkdir -p ${proj.gitdir}
+echo ${password} | sudo -S git clone  ${proj.proj_url} ${proj.gitdir}
+mkdir -p ${proj.destdir}
+echo "begin to cp"
+echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.destdir}
+#cd -
+`
+        inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
+
+    },
 
     //// BibleUti /////
 }
@@ -445,52 +485,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     ///////////////////////////////////
     ApiAccout_setup_usr: async function (req, res) {
         var inp = BibleUti.GetApiInputParamObj(req)
-        console.log(inp)
+        console.log("inp is ", inp)
 
-        function parse_proj_url(proj_url) {
-            //https://github.com/wdingbox/Bible_obj_weid.git
-            var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
-
-            var mat = proj_url.match(reg)
-            console.log("mat", mat)
-            if (mat) {
-                console.log(mat)
-                var username = mat[1]
-                var projname = mat[2]
-                return {username:username, projname:projname}
-            }
-            return null
-        }
-
-        if ("object" === typeof inp.usr) {//['NIV','ESV']
-            var proj_url = inp.usr.proj_url
-            var passcode = inp.usr.passcode
-
-            var ret = parse_proj_url(proj_url)
-
-            var password = "lll"
-            var baseDir = "bible_usrs_dat"
-            var acctname = "account"
-            var cmd = `
-#!/bin/sh
-cd ../../../../
-mkdir ${baseDir}
-cd ${baseDir}
-echo ${password} | sudo -S git clone  ${proj_url}
-cd ${ret.projname}
-mkdir ${acctname}
-echo "begin to cp"
-echo ${password} | sudo cp -Ra  ../../bible_obj_usr/template/wd  .
-#cd -
-`
-            inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
-
-
-        }
+        await BibleUti.git_proj_setup(inp, res)
         var sret = JSON.stringify(inp, null, 4)
 
-
-        console.log(inp.out)
+        console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
