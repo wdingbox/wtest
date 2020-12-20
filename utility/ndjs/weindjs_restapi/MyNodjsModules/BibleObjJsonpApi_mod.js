@@ -41,8 +41,8 @@ var BibleUti = {
     },
 
 
- 
-    
+
+
     load_bibleObj_by_inp: function (inp) {
         var proj = BibleUti.git_proj_parse(inp)
         if (!proj) {
@@ -96,26 +96,7 @@ var BibleUti = {
         inpObj.out = { result: "", data: null }
         return inpObj;
     },
-    xxxxxxxxxxxxxxxxxxxxxxfetch_bc: function (BibleObj, oj) {
-        console.log("oj", oj)
-        if (!oj || Object.keys(oj).length === 0) return BibleObj
-        var retOb = {}
-        for (const [bkc, chpObj] of Object.entries(oj)) {
-            retOb[bkc] = {}
-            if (!chpObj || Object.keys(chpObj).length === 0) {
-                retOb[bkc] = BibleObj[bkc]
-                continue
-            }
-            for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                console.log("bc", bkc, chp)
-                retOb[bkc][chp] = BibleObj[bkc][chp]
-                for (const [vrs, txt] of Object.entries(vrsObj)) {
-                    //console.log(`${key}: ${value}`);
-                }
-            }
-        }
-        return retOb
-    },
+
     fetch_bcv: function (BibleObj, oj) {
         console.log("oj", oj)
         if (!oj || Object.keys(oj).length === 0) return BibleObj
@@ -157,31 +138,7 @@ var BibleUti = {
         };
         return bcvRobj;
     },
-    xxxxxxxxxxxxsearch_str_in_bcv: function (bibObj, searchStrn, fileary) {
-        var retOb = {}
-        for (const [bkc, chpObj] of Object.entries(bibObj)) {
-            for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                for (const [vrs, txt] of Object.entries(vrsObj)) {
-                    var rep = new RegExp(searchStrn, "g");
-                    var mat = txt.match(rep);
-                    if (mat) {
-                        txt = txt.replace(mat[0], "<font color='red'>" + mat[0] + "</font>");
-                        if (!retOb[bkc]) retOb[bkc] = {}
-                        if (!retOb[bkc][chp]) retOb[bkc][chp] = {};//BibleObj[bkc][chp]
-                        bibObj[bkc][chp][vrs] = txt
-                        if (fileary.length > 0) {
-                            fileary.forEach(function (rev) {
-                                retOb[bkc][chp][vrs] = txt
-                            })
-                        }
-                        //console.log("bc", bkc, chp)
-                        //console.log(`${key}: ${value}`);
-                    }
-                }
-            }
-        }
-        return retOb
-    },
+
     search_str_in_bcvR: function (bcvR, Fname, searchStrn) {
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(bcvR)) {
@@ -366,6 +323,91 @@ echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.acct_dir}
 
     //// BibleUti /////
 }
+var UserProject = function () {
+
+}
+UserProject.prototype.set_rootDir = function (rootDir) {
+    this.m_rootDir = rootDir
+}
+UserProject.prototype.git_proj_parse = function (inp) {
+    this.m_inp = inp
+
+    if ("object" !== typeof inp.usr) {
+        return null
+    }
+    function _parse_proj_url(proj_url) {
+        //https://github.com/wdingbox/Bible_obj_weid.git
+        var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
+
+        var mat = proj_url.match(reg)
+        console.log("mat", mat)
+        if (mat) {
+            console.log(mat)
+            var username = mat[1]
+            var projname = mat[2]
+            return { username: username, projname: projname }
+        }
+        return null
+    }
+    var proj_url = inp.usr.proj_url
+    var passcode = inp.usr.passcode
+
+
+
+    inp.usr.proj = _parse_proj_url(proj_url)
+    if (inp.usr.proj) {
+        var baseDir = "bible_usrs_dat"
+        var acctname = "account"
+
+        inp.usr.proj.baseDir = baseDir
+        inp.usr.proj.acctname = acctname
+        inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
+        inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
+        inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
+
+
+
+        if (inp.par && inp.par.fnames) {
+            var RevCode = inp.par.fnames[0]
+            if ("_" === RevCode[0]) {
+                RevCode = RevCode.substr(1)
+                inp.usr.proj.dest_pfname = `${inp.usr.proj.dest_dir}/${RevCode}_json.js`
+            } else {
+                inp.usr.proj.dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
+            }
+        }
+
+
+        console.log("inp.usr.proj=", inp.usr.proj)
+    }
+
+    return inp.usr.proj
+}
+UserProject.prototype.git_proj_setup =  async function (res) {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) return console.log("failed git setup")
+
+    var password = "lll"
+
+    console.log("proj", proj)
+    var cmd = `
+#!/bin/sh
+cd ${this.m_rootDir}
+echo ${password} | sudo -S mkdir -p ${proj.git_dir}
+echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
+echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
+echo "begin to cp"
+echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.acct_dir}
+#cd -
+`
+    inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
+}
+var userProject = new UserProject()
+
+
+
+
 
 
 
@@ -493,7 +535,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
         console.log("inp is ", inp)
 
-        await BibleUti.git_proj_setup(inp, res)
+        userProject.git_proj_parse(inp)
+        await userProject.git_proj_setup(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
@@ -506,7 +549,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 }//// BibleRestApi ////
 
 var BibleObjJsonpApi = {
-    init: function (app) {
+    init: function (app, rootDir) {
+        userProject.set_rootDir(rootDir)
         Object.keys(ApiJsonp_BibleObj).forEach(function (sapi) {
             console.log("api:", sapi)
             app.get("/" + sapi, function (req, res) {

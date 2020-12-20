@@ -28,7 +28,7 @@ uploadObj.upload_page(app);
 
 //// for BibleObjApi  with Jsonpster ////////
 //var bii = new BibleObj();
-BibleObjJsonpApi.init(app);
+BibleObjJsonpApi.init(app, "../../../../");
 
 //// For HebrewQ study /////
 var hbrq = new HebrewQ();
