@@ -348,7 +348,7 @@ var BibleUti = {
 #!/bin/sh
 cd ../../../../
 mkdir -p ${proj.gitdir}
-echo ${password} | sudo -S git clone  ${proj.proj_url} ${proj.gitdir}
+echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.gitdir}
 mkdir -p ${proj.destdir}
 echo "begin to cp"
 echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.destdir}
