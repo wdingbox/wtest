@@ -329,7 +329,7 @@ echo ${password} | sudo -S mkdir -p ${proj.git_dir}
 echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo "begin to cp"
-echo ${password} | sudo cp -Ra  ./bible_obj_usr/template/wd  ${proj.acct_dir}
+echo ${password} | sudo cp -Ra  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
 #cd -
 `
     inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
