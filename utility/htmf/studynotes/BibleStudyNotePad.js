@@ -1631,6 +1631,7 @@ AppInstancesManager.prototype.init = function () {
     $("body").bind("click", function (evt) {
         evt.stopImmediatePropagation();
         $("#menuContainer").hide()
+        $("#divPopupMenu").hide()
         //popupMenu.hide()
     })
 
@@ -1778,6 +1779,7 @@ AppInstancesManager.prototype.init = function () {
     popupMenu.init()
     g_obt.onclick_ob_table(function () {
         $("#menuContainer").hide()
+        $("#divPopupMenu").hide()
         //popupMenu.hide()
     })
 
@@ -2052,18 +2054,9 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
     Uti.Msg("tot_rows:", tb.size);
     if (cbf) cbf(tb.size)
     $(this.m_tbid).html(tb.htm);
-    //table_sort("#BibOut");
-    //popupclicklabel. bcvTag
+ 
     $(this.m_tbid).find(".popupclicklabel").bind("click", function (evt) {
         evt.stopImmediatePropagation()
-
-
-
-
-
-
-
-
 
         //solve confliction between toggle and hili
         var alreadyHili = $(this)[0].classList.contains('bcvMark')
@@ -2072,9 +2065,6 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
 
         var bcr = $(this)[0].getBoundingClientRect();
         console.log(bcr)
-
-
-
 
         bcr.m_alreadyHili = alreadyHili
         bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
@@ -2089,10 +2079,6 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         }
 
         _THIS.m_onclick_popupLabel(bcr)
-
-        //markHistory.m_tbody.RecentMarks.addnew2table(bcr.m_bcv)
-        //$("title").text(bcr.m_bcv)
-
 
     });
 
@@ -2115,6 +2101,7 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
 
 
         Uti.Msg(txt);
+        $("#divPopupMenu").hide()
     });
 
     this.incFontSize(0)
