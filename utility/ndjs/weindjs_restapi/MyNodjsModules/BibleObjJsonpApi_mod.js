@@ -19,7 +19,7 @@ var BibleUti = {
         }
         return -1;
     },
-    exec_git_cmd: async function (command, res) {
+    exec_git_cmd: async function (command) {
         return new Promise(async (resolve, reject) => {
             try {
                 //command = "ls"
@@ -267,7 +267,7 @@ UserProject.prototype.get_jsfname = function (RevCode) {
     var dest_pfname = ""
     if ("_" === RevCode[0]) {
         RevCode = RevCode.substr(1)
-        dest_pfname = `${this.m_rootDir}${inp.usr.proj.dest_dir}/${RevCode}_json.js`
+        dest_pfname = `${this.m_rootDir}${inp.usr.proj.dest_myoj}/${RevCode}_json.js`
     } else {
         dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
     }
@@ -307,7 +307,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.acctname = acctname
         inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
         inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
-        inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
+        inp.usr.proj.dest_myoj = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
 
         console.log("inp.usr.proj=", inp.usr.proj)
 
@@ -319,37 +319,56 @@ UserProject.prototype.git_proj_parse = function (inp) {
 UserProject.prototype.get_usr_acct_dir = function (res) {
     return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
 }
+UserProject.prototype.get_usr_myoj_dir = function (res) {
+    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}`
+}
+
+UserProject.prototype.get_usr_git_dir = function (res) {
+    return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
+}
 UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) return console.log("failed git setup")
-    var accdir = this.get_usr_acct_dir()
-    if (fs.existsSync(`${accdir}`)) {
-        this.git_proj_config_update()
-        inp.out.result += "dest_dir already exists: " + accdir
-        return inp
-    }
-    inp.out.result += "setup new usr dest_dir=" + accdir
 
-    var password = "lll"
 
-    console.log("proj", proj)
-    var cmd = `
+    inp.out.result += "create new usr dest_myoj=" + accdir
+
+    //console.log("proj", proj)
+    var password = "lll" //dev mac
+    var git_setup_cmd = `
 #!/bin/sh
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.git_dir}
 echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
+echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+echo " git_setup_cmd end."
+#cd -`
+    var cp_template_cmd = `
+#!/bin/sh
+cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
-echo "begin to cp"
 echo ${password} | sudo cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
-echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
-echo " finished cmd"
-#cd -
-`
-    inp.out.cmd = cmd
-    inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(cmd, res)
-    this.git_proj_config_update()
+echo " cp_template_cmd end."
+#cd -`
+
+    var gitdir = this.get_usr_git_dir()
+    if (!fs.existsSync(`${gitdir}`)) {
+        inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(git_setup_cmd)
+        inp.out.git_setup_cmd = git_setup_cmd
+        inp.out.result += "create git dir: " + gitdir
+        this.git_proj_config_update()
+    }
+
+    var accdir = this.get_usr_myoj_dir()
+    if (fs.existsSync(`${accdir}`)) {
+        inp.out.result += "dest_myoj alreadt exist: " + accdir
+    } else {
+        inp.out.result += "git has no: " + accdir
+        inp.out.cp_template_cmd = cp_template_cmd
+        inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(cp_template_cmd)
+    }
     return inp
 }
 UserProject.prototype.git_proj_config_update = function () {
@@ -409,7 +428,7 @@ UserProject.prototype.git_proj_config_update = function () {
 UserProject.prototype.get_git_cmd = function () {
     password = "lll" //dev mac
     var cmd = `
-cd  ${this.get_usr_acct_dir()}
+cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
 echo ${password} | sudo -S git diff
 echo ${password} | sudo -S git add *

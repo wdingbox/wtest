@@ -2741,40 +2741,40 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_Config"  style="float:left;display:none;">
-                <table id='tmpsel2ref' border="1" align="left">
-                    <thead></thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                
              
-                <table border="1">
+                <table id='' border="1" style="width:100%;">
                     <thead>
                         <tr>
                             <td>#</td>
                             <td>desc</td>
-                            <td>Change</td>
-                            <td>note</td>
+                            <td>Setting</td>
+                            
                         </tr>
                     </thead>
                     <tbody id="">
                         <tr>
                             <td></td>
-                            <td>proj_url</td>
-                            <td><input id="proj_url"  onkeyup="alert($(this).val());MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></input></td>
-                            <td>note</td>
+                            <td>repository</td>
+                            <td><textarea id="proj_url"  onkeyup="MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            </td>
+                            
                         </tr>
                         <tr>
                             <td></td>
                             <td>passcode</td>
                             <td><input id="passcode" onkeyup="MyStorage.setPasscode($(this).val());" value='3edcFDSA'></input></td>
-                            <td>user</td>
+                            
                         </tr>
                         <tr>
                             <td></td>
                             <td>FontSize</td>
-                            <td><button onclick="g_obt.incFontSize(2);" title='font-size plus'>f+</button>
-                            <button onclick="g_obt.incFontSize(-2);" title='font-size minus'>f-</button></td>
-                            <td id='fontsize'></td>
+                            <td>
+                            <button onclick="g_obt.incFontSize(-2);" title='font-size minus'>-</button>
+                            <a id='fontsize'></a>
+                            <button onclick="g_obt.incFontSize(2);" title='font-size plus'>+</button>
+                            </td>
+                             
                         </tr>
                         <tr>
                             <td></td>
@@ -2783,7 +2783,7 @@ var BibleInputMenuContainer = `
                         </tr>
                         <tr>
                             <td></td>
-                            <td>clear setting</td>
+                            <td>clear</td>
                             <td><input type="radio" onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</input></td>
                         </tr>
                     </tbody>

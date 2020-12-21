@@ -290,7 +290,9 @@ body {
         display: block;
     }
 
-
+    #proj_url{
+        width:250px;
+    }
     #tmpsel2ref thead,
     #refslist thead {
         display: block;
