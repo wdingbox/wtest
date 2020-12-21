@@ -308,7 +308,6 @@ UserProject.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
         inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
 
-
         console.log("inp.usr.proj=", inp.usr.proj)
     }
 
@@ -318,6 +317,10 @@ UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) return console.log("failed git setup")
+    if (fs.existsSync(`${this.m_rootDir}${inp.usr.proj.dest_dir}`)) {
+        inp.out.result += "dest_dir already exists."
+        return inp
+    }
 
     var password = "lll"
 
@@ -329,10 +332,13 @@ echo ${password} | sudo -S mkdir -p ${proj.git_dir}
 echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo "begin to cp"
-echo ${password} | sudo cp -Ra  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
+echo ${password} | sudo cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
+echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
+echo " finished cmd"
 #cd -
 `
     inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
+    return inp
 }
 var userProject = new UserProject()
 
@@ -513,7 +519,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         console.log("inp is ", inp)
 
         userProject.git_proj_parse(inp)
-        await userProject.git_proj_setup(res)
+        inp = await userProject.git_proj_setup(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)

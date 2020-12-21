@@ -109,7 +109,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     function dbg_pster(dat) {
         var ss = dat
         if ("object" === typeof dat) {
-            var ss = "dat=" + JSON.stringify(dat)
+            var ss = "ret=" + JSON.stringify(dat,null,4)
         }
         ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
         ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
