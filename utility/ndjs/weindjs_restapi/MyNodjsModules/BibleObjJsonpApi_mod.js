@@ -447,6 +447,18 @@ cd -
 `
     return cmd
 }
+UserProject.prototype.get_git_cmd_pull = function () {
+    password = "lll" //dev mac
+    var cmd = `
+cd  ${this.get_usr_git_dir()}
+echo ${password} | sudo -S git status
+echo ${password} | sudo -S git diff
+echo ${password} | sudo -S git pull
+echo ${password} | sudo -S git status
+cd -
+`
+    return cmd
+}
 var userProject = new UserProject()
 
 
@@ -606,8 +618,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.git_proj_parse(inp)
         inp.out.result = "read:"
 
-        inp = BibleUti.Write2vrs_txt(inp, false)
+        var cmdstr = userProject.get_git_cmd_pull()
+        inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
 
+        inp = BibleUti.Write2vrs_txt(inp, false)
+       
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
