@@ -321,6 +321,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
         inp.out.result += "dest_dir already exists."
         return inp
     }
+    inp.out.result += "setup new usr account;"
 
     var password = "lll"
 
@@ -337,7 +338,8 @@ echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " finished cmd"
 #cd -
 `
-    inp.out.exec_git_result = await BibleUti.exec_git_cmd(cmd, res)
+    inp.out.cmd = cmd
+    inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(cmd, res)
     return inp
 }
 var userProject = new UserProject()
