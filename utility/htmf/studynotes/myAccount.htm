@@ -93,7 +93,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
             var pcode = $("#passcode").val()
             Jsonpster.inp.usr.repository = pname;
             Jsonpster.inp.usr.passcode = pcode;
-            Jsonpster.api = RestApi.ApiAccout_setup_usr
+            Jsonpster.api = RestApi.ApiAccout_setup_usr.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
                 dbg_pster(ret)
