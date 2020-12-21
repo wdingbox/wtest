@@ -353,7 +353,6 @@ echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${pr
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
 #cd -`
-
     var gitdir = this.get_usr_git_dir()
     if (!fs.existsSync(`${gitdir}`)) {
         inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(git_setup_cmd)
@@ -363,16 +362,16 @@ echo " cp_template_cmd end."
     }
 
     var accdir = this.get_usr_myoj_dir()
-    console.log("accdir=",accdir)
+    console.log("accdir=", accdir)
     if (fs.existsSync(`${accdir}`)) {
-        console.log("existing accdir=",accdir)
+        console.log("existing accdir=", accdir)
         inp.out.result += "dest_myoj alreadt exist: " + accdir
         change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${this.m_rootDir}${proj.acct_dir}`
         inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(change_perm_cmd)
     } else {
         inp.out.result += "git has no: " + accdir
         inp.out.cp_template_cmd = cp_template_cmd
-        console.log("cp_template_cmd",cp_template_cmd)
+        console.log("cp_template_cmd", cp_template_cmd)
         inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(cp_template_cmd)
     }
     return inp
@@ -449,6 +448,7 @@ cd -
 UserProject.prototype.get_git_cmd_pull = function () {
     password = "lll" //dev mac
     var cmd = `
+#!/bin/sh
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
 echo ${password} | sudo -S git pull
@@ -620,7 +620,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
 
         inp = BibleUti.Write2vrs_txt(inp, false)
-       
+
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
