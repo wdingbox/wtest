@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 var url = require('url');
+const fsPromises = require("fs").promises;
 
 //var Uti = require("./Uti.module").Uti;
 //var SvcUti = require("./SvcUti.module").SvcUti;
@@ -324,6 +325,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
     if (!proj) return console.log("failed git setup")
     var accdir = this.get_usr_acct_dir()
     if (fs.existsSync(`${accdir}`)) {
+        this.git_proj_config_update()
         inp.out.result += "dest_dir already exists: " + accdir
         return inp
     }
@@ -346,9 +348,10 @@ echo " finished cmd"
 `
     inp.out.cmd = cmd
     inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(cmd, res)
+    this.git_proj_config_update()
     return inp
 }
-UserProject.prototype.change_git_config = function () {
+UserProject.prototype.git_proj_config_update = function () {
 
     /****
     [core]
@@ -370,22 +373,37 @@ UserProject.prototype.change_git_config = function () {
     //https://github.com/wdingbox:passcode@/bible_obj_weid.git
 
 
-    var git_config = `
-[core]
-        repositoryformatversion = 0
-        filemode = true
-        bare = false
-        logallrefupdates = true
-        ignorecase = true
-        precomposeunicode = true
-[remote "origin"]
-        url = ${inp.usr.proj.github_sNewUrl}
-        fetch = +refs/heads/*:refs/remotes/origin/*
-[branch "master"]
-        remote = origin
-        merge = refs/heads/master
-        `
 
+    var git_config_fname = `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}/.git/config`
+    console.log("git config:", git_config_fname)
+
+
+    function _change_config_permission(fname) {
+        if (fs.existsSync(fname)) {
+            try {
+                const fd = fs.openSync(fname, "r");
+                fs.fchmodSync(fd, 0o777, err => {
+                    if (err) throw err;
+                    else {
+                        console.log("File permission change succcessful");
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    };
+    function _change_config_url(fname) {
+
+    };
+    _change_config_permission(git_config_fname)
+    
+    if (fs.existsSync(git_config_fname)) {
+        var txt = fs.readFileSync(git_config_fname, "utf8")
+        console.log(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
+        txt = txt.replace(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
+        fs.writeFileSync(git_config_fname, txt, "utf8")
+    }
 }
 UserProject.prototype.get_git_cmd = function () {
     password = "lll" //dev mac
@@ -543,6 +561,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         console.log(inp.out.m_fname)
         var cmdstr = userProject.get_git_cmd()
         inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
+
         //console.log(inp)
 
 
