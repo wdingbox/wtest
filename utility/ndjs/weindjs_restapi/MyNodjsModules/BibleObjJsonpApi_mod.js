@@ -348,7 +348,7 @@ echo " git_setup_cmd end."
 #!/bin/sh
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
-echo ${password} | sudo cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
+echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
 #cd -`
