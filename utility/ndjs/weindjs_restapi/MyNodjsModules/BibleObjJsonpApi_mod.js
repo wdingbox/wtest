@@ -270,7 +270,7 @@ UserProject.prototype.get_jsfname = function (RevCode) {
     } else {
         dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
     }
-    return dest_pfname 
+    return dest_pfname
 }
 UserProject.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
@@ -339,11 +339,28 @@ var userProject = new UserProject()
 
 
 
-
-
+var inp_struct_base = {
+    usr: {
+        repository: "",
+        passcode: ""
+    },
+    par: {
+        fnames: [],
+        bibOj: { bkc: { chp: { vrs: "" } } }
+    }
+}
+var inp_struct_search = JSON.parse(JSON.stringify(inp_struct_base))
+inp_struct_search.par.Search = { File: "", Strn: "" }
+var inp_struct_account_setup = JSON.parse(JSON.stringify(inp_struct_base))
+inp_struct_account_setup.par = null
+var inp_struct_all = JSON.parse(JSON.stringify(inp_struct_base))
+inp_struct_all.par.Search = inp_struct_search.par.Search
 
 var ApiJsonp_BibleObj = {
     Jsonpster: function (req, res) {
+        if (!req || !res) {
+            return {}
+        }
         ////////////////////////////////////////////
         //app.get("/Jsonpster", (req, res) => {
         console.log();
@@ -352,16 +369,19 @@ var ApiJsonp_BibleObj = {
         //////////////
         var RestApi = {}
         Object.keys(this).forEach(function (key) {
-            RestApi[key] = key;
+            RestApi[key] = { str: key, inp: ApiJsonp_BibleObj[key]() };
         })
         var jstr_RestApi = JSON.stringify(RestApi);
+        var structall = JSON.stringify(inp_struct_all)
+
+
         var s = `
 var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
-    inp: {usr:{account:"", f_path:""}, par:null },
+    inp: ${structall},
 Url: function (){
-        this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
+        this.m_src = this.url + this.api.str + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
         return this.m_src;
     },
 Run : function (cbf) {
@@ -384,6 +404,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //});
     },
     ApiBibleObj_load_by_bibOj: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
         var RbcObj = {};
@@ -411,6 +434,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ApiBibleObj_search_txt: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_search
+        }
         var inp = BibleUti.GetApiInputParamObj(req)
         if (!inp.usr.f_path) inp.usr.f_path = ""
         var proj = userProject.git_proj_parse(inp)
@@ -438,6 +464,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
     ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
         inp.out.result = "Write?"
@@ -455,6 +484,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
     ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
         inp.out.result = "read:"
@@ -468,7 +500,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ///////////////////////////////////
+    ApiAccout_setup_usr_async: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+    },
     ApiAccout_setup_usr: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
         var inp = BibleUti.GetApiInputParamObj(req)
         console.log("inp is ", inp)
 
