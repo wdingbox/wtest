@@ -309,19 +309,25 @@ UserProject.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.dest_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
 
         console.log("inp.usr.proj=", inp.usr.proj)
+
+        inp.usr.proj.github_sNewUrl = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
     }
 
     return inp.usr.proj
+}
+UserProject.prototype.get_usr_acct_dir = function (res) {
+    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
 }
 UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) return console.log("failed git setup")
-    if (fs.existsSync(`${this.m_rootDir}${inp.usr.proj.dest_dir}`)) {
-        inp.out.result += "dest_dir already exists."
+    var accdir = this.get_usr_acct_dir()
+    if (fs.existsSync(`${accdir}`)) {
+        inp.out.result += "dest_dir already exists: " + accdir
         return inp
     }
-    inp.out.result += "setup new usr account;"
+    inp.out.result += "setup new usr dest_dir=" + accdir
 
     var password = "lll"
 
@@ -341,6 +347,59 @@ echo " finished cmd"
     inp.out.cmd = cmd
     inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(cmd, res)
     return inp
+}
+UserProject.prototype.change_git_config = function () {
+
+    /****
+    [core]
+            repositoryformatversion = 0
+            filemode = true
+            bare = false
+            logallrefupdates = true
+            ignorecase = true
+            precomposeunicode = true
+    [remote "origin"]
+            url = https://github.com/wdingbox/bible_obj_weid.git
+            fetch = +refs/heads/*:refs/remotes/origin/*
+    [branch "master"]
+            remote = origin
+            merge = refs/heads/master
+    ******/
+
+    //https://github.com/wdingbox/bible_obj_weid.git
+    //https://github.com/wdingbox:passcode@/bible_obj_weid.git
+
+
+    var git_config = `
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+        ignorecase = true
+        precomposeunicode = true
+[remote "origin"]
+        url = ${inp.usr.proj.github_sNewUrl}
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+        remote = origin
+        merge = refs/heads/master
+        `
+
+}
+UserProject.prototype.get_git_cmd = function () {
+    password = "lll" //dev mac
+    var cmd = `
+cd  ${this.get_usr_acct_dir()}
+echo ${password} | sudo -S git status
+echo ${password} | sudo -S git diff
+echo ${password} | sudo -S git add *
+echo ${password} | sudo -S git commit -m "svr auto checkin"
+echo ${password} | sudo -S git push
+echo ${password} | sudo -S git status
+cd -
+`
+    return cmd
 }
 var userProject = new UserProject()
 
@@ -482,7 +541,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp = BibleUti.Write2vrs_txt(inp, true)
 
         console.log(inp.out.m_fname)
-        inp.out.exec_git_result = BibleUti.exec_git_cmd("./git_cmds.sh", res)
+        var cmdstr = userProject.get_git_cmd()
+        inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
         //console.log(inp)
 
 
