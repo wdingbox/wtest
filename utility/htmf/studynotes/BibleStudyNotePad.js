@@ -25,7 +25,7 @@ var MyStorage = {
 
     setProj_url: function (v) {
         v = v.trim()
-        if (v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git"
+        if (v.length === 0) v = "";//https://github.com/wdingbox/bible_obj_weid.git"
         localStorage.setItem("repository", v)
         $("#repository").val(v)
         if (undefined !== typeof Jsonpster) {
@@ -34,7 +34,7 @@ var MyStorage = {
     },
     getProj_url: function () {
         var v = localStorage.getItem("repository");
-        if (!v || v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git";
+        if (!v || v.length === 0) v = "";//https://github.com/wdingbox/bible_obj_weid.git";
         $("#repository").val(v)
         if (undefined !== typeof Jsonpster) {
             Jsonpster.inp.usr["repository"] = v
@@ -368,7 +368,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htm)
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
+        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(Jsonpster))
         return Jsonpster
     }
@@ -464,7 +464,7 @@ PopupMenu_EdiTag.prototype.init = function () {
     $("#RevTag_Load").bind("click", function () {
         var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, "")
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt
+        Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
         console.log("inp:", Jsonpster)
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1823,7 +1823,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
 
     var fnamesArr = nambib.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
-    Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj;
+    Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
         apiCallback_Gen_output_table(ret)
@@ -1887,7 +1887,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
 
 
         Jsonpster.inp.par = g_aim.get_search_inp();
-        Jsonpster.api = RestApi.ApiBibleObj_search_txt;
+        Jsonpster.api = RestApi.ApiBibleObj_search_txt.str;
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
         Jsonpster.Run(function (ret) {
@@ -2239,11 +2239,9 @@ var Uti = {
             }
             str += " "
         })
-        // var str = dat;
-        // if ("object" === typeof dat) {
-        //     str = JSON.stringify(dat, null, 4);
-        // }
-        var oldtxt = $("#txtarea").val().substr(0, 1000)
+        
+        
+        var oldtxt = $("#txtarea").val().substr(0, 3000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
         $("#txtarea").val(results);
@@ -2756,7 +2754,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>repository</td>
-                            <td><textarea id="repository"  onkeyup="MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            <td><textarea id="repository"  onkeyup="MyStorage.setProj_url($(this).val());" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             </td>
                             
                         </tr>

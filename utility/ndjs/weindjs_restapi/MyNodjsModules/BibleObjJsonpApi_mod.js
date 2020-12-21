@@ -329,10 +329,10 @@ UserProject.prototype.get_usr_git_dir = function (res) {
 UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
-    if (!proj) return console.log("failed git setup")
-
-
-    inp.out.result += "create new usr dest_myoj=" + accdir
+    if (!proj) {
+        console.log("failed git setup", inp)
+        return inp
+    }
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
@@ -482,7 +482,7 @@ var Jsonpster = {
     api: "",
     inp: ${structall},
 Url: function (){
-        this.m_src = this.url + this.api.str + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
+        this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
         return this.m_src;
     },
 Run : function (cbf) {
@@ -617,8 +617,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
         console.log("inp is ", inp)
-
         userProject.git_proj_parse(inp)
+
         inp = await userProject.git_proj_setup(res)
         var sret = JSON.stringify(inp, null, 4)
 

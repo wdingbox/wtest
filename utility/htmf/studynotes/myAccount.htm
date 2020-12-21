@@ -67,7 +67,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
         <label for="editor1">
             github proj
         </label>
-        <input id="proj_url" value="https://github.com/wdingbox/bible_obj_weid.git"></input>
+        <input id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></input>
         <label for="editor1">
             github passcode
         </label>
@@ -89,9 +89,9 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
     <script>
         function run() {
-            var pname = $("#proj_url").val()
+            var pname = $("#repository").val()
             var pcode = $("#passcode").val()
-            Jsonpster.inp.usr.proj_url = pname;
+            Jsonpster.inp.usr.repository = pname;
             Jsonpster.inp.usr.passcode = pcode;
             Jsonpster.api = RestApi.ApiAccout_setup_usr
             dbg_pster()
