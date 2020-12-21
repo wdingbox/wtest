@@ -26,18 +26,18 @@ var MyStorage = {
     setProj_url: function (v) {
         v = v.trim()
         if (v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git"
-        localStorage.setItem("proj_url", v)
-        $("#proj_url").val(v)
+        localStorage.setItem("repository", v)
+        $("#repository").val(v)
         if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["proj_url"] = v
+            Jsonpster.inp.usr["repository"] = v
         }
     },
     getProj_url: function () {
-        var v = localStorage.getItem("proj_url");
+        var v = localStorage.getItem("repository");
         if (!v || v.length === 0) v = "https://github.com/wdingbox/bible_obj_weid.git";
-        $("#proj_url").val(v)
+        $("#repository").val(v)
         if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["proj_url"] = v
+            Jsonpster.inp.usr["repository"] = v
         }
         return v;
     },
@@ -342,7 +342,7 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    $("#RevTag_Info").text(Jsonpster.inp.usr["proj_url"])
+    $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
 
     this.m_ediDiv.setId(par.m_txuid)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -2756,7 +2756,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td></td>
                             <td>repository</td>
-                            <td><textarea id="proj_url"  onkeyup="MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            <td><textarea id="repository"  onkeyup="MyStorage.setProj_url($(this).val());" value='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             </td>
                             
                         </tr>

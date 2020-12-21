@@ -284,7 +284,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
 
         var mat = proj_url.match(reg)
-        console.log("mat", mat)
+        //console.log("mat", mat)
         if (mat) {
             console.log(mat)
             var username = mat[1]
@@ -293,7 +293,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
         }
         return null
     }
-    var proj_url = inp.usr.proj_url
+    var proj_url = inp.usr.repository
     var passcode = inp.usr.passcode
 
 
@@ -340,7 +340,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
 #!/bin/sh
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.git_dir}
-echo ${password} | sudo -S git clone  ${inp.usr.proj_url} ${proj.git_dir}
+echo ${password} | sudo -S git clone  ${inp.usr.repository}  ${proj.git_dir}
 echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 echo " git_setup_cmd end."
 #cd -`
@@ -398,36 +398,14 @@ UserProject.prototype.git_proj_config_update = function () {
     //https://github.com/wdingbox:passcode@/bible_obj_weid.git
 
 
-
     var git_config_fname = `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}/.git/config`
     console.log("git config:", git_config_fname)
 
-
-    function _change_config_permission(fname) {
-        if (fs.existsSync(fname)) {
-            try {
-                const fd = fs.openSync(fname, "r");
-                fs.fchmodSync(fd, 0o777, err => {
-                    if (err) throw err;
-                    else {
-                        console.log("File permission change succcessful");
-                    }
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    };
-    function _change_config_owner(fname) {
-
-    };
-    //_change_config_permission(git_config_fname)
-
     if (fs.existsSync(git_config_fname)) {
         var txt = fs.readFileSync(git_config_fname, "utf8")
-        console.log("old:", this.m_inp.usr.proj_url)
+        console.log("old:", this.m_inp.usr.repository)
         console.log("new:", this.m_inp.usr.proj.github_sNewUrl)
-        txt = txt.replace(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
+        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.github_sNewUrl)
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
