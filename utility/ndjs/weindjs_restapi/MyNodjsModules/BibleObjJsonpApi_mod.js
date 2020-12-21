@@ -343,6 +343,7 @@ echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo "begin to cp"
 echo ${password} | sudo cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
+echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 echo " finished cmd"
 #cd -
 `
@@ -393,11 +394,11 @@ UserProject.prototype.git_proj_config_update = function () {
             }
         }
     };
-    function _change_config_url(fname) {
+    function _change_config_owner(fname) {
 
     };
-    _change_config_permission(git_config_fname)
-    
+    //_change_config_permission(git_config_fname)
+
     if (fs.existsSync(git_config_fname)) {
         var txt = fs.readFileSync(git_config_fname, "utf8")
         console.log(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
