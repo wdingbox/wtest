@@ -17,55 +17,45 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            MyStorage.getProj_url()
-            MyStorage.getPasscode()
-        }, 3000)
+            MyStorage.Repository_val()
+        }, 500)
 
     },
 
-    setProj_url: function (v) {
-        v = v.trim()
-        if (v.length === 0) v = "";//https://github.com/wdingbox/bible_obj_weid.git"
-        localStorage.setItem("repository", v)
-        $("#repository").val(v)
-        if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["repository"] = v
+    Repository_val: function (obj) {
+        function assign_repo(ob){
+            $("#repository").val(obj.repository)
+            $("#passcode").val(obj.passcode)
+            Object.assign(Jsonpster.inp.usr, obj)
         }
-    },
-    getProj_url: function () {
-        var v = localStorage.getItem("repository");
-        if (!v || v.length === 0) v = "";//https://github.com/wdingbox/bible_obj_weid.git";
-        $("#repository").val(v)
-        if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["repository"] = v
+        if (obj) {
+            var str = JSON.stringify(obj)
+            localStorage.setItem("repository", str)
+            assign_repo(obj)
+        } else {
+            var ar = localStorage.getItem("repository");
+            if (!ar || ar.length === 0) {
+                ar = { repository: "", passcode: "" }
+            } else {
+                obj = JSON.parse(ar)
+            }
+            assign_repo(obj)
         }
-        return v;
+        Uti.Msg("Repository_val", obj)
+        return obj
     },
-    setPasscode: function (v) {
-        v = v.trim()
-        if (v.length === 0) v = "3edcFDSA"
-        localStorage.setItem("passcode", v)
-
-        //////////////////////////////////////
-        $("#passcode").val(v)
-        if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["passcode"] = v
-        }
-    },
-    getPasscode: function () {
-        var v = localStorage.getItem("passcode");
-        if (!v || v.length === 0) v = "3edcFDSA";
-        $("#passcode").val(v)
-        if (undefined !== typeof Jsonpster) {
-            Jsonpster.inp.usr["passcode"] = v
-        }
-        return v;
-    },
+   
+   
+    
+     
+   
+    
 
 
     clear: function () {
         localStorage.clear();
     },
+
     setRevList: function (arr) {
         localStorage.setItem("RevList", arr)
     },
@@ -1574,12 +1564,27 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         str = Uti.convert_std_bcv_in_text_To_linked(str)
         Uti.Msg(str)
     });
-    //// $("#oBible_indxer").click(function () {
-    ////     table_col_index("#oBible table");
-    ////     table_sort("#oBible table");
-    //// });
+
 
     $("#NewPage").attr("href", window.location.href)
+
+
+    $("#account_opner").bind("click", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        ip = urlParams.get('ip');
+        window.open("./myAccount.htm?ip=" + ip)
+
+        window.addEventListener('message', function (e) {
+            var key = e.message ? 'message' : 'data';
+            var data = e[key];
+            //run function//
+            console.log("rev fr Child window.opener.", data)
+            MyStorage.Repository_val(data)
+        }, false);
+
+
+
+    })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
     if (!sid) sid = "Keyboard"
@@ -2239,8 +2244,8 @@ var Uti = {
             }
             str += " "
         })
-        
-        
+
+
         var oldtxt = $("#txtarea").val().substr(0, 3000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
@@ -2753,17 +2758,17 @@ var BibleInputMenuContainer = `
                     <tbody id="">
                         <tr>
                             <td></td>
-                            <td>repository</td>
-                            <td><textarea id="repository"  onkeyup="MyStorage.setProj_url($(this).val());" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            <td>usrData</td>
+                            <td>
+                            respositroy:<br>
+                            <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            <br>passcode<br>
+                            <input id="passcode" value='3edcFDSA'></input><br>
+                            <button id="account_opner">register</button>
                             </td>
                             
                         </tr>
-                        <tr>
-                            <td></td>
-                            <td>passcode</td>
-                            <td><input id="passcode" onkeyup="MyStorage.setPasscode($(this).val());" value='3edcFDSA'></input></td>
-                            
-                        </tr>
+                       
                         <tr>
                             <td></td>
                             <td>FontSize</td>

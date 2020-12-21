@@ -96,9 +96,9 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
             Jsonpster.api = RestApi.ApiAccout_setup_usr.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
+                window.opener.postMessage(Jsonpster.inp.usr, '*');
                 dbg_pster(ret)
             })
-
         }
     </script>
 </body>
