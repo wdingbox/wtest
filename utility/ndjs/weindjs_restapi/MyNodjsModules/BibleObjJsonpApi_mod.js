@@ -303,8 +303,8 @@ UserProject.prototype.git_proj_parse = function (inp) {
         var baseDir = "bible_usrs_dat"
         var acctname = "account"
 
-        inp.usr.proj.baseDir = baseDir
         inp.usr.proj.acctname = acctname
+        inp.usr.proj.baseDir = baseDir
         inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
         inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
         inp.usr.proj.dest_myoj = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
@@ -348,6 +348,7 @@ echo " git_setup_cmd end."
 #!/bin/sh
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
+echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
@@ -362,11 +363,16 @@ echo " cp_template_cmd end."
     }
 
     var accdir = this.get_usr_myoj_dir()
+    console.log("accdir=",accdir)
     if (fs.existsSync(`${accdir}`)) {
+        console.log("existing accdir=",accdir)
         inp.out.result += "dest_myoj alreadt exist: " + accdir
+        change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${this.m_rootDir}${proj.acct_dir}`
+        inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(change_perm_cmd)
     } else {
         inp.out.result += "git has no: " + accdir
         inp.out.cp_template_cmd = cp_template_cmd
+        console.log("cp_template_cmd",cp_template_cmd)
         inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(cp_template_cmd)
     }
     return inp
@@ -420,7 +426,8 @@ UserProject.prototype.git_proj_config_update = function () {
 
     if (fs.existsSync(git_config_fname)) {
         var txt = fs.readFileSync(git_config_fname, "utf8")
-        console.log(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
+        console.log("old:", this.m_inp.usr.proj_url)
+        console.log("new:", this.m_inp.usr.proj.github_sNewUrl)
         txt = txt.replace(this.m_inp.usr.proj_url, this.m_inp.usr.proj.github_sNewUrl)
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
