@@ -177,7 +177,7 @@ body {
     }
 
 
-    .tx[contenteditable] {
+    div.tx[contenteditable] {
         background-color:wheat;
         border: 2px solid red;
         color: black;

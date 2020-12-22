@@ -339,6 +339,14 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     var bEdit = this.m_ediDiv.isEditable()
 
     this.m_ediBtn.enable_edit(bEdit, false)
+    if(bEdit){
+        $("#RevTag_Save").parent().show()
+        $("#RevTag_Load").parent().hide()
+    }else{
+        $("#RevTag_Save").parent().hide()
+        $("#RevTag_Load").parent().show()
+
+    }
 
 
 
@@ -482,7 +490,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret.out.data)
             if (ret.out.result.indexOf("success") > 0) {
                 if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
-                    alert("difference")
+                    var byes= confirm("difference: continue?")
+                    if(!byes) return
                 }
                 _THIS.m_ediBtn.enable_edit(false, true)
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
