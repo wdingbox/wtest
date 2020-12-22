@@ -214,6 +214,9 @@ var MyStorage = {
 
 
 
+
+
+
 function PopupMenu_BcvTag() {
     this.m_id = "#divPopupMenu_BcvTag"
 }
@@ -338,19 +341,26 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_ediBtn.init_associate(this.m_ediDiv)
     var bEdit = this.m_ediDiv.isEditable()
 
+
+
     this.m_ediBtn.enable_edit(bEdit, false)
-    if (bEdit) {
-        $("#RevTag_Save").parent().show()
-        $("#RevTag_Load").parent().hide()
-    } else {
-        $("#RevTag_Save").parent().hide()
-        $("#RevTag_Load").parent().show()
-
-    }
 
 
-    var sTxt = this.toggle_ShowHideTxt(this.m_par.m_txuid)
-    $("#EdiTag_ToggleHideShow").text(sTxt)
+    var ids="#RevTag_Save, #RevTag_Load, #RevTag_Edit_External, #RevTag_Edit_Local"
+    par.m_showHideVTxt.set_vtxID(this.m_par.m_txuid, function (bHide, sLab) {
+        if (bHide) {
+            $(ids).parent().hide()
+        } else {
+            $(ids).parent().show()
+            if (bEdit) {
+                $("#RevTag_Save").parent().show()
+                $("#RevTag_Load").parent().hide()
+            } else {
+                $("#RevTag_Save").parent().hide()
+                $("#RevTag_Load").parent().show()
+            }
+        }
+    })
 
     $(this.m_id).show()
 }
@@ -515,16 +525,6 @@ PopupMenu_EdiTag.prototype.init = function () {
         })
     })
 
-
-    $("#EdiTag_ToggleHideShow").bind("click", function () {
-        var txid = _THIS.m_par.m_txuid 
-        var tx = _THIS.toggle_ShowHideTxt( txid )
-        $(this).text(tx)
-        $("#"+txid).slideToggle().toggleClass("showTxt")
-
-    })
-
-
 }
 
 function PopupMenu_RevTag() {
@@ -535,6 +535,11 @@ PopupMenu_RevTag.prototype.init_popup = function (par) {
     this.m_par = par
 
     $(this.m_id).show()
+
+    par.m_showHideVTxt.set_vtxID(this.m_par.m_txuid, function (bHide, sLab) {
+        
+    })
+
 }
 
 PopupMenu_RevTag.prototype.init = function () {
@@ -579,8 +584,35 @@ PopupMenu.prototype.init = function () {
     this.popupMenu_RevTag.init()
 
 
+    var ShowHideVTxt = function () {
+        var _THIS = this
+        $(".EdiTag_ToggleHideShow").bind("click", function () {
+            $(_THIS.m_vtxID).slideToggle().toggleClass("showTxt")
+            _THIS.update_label()
+        })
+    }
+    ShowHideVTxt.prototype.set_vtxID = function (vtxID, cbf) {
+        this.m_vtxID = "#" + vtxID
+        this.m_cbf = cbf
+        this.update_label()
+    }
+    ShowHideVTxt.prototype.update_label = function () {
+        // _THIS.m_par.m_txuid 
+        var bshowTxt = $(this.m_vtxID)[0].classList.contains("showTxt")
+
+        var sLab = "Hide"
+        if (bshowTxt) {
+            sLab = "Show"
+        }
+        $(".EdiTag_ToggleHideShow").text(sLab)
+        if (this.m_cbf) this.m_cbf(bshowTxt, sLab)
+    }
+    this.showHideVTxt = new ShowHideVTxt()
 }
 PopupMenu.prototype.popup = function (par) {
+
+
+    par.m_showHideVTxt = this.showHideVTxt
     this.m_par = par
 
     $(this.m_id).css('top', par.m_y);
@@ -606,6 +638,7 @@ PopupMenu.prototype.popup = function (par) {
     } else {
         $(this.m_id).show()
     }
+
 }
 PopupMenu.prototype.hide = function () {
     $(this.m_id).hide()
@@ -2645,7 +2678,7 @@ var BibleInputMenuContainer = `
     <tbody id="divPopupMenu_EdiTag">
         <tr>
             <td>
-                <a id="EdiTag_ToggleHideShow">Hide</a>
+                <a class="EdiTag_ToggleHideShow">Hide</a>
             </td>
         </tr>
         <tr>
@@ -2678,7 +2711,7 @@ var BibleInputMenuContainer = `
     <tbody id="divPopupMenu_RevTag">
         <tr>
             <td>
-                <a class="Tag_ToggleHideShow">Hide</a>
+                <a class="EdiTag_ToggleHideShow">Hide</a>
             </td>
         </tr>
         <tr>
