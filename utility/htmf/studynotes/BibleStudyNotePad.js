@@ -387,7 +387,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).attr("contenteditable", null)
         }
     }
-  
+
     DivEditTxt.prototype.isEditable = function () {
         return $(this.m_id).attr("contenteditable")
     }
@@ -482,7 +482,7 @@ PopupMenu_RevTag.prototype.init = function () {
     $("#Copy2clipboard").bind("click", function () {
         var txt = $("#" + _THIS.m_par.m_txuid).text()
         var bcv = _THIS.m_par.m_bcv
-        var rev = _THIS.m_par.m_tag_txt
+        var rev = _THIS.m_par.m_strTag
         txt = `"${txt}" (${bcv} ${rev})`;
         Uti.copy2clipboard(txt)
         Uti.Msg(txt);
@@ -526,12 +526,12 @@ PopupMenu.prototype.popup = function (par) {
     $(this.m_id).find("tbody").hide()
 
 
-    var ret = Uti.parser_bcv(par.m_tag_txt)
+    var ret = Uti.parser_bcv(par.m_strTag)
     //var txuid = par.m_txuid
     if (ret) {
         this.popupMenu_BcvTag.init_popup(par)
     } else {
-        if ("_" === par.m_tag_txt[0]) {
+        if ("_" === par.m_strTag[0]) {
             this.popupMenu_EdiTag.init_popup(par)
         } else {
             this.popupMenu_RevTag.init_popup(par)
@@ -2068,13 +2068,14 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         bcr.m_y = bcr.y + window.scrollY + $(this).height() + 5;
         bcr.m_bcv = $(this).attr("title")
         bcr.m_txuid = $(this).attr("txuid")
-        bcr.m_tag_txt = $(this).text();
+        bcr.m_strTag = $(this).text();
 
-        var ret = Uti.parser_bcv(bcr.m_tag_txt)
-        bcr.m_rev = bcr.m_tag_txt
+        var ret = Uti.parser_bcv(bcr.m_strTag)
+        bcr.m_rev = bcr.m_strTag
         if (ret) {
             bcr.m_rev = ""
         }
+        bcr.m_data = _THIS.m_data
 
         _THIS.m_onclick_popupLabel(bcr)
 
@@ -2105,22 +2106,22 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
     this.incFontSize(0)
 }
 
-OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
-    var bcvRobj = {}
-    $.each(ret, function (rev, revObj) {
-        $.each(revObj, function (vol, chpObj) {
-            if (!bcvRobj[vol]) bcvRobj[vol] = {}
-            $.each(chpObj, function (chp, vrsObj) {
-                if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
-                $.each(vrsObj, function (vrs, txt) {
-                    if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
-                    bcvRobj[vol][chp][vrs][rev] = txt
-                });
-            });
-        });
-    });
-    return bcvRobj;
-}
+// OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
+//     var bcvRobj = {}
+//     $.each(ret, function (rev, revObj) {
+//         $.each(revObj, function (vol, chpObj) {
+//             if (!bcvRobj[vol]) bcvRobj[vol] = {}
+//             $.each(chpObj, function (chp, vrsObj) {
+//                 if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
+//                 $.each(vrsObj, function (vrs, txt) {
+//                     if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
+//                     bcvRobj[vol][chp][vrs][rev] = txt
+//                 });
+//             });
+//         });
+//     });
+//     return bcvRobj;
+// }
 OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     if (!this.m_inpage_findstrn) return txt
