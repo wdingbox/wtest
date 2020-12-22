@@ -335,7 +335,7 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
 
     this.m_ediDiv.setId(par.m_txuid)
-        / this.m_ediBtn.init_associate(this.m_ediDiv)
+    this.m_ediBtn.init_associate(this.m_ediDiv)
 
     $(this.m_id).show()
 }
@@ -2153,7 +2153,7 @@ OutputBibleTable.prototype.create_htm_table = function () {
     }
 
     console.log("result:", this.m_data.out.result)
-    var idx = 0, st = "", uuid = 1;
+    var idx = 0, st = "", uuid=0;
     $.each(this.m_data.out.data, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
@@ -2167,8 +2167,11 @@ OutputBibleTable.prototype.create_htm_table = function () {
                         $.each(val, function (revId, txt) {
                             txt = _THIS.get_matched_txt(txt)
 
-                            var tag = 'a'
-                            if (revId.match(/^_[a-zA-Z]/)) tag = 'div'
+                            var htmtag = 'a'
+                            if (revId.match(/^_[a-zA-Z]/)) {
+                                htmtag = 'div'
+                                txt = Uti.convert_std_bcv_in_text_To_linked(txt)
+                            }
 
                             var clsname = `class='tx tx${revId}'`
                             if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
@@ -2176,7 +2179,7 @@ OutputBibleTable.prototype.create_htm_table = function () {
                             }
                             uuid++
                             var revTag = `<sup txuid='${uuid}' class='popupclicklabel revTag' title='${sbcv}'>${revId}</sup>`
-                            var vrsTxt = `<${tag} id='${uuid}' ${clsname}>${txt}</${tag}>`
+                            var vrsTxt = `<${htmtag} id='${uuid}' ${clsname}>${txt}</${htmtag}>`
                             st += `<div>${revTag}${vrsTxt}</div>`;
                         });
                         break;
