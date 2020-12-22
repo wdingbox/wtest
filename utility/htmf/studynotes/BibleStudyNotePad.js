@@ -334,8 +334,13 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
 
     $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
 
-    this.m_ediDiv.setId(par.m_txuid)
+    this.m_ediDiv.setId_Txt(par.m_txuid, par.m_ouTxt)
     this.m_ediBtn.init_associate(this.m_ediDiv)
+    var bEdit = this.m_ediDiv.isEditable()
+
+    this.m_ediBtn.enable_edit(bEdit, false)
+
+
 
     $(this.m_id).show()
 }
@@ -349,8 +354,9 @@ PopupMenu_EdiTag.prototype.init = function () {
         this.m_id = null
         this.m_edi_enabled = false
     }
-    DivEditTxt.prototype.setId = function (id) {
+    DivEditTxt.prototype.setId_Txt = function (id, rawTxt) {
         this.m_id = "#" + id
+        this.m_rawTxt = rawTxt
     }
     DivEditTxt.prototype.html = function (htm) {
         if (undefined === htm) {
@@ -358,9 +364,9 @@ PopupMenu_EdiTag.prototype.init = function () {
         }
         return $(this.m_id).html(htm)
     }
-    DivEditTxt.prototype.enable_edit = function (bEnable) {
+    DivEditTxt.prototype.enableEdit = function (bEnable) {
         if (!this.m_id) return alert("enableEdit er")
-        if (undefined === this.m_rawTxt) this.m_rawTxt = _THIS.m_par.m_ouTxt;
+
         if (bEnable) {
             $(this.m_id).attr("contenteditable", "true")
             var showTxt = this.m_rawTxt
@@ -393,18 +399,19 @@ PopupMenu_EdiTag.prototype.init = function () {
         this.m_ediDiv = edidiv
     }
 
-    EditBtn.prototype.enable_edit = function (bEnable) {
+    EditBtn.prototype.enable_edit = function (bEnable, bBubleEvt) {
         this.m_edi_enabled = bEnable
         if (bEnable) {
             $(this.m_elm).text("Disable Edit")
         } else {
             $(this.m_elm).text("Enable Edit")
         }
-        this.m_ediDiv.enable_edit(bEnable)
+        if (!bBubleEvt) return
+        this.m_ediDiv.enableEdit(bEnable)
     }
     EditBtn.prototype.toggle_enableEdit = function () {
         this.m_edi_enabled = !this.m_edi_enabled
-        this.enable_edit(this.m_edi_enabled)
+        this.enable_edit(this.m_edi_enabled, true)
     }
     this.m_ediBtn = new EditBtn("#RevTag_Edit_Local")
     this.m_ediDiv = new DivEditTxt()
@@ -430,9 +437,10 @@ PopupMenu_EdiTag.prototype.init = function () {
     })
 
     $("#RevTag_Edit_External").bind("click", function () {
-        _set_par_ediTxt()
-        _THIS.m_ediBtn.enable_edit(false)
-        //_THIS.hide()
+        if (_set_par_ediTxt()) {
+            return true;// enable href open.
+        }
+        return false;// diable href open
     })
 
     $("#RevTag_Save").bind("click", function () {
@@ -449,7 +457,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret)
             Uti.Msg(ret.out.result)
             if (ret.out.result.indexOf("success") > 0) {
-                _THIS.m_ediBtn.enable_edit(false)
+                _THIS.m_ediBtn.enable_edit(false, true)
             }
         })
     })
@@ -465,7 +473,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret.out.data)
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediDiv.html(ret.out.data.txt)
-                _THIS.m_ediBtn.enable_edit(false)
+                _THIS.m_ediBtn.enable_edit(false, true)
                 Uti.Msg(ret.out.data.txt)
                 //_THIS.hide()
             }
@@ -2153,7 +2161,7 @@ OutputBibleTable.prototype.create_htm_table = function () {
     }
 
     console.log("result:", this.m_data.out.result)
-    var idx = 0, st = "", uuid=0;
+    var idx = 0, st = "", uuid = 0;
     $.each(this.m_data.out.data, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
