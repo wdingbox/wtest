@@ -339,20 +339,31 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     var bEdit = this.m_ediDiv.isEditable()
 
     this.m_ediBtn.enable_edit(bEdit, false)
-    if(bEdit){
+    if (bEdit) {
         $("#RevTag_Save").parent().show()
         $("#RevTag_Load").parent().hide()
-    }else{
+    } else {
         $("#RevTag_Save").parent().hide()
         $("#RevTag_Load").parent().show()
 
     }
 
 
+    var sTxt = this.toggle_ShowHideTxt(this.m_par.m_txuid)
+    $("#EdiTag_ToggleHideShow").text(sTxt)
 
     $(this.m_id).show()
 }
+PopupMenu_EdiTag.prototype.toggle_ShowHideTxt = function (txID) {
+    // _THIS.m_par.m_txuid 
+    var bshowTxt = $("#" + txID)[0].classList.contains("showTxt")
 
+    if (bshowTxt) {
+        return "Show"
+    } else {
+        return "Hide";
+    }
+}
 PopupMenu_EdiTag.prototype.init = function () {
     var _THIS = this
 
@@ -377,7 +388,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         var edx = ""
         if (this.isEditable()) {
             edx = _THIS.m_ediDiv.html()
-        }else{
+        } else {
             Uti.Msg("not editable. cannot save")
             edx = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]
         }
@@ -490,8 +501,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret.out.data)
             if (ret.out.result.indexOf("success") > 0) {
                 if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
-                    var byes= confirm("difference: continue?")
-                    if(!byes) return
+                    var byes = confirm("difference: continue?")
+                    if (!byes) return
                 }
                 _THIS.m_ediBtn.enable_edit(false, true)
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
@@ -503,6 +514,16 @@ PopupMenu_EdiTag.prototype.init = function () {
             }
         })
     })
+
+
+    $("#EdiTag_ToggleHideShow").bind("click", function () {
+        var txid = _THIS.m_par.m_txuid 
+        var tx = _THIS.toggle_ShowHideTxt( txid )
+        $(this).text(tx)
+        $("#"+txid).slideToggle().toggleClass("showTxt")
+
+    })
+
 
 }
 
@@ -556,6 +577,8 @@ PopupMenu.prototype.init = function () {
     this.popupMenu_BcvTag.init()
     this.popupMenu_EdiTag.init()
     this.popupMenu_RevTag.init()
+
+
 }
 PopupMenu.prototype.popup = function (par) {
     this.m_par = par
@@ -2615,11 +2638,16 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="BibleInput" ref="#" title='self open'>New</a>
+                <a id="BibleInput" ref="#" title='self open'>NewWindow</a>
             </td>
         </tr>
     </tbody>
     <tbody id="divPopupMenu_EdiTag">
+        <tr>
+            <td>
+                <a id="EdiTag_ToggleHideShow">Hide</a>
+            </td>
+        </tr>
         <tr>
             <td>
                 <a id="RevTag_Edit_Local" disableEdit="Disable Edit" enableEdit="Enable Edit">Enable Edit</a>
@@ -2645,8 +2673,14 @@ var BibleInputMenuContainer = `
                 <a id="RevTag_Info">user</a>
             </td>
         </tr>
+        
     </tbody>
     <tbody id="divPopupMenu_RevTag">
+        <tr>
+            <td>
+                <a class="Tag_ToggleHideShow">Hide</a>
+            </td>
+        </tr>
         <tr>
             <td>
                 <a id="Copy2clipboard">Copy2Clipboard</a>
