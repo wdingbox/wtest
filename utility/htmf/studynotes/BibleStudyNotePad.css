@@ -546,6 +546,6 @@ input[title='NIV']:checked:after {
     font-size:xx-small;
     width:5px;
     background-color: #2f74f5;
-    margin: 0px 5px 5px 0px;
-    padding: 0px 5px 0px 0px;
+    margin: 0px 5px 5px 5px;
+    padding: 0px 5px 5px 5px;
 }

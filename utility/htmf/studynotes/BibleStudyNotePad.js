@@ -335,31 +335,19 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
 
     this.m_ediDiv.setId(par.m_txuid)
-    this.m_ediBtn.init_associate(this.m_ediDiv)
+        / this.m_ediBtn.init_associate(this.m_ediDiv)
 
     $(this.m_id).show()
-
 }
 
 PopupMenu_EdiTag.prototype.init = function () {
     var _THIS = this
 
-    function _gen_pster_write() {
-        var htmEdit = _THIS.m_ediDiv.html().trim()
-        var htmShow = Uti.convert_std_bcv_in_text_To_linked(htmEdit)
-        if (htmShow.length === 0) htmShow = "<ol><li>w</li></ol>"
-        _THIS.m_ediDiv.html(htmShow)
 
-        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htmEdit)
-
-        Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
-        localStorage.setItem("myNote", JSON.stringify(Jsonpster))
-        return Jsonpster
-    }
 
     function DivEditTxt() {
         this.m_id = null
+        this.m_edi_enabled = false
     }
     DivEditTxt.prototype.setId = function (id) {
         this.m_id = "#" + id
@@ -370,42 +358,41 @@ PopupMenu_EdiTag.prototype.init = function () {
         }
         return $(this.m_id).html(htm)
     }
-    DivEditTxt.prototype.enableEdit = function (bEnable) {
+    DivEditTxt.prototype.enable_edit = function (bEnable) {
         if (!this.m_id) return alert("enableEdit er")
+        if (undefined === this.m_rawTxt) this.m_rawTxt = _THIS.m_par.m_ouTxt;
         if (bEnable) {
             $(this.m_id).attr("contenteditable", "true")
-            if (_THIS.m_par.m_ouTxt.trim().length === 0) {
-                $(this.m_id).html("<ol><li>a</li></ol>")
-            }else{
-                $(this.m_id).html(_THIS.m_par.m_ouTxt)
+            var showTxt = this.m_rawTxt
+            if (!showTxt) {
+                showTxt = "<ol><li>a</li></ol>"
             }
+            $(this.m_id).html(showTxt)
         } else {
             $(this.m_id).attr("contenteditable", null)
-            if (_THIS.m_par.m_ouTxt.trim().length === 0) {
-                $(this.m_id).html("<ol><li>a</li></ol>")
-            }else{
-                var htmShow = Uti.convert_std_bcv_in_text_To_linked(_THIS.m_par.m_ouTxt)
-                $(this.m_id).html(htmShow)
+            this.m_rawTxt = $(this.m_id).html() //storeIt
+            if (!this.m_rawTxt) {
+                this.m_rawTxt = "<ol><li>z</li></ol>"
             }
+            var htmShow = Uti.convert_std_bcv_in_text_To_linked(this.m_rawTxt)
+            $(this.m_id).html(htmShow)
         }
     }
 
     DivEditTxt.prototype.isEditable = function () {
-        return $(this.m_id).attr("contenteditable")
+        return !!$(this.m_id).attr("contenteditable")
     }
 
 
     function EditBtn(id) {
         this.m_elm = $(id)
         this.m_edi_enabled = false
-        this.m_ediDiv = null
 
     }
     EditBtn.prototype.init_associate = function (edidiv) {
         this.m_ediDiv = edidiv
-        var b = this.m_ediDiv.isEditable()
-        this.enable_edit(b)
     }
+
     EditBtn.prototype.enable_edit = function (bEnable) {
         this.m_edi_enabled = bEnable
         if (bEnable) {
@@ -413,9 +400,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         } else {
             $(this.m_elm).text("Enable Edit")
         }
-        if (this.m_ediDiv) {
-            this.m_ediDiv.enableEdit(bEnable)
-        }
+        this.m_ediDiv.enable_edit(bEnable)
     }
     EditBtn.prototype.toggle_enableEdit = function () {
         this.m_edi_enabled = !this.m_edi_enabled
@@ -424,6 +409,20 @@ PopupMenu_EdiTag.prototype.init = function () {
     this.m_ediBtn = new EditBtn("#RevTag_Edit_Local")
     this.m_ediDiv = new DivEditTxt()
 
+    function _set_par_ediTxt() {
+        if (!_THIS.m_ediDiv.isEditable()) {
+            Uti.Msg("not editable. cannot save")
+            return null
+        }
+        var htmEdit = _THIS.m_ediDiv.html()
+        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htmEdit)
+
+        var pster = JSON.parse(JSON.stringify(Jsonpster))
+        pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+        pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
+        localStorage.setItem("myNote", JSON.stringify(pster))
+        return pster.inp.par
+    }
 
     $("#RevTag_Edit_Local").bind("click", function () {
         _THIS.m_ediBtn.toggle_enableEdit()
@@ -431,18 +430,24 @@ PopupMenu_EdiTag.prototype.init = function () {
     })
 
     $("#RevTag_Edit_External").bind("click", function () {
-        _gen_pster_write()
+        _set_par_ediTxt()
         _THIS.m_ediBtn.enable_edit(false)
         //_THIS.hide()
     })
 
     $("#RevTag_Save").bind("click", function () {
-        Jsonpster = _gen_pster_write()
+        var par = _set_par_ediTxt()
+        if (!par) {
+            Uti.Msg("No save")
+            return
+        }
+        Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
+        Jsonpster.inp.par = par
         console.log("inp:", Jsonpster)
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret)
-            Uti.Msg(ret)
+            Uti.Msg(ret.out.result)
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediBtn.enable_edit(false)
             }
@@ -2320,7 +2325,7 @@ var Uti = {
         pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
         ret.pad3 = pad3
 
-        
+
 
         var obj = {}
         obj[ret.vol] = {}
