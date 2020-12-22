@@ -342,14 +342,8 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
 }
 
 PopupMenu_EdiTag.prototype.init = function () {
-
     var _THIS = this
-    // $(this.m_id).draggable()
-    // $(this.m_id).bind("click", function () {
-    //     //$(_THIS.m_id).slideToggle()
-    // }).hide()
 
-    var _THIS = this
     function _gen_pster_write() {
         var htmEdit = _THIS.m_ediDiv.html().trim()
         var htmShow = Uti.convert_std_bcv_in_text_To_linked(htmEdit)
@@ -1365,7 +1359,7 @@ Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistor
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parser_bcv(bcv)
-    if (!ret || ret.err) return Uti.Msg("addnew is not valid: " + bcv)
+    if (!ret) return Uti.Msg("addnew is not valid: " + bcv)
 
     this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
 
@@ -1716,7 +1710,7 @@ AppInstancesManager.prototype.init = function () {
 
     if (window.m_bcv) {//frm url. 
         var ret = Uti.parser_bcv(window.m_bcv)
-        if (ret && !ret.err) {
+        if (ret) {
             showup.setAsChildren()
             showup.update_showup(window.m_bcv)
             setTimeout(function () {
@@ -2076,6 +2070,7 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
             bcr.m_rev = ""
         }
         bcr.m_data = _THIS.m_data
+        bcr.bcvParser = ret
 
         _THIS.m_onclick_popupLabel(bcr)
 
@@ -2302,6 +2297,20 @@ var Uti = {
         pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
         ret.pad3 = pad3
 
+        ///////validation for std bcv.
+        var err = ""
+        if (undefined === _Max_struct[ret.vol]) {
+            err = `bkc not exist: ${ret.vol}`
+        } else if (undefined === _Max_struct[ret.vol][ret.chp]) {
+            err = `chp not exist: ${ret.chp}`
+        } else if (undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]) {
+            err = `vrs not exist: ${ret.vrs}`
+        }
+        if (err.length > 0) {
+            Uti.Msg("bcv parse err=", err)
+            return null
+        }
+
         var obj = {}
         obj[ret.vol] = {}
         obj[ret.vol][ret.chp] = {}
@@ -2313,17 +2322,6 @@ var Uti = {
         }
 
         ret.bcvObj = obj
-
-        ///////validation for std bcv.
-        if (undefined === _Max_struct[ret.vol]) {
-            ret.err = `bkc not exist: ${ret.vol}`
-        } else if (undefined === _Max_struct[ret.vol][ret.chp]) {
-            ret.err = `chp not exist: ${ret.chp}`
-        } else if (undefined === _Max_struct[ret.vol][ret.chp][ret.vrs]) {
-            ret.err = `vrs not exist: ${ret.vrs}`
-        } else {
-            ret.err = ""
-        }
 
         return ret;
     },
@@ -2380,9 +2378,7 @@ var Uti = {
                     var ar2 = bcvStr.split("-"); //case 'Gen1:1-Gen1:12'
                     var hdbcv = ar2[0].trim()
                     var ret = Uti.parser_bcv(hdbcv, "")
-                    if (ret.err) {
-                        Uti.Msg(ret)
-                    } else {
+                    if (ret) {
                         var fixedbcv = ret.pad3.bcv
                         if (ar2.length >= 2) fixedbcv += "-" + ar2[1]
                         if (pad3.indexOf(fixedbcv) < 0) {
