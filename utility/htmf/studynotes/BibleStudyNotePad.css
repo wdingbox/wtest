@@ -343,6 +343,9 @@ body {
     }
     #divPopupMenu table tbody a{
         text-decoration: none;
+        display:block;
+        width:100%;
+        
     }
     #divPopupMenu table tbody a:visited{
         color: rgb(241, 245, 247);

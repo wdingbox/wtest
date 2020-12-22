@@ -338,6 +338,7 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_ediBtn.init_associate(this.m_ediDiv)
 
     $(this.m_id).show()
+
 }
 
 PopupMenu_EdiTag.prototype.init = function () {
@@ -445,7 +446,6 @@ PopupMenu_EdiTag.prototype.init = function () {
             Uti.Msg(ret)
             if (ret.out.result.indexOf("success") > 0) {
                 _THIS.m_ediBtn.enable_edit(false)
-                //_THIS.hide()
             }
         })
     })
@@ -467,6 +467,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             }
         })
     })
+
 }
 
 function PopupMenu_RevTag() {
@@ -2827,7 +2828,7 @@ CNST.FnameOfBibleObj =
     "cross_references": "cross-references",
     "_myCrossRef": "self modified cross-references",
     "_myNote": "personal biblical study notes",
-    "_myPage": "personal page, prayer, preach, prophect, paper, project,,,"
+    "_myTakeaway": "personal page, prayer, preach, prophect, paper, project,,,"
 };
 
 CNST.BiBookName = {

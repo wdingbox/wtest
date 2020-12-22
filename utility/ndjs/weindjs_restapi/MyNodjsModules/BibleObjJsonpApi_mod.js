@@ -307,7 +307,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.baseDir = baseDir
         inp.usr.proj.git_dir = `${baseDir}/${inp.usr.proj.projname}`
         inp.usr.proj.acct_dir = `${baseDir}/${inp.usr.proj.projname}/${acctname}`
-        inp.usr.proj.dest_myoj = `${baseDir}/${inp.usr.proj.projname}/${acctname}/wd`
+        inp.usr.proj.dest_myoj = `${baseDir}/${inp.usr.proj.projname}/${acctname}/myoj`
 
         console.log("inp.usr.proj=", inp.usr.proj)
 
@@ -349,7 +349,7 @@ echo " git_setup_cmd end."
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
-echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/wd  ${proj.acct_dir}
+echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/myoj  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
 #cd -`
