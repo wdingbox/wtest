@@ -2636,7 +2636,7 @@ var BibleInputMenuContainer = `
 
             <div class="GrpMenu" id="grp_Cluster" style="float:left;display:none;">
                 <table border="1" style="float:left;display:" id="Tab_CatagryOfBooks">
-                    <caption class='' id='' title='Catagory of Books in Bible'>Cat</caption>
+                    <caption class='' id='' title='Catagory of Books in Bible'>Category</caption>
                     <thead id=""></thead>
                     <tbody id=''>
                         <tr>
