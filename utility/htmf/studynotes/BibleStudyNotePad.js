@@ -334,7 +334,7 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
 
     $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
 
-    this.m_ediDiv.setId_Txt(par.m_txuid, par.m_ouTxt)
+    this.m_ediDiv.setId_Txt(par.m_txuid, par.m_rev, par.m_outxtObj)
     this.m_ediBtn.init_associate(this.m_ediDiv)
     var bEdit = this.m_ediDiv.isEditable()
 
@@ -354,9 +354,10 @@ PopupMenu_EdiTag.prototype.init = function () {
         this.m_id = null
         this.m_edi_enabled = false
     }
-    DivEditTxt.prototype.setId_Txt = function (id, rawTxt) {
+    DivEditTxt.prototype.setId_Txt = function (id, rev, ouTxtObj) {
         this.m_id = "#" + id
-        this.m_rawTxt = rawTxt
+        this.m_otxObj = ouTxtObj
+        this.m_rev = rev
     }
     DivEditTxt.prototype.html = function (htm) {
         if (undefined === htm) {
@@ -364,23 +365,34 @@ PopupMenu_EdiTag.prototype.init = function () {
         }
         return $(this.m_id).html(htm)
     }
+    DivEditTxt.prototype.getEditHtm = function () {
+        var edx = ""
+        if (this.isEditable()) {
+            edx = _THIS.m_ediDiv.html()
+        }else{
+            Uti.Msg("not editable. cannot save")
+            edx = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]
+        }
+        return edx
+    }
     DivEditTxt.prototype.enableEdit = function (bEnable) {
         if (!this.m_id) return alert("enableEdit er")
 
         if (bEnable) {
             $(this.m_id).attr("contenteditable", "true")
-            var showTxt = this.m_rawTxt
+            var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
                 showTxt = "<ol><li>a</li></ol>"
             }
             $(this.m_id).html(showTxt)
         } else {
             $(this.m_id).attr("contenteditable", null)
-            this.m_rawTxt = $(this.m_id).html() //storeIt
-            if (!this.m_rawTxt) {
-                this.m_rawTxt = "<ol><li>z</li></ol>"
+            this.m_otxObj[this.m_rev] = $(this.m_id).html() //storeIt
+
+            var htmShow = Uti.convert_std_bcv_in_text_To_linked(this.m_otxObj[this.m_rev])
+            if (!htmShow) {
+                htmShow = "<ol><li>z</li></ol>"
             }
-            var htmShow = Uti.convert_std_bcv_in_text_To_linked(this.m_rawTxt)
             $(this.m_id).html(htmShow)
         }
     }
@@ -417,12 +429,9 @@ PopupMenu_EdiTag.prototype.init = function () {
     this.m_ediDiv = new DivEditTxt()
 
     function _set_par_ediTxt() {
-        if (!_THIS.m_ediDiv.isEditable()) {
-            Uti.Msg("not editable. cannot save")
-            return null
-        }
-        var htmEdit = _THIS.m_ediDiv.html()
+        var htmEdit = _THIS.m_ediDiv.getEditHtm()
         var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htmEdit)
+        _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
@@ -472,8 +481,14 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
             if (ret.out.result.indexOf("success") > 0) {
-                _THIS.m_ediDiv.html(ret.out.data.txt)
+                if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
+                    alert("difference")
+                }
                 _THIS.m_ediBtn.enable_edit(false, true)
+                var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
+                _THIS.m_ediDiv.html(showtxt)
+                _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = ret.out.data.txt
+
                 Uti.Msg(ret.out.data.txt)
                 //_THIS.hide()
             }
@@ -2063,7 +2078,7 @@ OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
 OutputBibleTable.prototype.Gen_output_table = function (cbf) {
 
     var _THIS = this;
-    var tb = this.create_htm_table();
+    var tb = this.create_htm_table_str();
     Uti.Msg("tot_rows:", tb.size);
     if (cbf) cbf(tb.size)
     $(this.m_tbid).html(tb.htm);
@@ -2090,7 +2105,8 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
             bcr.m_rev = bcr.m_strTag
         }
         bcr.bcvParser = ret = Uti.parser_bcv(bcr.m_bcv)
-        bcr.m_ouTxt = ret.getxt4outOj(_THIS.m_data.out.data, bcr.m_rev)
+        bcr.m_ouTxtStr = ret.getxt4outOj(_THIS.m_data.out.data, bcr.m_rev)
+        bcr.m_outxtObj = ret.getxt4outOj(_THIS.m_data.out.data)
 
         _THIS.m_onclick_popupLabel(bcr)
 
@@ -2153,7 +2169,7 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
     return txt
 
 }
-OutputBibleTable.prototype.create_htm_table = function () {
+OutputBibleTable.prototype.create_htm_table_str = function () {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     var _THIS = this
     if (!this.m_data || !this.m_data.out || !this.m_data.out.data) {
