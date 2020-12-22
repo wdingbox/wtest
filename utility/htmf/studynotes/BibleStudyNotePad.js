@@ -371,14 +371,22 @@ PopupMenu_EdiTag.prototype.init = function () {
         return $(this.m_id).html(htm)
     }
     DivEditTxt.prototype.enableEdit = function (bEnable) {
-        if (!this.m_id) return
+        if (!this.m_id) return alert("enableEdit er")
         if (bEnable) {
             $(this.m_id).attr("contenteditable", "true")
-            if ($(this.m_id).text().trim().length === 0) {
+            if (_THIS.m_par.m_ouTxt.trim().length === 0) {
                 $(this.m_id).html("<ol><li>a</li></ol>")
+            }else{
+                $(this.m_id).html(_THIS.m_par.m_ouTxt)
             }
         } else {
             $(this.m_id).attr("contenteditable", null)
+            if (_THIS.m_par.m_ouTxt.trim().length === 0) {
+                $(this.m_id).html("<ol><li>a</li></ol>")
+            }else{
+                var htmShow = Uti.convert_std_bcv_in_text_To_linked(_THIS.m_par.m_ouTxt)
+                $(this.m_id).html(htmShow)
+            }
         }
     }
 
@@ -2065,12 +2073,11 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         bcr.m_strTag = $(this).text();
 
         var ret = Uti.parser_bcv(bcr.m_strTag)
-        bcr.m_rev = bcr.m_strTag
-        if (ret) {
-            bcr.m_rev = ""
+        if (!ret) {
+            bcr.m_rev = bcr.m_strTag
         }
-        bcr.m_data = _THIS.m_data
-        bcr.bcvParser = ret
+        bcr.bcvParser = ret = Uti.parser_bcv(bcr.m_bcv)
+        bcr.m_ouTxt = ret.getxt4outOj(_THIS.m_data.out.data, bcr.m_rev)
 
         _THIS.m_onclick_popupLabel(bcr)
 
@@ -2283,20 +2290,9 @@ var Uti = {
             ret.chp = "" + parseInt(mat[2]);
             ret.vrs = "" + parseInt(mat[3]);
         } else {
-            //alert("sbcv=" + sbcv + "," + JSON.stringify(ret));
+            Uti.Msg("bcv format err:", sbcv)
             return null
         }
-        ret.chp3 = ret.chp.padStart(3, "0");
-        ret._vol = "_" + ret.vol;
-
-        ret.std_bcv = `${ret.vol}${ret.chp}:${ret.vrs}`
-
-        var pad3 = {}
-        pad3.chp = ret.chp.padStart(3, "0");
-        pad3.vrs = ret.vrs.padStart(3, "0");
-        pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
-        ret.pad3 = pad3
-
         ///////validation for std bcv.
         var err = ""
         if (undefined === _Max_struct[ret.vol]) {
@@ -2311,6 +2307,21 @@ var Uti = {
             return null
         }
 
+
+
+        ret.chp3 = ret.chp.padStart(3, "0");
+        ret._vol = "_" + ret.vol;
+
+        ret.std_bcv = `${ret.vol}${ret.chp}:${ret.vrs}`
+
+        var pad3 = {}
+        pad3.chp = ret.chp.padStart(3, "0");
+        pad3.vrs = ret.vrs.padStart(3, "0");
+        pad3.bcv = `${ret.vol}${pad3.chp}:${pad3.vrs}`
+        ret.pad3 = pad3
+
+        
+
         var obj = {}
         obj[ret.vol] = {}
         obj[ret.vol][ret.chp] = {}
@@ -2322,6 +2333,13 @@ var Uti = {
         }
 
         ret.bcvObj = obj
+        ret.getxt4outOj = function (outOj, trn) {
+            if (!trn) {
+                return outOj[this.vol][this.chp][this.vrs]
+            } else {
+                return outOj[this.vol][this.chp][this.vrs][trn]
+            }
+        }
 
         return ret;
     },
