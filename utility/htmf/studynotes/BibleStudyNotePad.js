@@ -23,7 +23,7 @@ var MyStorage = {
     },
 
     Repository_val: function (obj) {
-        function assign_repo(ob){
+        function assign_repo(ob) {
             $("#repository").val(obj.repository)
             $("#passcode").val(obj.passcode)
             Object.assign(Jsonpster.inp.usr, obj)
@@ -44,12 +44,12 @@ var MyStorage = {
         Uti.Msg("Repository_val", obj)
         return obj
     },
-   
-   
-    
-     
-   
-    
+
+
+
+
+
+
 
 
     clear: function () {
@@ -351,12 +351,12 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     var _THIS = this
     function _gen_pster_write() {
-        _THIS.m_ediDiv.touch()
-        var htm = _THIS.m_ediDiv.html()
-        htm = Uti.convert_std_bcv_in_text_To_linked(htm)
-        _THIS.m_ediDiv.html(htm)
+        var htmEdit = _THIS.m_ediDiv.html().trim()
+        var htmShow = Uti.convert_std_bcv_in_text_To_linked(htmEdit)
+        if (htmShow.length === 0) htmShow = "<ol><li>w</li></ol>"
+        _THIS.m_ediDiv.html(htmShow)
 
-        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htm)
+        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htmEdit)
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
@@ -380,16 +380,14 @@ PopupMenu_EdiTag.prototype.init = function () {
         if (!this.m_id) return
         if (bEnable) {
             $(this.m_id).attr("contenteditable", "true")
+            if ($(this.m_id).text().trim().length === 0) {
+                $(this.m_id).html("<ol><li>a</li></ol>")
+            }
         } else {
             $(this.m_id).attr("contenteditable", null)
         }
     }
-    DivEditTxt.prototype.touch = function () {
-        var tx = $(this.m_id).text()
-        if (tx.length === 0) {
-            $(this.m_id).html("<ol><li>--</li></ol>")
-        }
-    }
+  
     DivEditTxt.prototype.isEditable = function () {
         return $(this.m_id).attr("contenteditable")
     }
@@ -414,7 +412,6 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_elm).text("Enable Edit")
         }
         if (this.m_ediDiv) {
-            this.m_ediDiv.touch()
             this.m_ediDiv.enableEdit(bEnable)
         }
     }
@@ -2055,7 +2052,7 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
     Uti.Msg("tot_rows:", tb.size);
     if (cbf) cbf(tb.size)
     $(this.m_tbid).html(tb.htm);
- 
+
     $(this.m_tbid).find(".popupclicklabel").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
