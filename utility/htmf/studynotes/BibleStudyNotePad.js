@@ -1312,12 +1312,12 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
 
 
 
-function RevisionsOfBibleListTable(tid) {
+function DocumentsClusterListTable(tid) {
     this.m_tbid = tid // "#Tab_NamesOfBible"
     this.m_onClickItm2Select = null
     this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
 }
-RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
+DocumentsClusterListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
@@ -1351,7 +1351,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
 
 }
 
-RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
+DocumentsClusterListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
     var str = "";
     var _THIS = this
     //var bknArr = Object.keys(CNST.FnameOfBibleObj);
@@ -1441,7 +1441,7 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClas
         }
     });
 }
-RevisionsOfBibleListTable.prototype.get_selected_nb_fnamesArr = function () {
+DocumentsClusterListTable.prototype.get_selected_nb_fnamesArr = function () {
     var fnamesArr = [];
     $(".cbkn.hili").each(function () {
         var ss = $(this).text();
@@ -1728,7 +1728,7 @@ var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 var tab_category = new Tab_Category()
 var markHistory = new Tab_mark_bcv_history()
 
-var nambib = new RevisionsOfBibleListTable("#Tab_NamesOfBible")
+var documentsClusterListTable = new DocumentsClusterListTable("#Tab_NamesOfBible")
 
 var popupMenu = new PopupMenu()
 
@@ -1865,7 +1865,7 @@ AppInstancesManager.prototype.init = function () {
 
 
 
-    nambib.Init_NB_Table({
+    documentsClusterListTable.Init_NB_Table({
         onClickItm: function () {
             _This.loadBible_chapter_by_bibOj();
         }
@@ -1946,7 +1946,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
-    var fnamesArr = nambib.get_selected_nb_fnamesArr();
+    var fnamesArr = documentsClusterListTable.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
@@ -1961,7 +1961,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
 };///
 AppInstancesManager.prototype.get_search_inp = function () {
     //
-    var fnamesArr = nambib.get_selected_nb_fnamesArr();
+    var fnamesArr = documentsClusterListTable.get_selected_nb_fnamesArr();
     var searchFileName = MyStorage.getMostRecentSearchFile();// nambib.get_search_fname();
     var searchStrn = $("#sinput").val();
     if (searchStrn.length === 0) {
