@@ -1967,7 +1967,12 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
-
+AppInstancesManager.prototype.loadBible_verse_by_bibOj_output = function (ret, cbf) {
+    //popupMenu_BcvTag.hide()
+    popupMenu.hide()
+    g_obt.set_data(ret)
+    g_obt.Gen_output_table(cbf)
+}
 AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
     var _THIS = this
     if (!oj) {
@@ -1981,13 +1986,19 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
-        apiCallback_Gen_output_table(ret)
+        _THIS.loadBible_verse_by_bibOj_output(ret)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
         }, 2100)
     })
 
 };///
+AppInstancesManager.prototype.apiCallback_Gen_output_table = function (ret, cbf) {
+    //popupMenu_BcvTag.hide()
+    popupMenu.hide()
+    g_obt.set_data(ret)
+    g_obt.Gen_output_table(cbf)
+}
 AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     var _THIS = this
     if (!oj) {
@@ -2003,7 +2014,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
-        apiCallback_Gen_output_table(ret)
+        _THIS.apiCallback_Gen_output_table(ret)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
         }, 2100)
@@ -2028,7 +2039,7 @@ AppInstancesManager.prototype.get_search_inp = function () {
     return inp;
 };
 AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
-
+    var _THIS = this
     function onclick_inpage_find_next(incrs, _this) {
         var str = $("#sinput").val();
 
@@ -2068,7 +2079,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
         Jsonpster.Run(function (ret) {
-            apiCallback_Gen_output_table(ret, function (size) {
+            _THIS.apiCallback_Gen_output_table(ret, function (size) {
                 $("#searchNextresult").text("0/" + size)
             });
             Uti.Msg(ret.out.result);
@@ -2372,12 +2383,6 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
 var g_aim = new AppInstancesManager();
 var g_obt = new OutputBibleTable()
 
-function apiCallback_Gen_output_table(ret, cbf) {
-    //popupMenu_BcvTag.hide()
-    popupMenu.hide()
-    g_obt.set_data(ret)
-    g_obt.Gen_output_table(cbf)
-}
 
 
 
