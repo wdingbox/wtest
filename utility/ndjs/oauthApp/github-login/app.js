@@ -10,6 +10,9 @@ const randomString = require('randomstring');
 const port = process.env.PORT || 3000;
 const redirect_uri = process.env.HOST + '/redirect';
 
+console.log("port",port)
+console.log("env",process.env)
+
 app.use(express.static('views'));
 app.use(
   session({
@@ -25,6 +28,7 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/login', (req, res, next) => {
+
   req.session.csrf_string = randomString.generate();
   const githubAuthUrl =
     'https://github.com/login/oauth/authorize?' +
@@ -35,11 +39,13 @@ app.get('/login', (req, res, next) => {
       scope: 'user:email'
     });
   res.redirect(githubAuthUrl);
+  console.log(githubAuthUrl)
 });
 
 app.all('/redirect', (req, res) => {
   const code = req.query.code;
   const returnedState = req.query.state;
+  console.log("redect", code, returnedState)
   if (req.session.csrf_string === returnedState) {
     request.post(
       {
