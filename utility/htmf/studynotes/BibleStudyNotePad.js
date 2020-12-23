@@ -346,7 +346,7 @@ PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_ediBtn.enable_edit(bEdit, false)
 
 
-    var ids="#RevTag_Save, #RevTag_Load, #RevTag_Edit_External, #RevTag_Edit_Local"
+    var ids = "#RevTag_Save, #RevTag_Load, #RevTag_Edit_External, #RevTag_Edit_Local"
     par.m_showHideVTxt.set_vtxID(this.m_par.m_txuid, function (bHide, sLab) {
         if (bHide) {
             $(ids).parent().hide()
@@ -537,7 +537,7 @@ PopupMenu_RevTag.prototype.init_popup = function (par) {
     $(this.m_id).show()
 
     par.m_showHideVTxt.set_vtxID(this.m_par.m_txuid, function (bHide, sLab) {
-        
+
     })
 
 }
@@ -2242,7 +2242,7 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
     }
 
     console.log("result:", this.m_data.out.result)
-    var idx = 0, st = "", uuid = 0;
+    var idx = 0, st = "", uuid = "";
     $.each(this.m_data.out.data, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
