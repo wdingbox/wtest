@@ -227,7 +227,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(_this).parent().addClass("hiliExt")
 
             var sbcv = $(".bcvTag.bcvMark").text();
-            var ret = Uti.parse_bcv(sbcv);
+            var ret = Uti.parse_bcv(sbcv,"");
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
@@ -1893,7 +1893,7 @@ AppInstancesManager.prototype.init = function () {
                 if ("string" === typeof (par) && "reloadtable" === par) {
                     _This.loadBible_chapter_by_bibOj();
                 } else if ("object" === typeof (par)) {
-                    _This.loadBible_verse_by_bibOj();
+                    _This.loadBible_verse_by_bibOj(par.BCVtagClusterInfo.bcvOj);
                 }
             }
 
@@ -1970,12 +1970,10 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
     var _THIS = this
     if (!oj) {
-        var res = showup.get_selected_bcv_parm();
-        console.log("res=", res);
-        if (!res || !res.oj_bc) return null
-        oj = res.oj_bc
+        Uti.Msg("loadBible_verse_by_bibOj", oj)
+        return alert("null oj")
     }
-    if (!oj || Object.keys(oj) === 0) return alert("oj is null")
+    
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -1988,7 +1986,6 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
         }, 2100)
     })
 
-    return res;
 };///
 AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     var _THIS = this
