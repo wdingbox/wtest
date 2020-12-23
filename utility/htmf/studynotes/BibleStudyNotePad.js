@@ -1732,6 +1732,7 @@ GroupsMenuMgr.prototype.sel_default = function (sid) {
     $(this.m_grpContainerID).find(`a[sid='${sid}']`).addClass("GrpMenuItemHili")
     $(sid).show();
     this.close_others_of(sid)
+    $("#menuContainer").show()
 }
 
 
