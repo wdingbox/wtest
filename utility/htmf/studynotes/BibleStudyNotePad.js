@@ -313,14 +313,16 @@ PopupMenu_BcvTag.prototype.init_links = function () {
     $("#Cluster_Documents").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
         var trID = `tr_${ret.vol}_${ret.chp}_${ret.vrs}`
-        Uti.Msg("trID=", trID)
+
         var tags = []
         $(_THIS.m_par.m_clickedLabel).parent().parent().attr("id", trID)
         $(_THIS.m_par.m_clickedLabel).parentsUntil("tr").find("sup.popupclicklabel").each(function () {
             var tx = $(this).text()
             tags.push(tx)
         });
-        console.log(tags)
+        Uti.Msg("trID=", trID, tags)
+        _THIS.m_par.BCVtagClusterInfo = { tags: tags, trID: trID }
+        _THIS.m_par.m_documentsClusterListTable.Gen_table_for_bcvTag(_THIS.m_par)
     });
 }
 PopupMenu_BcvTag.prototype.init = function () {
@@ -1313,7 +1315,7 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
 
 
 function DocumentsClusterListTable(tid) {
-    this.m_tbid = tid // "#Tab_NamesOfBible"
+    this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
     this.m_onClickItm2Select = null
     this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
 }
@@ -1350,7 +1352,9 @@ DocumentsClusterListTable.prototype.Init_NB_Table = function (parm) {
     })
 
 }
-
+DocumentsClusterListTable.prototype.Gen_table_for_bcvTag = function (par) {
+    //BCVtagClusterInfo = { tags: tags, trID: trID }
+}
 DocumentsClusterListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
     var str = "";
     var _THIS = this
@@ -1728,7 +1732,7 @@ var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 var tab_category = new Tab_Category()
 var markHistory = new Tab_mark_bcv_history()
 
-var documentsClusterListTable = new DocumentsClusterListTable("#Tab_NamesOfBible")
+var documentsClusterListTable = new DocumentsClusterListTable("#Tab_NamesOfBibleDocuments")
 
 var popupMenu = new PopupMenu()
 
@@ -1902,6 +1906,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     g_obt.onclick_popupLabel(function (par) {
+        par.m_documentsClusterListTable = documentsClusterListTable
         popupMenu.popup(par)
         markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
         $("title").text(par.m_bcv)
@@ -2796,7 +2801,7 @@ var BibleInputMenuContainer = `
                     </tbody>
                 </table>
 
-                <table id="Tab_NamesOfBible" border="1" style="float:left;">
+                <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Documents</button></caption>
                     <thead id=""></thead>
                     <tbody>
