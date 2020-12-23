@@ -56,11 +56,11 @@ var MyStorage = {
         localStorage.clear();
     },
 
-    setRevList: function (arr) {
-        localStorage.setItem("RevList", arr)
+    setSelectedDocsList: function (arr) {
+        localStorage.setItem("SelectedDocsList", arr)
     },
-    getRevList: function () {
-        var ar = localStorage.getItem("RevList");
+    getSelectedDocsList: function () {
+        var ar = localStorage.getItem("SelectedDocsList");
         if (!ar || ar.length === 0) {
             ar = ["NIV"]
         } else {
@@ -1318,7 +1318,7 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
 function Tab_DocumentsClusterList(tid) {
     this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
     this.m_onClickItm2Select = null
-    this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
+    this.m_selectedItems_ary = MyStorage.getSelectedDocsList();//["CUVS"] //default
 }
 Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
@@ -1340,9 +1340,9 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
         trs += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
-    function get_selectedDocs(){
-        var ar=[]
-        $(".cbkn.hili").each(function(){
+    function get_selectedDocs() {
+        var ar = []
+        $(".cbkn.hili").each(function () {
             var tx = $(this).text().trim()
             ar.push(tx)
         })
@@ -1375,11 +1375,13 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         var name = $(_this).text();
         if (alreadyHili) {//will be removed
             var idx = _THIS.m_selectedItems_ary.indexOf(name)
-            _THIS.m_selectedItems_ary.splice(idx, 1) //remove 1.
+            if (_THIS.m_selectedItems_ary.length > 1) {
+                _THIS.m_selectedItems_ary.splice(idx, 1) //remove 1.
+            }
         } else {//will be added back
             _THIS.m_selectedItems_ary.push(name)
         }
-        MyStorage.setRevList(_THIS.m_selectedItems_ary)
+        MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
     }
     function update_hili(_this) {
@@ -1433,7 +1435,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
                 _THIS.m_selectedItems_ary.splice(idx, 1) //rm prev
             }
         }
-        MyStorage.setRevList(_THIS.m_selectedItems_ary)
+        MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
     }
 
     $(this.m_tbid + " caption button").text("Seq").css("background-color", "").bind("click", function () {
