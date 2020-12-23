@@ -1325,6 +1325,7 @@ Tab_DocumentsClusterList.prototype.Init_NB_Table = function (parm) {
     this.Gen_Table(bknArr)
     var clr = { Documents: "orange", Seq: "lightblue", SearchIn: "", Add2Tag: "lightgrey" }
     var _THIS = this
+    return
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
         $(this).css("background-color", clr[txt])
@@ -1352,6 +1353,7 @@ Tab_DocumentsClusterList.prototype.Init_NB_Table = function (parm) {
     })
 
 }
+
 Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
     //BCVtagClusterInfo = { tags: tags, trID: trID }
     var clusterinfo = par.BCVtagClusterInfo;
@@ -1366,10 +1368,54 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
         if (selary.indexOf(v) >= 0) hil = "hili";
         trs += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
-    $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red")
+    $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red").bind("click", function () {
+        _THIS.Gen_table_for_Documents()
+    })
     $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
         $(this).toggleClass("hili")
         _THIS.m_onClickItm2Select(par)
+    });
+}
+Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
+    var str = "";
+    var _THIS = this
+    var bknArr = Object.keys(CNST.FnameOfBibleObj);
+
+    var sFile = MyStorage.getMostRecentSearchFile()
+    $.each(bknArr, function (i, v) {
+        var hil = "";
+        if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
+        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+    });
+
+
+    function update_seletedItems(_this) {
+        var alreadyHili = $(_this)[0].classList.contains('hili')
+        var name = $(_this).text();
+        if (alreadyHili) {//will be removed
+            var idx = _THIS.m_selectedItems_ary.indexOf(name)
+            _THIS.m_selectedItems_ary.splice(idx, 1) //remove 1.
+        } else {//will be added back
+            _THIS.m_selectedItems_ary.push(name)
+        }
+        MyStorage.setRevList(_THIS.m_selectedItems_ary)
+        Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
+    }
+    function update_hili(_this) {
+        $(_this).toggleClass("hili");
+        var nsel = $(".cbkn.hili").size()
+        if (nsel === 0) {//keep at least one.
+            $(_this).addClass("hili")
+        }
+    }
+
+    $(this.m_tbid + " caption button").text("Documents").css("background-color", "").bind("click", function () {
+        //_THIS.Gen_table_for_Documents()
+    })
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        update_seletedItems(this)
+        update_hili(this)
+        _THIS.m_onClickItm2Select()
     });
 }
 Tab_DocumentsClusterList.prototype.Gen_Table = function (bknArr, searchFileClass) {
