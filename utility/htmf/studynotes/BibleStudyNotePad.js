@@ -1443,6 +1443,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
     var sFile = MyStorage.getMostRecentSearchFile()
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
+        if(v === sFile) hil += " searchFile"
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
