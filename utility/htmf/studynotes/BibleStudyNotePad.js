@@ -321,7 +321,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             tags.push(tx)
         });
         Uti.Msg("trID=", trID, tags)
-        _THIS.m_par.BCVtagClusterInfo = { tags: tags, trID: trID }
+        _THIS.m_par.BCVtagClusterInfo = { tags: tags, trID: trID, bcvOj: ret.bcvObj }
         _THIS.m_par.m_tab_documentsClusterList.Gen_table_for_bcvTag(_THIS.m_par)
         _THIS.m_par.m_groupsMenuMgr.sel_default("Cluster")
     });
