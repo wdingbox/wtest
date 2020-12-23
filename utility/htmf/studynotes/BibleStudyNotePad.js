@@ -1810,9 +1810,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             console.log("rev fr Child window.opener.", data)
             MyStorage.Repository_val(data)
         }, false);
-
-
-
+    })
+    $("#account_set").bind("click",function(){
+        MyStorage.Repository_val({repository:$("#repository").val(), passcode:$("#passcode").val()})
+        Uti.Msg("repository", Jsonpster)
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
@@ -3015,7 +3016,7 @@ var BibleInputMenuContainer = `
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             <br>passcode<br>
                             <input id="passcode" value='3edcFDSA'></input><br>
-                            <button id="account_opner">register</button>
+                            <button id="account_set">set</button><button id="account_opner">helper</button>
                             </td>
                             
                         </tr>
