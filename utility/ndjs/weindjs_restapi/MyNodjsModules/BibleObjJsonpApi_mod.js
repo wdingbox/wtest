@@ -93,13 +93,13 @@ var BibleUti = {
         }
         var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
         var inpObj = JSON.parse(s);
-        console.log("inp=", inpObj);
+        console.log("inp=", JSON.stringify(inpObj,null,4));
         inpObj.out = { result: "", data: null }
         return inpObj;
     },
 
     fetch_bcv: function (BibleObj, oj) {
-        console.log("oj", oj)
+        console.log("fetch_bcv oj", JSON.stringify(oj,null,4))
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
