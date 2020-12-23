@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<!--
-Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
--->
-<html lang="en">
 
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>Editing</title>
+    <base target="_blank" />
+    <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
+    <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
+
+
+    <link rel="stylesheet" xhref="./BibleStudyNotePad.css?v=2020dec21b">
+    </link>
 
     <!-------------------------------------------->
     <!---- Insert this before scripts import; then restor back later -->
@@ -32,6 +32,9 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
     <style>
+        body{
+            font-size: larger;
+        }
         .editor_state_max {
             z-index: 999999;
             position: absolute;
@@ -65,11 +68,11 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
     <form action="" method="post">
         <label for="editor1">
-            github proj
+            Repository
         </label>
         <input id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></input>
         <label for="editor1">
-            github passcode
+            Passcode
         </label>
         <input id="passcode" value="3edcFDSA"></input>
     </form>
