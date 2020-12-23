@@ -227,7 +227,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(_this).parent().addClass("hiliExt")
 
             var sbcv = $(".bcvTag.bcvMark").text();
-            var ret = Uti.parser_bcv(sbcv);
+            var ret = Uti.parse_bcv(sbcv);
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
@@ -476,7 +476,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     function _set_par_ediTxt() {
         var htmEdit = _THIS.m_ediDiv.getEditHtm()
-        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, htmEdit)
+        var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
         _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
@@ -519,7 +519,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
 
     $("#RevTag_Load").bind("click", function () {
-        var ret = Uti.parser_bcv(_THIS.m_par.m_bcv, "")
+        var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
         console.log("inp:", Jsonpster)
@@ -637,7 +637,7 @@ PopupMenu.prototype.popup = function (par) {
     $(this.m_id).find("tbody").hide()
 
 
-    var ret = Uti.parser_bcv(par.m_strTag)
+    var ret = Uti.parse_bcv(par.m_strTag)
     //var txuid = par.m_txuid
     if (ret) {
         this.popupMenu_BcvTag.init_popup(par)
@@ -752,7 +752,7 @@ ShowupBCV.prototype.init = function () {
 }
 
 ShowupBCV.prototype.update_showup = function (bcv) {
-    var par = Uti.parser_bcv(bcv)
+    var par = Uti.parse_bcv(bcv)
     if (par) {
         this.m_Bki.set_showupBkc(par.vol)
         this.m_Chp.set_showupVal(par.chp)
@@ -1500,7 +1500,7 @@ Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistor
     this.update_tab()
 }
 Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
-    var ret = Uti.parser_bcv(bcv)
+    var ret = Uti.parse_bcv(bcv)
     if (!ret) return Uti.Msg("addnew is not valid: " + bcv)
 
     this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
@@ -1857,7 +1857,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     if (window.m_bcv) {//frm url. 
-        var ret = Uti.parser_bcv(window.m_bcv)
+        var ret = Uti.parse_bcv(window.m_bcv)
         if (ret) {
             showup.setAsChildren()
             showup.update_showup(window.m_bcv)
@@ -1916,7 +1916,7 @@ AppInstancesManager.prototype.init = function () {
             Uti.Msg(str)
             var oj = {}
             bcvAry.forEach(function (bcv) {
-                var ret = Uti.parser_bcv(bcv, "", oj)
+                var ret = Uti.parse_bcv(bcv, "", oj)
             })
             _This.loadBible_chapter_by_bibOj(oj)
         }
@@ -2244,11 +2244,11 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         bcr.m_txuid = $(this).attr("txuid")
         bcr.m_strTag = $(this).text();
 
-        var ret = Uti.parser_bcv(bcr.m_strTag)
+        var ret = Uti.parse_bcv(bcr.m_strTag)
         if (!ret) {
             bcr.m_rev = bcr.m_strTag
         }
-        bcr.bcvParser = ret = Uti.parser_bcv(bcr.m_bcv)
+        bcr.bcvParser = ret = Uti.parse_bcv(bcr.m_bcv)
         bcr.m_ouTxtStr = ret.getxt4outOj(_THIS.m_data.out.data, bcr.m_rev)
         bcr.m_outxtObj = ret.getxt4outOj(_THIS.m_data.out.data)
         bcr.m_clickedLabel = this
@@ -2453,7 +2453,7 @@ var Uti = {
     },
 
 
-    parser_bcv: function (sbcv, txt, outOj) {
+    parse_bcv: function (sbcv, txt, outOj) {
         if (!sbcv) return null
 
         sbcv = sbcv.replace(/\s/g, "");
@@ -2531,12 +2531,12 @@ var Uti = {
         var dashary = []
         for (var i = 0; i < ary.length; i++) {
             var bcv = ary[i]
-            var ret = Uti.parser_bcv(bcv)
+            var ret = Uti.parse_bcv(bcv)
 
             var iStart = i, ilastConsective = -1
             for (++i; i <= ary.length - 1; i++) {
                 var nextbcv = ary[i]
-                var next = Uti.parser_bcv(nextbcv)
+                var next = Uti.parse_bcv(nextbcv)
                 if (!next) {
                     --i;
                     break
@@ -2572,7 +2572,7 @@ var Uti = {
                     var bcvStr = mat[i].trim()
                     var ar2 = bcvStr.split("-"); //case 'Gen1:1-Gen1:12'
                     var hdbcv = ar2[0].trim()
-                    var ret = Uti.parser_bcv(hdbcv, "")
+                    var ret = Uti.parse_bcv(hdbcv, "")
                     if (ret) {
                         var fixedbcv = ret.pad3.bcv
                         if (ar2.length >= 2) fixedbcv += "-" + ar2[1]
@@ -2594,7 +2594,7 @@ var Uti = {
                     if (bcv.indexOf(bkn) === 0) {
                         var ar2 = bcv.split("-")
                         var hdbcv = ar2[0].trim()
-                        var ret = Uti.parser_bcv(hdbcv, "")
+                        var ret = Uti.parse_bcv(hdbcv, "")
                         var stdbcv = ret.std_bcv
                         if (ar2.length >= 2) stdbcv += "-" + ar2[1]
                         ar.push(stdbcv)
