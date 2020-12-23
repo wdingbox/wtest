@@ -2266,7 +2266,7 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
                             if (CNST.OT_Bkc_Ary.indexOf(vol) >= 0 && revId === 'H_G') {
                                 clsname = `dir='rtl' class='tx tx${revId} tx_OT'` //
                             }
-                            uuid++
+                            uuid = `${revId}_${vol}_${chp}_${vrs}`;
                             var revTag = `<sup txuid='${uuid}' class='popupclicklabel revTag' title='${sbcv}'>${revId}</sup>`
                             var vrsTxt = `<${htmtag} id='${uuid}' ${clsname}>${txt}</${htmtag}>`
                             st += `<div>${revTag}${vrsTxt}</div>`;
