@@ -1321,37 +1321,7 @@ function Tab_DocumentsClusterList(tid) {
 }
 Tab_DocumentsClusterList.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
-    var bknArr = Object.keys(CNST.FnameOfBibleObj);
-    this.Gen_Table(bknArr)
-    var clr = { Documents: "orange", Seq: "lightblue", SearchIn: "", Add2Tag: "lightgrey" }
-    var _THIS = this
-    return
-    $(this.m_tbid + " caption button").bind("click", function () {
-        var txt = $(this).text()
-        $(this).css("background-color", clr[txt])
-        switch (txt) {
-            case "Documents":
-                $(this).text("Seq")
-                _THIS.Gen_Table(_THIS.m_selectedItems_ary, "")
-                break;
-            case "Seq":
-                $(this).text("SearchIn")
-                _THIS.Gen_Table(_THIS.m_selectedItems_ary, "searchFile")
-                break;
-            case "SearchIn":
-                $(this).text("Add2Tag")
-                _THIS.Gen_Table(bknArr, "")
-                break;
-            case "Add2Tag":
-                $(this).text("Documents")
-                _THIS.Gen_Table(bknArr, "")
-                break;
-            default:
-                alert("er")
-                break;
-        }
-    })
-
+    this.Gen_table_for_Documents()
 }
 
 Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
@@ -1410,11 +1380,85 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     }
 
     $(this.m_tbid + " caption button").text("Documents").css("background-color", "").bind("click", function () {
-        //_THIS.Gen_table_for_Documents()
+        _THIS.Gen_table_for_Sequencer()
     })
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_seletedItems(this)
         update_hili(this)
+        _THIS.m_onClickItm2Select()
+    });
+}
+Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
+    var str = "";
+    var _THIS = this
+    var bknArr = Object.keys(CNST.FnameOfBibleObj);
+
+    var sFile = MyStorage.getMostRecentSearchFile()
+    $.each(_THIS.m_selectedItems_ary, function (i, v) {
+        var hil = "hili";
+        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+    });
+
+    function moveup_selitm(_this, i) {
+        var name = $(_this).text();
+        var idx = _THIS.m_selectedItems_ary.indexOf(name)
+        if (1 === i) {//move up
+            if (idx === 0) {
+                var tmp = _THIS.m_selectedItems_ary.shift()
+                _THIS.m_selectedItems_ary.push(tmp)
+            } else {
+                var tmp = _THIS.m_selectedItems_ary[idx - 1]
+                _THIS.m_selectedItems_ary.splice(idx + 1, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx - 1, 1) //rm prev
+            }
+        }
+        if (-1 === i) {//move down
+            if (idx === _THIS.m_selectedItems_ary.length - 1) {
+                var tmp = _THIS.m_selectedItems_ary.pop()
+                _THIS.m_selectedItems_ary.unshift(tmp)
+            } else {
+                var tmp = _THIS.m_selectedItems_ary[idx]
+                _THIS.m_selectedItems_ary.splice(idx + 2, 0, tmp) //insert after idx
+                _THIS.m_selectedItems_ary.splice(idx, 1) //rm prev
+            }
+        }
+        MyStorage.setRevList(_THIS.m_selectedItems_ary)
+    }
+
+    $(this.m_tbid + " caption button").text("Seq").css("background-color", "").bind("click", function () {
+        _THIS.Gen_table_for_Searchin()
+    })
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        moveup_selitm(this, +1)
+        _THIS.Gen_table_for_Sequencer()
+        _THIS.m_onClickItm2Select()
+    });
+}
+
+Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
+    var str = "";
+    var _THIS = this
+    var bknArr = Object.keys(CNST.FnameOfBibleObj);
+
+    var sFile = MyStorage.getMostRecentSearchFile()
+    $.each(_THIS.m_selectedItems_ary, function (i, v) {
+        var hil = "hili";
+        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+    });
+
+    function update_Searchin(_this) {
+        $(".searchFile").removeClass("searchFile");
+        $(_this).addClass("searchFile");
+        var txt = $(_this).text().trim()
+        MyStorage.setMostRecentSearchFile(txt)
+    }
+
+    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "").bind("click", function () {
+        _THIS.Gen_table_for_Documents()
+    })
+    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        update_Searchin(this)
+        _THIS.Gen_table_for_Searchin()
         _THIS.m_onClickItm2Select()
     });
 }
