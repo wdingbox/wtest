@@ -1339,11 +1339,21 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
         if (selary.indexOf(v) >= 0) hil = "hili";
         trs += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
+
+    function get_selectedDocs(){
+        var ar=[]
+        $(".cbkn.hili").each(function(){
+            var tx = $(this).text().trim()
+            ar.push(tx)
+        })
+        return ar
+    }
     $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red").bind("click", function () {
         _THIS.Gen_table_for_Documents()
     })
     $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
         $(this).toggleClass("hili")
+        par.BCVtagClusterInfo.newselary = get_selectedDocs()
         _THIS.m_onClickItm2Select(par)
     });
 }
@@ -1981,7 +1991,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     }
 
 
-    var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
+    var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
