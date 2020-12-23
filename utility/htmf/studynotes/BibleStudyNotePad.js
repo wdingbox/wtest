@@ -1349,7 +1349,10 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
         return ar
     }
     $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red").bind("click", function () {
-        _THIS.Gen_table_for_Documents()
+        $(this).unbind()
+        setTimeout(function () {
+            _THIS.Gen_table_for_Documents()
+        }, 10)
     })
     $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
         $(this).toggleClass("hili")
@@ -1393,7 +1396,10 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     }
 
     $(this.m_tbid + " caption button").text("Documents").css("background-color", "").bind("click", function () {
-        _THIS.Gen_table_for_Sequencer()
+        $(this).unbind()
+        setTimeout(function () {
+            _THIS.Gen_table_for_Sequencer()
+        }, 10)
     })
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_seletedItems(this)
@@ -1439,9 +1445,13 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     }
 
     $(this.m_tbid + " caption button").text("Sequence").css("background-color", "").bind("click", function () {
-        _THIS.Gen_table_for_Searchin()
+        $(this).unbind()
+        setTimeout(function () {
+            _THIS.Gen_table_for_Searchin()
+        }, 10)
     })
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+        $(this).unbind()
         moveup_selitm(this, +1)
         _THIS.Gen_table_for_Sequencer()
         _THIS.m_onClickItm2Select("reloadtable")
@@ -1468,11 +1478,13 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
     }
 
     $(this.m_tbid + " caption button").text("Searchin").css("background-color", "").bind("click", function () {
-        _THIS.Gen_table_for_Documents()
+        $(this).unbind()
+        setTimeout(function () {
+            _THIS.Gen_table_for_Documents()
+        }, 10)
     })
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_Searchin(this)
-        _THIS.Gen_table_for_Searchin()
         _THIS.m_onClickItm2Select()
     });
 }
