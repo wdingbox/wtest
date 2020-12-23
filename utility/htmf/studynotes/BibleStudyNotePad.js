@@ -1894,7 +1894,7 @@ AppInstancesManager.prototype.init = function () {
                 if ("string" === typeof (par) && "reloadtable" === par) {
                     _This.loadBible_chapter_by_bibOj();
                 } else if ("object" === typeof (par)) {
-                    _This.loadBible_verse_by_bibOj(par.BCVtagClusterInfo.bcvOj);
+                    _This.loadBible_verse_by_bibOj(par);
                 }
             }
 
@@ -1967,14 +1967,14 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
-AppInstancesManager.prototype.loadBible_verse_by_bibOj_output = function (ret, cbf) {
+AppInstancesManager.prototype.loadBible_verse_by_bibOj_output = function (ret, par) {
     //popupMenu_BcvTag.hide()
     popupMenu.hide()
-    g_obt.set_verse_dat(ret)
-    g_obt.Gen_output_table(cbf)
+    g_obt.update_table_tr(ret, par)
 }
-AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
+AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     var _THIS = this
+    var oj = par.BCVtagClusterInfo.bcvOj
     if (!oj) {
         Uti.Msg("loadBible_verse_by_bibOj", oj)
         return alert("null oj")
@@ -1986,7 +1986,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
-        _THIS.loadBible_verse_by_bibOj_output(ret)
+        _THIS.loadBible_verse_by_bibOj_output(ret, par)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
         }, 2100)
@@ -2227,16 +2227,10 @@ OutputBibleTable.prototype.set_inpage_findstrn = function (str) {
     }
     return ret
 }
-
-OutputBibleTable.prototype.Gen_output_table = function (cbf) {
-
+OutputBibleTable.prototype.Set_Event_output_table = function (tbid) {
     var _THIS = this;
-    var tb = this.create_htm_table_str();
-    Uti.Msg("tot_rows:", tb.size);
-    if (cbf) cbf(tb.size)
-    $(this.m_tbid).html(tb.htm);
 
-    $(this.m_tbid).find(".popupclicklabel").bind("click", function (evt) {
+    $(tbid).find(".popupclicklabel").bind("click", function (evt) {
         evt.stopImmediatePropagation()
 
         //solve confliction between toggle and hili
@@ -2267,12 +2261,12 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
     });
 
 
-    $(this.m_tbid).find(".tx").bind("keydown", function () {
+    $(tbid).find(".tx").bind("keydown", function () {
         $(this).addClass("edit_keydown");
     });
 
 
-    $(this.m_tbid).find(".tx").bind("click", function (evt) {
+    $(tbid).find(".tx").bind("click", function (evt) {
         evt.stopImmediatePropagation();
 
         $(this).toggleClass("hiliVrsTxt");
@@ -2287,25 +2281,28 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         Uti.Msg(txt);
         $("#divPopupMenu").hide()
     });
+}
+OutputBibleTable.prototype.Gen_output_table = function (cbf) {
+
+    var _THIS = this;
+    var tb = this.create_htm_table_str();
+    Uti.Msg("tot_rows:", tb.size);
+    if (cbf) cbf(tb.size)
+    $(this.m_tbid).html(tb.htm);
+
+    this.Set_Event_output_table(this.m_tbid)
 
     this.incFontSize(0)
 }
 
-OutputBibleTable.prototype.set_verse_dat = function (ret) {
-    var bcvRobj = {}
-    $.each(ret, function (rev, revObj) {
-        $.each(revObj, function (vol, chpObj) {
-            if (!bcvRobj[vol]) bcvRobj[vol] = {}
-            $.each(chpObj, function (chp, vrsObj) {
-                if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
-                $.each(vrsObj, function (vrs, txt) {
-                    if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
-                    bcvRobj[vol][chp][vrs][rev] = txt
-                });
-            });
-        });
-    });
-    return bcvRobj;
+OutputBibleTable.prototype.update_table_tr = function (ret, par) {
+    var ret = this.create_trs(ret.out.data)
+    var trID = "#" + par.BCVtagClusterInfo.trID
+
+    $(trID).find("td").remove()
+    $(trID).html($(ret.trs).find("td"));
+    this.Set_Event_output_table(trID)
+    return;
 }
 OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
