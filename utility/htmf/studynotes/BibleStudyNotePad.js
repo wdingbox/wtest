@@ -1319,7 +1319,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
-    var clr = { Translation: "orange", Seq: "lightblue", SearchIn: "" }
+    var clr = { Translation: "orange", Seq: "lightblue", SearchIn: "" , Add2Tag: "lightgrey"}
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
@@ -1334,6 +1334,10 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary, "searchFile")
                 break;
             case "SearchIn":
+                $(this).text("Add2Tag")
+                _THIS.Gen_Table(bknArr, "")
+                break;
+            case "Add2Tag":
                 $(this).text("Translation")
                 _THIS.Gen_Table(bknArr, "")
                 break;
@@ -1418,13 +1422,20 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClas
         MyStorage.setMostRecentSearchFile(txt)
     }
 
+    function add2tag(_this) {
+        $(".searchFile").removeClass("searchFile");
+        $(_this).addClass("searchFile");
+        var txt = $(_this).text().trim()
+        MyStorage.setMostRecentSearchFile(txt)
+    }
+
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
             case "Translation": update_data(this); break;
             case "Seq": moveup_selitm(this, +1); break;
             case "SearchIn": update_Finditem(this); break;
-            //case "Dn": moveup_selitm(this, -1); break;
+            case "Add2Tag": add2tag(this); break;
         }
     });
 }
