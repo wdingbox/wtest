@@ -35,7 +35,7 @@ var MyStorage = {
         } else {
             var ar = localStorage.getItem("repository");
             if (!ar || ar.length === 0) {
-                ar = { repository: "", passcode: "" }
+                obj = { repository: "", passcode: "" }
             } else {
                 obj = JSON.parse(ar)
             }
