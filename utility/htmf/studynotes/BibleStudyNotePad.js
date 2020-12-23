@@ -310,11 +310,13 @@ PopupMenu_BcvTag.prototype.init_links = function () {
     });
 
     var _THIS = this
-    $("#Select_Documents").click(function () {
+    $("#Cluster_Documents").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
-        console.log(ret.vol + ret.chp + ":" + ret.vrs);
+        var trID = `tr_${ret.vol}_${ret.chp}_${ret.vrs}`
+        Uti.Msg("trID=", trID)
         var tags = []
-        $(_THIS.m_par.m_clickedLabel).parent().find("sup.popupclicklabel").each(function () {
+        $(_THIS.m_par.m_clickedLabel).parent().parent().attr("id", trID)
+        $(_THIS.m_par.m_clickedLabel).parentsUntil("tr").find("sup.popupclicklabel").each(function () {
             var tx = $(this).text()
             tags.push(tx)
         });
@@ -1319,7 +1321,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
-    var clr = { Documents: "orange", Seq: "lightblue", SearchIn: "" , Add2Tag: "lightgrey"}
+    var clr = { Documents: "orange", Seq: "lightblue", SearchIn: "", Add2Tag: "lightgrey" }
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
@@ -2700,7 +2702,7 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="Select_Documents" title='add tags'>SelectDocument+/-</a>
+                <a id="Cluster_Documents" title='add tags'>Cluster-Documents</a>
             </td>
         </tr>
     </tbody>
