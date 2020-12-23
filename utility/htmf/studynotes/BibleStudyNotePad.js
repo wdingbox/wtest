@@ -1320,7 +1320,7 @@ function Tab_DocumentsClusterList(tid) {
     this.m_onClickItm2Select = null
     this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
 }
-Tab_DocumentsClusterList.prototype.Init_NB_Table = function (parm) {
+Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     this.Gen_table_for_Documents()
 }
@@ -1386,7 +1386,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_seletedItems(this)
         update_hili(this)
-        _THIS.m_onClickItm2Select()
+        _THIS.m_onClickItm2Select("reloadtable")
     });
 }
 Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
@@ -1432,7 +1432,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         moveup_selitm(this, +1)
         _THIS.Gen_table_for_Sequencer()
-        _THIS.m_onClickItm2Select()
+        _THIS.m_onClickItm2Select("reloadtable")
     });
 }
 
@@ -1444,7 +1444,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
     var sFile = MyStorage.getMostRecentSearchFile()
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
-        if(v === sFile) hil += " searchFile"
+        if (v === sFile) hil += " searchFile"
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
@@ -1887,9 +1887,16 @@ AppInstancesManager.prototype.init = function () {
 
 
 
-    tab_documentsClusterList.Init_NB_Table({
-        onClickItm: function () {
-            _This.loadBible_chapter_by_bibOj();
+    tab_documentsClusterList.Init_Docs_Table({
+        onClickItm: function (par) {
+            if (par) {
+                if ("string" === typeof (par) && "reloadtable" === par) {
+                    _This.loadBible_chapter_by_bibOj();
+                } else if ("object" === typeof (par)) {
+                    _This.loadBible_verse_by_bibOj();
+                }
+            }
+
         }
     });
 
@@ -1960,6 +1967,29 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 
 
 
+AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
+    var _THIS = this
+    if (!oj) {
+        var res = showup.get_selected_bcv_parm();
+        console.log("res=", res);
+        if (!res || !res.oj_bc) return null
+        oj = res.oj_bc
+    }
+    if (!oj || Object.keys(oj) === 0) return alert("oj is null")
+
+    var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
+    Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
+    Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
+    Uti.Msg(Jsonpster);
+    Jsonpster.Run(function (ret) {
+        apiCallback_Gen_output_table(ret)
+        setTimeout(function () {
+            _THIS.scrollToView_Vrs()
+        }, 2100)
+    })
+
+    return res;
+};///
 AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     var _THIS = this
     if (!oj) {
