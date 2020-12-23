@@ -323,6 +323,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
         Uti.Msg("trID=", trID, tags)
         _THIS.m_par.BCVtagClusterInfo = { tags: tags, trID: trID }
         _THIS.m_par.m_tab_documentsClusterList.Gen_table_for_bcvTag(_THIS.m_par)
+        _THIS.m_par.m_groupsMenuMgr.sel_default("Cluster")
     });
 }
 PopupMenu_BcvTag.prototype.init = function () {
@@ -1735,7 +1736,7 @@ GroupsMenuMgr.prototype.sel_default = function (sid) {
 
 
 
-var grpmgr = new GroupsMenuMgr()
+var groupsMenuMgr = new GroupsMenuMgr()
 
 
 
@@ -1774,7 +1775,7 @@ AppInstancesManager.prototype.init = function () {
         //popupMenu.hide()
     })
 
-    grpmgr.gen_grp_bar(skout, markHistory)
+    groupsMenuMgr.gen_grp_bar(skout, markHistory)
 
 
 
@@ -1790,7 +1791,7 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
         }
         $("#menuContainer").show()
-        grpmgr.sel_default()
+        groupsMenuMgr.sel_default()
         _This.scrollToView_Vrs() //before clearup.
     })
     showup.m_Bki.onclick_bkc(function () {
@@ -1807,7 +1808,7 @@ AppInstancesManager.prototype.init = function () {
         digi.init_Vrs_digiKeys_by_vol()
 
         $("#menuContainer").show()
-        grpmgr.sel_default()
+        groupsMenuMgr.sel_default()
 
     })
     showup.onclick_Chp(function (bload) {
@@ -1817,7 +1818,7 @@ AppInstancesManager.prototype.init = function () {
             _This.loadBible_chapter_by_bibOj();
         }
         $("#menuContainer").show()
-        grpmgr.sel_default()
+        groupsMenuMgr.sel_default()
     })
     showup.onclick_face(function () {
         skout.show(false)
@@ -1924,6 +1925,7 @@ AppInstancesManager.prototype.init = function () {
 
     g_obt.onclick_popupLabel(function (par) {
         par.m_tab_documentsClusterList = tab_documentsClusterList
+        par.m_groupsMenuMgr = groupsMenuMgr
         popupMenu.popup(par)
         markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
         $("title").text(par.m_bcv)
@@ -2080,7 +2082,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         $("#Tab_regex_history_lst").find("caption").text(str)
         $("#Tab_regex_history_lst").find("caption").bind("click", function () {
             //goto Cluster tab.
-            grpmgr.sel_default("Cluster")
+            groupsMenuMgr.sel_default("Cluster")
         })
     }
 
