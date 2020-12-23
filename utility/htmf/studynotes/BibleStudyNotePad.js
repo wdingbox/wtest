@@ -227,7 +227,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             $(_this).parent().addClass("hiliExt")
 
             var sbcv = $(".bcvTag.bcvMark").text();
-            var ret = Uti.parse_bcv(sbcv,"");
+            var ret = Uti.parse_bcv(sbcv, "");
             if (!ret) return alert("ERR: bcvid=" + sbcv)
             var url = $(_this).attr("ref");
             ret.url = url;
@@ -1970,7 +1970,7 @@ AppInstancesManager.prototype.scrollToView_Vrs = function () {
 AppInstancesManager.prototype.loadBible_verse_by_bibOj_output = function (ret, cbf) {
     //popupMenu_BcvTag.hide()
     popupMenu.hide()
-    g_obt.set_data(ret)
+    g_obt.set_verse_dat(ret)
     g_obt.Gen_output_table(cbf)
 }
 AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
@@ -1979,7 +1979,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (oj) {
         Uti.Msg("loadBible_verse_by_bibOj", oj)
         return alert("null oj")
     }
-    
+
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2291,22 +2291,22 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
     this.incFontSize(0)
 }
 
-// OutputBibleTable.prototype.convert_rbcv_2_bcvRobj = function (ret) {
-//     var bcvRobj = {}
-//     $.each(ret, function (rev, revObj) {
-//         $.each(revObj, function (vol, chpObj) {
-//             if (!bcvRobj[vol]) bcvRobj[vol] = {}
-//             $.each(chpObj, function (chp, vrsObj) {
-//                 if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
-//                 $.each(vrsObj, function (vrs, txt) {
-//                     if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
-//                     bcvRobj[vol][chp][vrs][rev] = txt
-//                 });
-//             });
-//         });
-//     });
-//     return bcvRobj;
-// }
+OutputBibleTable.prototype.set_verse_dat = function (ret) {
+    var bcvRobj = {}
+    $.each(ret, function (rev, revObj) {
+        $.each(revObj, function (vol, chpObj) {
+            if (!bcvRobj[vol]) bcvRobj[vol] = {}
+            $.each(chpObj, function (chp, vrsObj) {
+                if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
+                $.each(vrsObj, function (vrs, txt) {
+                    if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
+                    bcvRobj[vol][chp][vrs][rev] = txt
+                });
+            });
+        });
+    });
+    return bcvRobj;
+}
 OutputBibleTable.prototype.get_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     if (!this.m_inpage_findstrn) return txt
@@ -2331,15 +2331,35 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
     }
 
     console.log("result:", this.m_data.out.result)
-    var idx = 0, st = "", uuid = "";
-    $.each(this.m_data.out.data, function (vol, chpObj) {
+    var ret = this.create_trs(this.m_data.out.data)
+
+    var s = "<table id='BibOut' border='1'>";
+    s += `<caption><p/><p>TotRows=${ret.size}</p></caption>`;
+    s += "<thead><th>#</th></thead>";
+    s += "<tbody>";
+    s += ret.trs;
+
+    s += "</tbody></table>";
+    ret.htm = s
+    return ret
+}
+OutputBibleTable.prototype.create_trs = function (odat) {
+    //ret = this.convert_rbcv_2_bcvRobj(ret)
+    var _THIS = this
+    if (!odat) {
+        return { trs: "", size: 0 };
+    }
+
+    //console.log("result:", this.m_data.out.result)
+    var idx = 0, trs = "", uuid = "";
+    $.each(odat, function (vol, chpObj) {
         $.each(chpObj, function (chp, vrsObj) {
             $.each(vrsObj, function (vrs, val) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
                 var BcvTag = `<a class='popupclicklabel bcvTag' title='${sbcv}'>${sbcv}</a>`
-                st += `<tr><td>${BcvTag}`;
+                trs += `<tr><td>${BcvTag}`;
                 switch (typeof val) {
                     case "object"://trn
                         $.each(val, function (revId, txt) {
@@ -2358,28 +2378,19 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
                             uuid = `${revId}_${vol}_${chp}_${vrs}`;
                             var revTag = `<sup txuid='${uuid}' class='popupclicklabel revTag' title='${sbcv}'>${revId}</sup>`
                             var vrsTxt = `<${htmtag} id='${uuid}' ${clsname}>${txt}</${htmtag}>`
-                            st += `<div>${revTag}${vrsTxt}</div>`;
+                            trs += `<div>${revTag}${vrsTxt}</div>`;
                         });
                         break;
                     case "string":
-                        st += "<div>" + val + "</div>";
+                        trs += "<div>" + val + "</div>";
                         break;
                 }
-                st += "</td></tr>";
+                trs += "</td></tr>";
             });
         });
     });
-
-    var s = "<table id='BibOut' border='1'>";
-    s += `<caption><p/><p>TotRows=${idx}</p></caption>`;
-    s += "<thead><th>#</th></thead>";
-    s += "<tbody>";
-    s += st;
-
-    s += "</tbody></table>";
-    return { htm: s, size: idx };
+    return { trs: trs, size: idx };
 }
-
 var g_aim = new AppInstancesManager();
 var g_obt = new OutputBibleTable()
 
