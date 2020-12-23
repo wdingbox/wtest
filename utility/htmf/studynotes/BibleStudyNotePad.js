@@ -1811,9 +1811,14 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repository_val(data)
         }, false);
     })
-    $("#account_set").bind("click",function(){
-        MyStorage.Repository_val({repository:$("#repository").val(), passcode:$("#passcode").val()})
+    $("#account_set").bind("click", function () {
+        MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
+        Jsonpster.api = RestApi.ApiAccout_setup_usr.str
+        Jsonpster.Run(function (ret) {
+            Uti.Msg(ret.out)
+            $("#account_set_info").text("ok")
+        })
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
@@ -2625,7 +2630,7 @@ var Uti = {
             var pad3 = []
             var mat = str.match(regexp)
             if (mat) {
-                console.log(mat)
+                //console.log(mat)
                 Uti.Msg(mat)
                 for (var i = 0; i < mat.length; i++) {
                     var bcvStr = mat[i].trim()
@@ -3016,7 +3021,7 @@ var BibleInputMenuContainer = `
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             <br>passcode<br>
                             <input id="passcode" value='3edcFDSA'></input><br>
-                            <button id="account_set">set</button><button id="account_opner">helper</button>
+                            <button id="account_set">set</button><button id="account_opner">helper</button><a id="account_set_info"></a>
                             </td>
                             
                         </tr>
