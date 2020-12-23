@@ -241,81 +241,93 @@ PopupMenu_BcvTag.prototype.init_links = function () {
             }
             return ret
         },
-        setup_links: function () {
-            $("#blb").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                var blbvol = CNST.BlueLetterBibleCode[ret.vol];
-                ret.set_href(blbvol + "/" + ret.chp + "/" + ret.vrs);
-            });
-            $("#qbible_com").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                //greek-new-testament/1-Thessalonians/1.html#1
-
-                var ont = "hebrew-old-testament"
-                if (ret.isNT()) {
-                    ont = "greek-new-testament"
-                }
-
-                var bkc = ret.vol;
-                var bkname = CNST.BiBookName[ret.vol][0];
-                bkname = bkname.replace(/_/g, "-")
-                ret.set_href(`${ont}/${bkname}/${ret.chp}.html#${ret.vrs}`);
-
-            });
-            $("#h_g").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                var volm = ret._vol;
-                var bkidx = CNST.BookID2IdxCode[volm];
-                ret.set_href(bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs);
-
-            });
-            $("#gtw").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                var vol2 = CNST.BiBookName[ret.vol][0];
-                ret.set_href(vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV");
-            });
-            $("#studylight").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                //https://www.studylight.org/commentary/john/1-1.html
-                var vol2 = CNST.BibVolName_Studylight([ret.vol]);
-                ret.set_href(vol2 + "/" + ret.chp + "-" + ret.vrs + ".html");
-            });
-
-            $("#ccel_org").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                //http://www.ccel.org/study/1_Samuel%202:11-4:18 
-                var bok = CNST.BibVolName_ccel([ret.vol]);
-                ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + ".html");
-            });
-
-            $("#crossReference").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-
-                //http://www.ccel.org/study/1_Samuel%202:11-4:18 
-                var bok = CNST.BlueLetterBibleCode[ret.vol];
-                ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + "");
-
-            });
-
-            $("#BibleInput").click(function () {
-                var ret = Ext_Link_Menu.HiliEx(this)
-                ret.set_href(ret.vol + ret.chp + ":" + ret.vrs);
-            });
-        }
     }
-    Ext_Link_Menu.setup_links()
+
+    $("#blb").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        var blbvol = CNST.BlueLetterBibleCode[ret.vol];
+        ret.set_href(blbvol + "/" + ret.chp + "/" + ret.vrs);
+    });
+    $("#qbible_com").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        //greek-new-testament/1-Thessalonians/1.html#1
+
+        var ont = "hebrew-old-testament"
+        if (ret.isNT()) {
+            ont = "greek-new-testament"
+        }
+
+        var bkc = ret.vol;
+        var bkname = CNST.BiBookName[ret.vol][0];
+        bkname = bkname.replace(/_/g, "-")
+        ret.set_href(`${ont}/${bkname}/${ret.chp}.html#${ret.vrs}`);
+
+    });
+    $("#h_g").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        var volm = ret._vol;
+        var bkidx = CNST.BookID2IdxCode[volm];
+        ret.set_href(bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs);
+
+    });
+    $("#gtw").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        var vol2 = CNST.BiBookName[ret.vol][0];
+        ret.set_href(vol2 + ret.chp + ":" + ret.vrs + "&version=NIV;CUV;KJV;NKJV;ESV");
+    });
+    $("#studylight").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        //https://www.studylight.org/commentary/john/1-1.html
+        var vol2 = CNST.BibVolName_Studylight([ret.vol]);
+        ret.set_href(vol2 + "/" + ret.chp + "-" + ret.vrs + ".html");
+    });
+
+    $("#ccel_org").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+        var bok = CNST.BibVolName_ccel([ret.vol]);
+        ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + ".html");
+    });
+
+    $("#crossReference").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        //http://www.ccel.org/study/1_Samuel%202:11-4:18 
+        var bok = CNST.BlueLetterBibleCode[ret.vol];
+        ret.set_href(bok + " " + ret.chp + ":" + ret.vrs + "");
+
+    });
+
+    $("#BibleInput").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+        ret.set_href(ret.vol + ret.chp + ":" + ret.vrs);
+    });
+
+    var _THIS = this
+    $("#Add_Tags").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+        console.log(ret.vol + ret.chp + ":" + ret.vrs);
+        var tags = []
+        $(_THIS.m_par.m_clickedLabel).parent().find("sup.popupclicklabel").each(function () {
+            var tx = $(this).text()
+            tags.push(tx)
+        });
+        console.log(tags)
+    });
 }
 PopupMenu_BcvTag.prototype.init = function () {
     this.init_links()
 }
 
 PopupMenu_BcvTag.prototype.init_popup = function (bcr) {
+    this.m_par = bcr
+    //this.m_par.m_clickedLabel
     // if (bcr.m_alreadyHili) {
     //     $(this.m_id).slideToggle();
     // } else {
@@ -2172,6 +2184,7 @@ OutputBibleTable.prototype.Gen_output_table = function (cbf) {
         bcr.bcvParser = ret = Uti.parser_bcv(bcr.m_bcv)
         bcr.m_ouTxtStr = ret.getxt4outOj(_THIS.m_data.out.data, bcr.m_rev)
         bcr.m_outxtObj = ret.getxt4outOj(_THIS.m_data.out.data)
+        bcr.m_clickedLabel = this
 
         _THIS.m_onclick_popupLabel(bcr)
 
@@ -2671,7 +2684,12 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="BibleInput" ref="#" title='self open'>NewWindow</a>
+                <a id="BibleInput" ref="#" title='self open'>OpenNewWindow</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="Add_Tags" title='add tags'>Add+</a>
             </td>
         </tr>
     </tbody>
