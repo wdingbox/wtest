@@ -310,7 +310,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
     });
 
     var _THIS = this
-    $("#Add_Tags").click(function () {
+    $("#Select_Documents").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
         console.log(ret.vol + ret.chp + ":" + ret.vrs);
         var tags = []
@@ -1319,13 +1319,13 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
-    var clr = { Translation: "orange", Seq: "lightblue", SearchIn: "" , Add2Tag: "lightgrey"}
+    var clr = { Documents: "orange", Seq: "lightblue", SearchIn: "" , Add2Tag: "lightgrey"}
     var _THIS = this
     $(this.m_tbid + " caption button").bind("click", function () {
         var txt = $(this).text()
         $(this).css("background-color", clr[txt])
         switch (txt) {
-            case "Translation":
+            case "Documents":
                 $(this).text("Seq")
                 _THIS.Gen_Table(_THIS.m_selectedItems_ary, "")
                 break;
@@ -1338,7 +1338,7 @@ RevisionsOfBibleListTable.prototype.Init_NB_Table = function (parm) {
                 _THIS.Gen_Table(bknArr, "")
                 break;
             case "Add2Tag":
-                $(this).text("Translation")
+                $(this).text("Documents")
                 _THIS.Gen_Table(bknArr, "")
                 break;
             default:
@@ -1432,7 +1432,7 @@ RevisionsOfBibleListTable.prototype.Gen_Table = function (bknArr, searchFileClas
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         //$(".cbkn").removeClass("hili");
         switch ($(_THIS.m_tbid + " caption").text()) {
-            case "Translation": update_data(this); break;
+            case "Documents": update_data(this); break;
             case "Seq": moveup_selitm(this, +1); break;
             case "SearchIn": update_Finditem(this); break;
             case "Add2Tag": add2tag(this); break;
@@ -2700,7 +2700,7 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="Add_Tags" title='add tags'>Add+</a>
+                <a id="Select_Documents" title='add tags'>SelectDocument+/-</a>
             </td>
         </tr>
     </tbody>
@@ -2795,7 +2795,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBible" border="1" style="float:left;">
-                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Translation</button></caption>
+                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Documents</button></caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
