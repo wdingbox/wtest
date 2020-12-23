@@ -322,7 +322,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
         });
         Uti.Msg("trID=", trID, tags)
         _THIS.m_par.BCVtagClusterInfo = { tags: tags, trID: trID }
-        _THIS.m_par.m_documentsClusterListTable.Gen_table_for_bcvTag(_THIS.m_par)
+        _THIS.m_par.m_tab_documentsClusterList.Gen_table_for_bcvTag(_THIS.m_par)
     });
 }
 PopupMenu_BcvTag.prototype.init = function () {
@@ -1749,7 +1749,7 @@ var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 var tab_category = new Tab_Category()
 var markHistory = new Tab_mark_bcv_history()
 
-var documentsClusterListTable = new Tab_DocumentsClusterList("#Tab_NamesOfBibleDocuments")
+var tab_documentsClusterList = new Tab_DocumentsClusterList("#Tab_NamesOfBibleDocuments")
 
 var popupMenu = new PopupMenu()
 
@@ -1886,7 +1886,7 @@ AppInstancesManager.prototype.init = function () {
 
 
 
-    documentsClusterListTable.Init_NB_Table({
+    tab_documentsClusterList.Init_NB_Table({
         onClickItm: function () {
             _This.loadBible_chapter_by_bibOj();
         }
@@ -1923,7 +1923,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     g_obt.onclick_popupLabel(function (par) {
-        par.m_documentsClusterListTable = documentsClusterListTable
+        par.m_tab_documentsClusterList = tab_documentsClusterList
         popupMenu.popup(par)
         markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
         $("title").text(par.m_bcv)
@@ -1968,7 +1968,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
-    var fnamesArr = documentsClusterListTable.get_selected_nb_fnamesArr();
+    var fnamesArr = tab_documentsClusterList.get_selected_nb_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
@@ -1983,7 +1983,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
 };///
 AppInstancesManager.prototype.get_search_inp = function () {
     //
-    var fnamesArr = documentsClusterListTable.get_selected_nb_fnamesArr();
+    var fnamesArr = tab_documentsClusterList.get_selected_nb_fnamesArr();
     var searchFileName = MyStorage.getMostRecentSearchFile();// nambib.get_search_fname();
     var searchStrn = $("#sinput").val();
     if (searchStrn.length === 0) {
