@@ -245,13 +245,13 @@ body {
     
     #Tab_OutputBooksList thead,
     #Tab_CatagryOfBooks thead,
-    #Tab_NamesOfBible thead {
+    #Tab_NamesOfBibleDocuments thead {
         display: block;
     }
 
     
     #Tab_CatagryOfBooks tbody,
-    #Tab_NamesOfBible tbody {
+    #Tab_NamesOfBibleDocuments tbody {
         height: 266px;
         overflow-y: scroll;
         display: block;

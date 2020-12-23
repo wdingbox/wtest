@@ -1354,6 +1354,23 @@ DocumentsClusterListTable.prototype.Init_NB_Table = function (parm) {
 }
 DocumentsClusterListTable.prototype.Gen_table_for_bcvTag = function (par) {
     //BCVtagClusterInfo = { tags: tags, trID: trID }
+    var clusterinfo = par.BCVtagClusterInfo;
+    var AllDocsArr = Object.keys(CNST.FnameOfBibleObj);
+    var selary = clusterinfo.tags
+
+    var _THIS = this
+    var sFile = MyStorage.getMostRecentSearchFile()
+    var trs = ""
+    $.each(AllDocsArr, function (i, v) {
+        var hil = "";
+        if (selary.indexOf(v) >= 0) hil = "hili";
+        trs += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
+    });
+    $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red")
+    $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
+        $(this).toggleClass("hili")
+        _THIS.m_onClickItm2Select(par)
+    });
 }
 DocumentsClusterListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
     var str = "";
