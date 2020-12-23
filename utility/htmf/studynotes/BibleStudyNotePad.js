@@ -1314,12 +1314,12 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
 
 
 
-function DocumentsClusterListTable(tid) {
+function Tab_DocumentsClusterList(tid) {
     this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
     this.m_onClickItm2Select = null
     this.m_selectedItems_ary = MyStorage.getRevList();//["CUVS"] //default
 }
-DocumentsClusterListTable.prototype.Init_NB_Table = function (parm) {
+Tab_DocumentsClusterList.prototype.Init_NB_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
     this.Gen_Table(bknArr)
@@ -1352,7 +1352,7 @@ DocumentsClusterListTable.prototype.Init_NB_Table = function (parm) {
     })
 
 }
-DocumentsClusterListTable.prototype.Gen_table_for_bcvTag = function (par) {
+Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
     //BCVtagClusterInfo = { tags: tags, trID: trID }
     var clusterinfo = par.BCVtagClusterInfo;
     var AllDocsArr = Object.keys(CNST.FnameOfBibleObj);
@@ -1372,7 +1372,7 @@ DocumentsClusterListTable.prototype.Gen_table_for_bcvTag = function (par) {
         _THIS.m_onClickItm2Select(par)
     });
 }
-DocumentsClusterListTable.prototype.Gen_Table = function (bknArr, searchFileClass) {
+Tab_DocumentsClusterList.prototype.Gen_Table = function (bknArr, searchFileClass) {
     var str = "";
     var _THIS = this
     //var bknArr = Object.keys(CNST.FnameOfBibleObj);
@@ -1462,7 +1462,7 @@ DocumentsClusterListTable.prototype.Gen_Table = function (bknArr, searchFileClas
         }
     });
 }
-DocumentsClusterListTable.prototype.get_selected_nb_fnamesArr = function () {
+Tab_DocumentsClusterList.prototype.get_selected_nb_fnamesArr = function () {
     var fnamesArr = [];
     $(".cbkn.hili").each(function () {
         var ss = $(this).text();
@@ -1749,7 +1749,7 @@ var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 var tab_category = new Tab_Category()
 var markHistory = new Tab_mark_bcv_history()
 
-var documentsClusterListTable = new DocumentsClusterListTable("#Tab_NamesOfBibleDocuments")
+var documentsClusterListTable = new Tab_DocumentsClusterList("#Tab_NamesOfBibleDocuments")
 
 var popupMenu = new PopupMenu()
 
