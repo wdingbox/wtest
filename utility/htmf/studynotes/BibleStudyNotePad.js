@@ -1790,7 +1790,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_history").bind("click", function () {
         var ar = MyStorage.Repositories().get()
-        var stb = "<table border='1'>"
+        var stb = "<table id='account_history_table' border='1'>"
         for (var i = 0; i < ar.length; i++) {
             stb += "<tr>"
             Object.keys(ar[i]).forEach(function (key) {
@@ -1799,7 +1799,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             stb += "</tr>"
         }
         stb += "</table>"
-        $("#account_set_info").empty().append(stb)
+        $("body").find("#account_history_table").remove()
+        $("body").prepend(stb)
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
