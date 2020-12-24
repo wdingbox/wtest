@@ -19,7 +19,7 @@ var BibleUti = {
         }
         return -1;
     },
-    exec_git_cmd: async function (command) {
+    exec_Cmd: async function (command) {
         return new Promise(async (resolve, reject) => {
             try {
                 //command = "ls"
@@ -37,6 +37,7 @@ var BibleUti = {
                 });
             } catch (err) {
                 console.log(err)
+                reject(err);
             }
         })
     },
@@ -93,13 +94,13 @@ var BibleUti = {
         }
         var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
         var inpObj = JSON.parse(s);
-        console.log("inp=", JSON.stringify(inpObj,null,4));
+        console.log("inp=", JSON.stringify(inpObj, null, 4));
         inpObj.out = { result: "", data: null }
         return inpObj;
     },
 
     fetch_bcv: function (BibleObj, oj) {
-        console.log("fetch_bcv oj", JSON.stringify(oj,null,4))
+        console.log("fetch_bcv oj", JSON.stringify(oj, null, 4))
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
@@ -326,6 +327,32 @@ UserProject.prototype.get_usr_myoj_dir = function (res) {
 UserProject.prototype.get_usr_git_dir = function (res) {
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
 }
+UserProject.prototype.git_proj_destroy = async  function (res) {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        console.log("failed git setup", inp)
+        return inp
+    }
+
+    //console.log("proj", proj)
+    var password = "lll" //dev mac
+    var git_setup_cmd = `
+#!/bin/sh
+cd ${this.m_rootDir}
+echo ${password} | sudo -S rm -rf ${proj.git_dir}
+echo " git_setup_cmd end."
+#cd -`
+
+    var gitdir = this.get_usr_git_dir()
+    if (!fs.existsSync(`${gitdir}`)) {
+        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
+        inp.out.git_setup_cmd = git_setup_cmd
+        inp.out.result += "create git dir: " + gitdir
+        this.git_proj_config_update()
+    }
+    return inp
+}
 UserProject.prototype.git_proj_setup = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -355,7 +382,7 @@ echo " cp_template_cmd end."
 #cd -`
     var gitdir = this.get_usr_git_dir()
     if (!fs.existsSync(`${gitdir}`)) {
-        inp.out.exec_git_cmd_result = await BibleUti.exec_git_cmd(git_setup_cmd)
+        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
         inp.out.git_setup_cmd = git_setup_cmd
         inp.out.result += "create git dir: " + gitdir
         this.git_proj_config_update()
@@ -367,12 +394,12 @@ echo " cp_template_cmd end."
         console.log("existing accdir=", accdir)
         inp.out.result += "dest_myoj alreadt exist: " + accdir
         change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${this.m_rootDir}${proj.acct_dir}`
-        inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(change_perm_cmd)
+        inp.out.cp_template_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd)
     } else {
         inp.out.result += "git has no: " + accdir
         inp.out.cp_template_cmd = cp_template_cmd
         console.log("cp_template_cmd", cp_template_cmd)
-        inp.out.cp_template_cmd_result = await BibleUti.exec_git_cmd(cp_template_cmd)
+        inp.out.cp_template_cmd_result = await BibleUti.exec_Cmd(cp_template_cmd)
     }
     return inp
 }
@@ -576,7 +603,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         console.log(inp.out.m_fname)
         var cmdstr = userProject.get_git_cmd()
-        inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
+        inp.out.exec_git_result = BibleUti.exec_Cmd(cmdstr, res)
 
         //console.log(inp)
 
@@ -595,7 +622,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.result = "read:"
 
         var cmdstr = userProject.get_git_cmd_pull()
-        inp.out.exec_git_result = BibleUti.exec_git_cmd(cmdstr, res)
+        inp.out.exec_git_result = BibleUti.exec_Cmd(cmdstr, res)
 
         inp = BibleUti.Write2vrs_txt(inp, false)
 
@@ -606,12 +633,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ///////////////////////////////////
-    ApiAccout_setup_usr_async: function (req, res) {
+    ApiUsrReposData_create_async: function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
         }
     },
-    ApiAccout_setup_usr: async function (req, res) {
+    ApiUsrReposData_create: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
         }
@@ -620,6 +647,22 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         userProject.git_proj_parse(inp)
 
         inp = await userProject.git_proj_setup(res)
+        var sret = JSON.stringify(inp, null, 4)
+
+        console.log("oup is ", inp.out)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
+        res.end();
+    },
+    ApiUsrReposData_destroy: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+        var inp = BibleUti.GetApiInputParamObj(req)
+        console.log("inp is ", inp)
+        userProject.git_proj_parse(inp)
+
+        inp = await userProject.git_proj_destroy(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)

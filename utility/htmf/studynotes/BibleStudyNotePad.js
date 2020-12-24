@@ -1743,7 +1743,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_set").bind("click", function () {
         MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
-        Jsonpster.api = RestApi.ApiAccout_setup_usr.str
+        Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
             $("#account_set_info").text("ok")
