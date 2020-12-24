@@ -89,10 +89,12 @@
         <input id="passcode" value=""></input>
     </form>
     <p>
+        <button onclick="repo_status();">CheckStatus</button>
         <button onclick="repo_create();">create</button>
         <button onclick="repo_destroy();">destroy</button>
         <button onclick="repo_histroy();">histroy</button>
         <button onclick="RemoveInHistory();">RemoveInHistory</button>
+
 
 
     </p>
@@ -133,6 +135,19 @@
             Jsonpster.Run(function (ret) {
                 window.opener.postMessage(Jsonpster.inp.usr, '*');
                 dbg_pster(ret)
+            })
+        }
+        function repo_status() {
+            var pname = $("#repository").val()
+            var pcode = $("#passcode").val()
+            Jsonpster.inp.usr.repository = pname;
+            Jsonpster.inp.usr.passcode = pcode;
+            Jsonpster.api = RestApi.ApiUsrReposData_status.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                dbg_pster(ret)
+                Uti.Msg("Status:", ret.out)
             })
         }
         function repo_histroy() {
