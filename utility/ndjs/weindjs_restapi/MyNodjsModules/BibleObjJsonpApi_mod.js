@@ -268,7 +268,9 @@ UserProject.prototype.get_jsfname = function (RevCode) {
     var dest_pfname = ""
     if ("_" === RevCode[0]) {
         RevCode = RevCode.substr(1)
-        dest_pfname = `${this.m_rootDir}${inp.usr.proj.dest_myoj}/${RevCode}_json.js`
+        if (inp.usr.proj) {
+            dest_pfname = `${this.m_rootDir}${inp.usr.proj.dest_myoj}/${RevCode}_json.js`
+        }
     } else {
         dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
     }

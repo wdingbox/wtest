@@ -23,26 +23,45 @@ var MyStorage = {
     },
 
     Repository_val: function (obj) {
-        function assign_repo(ob) {
+        function repos_ui_set(obj) {
             $("#repository").val(obj.repository)
             $("#passcode").val(obj.passcode)
             Object.assign(Jsonpster.inp.usr, obj)
         }
-        if (obj) {
-            var str = JSON.stringify(obj)
-            localStorage.setItem("repository", str)
-            assign_repo(obj)
-        } else {
-            var ar = localStorage.getItem("repository");
+        function repos_store_get() {
+            var ar = localStorage.getItem("repositories");
             if (!ar || ar.length === 0) {
-                obj = { repository: "", passcode: "" }
+                ar = [{ repository: "", passcode: "" }]
             } else {
-                obj = JSON.parse(ar)
+                ar = JSON.parse(ar)
             }
-            assign_repo(obj)
+            return ar
         }
-        Uti.Msg("Repository_val", obj)
-        return obj
+        function repos_store_set(obj) {
+            var sobj = JSON.stringify(obj)
+            var ar = repos_store_get()
+            for (var i = 0; i < ar.length; i++) {
+                var sob = JSON.stringify(ar[i])
+                if (sob === sobj) {
+                    ar.splice(i, 1) //:remove
+                }
+            }
+            ar.unshift(obj) //addto head.
+            Uti.Msg("Repository:set=", ar)
+            var str = JSON.stringify(ar)
+            localStorage.setItem("repositories", str)
+            return ar
+        }
+
+        if (obj) {//set
+            var ar = repos_store_set(obj)
+            repos_ui_set(ar[0])
+        } else {//get
+            var ar = repos_store_get()
+            repos_ui_set(ar[0])
+            Uti.Msg("Repository:get=", obj)
+            return ar[0]
+        }
     },
 
 
@@ -62,7 +81,7 @@ var MyStorage = {
     getSelectedDocsList: function () {
         var ar = localStorage.getItem("SelectedDocsList");
         if (!ar || ar.length === 0) {
-            ar = ["NIV"]
+            ar = ["NIV", "_myNote"]
         } else {
             ar = ar.split(",")
         }
@@ -1741,6 +1760,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         }, false);
     })
     $("#account_set").bind("click", function () {
+        $("#account_set_info").text($(this).text())
         MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
@@ -1750,6 +1770,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_destroy").bind("click", function () {
+        $("#account_set_info").text($(this).text())
         MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
@@ -1757,6 +1778,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             Uti.Msg(ret.out)
             $("#account_set_info").text("ok")
         })
+    })
+    $("#account_history").bind("click", function () {
+        MyStorage.Repository_val()
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
@@ -2999,13 +3023,13 @@ var BibleInputMenuContainer = `
                             <td>
                             <a>respositroy</a>:
                             <a id="account_destroy">destroy</a> | 
-                            <a id="account_history">history</a>
+                            <a id="account_history">history</a> |
+                            <a id="account_opner">help</a> |
                             <br>
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             <br>passcode<br>
                             <input id="passcode" value='3edcFDSA'></input><br>
                             <button id="account_set">set</button>
-                            <button id="account_opner">helper</button>
                             <a id="account_set_info"></a>
                             </td>
                             
