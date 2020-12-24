@@ -1749,6 +1749,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             $("#account_set_info").text("ok")
         })
     })
+    $("#account_destroy").bind("click", function () {
+        MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
+        Uti.Msg("repository", Jsonpster)
+        Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+        Jsonpster.Run(function (ret) {
+            Uti.Msg(ret.out)
+            $("#account_set_info").text("ok")
+        })
+    })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
     if (!sid) sid = "Keyboard"
@@ -2988,11 +2997,16 @@ var BibleInputMenuContainer = `
                             <td></td>
                             <td>usrData</td>
                             <td>
-                            respositroy:<br>
+                            <a>respositroy</a>:
+                            <a id="account_destroy">destroy</a> | 
+                            <a id="account_history">history</a>
+                            <br>
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             <br>passcode<br>
                             <input id="passcode" value='3edcFDSA'></input><br>
-                            <button id="account_set">set</button><button id="account_opner">helper</button><a id="account_set_info"></a>
+                            <button id="account_set">set</button>
+                            <button id="account_opner">helper</button>
+                            <a id="account_set_info"></a>
                             </td>
                             
                         </tr>

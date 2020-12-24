@@ -327,7 +327,7 @@ UserProject.prototype.get_usr_myoj_dir = function (res) {
 UserProject.prototype.get_usr_git_dir = function (res) {
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
 }
-UserProject.prototype.git_proj_destroy = async  function (res) {
+UserProject.prototype.git_proj_destroy = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -345,11 +345,10 @@ echo " git_setup_cmd end."
 #cd -`
 
     var gitdir = this.get_usr_git_dir()
-    if (!fs.existsSync(`${gitdir}`)) {
+    if (fs.existsSync(`${gitdir}`)) {
         inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
         inp.out.git_setup_cmd = git_setup_cmd
-        inp.out.result += "create git dir: " + gitdir
-        this.git_proj_config_update()
+        inp.out.result += "destroyed git dir: " + gitdir
     }
     return inp
 }
@@ -543,7 +542,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_jsfname(trn)
                 var bib = BibleUti.load_BibleObj_by_fname(jsfname);
-                if (!bib.obj) inp.out.result += ":err:" + trn
+                if (!bib.obj) {
+                    inp.out.result += ":noexist:" + trn
+                    continue
+                }
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.result += ":" + trn
@@ -653,6 +655,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
+    },
+    ApiUsrReposData_destroy_async: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
     },
     ApiUsrReposData_destroy: async function (req, res) {
         if (!req || !res) {
