@@ -17,12 +17,12 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            MyStorage.Repositories_val().get()
+            MyStorage.Repositories().get()
         }, 500)
 
     },
 
-    Repositories_val: function (obj) {
+    Repositories: function (obj) {
         function StoreRepositorie() {
             this.m_storeid = "repositories"
         }
@@ -63,7 +63,7 @@ var MyStorage = {
             var ar = this.repos_store_get()
             this.repos_ui_set(ar[0])
             Uti.Msg("Repository:get=", ar)
-            if(Number.isInteger(idx) && idx>=0 && idx<ar.length){
+            if (Number.isInteger(idx) && idx >= 0 && idx < ar.length) {
                 return ar[ix]
             }
             return ar
@@ -1765,12 +1765,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var data = e[key];
             //run function//
             console.log("rev fr Child window.opener.", data)
-            MyStorage.Repositories_val().add(data)
+            MyStorage.Repositories().add(data)
         }, false);
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        MyStorage.Repositories_val().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
+        MyStorage.Repositories().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Jsonpster.Run(function (ret) {
@@ -1780,7 +1780,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        MyStorage.Repositories_val().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
+        MyStorage.Repositories().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
@@ -1789,7 +1789,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_history").bind("click", function () {
-        var ar = MyStorage.Repositories_val().get()
+        var ar = MyStorage.Repositories().get()
         var stb = "<table border='1'>"
         for (var i = 0; i < ar.length; i++) {
             stb += "<tr>"
