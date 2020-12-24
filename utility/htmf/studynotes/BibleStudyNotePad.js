@@ -32,7 +32,7 @@ var MyStorage = {
             Object.assign(Jsonpster.inp.usr, obj)
         }
         StoreRepositorie.prototype.repos_store_get = function () {
-            var ar = localStorage.getItem("repositories");
+            var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
                 ar = [{ repository: "", passcode: "" }]
             } else {
@@ -52,7 +52,7 @@ var MyStorage = {
             ar.unshift(obj) //addto head.
             Uti.Msg("Repository:set=", ar)
             var str = JSON.stringify(ar)
-            localStorage.setItem("repositories", str)
+            localStorage.setItem(this.m_storeid, str)
             return ar
         }
         StoreRepositorie.prototype.add = function (obj) {
