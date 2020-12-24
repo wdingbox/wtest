@@ -17,18 +17,21 @@ var MyStorage = {
 
         //auto set afer load for input
         setTimeout(() => {
-            MyStorage.Repository_val()
+            MyStorage.Repositories_val().get()
         }, 500)
 
     },
 
-    Repository_val: function (obj) {
-        function repos_ui_set(obj) {
+    Repositories_val: function (obj) {
+        function StoreRepositorie() {
+            this.m_storeid = "repositories"
+        }
+        StoreRepositorie.prototype.repos_ui_set = function (obj) {
             $("#repository").val(obj.repository)
             $("#passcode").val(obj.passcode)
             Object.assign(Jsonpster.inp.usr, obj)
         }
-        function repos_store_get() {
+        StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem("repositories");
             if (!ar || ar.length === 0) {
                 ar = [{ repository: "", passcode: "" }]
@@ -37,7 +40,7 @@ var MyStorage = {
             }
             return ar
         }
-        function repos_store_set(obj) {
+        StoreRepositorie.prototype.repos_store_set = function (obj) {
             var sobj = JSON.stringify(obj)
             var ar = repos_store_get()
             for (var i = 0; i < ar.length; i++) {
@@ -52,16 +55,22 @@ var MyStorage = {
             localStorage.setItem("repositories", str)
             return ar
         }
-
-        if (obj) {//set
-            var ar = repos_store_set(obj)
-            repos_ui_set(ar[0])
-        } else {//get
-            var ar = repos_store_get()
-            repos_ui_set(ar[0])
-            Uti.Msg("Repository:get=", ar)
-            return ar[0]
+        StoreRepositorie.prototype.add = function (obj) {
+            var ar = this.repos_store_set(obj)
+            this.repos_ui_set(ar[0])
         }
+        StoreRepositorie.prototype.get = function (idx) {
+            var ar = this.repos_store_get()
+            this.repos_ui_set(ar[0])
+            Uti.Msg("Repository:get=", ar)
+            if(Number.isInteger(idx) && idx>=0 && idx<ar.length){
+                return ar[ix]
+            }
+            return ar
+        }
+
+        var storeRepo = new StoreRepositorie()
+        return storeRepo
     },
 
 
@@ -1756,12 +1765,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var data = e[key];
             //run function//
             console.log("rev fr Child window.opener.", data)
-            MyStorage.Repository_val(data)
+            MyStorage.Repositories_val().add(data)
         }, false);
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
+        MyStorage.Repositories_val().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Jsonpster.Run(function (ret) {
@@ -1771,7 +1780,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        MyStorage.Repository_val({ repository: $("#repository").val(), passcode: $("#passcode").val() })
+        MyStorage.Repositories_val().add({ repository: $("#repository").val(), passcode: $("#passcode").val() })
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
@@ -1780,7 +1789,17 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_history").bind("click", function () {
-        MyStorage.Repository_val()
+        var ar = MyStorage.Repositories_val().get()
+        var stb = "<table border='1'>"
+        for (var i = 0; i < ar.length; i++) {
+            stb += "<tr>"
+            Object.keys(ar[i]).forEach(function (key) {
+                stb += `<td>${ar[i][key]}</td>`
+            })
+            stb += "</tr>"
+        }
+        stb += "</table>"
+        $("#account_set_info").empty().append(stb)
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
