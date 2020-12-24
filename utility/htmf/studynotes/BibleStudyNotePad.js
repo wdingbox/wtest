@@ -22,7 +22,7 @@ var MyStorage = {
 
     },
 
-    Repositories: function (obj) {
+    Repositories: function () {
         function StoreRepositorie() {
             this.m_storeid = "repositories"
         }
