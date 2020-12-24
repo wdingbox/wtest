@@ -42,7 +42,7 @@ var MyStorage = {
         }
         StoreRepositorie.prototype.repos_store_set = function (obj) {
             var sobj = JSON.stringify(obj)
-            var ar = repos_store_get()
+            var ar = this.repos_store_get()
             for (var i = 0; i < ar.length; i++) {
                 var sob = JSON.stringify(ar[i])
                 if (sob === sobj) {
@@ -67,6 +67,17 @@ var MyStorage = {
                 return ar[ix]
             }
             return ar
+        }
+        StoreRepositorie.prototype.del = function (obj) {
+            var ar = this.repos_store_get()
+            for (var i = 0; i < ar.length; i++) {
+                var sar = JSON.stringify(ar[i])
+                if (sar === JSON.stringify(obj)) {
+                    ar.splice(i, 1)
+                }
+            }
+            var str = JSON.stringify(ar)
+            localStorage.setItem(this.m_storeid, str)
         }
 
         var storeRepo = new StoreRepositorie()

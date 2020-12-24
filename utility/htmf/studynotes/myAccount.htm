@@ -1,5 +1,5 @@
-
 <html>
+
 <head>
     <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
@@ -32,9 +32,10 @@
     <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
     <style>
-        body{
+        body {
             font-size: larger;
         }
+
         .editor_state_max {
             z-index: 999999;
             position: absolute;
@@ -58,32 +59,63 @@
             white-space: nowrap;
         }
 
-        input {
+        textarea {
             width: 100%;
+        }
+
+        .hili {
+            background-color: red;
+        }
+        #help{
+            float: right;
+        }
+        #helpInfo{
+            display: none;
         }
     </style>
 </head>
 
 <body>
+    
+
 
     <form action="" method="post">
         <label for="editor1">
-            Repository
+            Repository <a id="help" onclick="$('#helpInfo').toggle('slow');">help?</a>
         </label>
-        <input id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></input>
+        <div id="helpInfo">
+            <p>
+                To get a repository:
+            </p>
+            <ol>
+                <li>
+                    register account in <a href="https://github.com/">github.com</a>
+                </li>
+                <li>
+                    create a New repository to get copy of HTTPS url)
+                </li>
+            </ol>
+        </div>
+        <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></textarea>
         <label for="editor1">
-            Passcode
+            Password
         </label>
-        <input id="passcode" value="3edcFDSA"></input>
+        <input id="passcode" value=""></input>
     </form>
-    <button onclick="run();">Submit</button>
-
-
+    <p>
+        <button onclick="repo_create();">create</button>
+        <button onclick="repo_destroy();">destroy</button>
+        <button onclick="repo_histroy();">histroy</button>
+        <button onclick="RemoveInHistory();">RemoveInHistory</button>
+    
+    
+    </p>
+    
 
 
     <div id="footer">
         <hr>
-        <textarea id="txa" cols="100" , rows="25"></textarea>
+        <textarea id="txtarea" cols="100" , rows="25"></textarea>
     </div>
 
 
@@ -91,17 +123,63 @@
 
 
     <script>
-        function run() {
+        function repo_create() {
             var pname = $("#repository").val()
             var pcode = $("#passcode").val()
+            MyStorage.Repositories().add({ repository: pname, passcode: pcode })
+
             Jsonpster.inp.usr.repository = pname;
             Jsonpster.inp.usr.passcode = pcode;
-            Jsonpster.api = RestApi.ApiAccout_setup_usr.str
+            Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
                 window.opener.postMessage(Jsonpster.inp.usr, '*');
                 dbg_pster(ret)
             })
+        }
+        function repo_destroy() {
+            var pname = $("#repository").val()
+            var pcode = $("#passcode").val()
+            Jsonpster.inp.usr.repository = pname;
+            Jsonpster.inp.usr.passcode = pcode;
+            Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                dbg_pster(ret)
+            })
+        }
+        function repo_histroy() {
+            var ar = MyStorage.Repositories().get()
+            var stb = "<table id='account_history_table' border='1'><caption>History</caption>"
+            for (var i = 0; i < ar.length; i++) {
+                stb += `<tr><td>${i}</td>`
+                Object.keys(ar[i]).forEach(function (key) {
+                    stb += `<td>${ar[i][key]}</td>`
+                })
+                stb += "</tr>"
+            }
+            stb += "</table>"
+            $("#footer").find("#account_history_table").remove()
+            $("#footer").prepend(stb).find("tr").bind("click", function () {
+                var rep = $(this).find("td:eq(1)").text()
+                var pws = $(this).find("td:eq(2)").text()
+                var pname = $("#repository").val(rep)
+                var pcode = $("#passcode").val(pws)
+                $("tr.hili").removeClass("hili")
+                $(this).addClass("hili")
+
+            })
+        }
+        function RemoveInHistory() {
+            var rep = $(".hili").find("td:eq(1)").text()
+            var pws = $(".hili").find("td:eq(2)").text()
+
+            var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
+            if (ret) {
+                MyStorage.Repositories().del({ repository: rep, passcode: pws })
+                $(".hili").remove()
+            }
         }
     </script>
 </body>
@@ -112,11 +190,11 @@
     function dbg_pster(dat) {
         var ss = dat
         if ("object" === typeof dat) {
-            var ss = "ret=" + JSON.stringify(dat,null,4)
+            var ss = "ret=" + JSON.stringify(dat, null, 4)
         }
         ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
         ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
-        $("#txa").val(ss)
+        $("#txtarea").val(ss)
     }
     setTimeout(() => {
         if (undefined === Jsonpster) {
