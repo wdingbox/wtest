@@ -59,7 +59,7 @@ var MyStorage = {
         } else {//get
             var ar = repos_store_get()
             repos_ui_set(ar[0])
-            Uti.Msg("Repository:get=", obj)
+            Uti.Msg("Repository:get=", ar)
             return ar[0]
         }
     },
