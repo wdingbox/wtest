@@ -374,7 +374,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
         console.log("failed git setup", inp.out.desc)
         return inp
     }
-    inp.out.desc="setup start"
+    inp.out.desc="setup start."
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
@@ -382,7 +382,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
 #!/bin/sh
 cd ${this.m_rootDir}
 ##  echo ${password} | sudo -S mkdir -p ${proj.git_dir}
-echo ${password} | sudo -S git clone  ${inp.usr.repository}  ${proj.git_dir}
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${inp.usr.repository}  ${proj.git_dir}
 echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 echo " git_setup_cmd end."
 #cd -`
@@ -403,6 +403,11 @@ echo " cp_template_cmd end."
         inp.out.git_setup_cmd = git_setup_cmd
         inp.out.desc += "clone git dir: " + gitdir
         this.git_proj_config_update()
+    }
+
+    if (!fs.existsSync(`${gitdir}`)) {
+        inp.out.desc += ", invalide git repo: "
+        return inp
     }
 
     var accdir = this.get_usr_myoj_dir()
