@@ -51,12 +51,13 @@
                 background-color: red;
             }
 
-            #help {
+            .help_label {
                 float: right;
             }
 
-            #helpInfo {
+            .helpinfo {
                 display: none;
+                margin-left: 50px;
             }
         </style>
 </head>
@@ -67,9 +68,9 @@
 
     <form action="" method="post">
         <div>
-            Repository <a id="help" onclick="$('#helpInfo').toggle('slow');">help?</a>
+            Repository <a class="help_label" onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
         </div>
-        <div id="helpInfo">
+        <div class="helpinfo Repository" id="help_Repository">
             <p>
                 To get a repository:
             </p>
@@ -84,8 +85,21 @@
         </div>
         <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></textarea>
         <label for="editor1">
-            Password
+            Password (optional: for private or owner only) <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
         </label>
+        <div class="helpinfo Password">
+            <p>
+                The passwod is required if the repository 
+            </p>
+            <ol>
+                <li>
+                     is private or
+                </li>
+                <li>
+                    owns data (push data back to repository from server).
+                </li>
+            </ol>
+        </div>
         <input id="passcode" value=""></input>
     </form>
     <p>
