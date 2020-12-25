@@ -557,9 +557,9 @@ PopupMenu_EdiTag.prototype.init = function () {
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret)
-            Uti.Msg(ret.out.result)
-            if (ret.out.result.indexOf("success") > 0) {
-                _THIS.m_ediBtn.enable_edit(false, true)
+            Uti.Msg(ret.out)
+            _THIS.m_ediBtn.enable_edit(false, true)
+            if (ret.out.desc.indexOf("success") > 0) {
             }
         })
     })
@@ -1821,6 +1821,13 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("body").find("#account_history_table").remove()
         $("body").prepend(stb)
     })
+    $("#passcode_toggler").bind("click", function () {
+        var tx = $("#passcode").attr("type")
+        console.log(tx, btoa(tx), atob(btoa(tx)))
+        if (tx === "password") tx = "text"
+        else tx = "password"
+        $("#passcode").attr("type", tx)
+    })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
     if (!sid) sid = "Keyboard"
@@ -3066,8 +3073,8 @@ var BibleInputMenuContainer = `
                             <a id="account_opner">help</a> |
                             <br>
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
-                            <br>passcode<br>
-                            <input id="passcode" value='3edcFDSA'></input><br>
+                            <br><a id="passcode_toggler">passcode</a><br>
+                            <input id="passcode" type="password" value='3edcFDSA'></input><br>
                             <button id="account_set">set</button>
                             <a id="account_set_info"></a>
                             </td>

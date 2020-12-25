@@ -604,7 +604,6 @@ cd -
     BibleUti.exec_Cmd(cmd_commit).then(
         function(val){
             console.log("success:", val)
-
         },
         function(val){
             console.log("failure:", val)
