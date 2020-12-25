@@ -287,7 +287,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
             var projname = mat[2]
             return { username: username, projname: projname }
         }
-        inp.out.desc = "failed parse url:"+proj_url
+        inp.out.desc = "failed parse url:" + proj_url
         return null
     }
     var proj_url = inp.usr.repository
@@ -299,7 +299,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
         var gitDir = `${baseDir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
-       
+
         inp.usr.proj.baseDir = baseDir
         inp.usr.proj.git_dir = `${gitDir}`
         inp.usr.proj.acct_dir = `${rw_Dir}`
@@ -307,23 +307,26 @@ UserProject.prototype.git_proj_parse = function (inp) {
 
         console.log("inp.usr.proj=", inp.usr.proj)
 
-        inp.usr.proj.github_sNewUrl = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
+        inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
     }
 
     return inp.usr.proj
 }
 UserProject.prototype.get_usr_rw_dir = function (res) {
-    if(!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr.proj) return ""
     return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
 }
 UserProject.prototype.get_usr_myoj_dir = function (res) {
-    if(!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr.proj) return ""
     return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}`
 }
 
-UserProject.prototype.get_usr_git_dir = function (res) {
-    if(!this.m_inp.usr.proj) return ""
-    return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
+UserProject.prototype.get_usr_git_dir = function (subpath) {
+    if (!this.m_inp.usr.proj) return ""
+    if(undefined === subpath || null === subpath){
+        return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
+    }
+    return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}${subpath}`
 }
 UserProject.prototype.get_jsfname = function (RevCode) {
     var inp = this.m_inp
@@ -374,7 +377,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
         console.log("failed git setup", inp.out.desc)
         return inp
     }
-    inp.out.desc="setup start."
+    inp.out.desc = "setup start."
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
@@ -402,7 +405,7 @@ echo " cp_template_cmd end."
         inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
         inp.out.git_setup_cmd = git_setup_cmd
         inp.out.desc += "clone git dir: " + gitdir
-        this.git_proj_config_update()
+        this.git_config_allow_push(true)
     }
 
     if (!fs.existsSync(`${gitdir}`)) {
@@ -429,7 +432,7 @@ echo " cp_template_cmd end."
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
     inp.out.state = { desc: "status:", bOk: 0 }
-    var gitdir = this.get_usr_git_dir()
+    var gitdir = this.get_usr_git_dir("/.git")
     if (fs.existsSync(gitdir)) {
         inp.out.state.desc += "bGitDir=1,"
     } else {
@@ -445,7 +448,7 @@ UserProject.prototype.git_proj_status = function () {
     }
     return inp
 }
-UserProject.prototype.git_proj_config_update = function () {
+UserProject.prototype.git_config_allow_push = function (bAllowPush) {
 
     /****
     [core]
@@ -467,15 +470,15 @@ UserProject.prototype.git_proj_config_update = function () {
     //https://github.com/wdingbox:passcode@/bible_obj_weid.git
 
 
-    if(!this.m_inp.usr.proj) return ""
-    var git_config_fname = `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}/.git/config`
+    if (!this.m_inp.usr.proj) return ""
+    var git_config_fname = `${this.get_usr_git_dir()}/.git/config`
     console.log("git config:", git_config_fname)
 
     if (fs.existsSync(git_config_fname)) {
         var txt = fs.readFileSync(git_config_fname, "utf8")
         console.log("old:", this.m_inp.usr.repository)
-        console.log("new:", this.m_inp.usr.proj.github_sNewUrl)
-        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.github_sNewUrl)
+        console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
@@ -519,8 +522,8 @@ cd -
 }
 UserProject.prototype.git_push = function () {
     this.git_proj_status()
-    if(!this.m_inp.out.state.bOk){
-        this.m_inp.out.state.desc+=",cannot push."
+    if (!this.m_inp.out.state.bOk) {
+        this.m_inp.out.state.desc += ",cannot push."
         return null
     }
 }
@@ -784,10 +787,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
         console.log("inp is ", inp)
         userProject.git_proj_parse(inp)
-        if(!inp.usr.passcode){
-            inp.usr.state ="passcode is empty. cannot push."
-            inp.usr.state.bReady = false.
-        }else{
+        if (!inp.usr.passcode) {
+            inp.usr.state = "passcode is empty. cannot push."
+            inp.usr.state.bReady = false
+        } else {
             userProject.git_push()
         }
         var sret = JSON.stringify(inp, null, 4)
