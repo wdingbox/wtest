@@ -1774,7 +1774,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#NewPage").attr("href", window.location.href)
 
 
-    $("#account_opner").bind("click", function () {
+    $("#account_helper").bind("click", function () {
         const urlParams = new URLSearchParams(window.location.search);
         ip = urlParams.get('ip');
         window.open("./myAccount.htm?ip=" + ip)
@@ -3069,8 +3069,8 @@ var BibleInputMenuContainer = `
                             <td>
                             <a>respositroy</a>:
                             <a id="account_destroy">destroy</a> | 
-                            <a id="account_history">history</a> |
-                            <a id="account_opner">help</a> |
+                    
+                            <a id="account_helper">help</a>
                             <br>
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
                             <br><a id="passcode_toggler">passcode</a><br>
