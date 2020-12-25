@@ -505,6 +505,31 @@ cd -
 `
     return cmd
 }
+UserProject.prototype.get_git_cmd_push = function () {
+    password = "lll" //dev mac
+    var cmd = `
+#!/bin/sh
+cd  ${this.get_usr_git_dir()}
+echo ${password} | sudo -S git status
+echo ${password} | sudo -S git push
+echo ${password} | sudo -S git status
+cd -
+`
+    return cmd
+}
+UserProject.prototype.git_push = function () {
+    this.git_proj_status()
+    if(!this.m_inp.out.state.bOk){
+        this.m_inp.out.state.desc+=",cannot push."
+        return null
+    }
+}
+
+
+
+
+
+
 var userProject = new UserProject()
 
 
@@ -678,7 +703,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
+
+
+
+
+
+
+
     ///////////////////////////////////
+
     ApiUsrReposData_create_async: function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
@@ -731,6 +764,32 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         inp = userProject.git_proj_status()
 
+        var sret = JSON.stringify(inp, null, 4)
+
+        console.log("oup is ", inp.out)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
+        res.end();
+    },
+
+    ApiUsrReposData_git_push_async: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+    },
+    ApiUsrReposData_git_push: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+        var inp = BibleUti.GetApiInputParamObj(req)
+        console.log("inp is ", inp)
+        userProject.git_proj_parse(inp)
+        if(!inp.usr.passcode){
+            inp.usr.state ="passcode is empty. cannot push."
+            inp.usr.state.bReady = false.
+        }else{
+            userProject.git_push()
+        }
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
