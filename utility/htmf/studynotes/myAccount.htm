@@ -103,9 +103,10 @@
         <input id="passcode" value=""></input>
     </form>
     <p>
-        <button onclick="repo_status();">CheckStatus</button>
-        <button onclick="repo_create();">create</button>
-        <button onclick="repo_destroy();">destroy</button>
+        <button onclick="repo_status();">Status</button>
+        <button onclick="repo_create();">Create</button>
+        <button onclick="repo_destroy();">Destroy</button>
+        <button onclick="repo_pushback();">Pushback</button>
         <button onclick="repo_histroy();">histroy</button>
         <button onclick="RemoveInHistory();">RemoveInHistory</button>
 
@@ -125,13 +126,11 @@
 
 
     <script>
-        function repo_create() {
-            var pname = $("#repository").val()
-            var pcode = $("#passcode").val()
-            MyStorage.Repositories().add({ repository: pname, passcode: pcode })
+        function set_usr(Jsonpster){
 
-            Jsonpster.inp.usr.repository = pname;
-            Jsonpster.inp.usr.passcode = pcode;
+        }
+        function repo_create() {
+            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -140,10 +139,7 @@
             })
         }
         function repo_destroy() {
-            var pname = $("#repository").val()
-            var pcode = $("#passcode").val()
-            Jsonpster.inp.usr.repository = pname;
-            Jsonpster.inp.usr.passcode = pcode;
+            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -152,11 +148,18 @@
             })
         }
         function repo_status() {
-            var pname = $("#repository").val()
-            var pcode = $("#passcode").val()
-            Jsonpster.inp.usr.repository = pname;
-            Jsonpster.inp.usr.passcode = pcode;
+            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                dbg_pster(ret)
+                Uti.Msg("Status:", ret.out)
+            })
+        }
+        function repo_pushback(){
+            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.api = RestApi.ApiUsrReposData_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
                 window.opener.postMessage(Jsonpster.inp.usr, '*');
