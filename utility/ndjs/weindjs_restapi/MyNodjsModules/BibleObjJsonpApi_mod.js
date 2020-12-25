@@ -382,6 +382,7 @@ echo " git_setup_cmd end."
     return inp
 }
 UserProject.prototype.git_clone = async function (res) {
+    var _THIS = this
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -417,20 +418,33 @@ echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 echo " git_clone_cmd end."
 #cd -`
 
-    inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
+    //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
+    function _update_inp_out_git_clone_res(msg){
+        var res = _THIS.m_inp.out.git_clone_res
+        res.msg = msg
+        if (fs.existsSync(gitdir)) {
+            res.bExist = true
+        }
+        var myojdir = _THIS.get_usr_myoj_dir()
+        if (fs.existsSync(myojdir)) {
+            res.desc += ", with data."
+            res.bGitDat = true
+        }else{
+            res.desc += ", empty git data."
+            res.bGitDat = false
+        }
+    }
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     inp.out.git_clone_res.git_clone_cmd_result = await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
-            if (fs.existsSync(gitdir)) {
-                inp.out.git_clone_res.desc += ", clone success."
-                inp.out.git_clone_res.bExist = true
-            }
+            console.log("success:",val)
+            inp.out.git_clone_res.desc += ", clone success."
+            _update_inp_out_git_clone_res(val)
             //this.git_config_allow_push(true)
         }, function (val) {
-            if (!fs.existsSync(`${gitdir}`)) {
-                inp.out.git_clone_res.desc += ", clone failed."
-                inp.out.git_clone_res.bExist = false
-            }
+            inp.out.git_clone_res.desc += ", clone success."
+            console.log("failure:",val)
+            _update_inp_out_git_clone_res(val)
         })
     return inp
 }
@@ -479,15 +493,22 @@ UserProject.prototype.change_perm_cmd = async function (dir) {
         console.log("failed git setup", inp.out.desc)
         return inp
     }
-
+    console.log("perm:", dir)
     if (!fs.existsSync(dir)) {
         return inp
     }
     var password = "lll"
-    console.log("existing accdir=", dir)
-    inp.out.desc += ";git alreadt has oj: " + dir
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
-    inp.out.change_perm_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd)
+    inp.out.change_perm={}
+   
+    inp.out.change_perm_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd).then(
+        function(val){
+            inp.out.change_perm.success = val
+        },
+        function(val){
+            inp.out.change_perm.failure = val
+        }
+    )
 
     return inp
 }
