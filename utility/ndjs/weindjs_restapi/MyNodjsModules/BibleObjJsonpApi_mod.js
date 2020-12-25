@@ -25,14 +25,23 @@ var BibleUti = {
                 //command = "ls"
                 console.log('cmd:', command)
                 exec(command, (err, stdout, stderr) => {
+                    console.log('exec_Cmd err ', err)
+                    console.log('exec_Cmd output ', stdout)
+                    console.log('exec_Cmd stderr ', stderr)
                     if (err) {
                         //some err occurred
                         console.error(err);
                         reject(err);
                     } else {
                         // the *entire* stdout and stderr (buffered)
-                        console.log('cmd output ', stdout)
-                        resolve(stdout);
+
+                        //resolve(stdout);
+                        resolve(resolve({
+                            stdout: (stdout),
+                            stderr: stderr,
+                            err: err
+                            //stderr: stderr 
+                        }))
                     }
                 });
             } catch (err) {
@@ -295,7 +304,7 @@ UserProject.prototype.git_proj_parse = function (inp) {
 
     inp.usr.proj = _parse_proj_url(proj_url)
     if (inp.usr.proj) {
-        const baseDir = "bible_usrs_dat/usrs"
+        const baseDir = "bible_study_notes/usrs"
         var gitDir = `${baseDir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
@@ -307,12 +316,15 @@ UserProject.prototype.git_proj_parse = function (inp) {
 
         console.log("inp.usr.proj=", inp.usr.proj)
 
-        inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
+        inp.usr.proj.git_Usr_Pwd_Url = ""
+        if (inp.usr.passcode.trim().length > 0) {
+            inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
+        }
     }
 
     return inp.usr.proj
 }
-UserProject.prototype.get_usr_rw_dir = function (res) {
+UserProject.prototype.get_usr_acct_dir = function (res) {
     if (!this.m_inp.usr.proj) return ""
     return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
 }
@@ -323,7 +335,7 @@ UserProject.prototype.get_usr_myoj_dir = function (res) {
 
 UserProject.prototype.get_usr_git_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
-    if(undefined === subpath || null === subpath){
+    if (undefined === subpath || null === subpath) {
         return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
     }
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}${subpath}`
@@ -369,7 +381,60 @@ echo " git_setup_cmd end."
     }
     return inp
 }
-UserProject.prototype.git_proj_setup = async function (res) {
+UserProject.prototype.git_clone = async function (res) {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed-git-parse", inp.out.desc)
+        return inp
+    }
+
+    inp.out.git_clone_res = { desc: "git-clone", bExist: false }
+    var gitdir = this.get_usr_git_dir("/.git")
+    if (fs.existsSync(gitdir)) {
+        inp.out.git_clone_res.desc += ",already done."
+        inp.out.git_clone_res.bExist = true
+        return inp
+    }
+
+    var clone_https = inp.usr.proj.git_Usr_Pwd_Url
+    if (clone_https.length === 0) {
+        clone_https = inp.usr.repository
+    }
+    if (clone_https.length === 0) {
+        inp.out.git_clone_res.desc += ",no url."
+        return inp
+    }
+
+    //console.log("proj", proj)
+    var password = "lll" //dev mac
+    var git_clone_cmd = `
+#!/bin/sh
+cd ${this.m_rootDir}
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_dir}
+echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+echo " git_clone_cmd end."
+#cd -`
+
+    inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
+    inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
+    inp.out.git_clone_res.git_clone_cmd_result = await BibleUti.exec_Cmd(git_clone_cmd).then(
+        function(val){
+        if (fs.existsSync(`${gitdir}`)) {
+            inp.out.git_clone_res.desc += ", clone success."
+            inp.out.git_clone_res.bExist = true
+        }
+        //this.git_config_allow_push(true)
+    },function(val){
+        if (!fs.existsSync(`${gitdir}`)) {
+            inp.out.git_clone_res.desc += ", clone failed."
+            inp.out.git_clone_res.bExist = false
+        }
+    })
+    return inp
+}
+UserProject.prototype.cp_template_to_git = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -377,19 +442,16 @@ UserProject.prototype.git_proj_setup = async function (res) {
         console.log("failed git setup", inp.out.desc)
         return inp
     }
-    inp.out.desc = "setup start."
+    inp.out.desc += ",clone."
+
+    var gitdir = this.get_usr_myoj_dir()
+    if (fs.existsSync(`${gitdir}`)) {
+        inp.out.desc += ", usr acct already exist: "
+        return inp
+    }
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
-    var git_setup_cmd = `
-#!/bin/sh
-cd ${this.m_rootDir}
-##  echo ${password} | sudo -S mkdir -p ${proj.git_dir}
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${inp.usr.repository}  ${proj.git_dir}
-echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
-echo " git_setup_cmd end."
-#cd -`
-
     var cp_template_cmd = `
 #!/bin/sh
 cd ${this.m_rootDir}
@@ -400,52 +462,71 @@ echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
 #cd -`
 
-    var gitdir = this.get_usr_git_dir()
-    if (!fs.existsSync(`${gitdir}`)) {
-        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
-        inp.out.git_setup_cmd = git_setup_cmd
-        inp.out.desc += "clone git dir: " + gitdir
-        this.git_config_allow_push(true)
-    }
+    inp.out.cp_template_cmd = cp_template_cmd
+    console.log("cp_template_cmd", cp_template_cmd)
+    inp.out.cp_template_cmd_result = await BibleUti.exec_Cmd(cp_template_cmd)
 
     if (!fs.existsSync(`${gitdir}`)) {
-        inp.out.desc += ", invalide git repo: "
+        inp.out.desc += ", cp failed: "
+    }
+    return inp
+}
+UserProject.prototype.change_perm_cmd = async function (dir) {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed git setup", inp.out.desc)
         return inp
     }
 
-    var accdir = this.get_usr_myoj_dir()
-    console.log("accdir=", accdir)
-    if (fs.existsSync(`${accdir}`)) {
-        console.log("existing accdir=", accdir)
-        inp.out.desc += ";git alreadt has oj: " + accdir
-        change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${this.m_rootDir}${proj.acct_dir}`
-        inp.out.cp_template_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd)
-    } else {
-        inp.out.desc += "git has no dat: " + accdir
-        inp.out.cp_template_cmd = cp_template_cmd
-        console.log("cp_template_cmd", cp_template_cmd)
-        inp.out.cp_template_cmd_result = await BibleUti.exec_Cmd(cp_template_cmd)
-        inp.out.desc += "cp oj to git: " + accdir
+    if (!fs.existsSync(dir)) {
+        return inp
     }
+    var password="lll"
+    console.log("existing accdir=", dir)
+    inp.out.desc += ";git alreadt has oj: " + dir
+    var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
+    inp.out.change_perm_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd)
+
+    return inp
+}
+UserProject.prototype.git_proj_setup = async function (res) {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed git setup", inp.out.desc)
+        return inp
+    }
+    inp.out.desc = "setup start."
+    await this.git_clone()
+    var gitdir = this.get_usr_git_dir("/.git")
+    if (!fs.existsSync(gitdir)) {
+        inp.out.git_clone_res.bExist = false
+        return inp
+    }
+    if (!inp.out.git_clone_res.bExist) return inp
+
+    await this.cp_template_to_git()
+
+    var accdir = this.get_usr_acct_dir()
+    await this.change_perm_cmd(accdir)
     return inp
 }
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
-    inp.out.state = { desc: "status:", bOk: 0 }
+    inp.out.state = { bGitDir:0, bMyojDir:0,  bOk: 0 }
     var gitdir = this.get_usr_git_dir("/.git")
     if (fs.existsSync(gitdir)) {
-        inp.out.state.desc += "bGitDir=1,"
-    } else {
-        inp.out.state.desc += "bGitDir=0,"
-    }
+        inp.out.state.bGitDir = 1
+    } 
 
     var accdir = this.get_usr_myoj_dir()
     if (fs.existsSync(accdir)) {
-        inp.out.state.desc += "bAcctDir=1. OK ready"
-        inp.out.state.bOk = 1
-    } else {
-        inp.out.state.desc += "bAcctDir=0. unready"
-    }
+        inp.out.state.bMyojDir = 1
+    } 
+    inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
     return inp
 }
 UserProject.prototype.git_config_allow_push = function (bAllowPush) {
@@ -470,17 +551,22 @@ UserProject.prototype.git_config_allow_push = function (bAllowPush) {
     //https://github.com/wdingbox:passcode@/bible_obj_weid.git
 
 
-    if (!this.m_inp.usr.proj) return ""
-    var git_config_fname = `${this.get_usr_git_dir()}/.git/config`
+    if (!this.m_inp.usr.proj) return
+    var git_config_fname = this.get_usr_git_dir("/.git/config")
     console.log("git config:", git_config_fname)
-
-    if (fs.existsSync(git_config_fname)) {
-        var txt = fs.readFileSync(git_config_fname, "utf8")
-        console.log("old:", this.m_inp.usr.repository)
-        console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        fs.writeFileSync(git_config_fname, txt, "utf8")
+    if (!fs.existsSync(git_config_fname)) {
+        return
     }
+
+    var txt = fs.readFileSync(git_config_fname, "utf8")
+    console.log("old:", this.m_inp.usr.repository)
+    console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    if (bAllowPush) {
+        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    } else {
+        txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repository)
+    }
+    fs.writeFileSync(git_config_fname, txt, "utf8")
 }
 UserProject.prototype.get_cmd_git_push_after_wrtie = function () {
     password = "lll" //dev mac
