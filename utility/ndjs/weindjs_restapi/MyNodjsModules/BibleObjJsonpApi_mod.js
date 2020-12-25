@@ -420,18 +420,18 @@ echo " git_clone_cmd end."
     inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     inp.out.git_clone_res.git_clone_cmd_result = await BibleUti.exec_Cmd(git_clone_cmd).then(
-        function(val){
-        if (fs.existsSync(`${gitdir}`)) {
-            inp.out.git_clone_res.desc += ", clone success."
-            inp.out.git_clone_res.bExist = true
-        }
-        //this.git_config_allow_push(true)
-    },function(val){
-        if (!fs.existsSync(`${gitdir}`)) {
-            inp.out.git_clone_res.desc += ", clone failed."
-            inp.out.git_clone_res.bExist = false
-        }
-    })
+        function (val) {
+            if (fs.existsSync(gitdir)) {
+                inp.out.git_clone_res.desc += ", clone success."
+                inp.out.git_clone_res.bExist = true
+            }
+            //this.git_config_allow_push(true)
+        }, function (val) {
+            if (!fs.existsSync(`${gitdir}`)) {
+                inp.out.git_clone_res.desc += ", clone failed."
+                inp.out.git_clone_res.bExist = false
+            }
+        })
     return inp
 }
 UserProject.prototype.cp_template_to_git = async function (res) {
@@ -483,7 +483,7 @@ UserProject.prototype.change_perm_cmd = async function (dir) {
     if (!fs.existsSync(dir)) {
         return inp
     }
-    var password="lll"
+    var password = "lll"
     console.log("existing accdir=", dir)
     inp.out.desc += ";git alreadt has oj: " + dir
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
@@ -516,16 +516,16 @@ UserProject.prototype.git_proj_setup = async function (res) {
 }
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
-    inp.out.state = { bGitDir:0, bMyojDir:0,  bOk: 0 }
+    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
     var gitdir = this.get_usr_git_dir("/.git")
     if (fs.existsSync(gitdir)) {
         inp.out.state.bGitDir = 1
-    } 
+    }
 
     var accdir = this.get_usr_myoj_dir()
     if (fs.existsSync(accdir)) {
         inp.out.state.bMyojDir = 1
-    } 
+    }
     inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
     return inp
 }
