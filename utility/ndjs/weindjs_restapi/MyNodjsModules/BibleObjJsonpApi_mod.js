@@ -227,9 +227,9 @@ var BibleUti = {
 
     Write2vrs_txt: function (inp, bWrite) {
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            var trn = inp.par.fnames[0]
-            inp.out.desc += trn
-            var jsfname = userProject.get_jsfname(trn)
+            var doc = inp.par.fnames[0]
+            inp.out.desc += doc
+            var jsfname = userProject.get_jsfname(doc)
             var bib = BibleUti.load_BibleObj_by_fname(jsfname);
             inp.out.m_fname = bib.fname
             inp.bio = bib
@@ -241,7 +241,7 @@ var BibleUti = {
                         console.log("vrsObj", vrsObj)
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
                             var readtxt = bib.obj[bkc][chp][vrs]
-                            inp.out.data = { bcv: `${trn}~${bkc}${chp}:${vrs}`, txt: readtxt }
+                            inp.out.data = { dbcv: `${doc}~${bkc}${chp}:${vrs}`, txt: readtxt }
                             console.log("origtxt", readtxt)
 
                             if (bWrite) {
@@ -419,7 +419,7 @@ echo " git_clone_cmd end."
 #cd -`
 
     //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
-    function _update_inp_out_git_clone_res(msg){
+    function _update_inp_out_git_clone_res(msg) {
         var res = _THIS.m_inp.out.git_clone_res
         res.msg = msg
         if (fs.existsSync(gitdir)) {
@@ -429,7 +429,7 @@ echo " git_clone_cmd end."
         if (fs.existsSync(myojdir)) {
             res.desc += ", with data."
             res.bGitDat = true
-        }else{
+        } else {
             res.desc += ", empty git data."
             res.bGitDat = false
         }
@@ -437,13 +437,13 @@ echo " git_clone_cmd end."
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     inp.out.git_clone_res.git_clone_cmd_result = await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
-            console.log("success:",val)
+            console.log("success:", val)
             inp.out.git_clone_res.desc += ", clone success."
             _update_inp_out_git_clone_res(val)
             //this.git_config_allow_push(true)
         }, function (val) {
             inp.out.git_clone_res.desc += ", clone success."
-            console.log("failure:",val)
+            console.log("failure:", val)
             _update_inp_out_git_clone_res(val)
         })
     return inp
@@ -499,13 +499,13 @@ UserProject.prototype.change_perm_cmd = async function (dir) {
     }
     var password = "lll"
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
-    inp.out.change_perm={}
-   
+    inp.out.change_perm = {}
+
     inp.out.change_perm_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd).then(
-        function(val){
+        function (val) {
             inp.out.change_perm.success = val
         },
-        function(val){
+        function (val) {
             inp.out.change_perm.failure = val
         }
     )
@@ -589,19 +589,27 @@ UserProject.prototype.git_config_allow_push = function (bAllowPush) {
     }
     fs.writeFileSync(git_config_fname, txt, "utf8")
 }
-UserProject.prototype.get_cmd_git_push_after_wrtie = function () {
+UserProject.prototype.git_commit_after_wrtie = function (desc) {
     password = "lll" //dev mac
-    var cmd = `
+    var cmd_commit = `
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
 echo ${password} | sudo -S git diff
 echo ${password} | sudo -S git add *
-echo ${password} | sudo -S git commit -m "svr mac checkin"
-echo ${password} | sudo -S git push
+echo ${password} | sudo -S git commit -m "svr update ${desc}"
+######echo ${password} | sudo -S git push
 echo ${password} | sudo -S git status
 cd -
 `
-    return cmd
+    BibleUti.exec_Cmd(cmd_commit).then(
+        function(val){
+            console.log("success:", val)
+
+        },
+        function(val){
+            console.log("failure:", val)
+        }
+    )
 }
 UserProject.prototype.get_git_cmd_pull = function () {
     password = "lll" //dev mac
@@ -783,12 +791,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp = BibleUti.Write2vrs_txt(inp, true)
 
         console.log(inp.out.m_fname)
-        var cmdstr = userProject.get_cmd_git_push_after_wrtie()
-        inp.out.exec_git_result = BibleUti.exec_Cmd(cmdstr, res)
+        userProject.git_commit_after_wrtie(inp.out.data.dbcv)
 
         //console.log(inp)
-
-
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
