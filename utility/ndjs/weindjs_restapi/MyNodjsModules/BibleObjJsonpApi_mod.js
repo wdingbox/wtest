@@ -471,7 +471,7 @@ UserProject.prototype.cp_template_to_git = async function (res) {
 cd ${this.m_rootDir}
 echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
-echo ${password} | sudo -S cp -aR  ./bible_obj_lib/jsdb/UsrDataTemplate/myoj  ${proj.acct_dir}
+echo ${password} | sudo -S cp -aR  ${this.m_rootDir}/bible_obj_lib/jsdb/UsrDataTemplate/myoj  ${proj.acct_dir}
 echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
 echo " cp_template_cmd end."
 #cd -`
