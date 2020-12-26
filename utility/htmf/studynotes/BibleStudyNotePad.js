@@ -3035,7 +3035,7 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
 
-            <div class="GrpMenu" id="grp_Uti"  style="float:left;display:none;">
+            <div class="GrpMenu" id="grp_DevTool"  style="float:left;display:none;">
                 <button id="Check_bcv">Check(bcv)</button>
                 <a id="txtdiv"></a>
                 

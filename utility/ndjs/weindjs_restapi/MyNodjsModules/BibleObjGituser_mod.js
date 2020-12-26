@@ -100,7 +100,7 @@ var BibleUti = {
     },
 
     fetch_bcv: function (BibleObj, oj) {
-        console.log("fetch_bcv oj", JSON.stringify(oj, null, 4))
+        //console.log("fetch_bcv oj", JSON.stringify(oj, null, 4))
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
@@ -110,7 +110,7 @@ var BibleUti = {
                 continue
             }
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                console.log("bc", bkc, chp)
+                //console.log("bc", bkc, chp)
                 if (!vrsObj || Object.keys(vrsObj).length === 0) {
                     retOb[bkc][chp] = BibleObj[bkc][chp]
                     continue
@@ -279,7 +279,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         var mat = proj_url.match(reg)
         //console.log("mat", mat)
         if (mat) {
-            console.log(mat)
+            //console.log(mat)
             var username = mat[1]
             var projname = mat[2]
             return { username: username, projname: projname }
@@ -302,12 +302,11 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         inp.usr.proj.acct_dir = `${rw_Dir}`
         inp.usr.proj.dest_myoj = `${tarDir}`
 
-        console.log("inp.usr.proj=", inp.usr.proj)
-
         inp.usr.proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
             inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
         }
+        console.log("inp.usr.proj=", inp.usr.proj)
     }
 
     return inp.usr.proj
@@ -423,7 +422,7 @@ echo " git_clone_cmd end."
         }
     }
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
-    inp.out.git_clone_res.git_clone_cmd_result = await BibleUti.exec_Cmd(git_clone_cmd).then(
+    await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
             console.log("success:", val)
             inp.out.git_clone_res.desc += ", clone success."
@@ -489,7 +488,7 @@ BibleObjGituser.prototype.change_perm_cmd = async function (dir) {
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
     inp.out.change_perm = {}
 
-    inp.out.change_perm_cmd_result = await BibleUti.exec_Cmd(change_perm_cmd).then(
+    await BibleUti.exec_Cmd(change_perm_cmd).then(
         function (val) {
             inp.out.change_perm.success = val
         },

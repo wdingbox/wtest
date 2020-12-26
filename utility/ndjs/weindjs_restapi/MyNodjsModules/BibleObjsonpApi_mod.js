@@ -203,7 +203,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.GetApiInputParamObj(req)
-        console.log("inp is ", inp)
+    
         userProject.git_proj_parse(inp)
 
         inp = await userProject.git_proj_setup(res)
@@ -224,7 +224,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.GetApiInputParamObj(req)
-        console.log("inp is ", inp)
+
         userProject.git_proj_parse(inp)
 
         inp = await userProject.git_proj_destroy(res)
@@ -240,7 +240,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.GetApiInputParamObj(req)
-        console.log("inp is ", inp)
+
         userProject.git_proj_parse(inp)
 
         inp = userProject.git_proj_status()
@@ -263,7 +263,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.GetApiInputParamObj(req)
-        console.log("inp is ", inp)
+
         userProject.git_proj_parse(inp)
         if (!inp.usr.passcode) {
             inp.usr.state = "passcode is empty. cannot push."
