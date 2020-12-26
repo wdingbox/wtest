@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var url = require('url');
 
 
-var {BibleObjJsonpApi} = require("./MyNodjsModules/BibleObjJsonpApi_mod");
+var {BibleObjJsonpApi} = require("./MyNodjsModules/BibleObjsonpApi_mod");
 
 var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
 var BibDesk = require("./MyNodjsModules/BibDesk.module").BibDesk;
