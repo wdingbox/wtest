@@ -575,8 +575,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret.out.data)
             if (ret.out.desc.indexOf("success") > 0) {
                 if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
-                    var byes = confirm("difference: continue?")
-                    if (!byes) return
+                    var dlt = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev].length - ret.out.data.txt.length
+                    if (!confirm(`difference (${dlt}b): continue?`)) return
                 }
                 _THIS.m_ediBtn.enable_edit(false, true)
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
