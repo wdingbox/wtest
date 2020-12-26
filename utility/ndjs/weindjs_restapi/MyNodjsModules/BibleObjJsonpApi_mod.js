@@ -466,13 +466,13 @@ UserProject.prototype.cp_template_to_git = async function (res) {
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
+    var acctDir = this.get_usr_acct_dir()
     var cp_template_cmd = `
 #!/bin/sh
-cd ${this.m_rootDir}
-echo ${password} | sudo -S mkdir -p ${proj.acct_dir}
-echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
-echo ${password} | sudo -S cp -aR  ${this.m_rootDir}/bible_obj_lib/jsdb/UsrDataTemplate/myoj  ${proj.acct_dir}
-echo ${password} | sudo -S chmod -R 777 ${proj.acct_dir}
+echo ${password} | sudo -S mkdir -p ${acctDir}
+echo ${password} | sudo -S chmod -R 777 ${acctDir}
+echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj  ${acctDir}
+echo ${password} | sudo -S chmod -R 777 ${acctDir}
 echo " cp_template_cmd end."
 #cd -`
 
@@ -619,7 +619,7 @@ echo ${password} | sudo -S git pull
 echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
 echo ${password} | sudo -S git add *
 echo ${password} | sudo -S git commit -m "svr update ${desc}"
-echo ${password} | sudo -S git push
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
 echo ${password} | sudo -S git status
 cd -
 `
