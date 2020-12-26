@@ -523,6 +523,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     function _set_par_ediTxt() {
         var htmEdit = _THIS.m_ediDiv.getEditHtm()
+        if(htmEdit.length>=2000) alert(`lengh=${htmEdit.length} > max 2000.`)
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
         _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
 
@@ -3067,13 +3068,13 @@ var BibleInputMenuContainer = `
                             <td></td>
                             <td>usrData</td>
                             <td>
-                            <a>respositroy</a>:
-                            <a id="account_destroy">destroy</a> | 
+                            <a>Respositroy</a>:
+                            <a id="account_destroy"></a> 
                     
                             <a id="account_helper">help</a>
                             <br>
                             <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
-                            <br><a id="passcode_toggler">passcode</a><br>
+                            <br><a id="passcode_toggler">Passcode:</a><br>
                             <input id="passcode" type="password" value='3edcFDSA'></input><br>
                             <button id="account_set">set</button>
                             <a id="account_set_info"></a>

@@ -6,60 +6,61 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-        <link rel="stylesheet" hrefxxxxxxxxx="./BibleStudyNotePad.css?v=2020dec21b">
-        </link>
+    <link rel="stylesheet" hrefxxxxxxxxx="./BibleStudyNotePad.css?v=2020dec21b">
+    </link>
 
-        <!-------------------------------------------->
-        <!---- Insert this before scripts import; then restor back later -->
-        <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <!-------------------------------------------->
+    <!---- Insert this before scripts import; then restor back later -->
+    <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
 
-        <!-------------- jq --------------------->
-        <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
-        <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
-        <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
-            note="selfseversite"></script>
-        <!-------------- ckeditor only--------------------->
-        <script src="../../../assets/ckeditor/ckeditor.js"></script>
-        <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
-        <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
-
-
-        <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
-        <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
-        <!-------------------------------------------->
-        <!----- Insert this line after script imports -->
-        <script>//if (window.module) module = window.module;</script>
-        <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
-        <!-------------------------------------------->
-        <style>
-            body,table {
-                padding: 10px 10px 10px 10px;
-                margin: 10px 10px 10px 10px;
-                /*font-size:xx-large;*/
-            }
+    <!-------------- jq --------------------->
+    <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
+    <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
+        note="selfseversite"></script>
+    <!-------------- ckeditor only--------------------->
+    <script src="../../../assets/ckeditor/ckeditor.js"></script>
+    <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
+    <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
 
 
-            .white_space_nowrap {
-                white-space: nowrap;
-            }
+    <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
+    <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
+    <!-------------------------------------------->
+    <!----- Insert this line after script imports -->
+    <script>//if (window.module) module = window.module;</script>
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
+    <!-------------------------------------------->
+    <style>
+        body,
+        table {
+            padding: 10px 10px 10px 10px;
+            margin: 10px 10px 10px 10px;
+            /*font-size:xx-large;*/
+        }
 
-            textarea {
-                width: 100%;
-            }
 
-            .hili {
-                background-color: red;
-            }
+        .white_space_nowrap {
+            white-space: nowrap;
+        }
 
-            .help_label {
-                float: right;
-            }
+        textarea {
+            width: 100%;
+        }
 
-            .helpinfo {
-                display: none;
-                margin-left: 50px;
-            }
-        </style>
+        .hili {
+            background-color: red;
+        }
+
+        .help_label {
+            float: right;
+        }
+
+        .helpinfo {
+            display: none;
+            margin-left: 50px;
+        }
+    </style>
 </head>
 
 <body>
@@ -76,27 +77,31 @@
             </p>
             <ol>
                 <li>
-                    register account in <a href="https://github.com/">github.com</a>
+                    register an account in <a href="https://github.com/">github.com</a>
                 </li>
                 <li>
-                    create a New repository to get copy of HTTPS url)
+                    create a New repository (public is recommended)
+                </li>
+                <li>
+                    copy reposistory HTTPS url to paste into following input box.
                 </li>
             </ol>
         </div>
         <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"></textarea>
         <label for="editor1">
-            Password (optional: save data in your repos only) <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
+            Password (optional: for data saving in your repository only) <a class="help_label"
+                onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
         </label>
         <div class="helpinfo Password">
-            <p>
-                The passwod is required when
-            </p>
+            <a>
+                The passwod is required for
+            </a>
             <ol>
                 <li>
-                    updating data of any repository, or
+                    updating data of repository, or
                 </li>
                 <li>
-                    loading data from the private repository.
+                    loading data from private repository.
                 </li>
             </ol>
         </div>
@@ -107,6 +112,7 @@
         <button onclick="repo_create();">Create</button>
         <button onclick="repo_destroy();">Destroy</button>
         <button onclick="repo_pushback();">Pushback</button>
+        <br>
         <button onclick="repo_histroy();">histroy</button>
         <button onclick="RemoveInHistory();">RemoveInHistory</button>
 
@@ -126,7 +132,7 @@
 
 
     <script>
-        function set_usr(Jsonpster){
+        function set_usr(Jsonpster) {
 
         }
         function repo_create() {
@@ -157,7 +163,7 @@
                 Uti.Msg("Status:", ret.out)
             })
         }
-        function repo_pushback(){
+        function repo_pushback() {
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_push.str
             dbg_pster()
