@@ -216,39 +216,36 @@ var BibleUti = {
         return ret;
     },
 
-    Write2vrs_txt: function (inp, bWrite) {
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-            var doc = inp.par.fnames[0]
-            inp.out.desc += doc
-            var jsfname = userProject.get_jsfname(doc)
-            var bib = BibleUti.load_BibleObj_by_fname(jsfname);
-            inp.out.m_fname = bib.fname
-            inp.bio = bib
-            if (bib.fsize > 0) {
-                console.log("fsize:", bib.fsize)
-                for (const [bkc, chpObj] of Object.entries(inp.par.inpObj)) {
-                    console.log("chpObj", chpObj)
-                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        console.log("vrsObj", vrsObj)
-                        for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            var readtxt = bib.obj[bkc][chp][vrs]
-                            inp.out.data = { dbcv: `${doc}~${bkc}${chp}:${vrs}`, txt: readtxt }
-                            console.log("origtxt", readtxt)
+   
+    Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
+        var out = {}
+        var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+        out.m_fname = bib.fname
 
-                            if (bWrite) {
-                                console.log("newtxt", txt)
-                                bib.obj[bkc][chp][vrs] = txt
-                                bib.writeback();
-                                inp.out.desc += ":Write-success"
-                            } else {
-                                inp.out.desc += ":Read-success"
-                            }
+        if (bib.fsize > 0) {
+            console.log("fsize:", bib.fsize)
+            for (const [bkc, chpObj] of Object.entries(inpObj)) {
+                console.log("chpObj", chpObj)
+                for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                    console.log("vrsObj", vrsObj)
+                    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                        var readtxt = bib.obj[bkc][chp][vrs]
+                        out.data = { dbcv: `${doc}~${bkc}${chp}:${vrs}`, txt: readtxt }
+                        console.log("origtxt", readtxt)
+
+                        if (bWrite) {
+                            console.log("newtxt", txt)
+                            bib.obj[bkc][chp][vrs] = txt
+                            bib.writeback();
+                            out.desc += ":Write-success"
+                        } else {
+                            out.desc += ":Read-success"
                         }
                     }
                 }
             }
         }
-        return inp
+        return  out
     },
     //// BibleUti /////
 }
@@ -657,6 +654,6 @@ cd -
 
 module.exports = {
     BibleUti: BibleUti,
-    BibleObjGituser :BibleObjGituser
+    BibleObjGituser: BibleObjGituser
 }
 

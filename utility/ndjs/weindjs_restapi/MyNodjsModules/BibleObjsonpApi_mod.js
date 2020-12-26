@@ -9,7 +9,7 @@ const fsPromises = require("fs").promises;
 //var SvcUti = require("./SvcUti.module").SvcUti;
 //const exec = require('child_process').exec;
 
-const {BibleObjGituser, BibleUti} = require("./BibleObjGituser_mod")
+const { BibleObjGituser, BibleUti } = require("./BibleObjGituser_mod")
 
 
 var userProject = new BibleObjGituser()
@@ -150,14 +150,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
-        inp.out.desc = "Write?"
 
-        inp = BibleUti.Write2vrs_txt(inp, true)
+        //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+        var doc = inp.par.fnames[0]
+        var jsfname = userProject.get_jsfname(doc)
+        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
         console.log(inp.out.m_fname)
         userProject.git_add_commit_push(inp.out.data.dbcv)
 
-        //console.log(inp)
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
@@ -169,12 +170,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
-        inp.out.desc = "read:"
 
         userProject.git_pull()
 
-        inp = BibleUti.Write2vrs_txt(inp, false)
-
+        //inp = BibleUti.Write2vrs_txt(inp, false)
+        var doc = inp.par.fnames[0]
+        var jsfname = userProject.get_jsfname(doc)
+        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
+        
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
