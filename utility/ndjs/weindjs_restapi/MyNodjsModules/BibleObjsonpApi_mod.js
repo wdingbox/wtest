@@ -144,7 +144,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
-    ApiBibleObj_write_Usr_BkcChpVrs_txt: function (req, res) {
+    ApiBibleObj_write_Usr_BkcChpVrs_txt_asyn: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_search
+        }
+    },
+    ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
@@ -157,7 +162,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
 
-        userProject.git_add_commit_push(inp.out.data.dbcv)
+        await userProject.git_add_commit_push(inp.out.data.dbcv)
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -271,7 +276,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         userProject.git_proj_parse(inp)
 
-        userProject.git_add_commit_push("push all changes.")
+        await userProject.git_add_commit_push("push all changes.")
 
         var sret = JSON.stringify(inp, null, 4)
 

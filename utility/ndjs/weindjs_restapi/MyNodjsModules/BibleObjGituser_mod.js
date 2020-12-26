@@ -535,6 +535,7 @@ BibleObjGituser.prototype.git_proj_status = async function () {
 
         /////// git status
         var git_status_cmd = `
+        cd ${this.get_usr_git_dir()}
         git status
         git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
         inp.out.state.git_status = {}
@@ -609,7 +610,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
-BibleObjGituser.prototype.git_add_commit_push = function (desc) {
+BibleObjGituser.prototype.git_add_commit_push =async function (desc) {
 
     password = "lll" //dev mac
     var cmd_commit = `
@@ -624,15 +625,19 @@ echo ${password} | sudo -S git status
 cd -
 `
     var _THIS = this
+    var inp = this.m_inp
     this.git_config_allow_push(true)
-    BibleUti.exec_Cmd(cmd_commit).then(
+    inp.out.state_push = {}
+    await BibleUti.exec_Cmd(cmd_commit).then(
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
+            inp.out.state_push.success = val
         },
         function (val) {
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
+            inp.out.state_push.failure = val
         }
     )
 }
