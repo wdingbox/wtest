@@ -573,7 +573,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         Uti.Msg(Jsonpster)
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
-            if (ret.out.result.indexOf("success") > 0) {
+            if (ret.out.desc.indexOf("success") > 0) {
                 if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
                     var byes = confirm("difference: continue?")
                     if (!byes) return
