@@ -537,7 +537,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
 }
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0, conf: "" }
+    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0}
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         inp.out.state.bGitDir = 1
