@@ -156,7 +156,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var jsfname = userProject.get_jsfname(doc)
         inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
-        console.log(inp.out.m_fname)
+
         userProject.git_add_commit_push(inp.out.data.dbcv)
 
         var ss = JSON.stringify(inp)
@@ -177,7 +177,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var doc = inp.par.fnames[0]
         var jsfname = userProject.get_jsfname(doc)
         inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
-        
+
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + ss + ");");
@@ -203,7 +203,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.GetApiInputParamObj(req)
-    
+
         userProject.git_proj_parse(inp)
 
         inp = await userProject.git_proj_setup(res)
@@ -265,12 +265,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
 
         userProject.git_proj_parse(inp)
-        if (!inp.usr.passcode) {
-            inp.usr.state = "passcode is empty. cannot push."
-            inp.usr.state.bReady = false
-        } else {
-            userProject.git_add_commit_push()
-        }
+
+        userProject.git_add_commit_push("push all changes.")
+
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)

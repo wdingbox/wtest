@@ -98,26 +98,27 @@
             </a>
             <ol>
                 <li>
-                    updating data of repository, or
+                    push data into repository, or
                 </li>
                 <li>
-                    loading data from private repository.
+                    pull data from private repository.
                 </li>
             </ol>
+            <a>
+                The password can be used right before you manually push data into the repository.
+            </a>
         </div>
         <input id="passcode" value=""></input>
     </form>
     <p>
-        <button onclick="repo_status();">Status</button>
         <button onclick="repo_create();">Create</button>
         <button onclick="repo_destroy();">Destroy</button>
-        <button onclick="repo_pushback();">Pushback</button>
+        <button onclick="repo_pushback();">Push</button>
+        <button onclick="repo_status();">Status</button>
+        <button onclick="Okey_use_this();">OK,use this</button>
         <br>
         <button onclick="repo_histroy();">histroy</button>
         <button onclick="RemoveInHistory();">RemoveInHistory</button>
-
-
-
     </p>
 
 
@@ -132,15 +133,15 @@
 
 
     <script>
-        function set_usr(Jsonpster) {
-
+        function Okey_use_this(Jsonpster) {
+            window.opener.postMessage(Jsonpster.inp.usr, '*');
         }
         function repo_create() {
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                
                 dbg_pster(ret)
             })
         }
@@ -149,7 +150,7 @@
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                
                 dbg_pster(ret)
             })
         }
@@ -158,7 +159,7 @@
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                
                 dbg_pster(ret)
                 Uti.Msg("Status:", ret.out)
             })
@@ -168,7 +169,7 @@
             Jsonpster.api = RestApi.ApiUsrReposData_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                window.opener.postMessage(Jsonpster.inp.usr, '*');
+                
                 dbg_pster(ret)
                 Uti.Msg("Status:", ret.out)
             })
