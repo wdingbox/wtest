@@ -537,10 +537,14 @@ UserProject.prototype.git_proj_setup = async function (res) {
 }
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
-    var gitdir = this.get_usr_git_dir("/.git")
+    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0, conf: "" }
+    var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         inp.out.state.bGitDir = 1
+        var txt = fs.readFileSync(gitdir, "utf8")
+        var pos0 = txt.indexOf("[remote \"origin\"]")
+        var pos1 = txt.indexOf("[branch \"master\"]")
+        inp.out.state.conf = txt.substring(pos0, pos1)
     }
 
     var accdir = this.get_usr_myoj_dir()
