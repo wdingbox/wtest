@@ -552,7 +552,7 @@ UserProject.prototype.git_proj_status = function () {
 }
 UserProject.prototype.git_config_allow_push = function (bAllowPush) {
 
-    /****
+    /****.git/config
     [core]
             repositoryformatversion = 0
             filemode = true
@@ -574,39 +574,60 @@ UserProject.prototype.git_config_allow_push = function (bAllowPush) {
 
     if (!this.m_inp.usr.proj) return
     var git_config_fname = this.get_usr_git_dir("/.git/config")
-    console.log("git config:", git_config_fname)
     if (!fs.existsSync(git_config_fname)) {
+        console.log(".git/config not exist:", git_config_fname)
         return
     }
 
     var txt = fs.readFileSync(git_config_fname, "utf8")
+    console.log("bAllowPush", bAllowPush)
+    console.log("before:", txt)
     console.log("old:", this.m_inp.usr.repository)
     console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+
+    var bNeedWrite = false
     if (bAllowPush) {
-        txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        if (ipos > 0) {
+            txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+            bNeedWrite = true
+        }
     } else {
-        txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repository)
+        var ipos = txt.indexOf(this.m_inp.usr.proj.repository)
+        if (ipos > 0) {
+            txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repository)
+            bNeedWrite = true
+        }
     }
-    fs.writeFileSync(git_config_fname, txt, "utf8")
+    console.log("after:", txt)
+
+    if (bNeedWrite) {
+        fs.writeFileSync(git_config_fname, txt, "utf8")
+    }
 }
 UserProject.prototype.git_commit_after_wrtie = function (desc) {
+
     password = "lll" //dev mac
     var cmd_commit = `
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
-echo ${password} | sudo -S git diff
+echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
 echo ${password} | sudo -S git add *
 echo ${password} | sudo -S git commit -m "svr update ${desc}"
-######echo ${password} | sudo -S git push
+echo ${password} | sudo -S git push
 echo ${password} | sudo -S git status
 cd -
 `
+    var _THIS = this
+    this.git_config_allow_push(true)
     BibleUti.exec_Cmd(cmd_commit).then(
-        function(val){
+        function (val) {
             console.log("success:", val)
+            _THIS.git_config_allow_push(false)
         },
-        function(val){
+        function (val) {
             console.log("failure:", val)
+            _THIS.git_config_allow_push(false)
         }
     )
 }
