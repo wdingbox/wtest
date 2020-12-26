@@ -611,6 +611,7 @@ UserProject.prototype.git_commit_after_wrtie = function (desc) {
     var cmd_commit = `
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
+echo ${password} | sudo -S git pull
 echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
 echo ${password} | sudo -S git add *
 echo ${password} | sudo -S git commit -m "svr update ${desc}"
@@ -631,9 +632,9 @@ cd -
         }
     )
 }
-UserProject.prototype.get_git_cmd_pull = function () {
+UserProject.prototype.git_pull = function () {
     password = "lll" //dev mac
-    var cmd = `
+    var cmd_git_pull = `
 #!/bin/sh
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
@@ -641,7 +642,18 @@ echo ${password} | sudo -S git pull
 echo ${password} | sudo -S git status
 cd -
 `
-    return cmd
+    var _THIS = this
+    this.git_config_allow_push(true)
+    BibleUti.exec_Cmd(cmd_git_pull).then(
+        function (val) {
+            console.log("success:", val)
+            _THIS.git_config_allow_push(false)
+        },
+        function (val) {
+            console.log("failure:", val)
+            _THIS.git_config_allow_push(false)
+        }
+    )
 }
 UserProject.prototype.get_git_cmd_push = function () {
     password = "lll" //dev mac
@@ -827,8 +839,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.git_proj_parse(inp)
         inp.out.desc = "read:"
 
-        var cmdstr = userProject.get_git_cmd_pull()
-        inp.out.exec_git_result = BibleUti.exec_Cmd(cmdstr, res)
+        userProject.git_pull()
 
         inp = BibleUti.Write2vrs_txt(inp, false)
 
