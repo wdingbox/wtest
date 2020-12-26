@@ -609,7 +609,7 @@ UserProject.prototype.git_config_allow_push = function (bAllowPush) {
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
-UserProject.prototype.git_commit_after_wrtie = function (desc) {
+UserProject.prototype.git_add_commit_push = function (desc) {
 
     password = "lll" //dev mac
     var cmd_commit = `
@@ -827,7 +827,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp = BibleUti.Write2vrs_txt(inp, true)
 
         console.log(inp.out.m_fname)
-        userProject.git_commit_after_wrtie(inp.out.data.dbcv)
+        userProject.git_add_commit_push(inp.out.data.dbcv)
 
         //console.log(inp)
         var ss = JSON.stringify(inp)
