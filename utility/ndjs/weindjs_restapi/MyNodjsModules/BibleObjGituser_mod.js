@@ -54,15 +54,6 @@ var BibleUti = {
 
 
 
-    load_bibleObj_by_inp: function (inp) {
-        var proj = userProject.git_proj_parse(inp)
-        if (!proj) {
-            console.log("fatal error")
-            return null
-        }
-        var ret = BibleUti.load_BibleObj_by_fname(inp.usr.proj.dest_pfname)
-        return ret;
-    },
     load_BibleObj_by_fname: function (jsfnm) {
         var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", };
 
@@ -661,17 +652,6 @@ cd -
 
 
 
-
-
-
-
-//var userProject = new UserProject()
-
-
-
-
-
-//module.exports.UserProject = UserProject;
 
 
 
