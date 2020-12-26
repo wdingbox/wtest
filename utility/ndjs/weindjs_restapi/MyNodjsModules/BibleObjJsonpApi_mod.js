@@ -544,7 +544,7 @@ UserProject.prototype.git_proj_status = function () {
         var txt = fs.readFileSync(gitdir, "utf8")
         var pos0 = txt.indexOf("[remote \"origin\"]")
         var pos1 = txt.indexOf("[branch \"master\"]")
-        inp.out.state.conf = txt.substring(pos0, pos1)
+        inp.out.state.config = txt.substring(pos0, pos1)
     }
 
     var accdir = this.get_usr_myoj_dir()
