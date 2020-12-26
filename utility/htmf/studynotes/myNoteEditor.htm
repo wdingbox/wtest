@@ -392,6 +392,9 @@ ${scmd}
             if (pos1 < 0 || pos2 < 0) {
                 return alert("<body> not found")
             }
+            if(pos2-pos1>2000){
+                return alert ("reach max 2000 characters limit.") //Maximum URL Size 2048
+            }
 
             var pster = JSON.parse(document.m_myNotes)
             var bcv = ""
@@ -407,7 +410,7 @@ ${scmd}
             if (false === ckEditor.checkDirty()) {
                 document.m_iEdiDataLen = theData.length;
                 console.log("checkDirty : false")
-                g_msg.pop(`<br>${bcv} <br> * No change; No saving; len:${theData.length} `);
+                g_msg.pop(`<br>${bcv} <br> * No change; No saving; len:${theData.length}. max:2000`);
                 return
             }
 
