@@ -216,7 +216,7 @@ var BibleUti = {
         return ret;
     },
 
-   
+
     Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
         var out = {}
         var bib = BibleUti.load_BibleObj_by_fname(jsfname);
@@ -245,7 +245,7 @@ var BibleUti = {
                 }
             }
         }
-        return  out
+        return out
     },
     //// BibleUti /////
 }
@@ -306,7 +306,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         if (inp.usr.passcode.trim().length > 0) {
             inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
         }
-        console.log("inp.usr.proj=", inp.usr.proj)
+        console.log("parse: inp.usr.proj=", inp.usr.proj)
     }
 
     return inp.usr.proj
@@ -522,7 +522,7 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
     await this.change_perm_cmd(accdir)
     return inp
 }
-BibleObjGituser.prototype.git_proj_status = function () {
+BibleObjGituser.prototype.git_proj_status = async function () {
     var inp = this.m_inp
     inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
     var gitdir = this.get_usr_git_dir("/.git/config")
@@ -532,6 +532,20 @@ BibleObjGituser.prototype.git_proj_status = function () {
         var pos0 = txt.indexOf("[remote \"origin\"]")
         var pos1 = txt.indexOf("[branch \"master\"]")
         inp.out.state.config = txt.substring(pos0, pos1)
+
+        /////// git status
+        var git_status_cmd = `
+        git status
+        git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
+        inp.out.state.git_status = {}
+        await BibleUti.exec_Cmd(git_status_cmd).then(
+            function (val) {
+                inp.out.state.git_status.success = val
+            },
+            function (val) {
+                inp.out.state.git_status.failure = val
+            }
+        )
     }
 
     var accdir = this.get_usr_myoj_dir()
@@ -571,9 +585,9 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 
     var txt = fs.readFileSync(git_config_fname, "utf8")
     console.log("bAllowPush", bAllowPush)
-    console.log("before:", txt)
     console.log("old:", this.m_inp.usr.repository)
     console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    console.log("before:\n", txt)
 
     var bNeedWrite = false
     if (bAllowPush) {
@@ -589,7 +603,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
             bNeedWrite = true
         }
     }
-    console.log("after:", txt)
+    console.log("after:\n", txt)
 
     if (bNeedWrite) {
         fs.writeFileSync(git_config_fname, txt, "utf8")

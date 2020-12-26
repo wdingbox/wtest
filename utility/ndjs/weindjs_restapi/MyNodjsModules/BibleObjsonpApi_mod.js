@@ -227,7 +227,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         userProject.git_proj_parse(inp)
 
-        inp = await userProject.git_proj_destroy(res)
+        await userProject.git_proj_destroy(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
@@ -235,7 +235,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    ApiUsrReposData_status: function (req, res) {
+    ApiUsrReposData_status_async: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+    },
+    ApiUsrReposData_status:async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
         }
@@ -243,7 +248,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         userProject.git_proj_parse(inp)
 
-        inp = userProject.git_proj_status()
+        await userProject.git_proj_status()
 
         var sret = JSON.stringify(inp, null, 4)
 
