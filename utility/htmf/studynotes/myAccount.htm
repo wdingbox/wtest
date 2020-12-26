@@ -146,6 +146,7 @@
             })
         }
         function repo_destroy() {
+            if(!confirm("All data will be destroyed.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
@@ -165,6 +166,7 @@
             })
         }
         function repo_pushback() {
+            if(!confirm("push data into repository")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
             dbg_pster()
