@@ -571,6 +571,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
         console.log("inp:", Jsonpster)
         Uti.Msg(Jsonpster)
+        var _This = this
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
             if (ret.out.desc.indexOf("success") > 0) {
@@ -582,9 +583,8 @@ PopupMenu_EdiTag.prototype.init = function () {
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
                 _THIS.m_ediDiv.html(showtxt)
                 _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = ret.out.data.txt
-
+                $(_THIS.m_ediDiv.m_id).toggleClass("txt_loaded")
                 Uti.Msg(ret.out.data.txt)
-                //_THIS.hide()
             }
         })
     })
