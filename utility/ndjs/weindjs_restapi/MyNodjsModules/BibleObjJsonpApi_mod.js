@@ -537,7 +537,7 @@ UserProject.prototype.git_proj_setup = async function (res) {
 }
 UserProject.prototype.git_proj_status = function () {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0}
+    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         inp.out.state.bGitDir = 1
@@ -555,26 +555,25 @@ UserProject.prototype.git_proj_status = function () {
     return inp
 }
 UserProject.prototype.git_config_allow_push = function (bAllowPush) {
+    { /****.git/config
+        [core]
+                repositoryformatversion = 0
+                filemode = true
+                bare = false
+                logallrefupdates = true
+                ignorecase = true
+                precomposeunicode = true
+        [remote "origin"]
+                url = https://github.com/wdingbox/bible_obj_weid.git
+                fetch = +refs/heads/*:refs/remotes/origin/*
+        [branch "master"]
+                remote = origin
+                merge = refs/heads/master
+        ******/
 
-    /****.git/config
-    [core]
-            repositoryformatversion = 0
-            filemode = true
-            bare = false
-            logallrefupdates = true
-            ignorecase = true
-            precomposeunicode = true
-    [remote "origin"]
-            url = https://github.com/wdingbox/bible_obj_weid.git
-            fetch = +refs/heads/*:refs/remotes/origin/*
-    [branch "master"]
-            remote = origin
-            merge = refs/heads/master
-    ******/
-
-    //https://github.com/wdingbox/bible_obj_weid.git
-    //https://github.com/wdingbox:passcode@/bible_obj_weid.git
-
+        //https://github.com/wdingbox/bible_obj_weid.git
+        //https://github.com/wdingbox:passcode@/bible_obj_weid.git
+    } /////////
 
     if (!this.m_inp.usr.proj) return
     var git_config_fname = this.get_usr_git_dir("/.git/config")
@@ -659,25 +658,7 @@ cd -
         }
     )
 }
-UserProject.prototype.get_git_cmd_push = function () {
-    password = "lll" //dev mac
-    var cmd = `
-#!/bin/sh
-cd  ${this.get_usr_git_dir()}
-echo ${password} | sudo -S git status
-echo ${password} | sudo -S git push
-echo ${password} | sudo -S git status
-cd -
-`
-    return cmd
-}
-UserProject.prototype.git_push = function () {
-    this.git_proj_status()
-    if (!this.m_inp.out.state.bOk) {
-        this.m_inp.out.state.desc += ",cannot push."
-        return null
-    }
-}
+
 
 
 
@@ -938,7 +919,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             inp.usr.state = "passcode is empty. cannot push."
             inp.usr.state.bReady = false
         } else {
-            userProject.git_push()
+            userProject.git_add_commit_push()
         }
         var sret = JSON.stringify(inp, null, 4)
 
