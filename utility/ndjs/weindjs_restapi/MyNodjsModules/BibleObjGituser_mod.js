@@ -85,7 +85,7 @@ var BibleUti = {
 
 
     GetApiInputParamObj: function (req, cbf) {
-        var inpObj = {}
+
         if (req.method === "GET") {
             console.log("GET: req.url=", req.url);
             var q = url.parse(req.url, true).query;
@@ -95,7 +95,7 @@ var BibleUti = {
                 return q;
             }
             var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-            inpObj = JSON.parse(s);
+            var inpObj = JSON.parse(s);
             inpObj.out = { desc: "", data: null }
             if(cbf) cbf(inpObj)
         } else if (req.method === "POST") {
@@ -110,12 +110,13 @@ var BibleUti = {
                 console.log("on post eend:", body)
                 //res.writeHead(200, { "Content-Type": "text/html" });
                 //res.end(body);
-                inpObj = JSON.parse(body)
+                var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
+                console.log("inp=",JSON.stringify(inpObj,null, 4))
                 if(cbf) cbf(inpObj)
             });
         }
-        console.log("inp=", JSON.stringify(inpObj, null, 4));
+        console.log("end");
 
         //console.log("req.method", req.method)
         //console.log("req.query", req.query)
