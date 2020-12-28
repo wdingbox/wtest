@@ -1815,14 +1815,27 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         var stb = "<table id='account_history_table' border='1'>"
         for (var i = 0; i < ar.length; i++) {
             stb += "<tr>"
-            Object.keys(ar[i]).forEach(function (key) {
-                stb += `<td>${ar[i][key]}</td>`
+            Object.keys(ar[i]).forEach(function (key, k) {
+                var str = ar[i][key]
+                if (0 === k) {
+                    str = str.substr(19)
+                }
+                stb += `<td class='repohist${k}' val='${ar[i][key]}'>${str}</td></td>`
             })
             stb += "</tr>"
         }
         stb += "</table>"
-        $("body").find("#account_history_table").remove()
-        $("body").prepend(stb)
+
+        $("#histb").html(stb).find("tr").bind("click", function () {
+            $("#histb").find(".hili").removeClass('hili')
+            $(this).addClass("hili")
+            var reps = $(this).find("td:eq(0)").attr("val")
+            var code = $(this).find("td:eq(1)").text()
+            //$("#repository").val(reps)
+            //$("#passcode").val(code)
+            MyStorage.Repositories().add({repository:reps,passcode:code})
+        });
+        $("#histb").slideToggle()
     })
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
@@ -3106,6 +3119,7 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                 </table>
+                <a id="histb" style="display:none"></a>
             
 
                
