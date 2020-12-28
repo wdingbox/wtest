@@ -158,14 +158,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 RbcObj[trn] = bcObj;
                 inp.out.desc += ":" + trn
             }
+
+            inp.out.desc += ":success"
+            inp.out.data = bcvR
+            console.log(inp.out)
         }
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        inp.out.desc += ":success"
-        inp.out.data = bcvR
+     
         var sret = JSON.stringify(inp);
-
-        console.log(inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
