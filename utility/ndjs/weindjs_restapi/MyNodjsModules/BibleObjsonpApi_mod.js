@@ -145,7 +145,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
         var RbcObj = {};
-        if ("object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
+        if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_jsfname(trn)

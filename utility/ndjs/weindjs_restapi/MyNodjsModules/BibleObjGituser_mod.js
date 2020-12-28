@@ -292,7 +292,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
 
     if ("object" !== typeof inp.usr) {
-        inp.out.desc = "failed inp.usr "
+        if(inp && inp.out && inp.out.desc) inp.out.desc = "failed inp.usr "
         return null
     }
     function _parse_proj_url(proj_url) {
