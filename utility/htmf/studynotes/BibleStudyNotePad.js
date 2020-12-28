@@ -523,7 +523,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     function _set_par_ediTxt() {
         var htmEdit = _THIS.m_ediDiv.getEditHtm()
-        if(htmEdit.length>=2000) alert(`lengh=${htmEdit.length} > max 2000.`)
+        if (htmEdit.length >= 2000) alert(`lengh=${htmEdit.length} > max 2000.`)
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
         _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
 
@@ -1789,13 +1789,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         }, false);
     })
     $("#account_set").bind("click", function () {
-        $("#account_set_info").text($(this).text())
+        $("#account_set_info").text($(this).text() + "...")
         MyStorage.Repositories().add_fr_ui()
         Uti.Msg("repository", Jsonpster)
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
-            $("#account_set_info").text("ok")
+            var msg = "<font color='red'>not valid</font>"
+            if (ret.out.state && ret.out.state.bOk) msg = "<font color='green'>ok</font>"
+            $("#account_set_info").html(msg)
         })
     })
     $("#account_destroy").bind("click", function () {
@@ -1875,7 +1877,7 @@ AppInstancesManager.prototype.init = function () {
     });
     $("body").bind("click", function (evt) {
         evt.stopImmediatePropagation();
-        $("#menuContainer").hide()
+        //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
         //popupMenu.hide()
     })
@@ -2030,7 +2032,7 @@ AppInstancesManager.prototype.init = function () {
 
     popupMenu.init()
     g_obt.onclick_ob_table(function () {
-        $("#menuContainer").hide()
+        //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
         //popupMenu.hide()
     })
@@ -2526,7 +2528,7 @@ var Uti = {
         })
 
 
-        var oldtxt = $("#txtarea").val().substr(0, 3000)
+        var oldtxt = $("#txtarea").val().substr(0, 7000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
         $("#txtarea").val(results);
@@ -3066,7 +3068,7 @@ var BibleInputMenuContainer = `
                     <tbody id="">
                         <tr>
                             <td></td>
-                            <td>usrData</td>
+                            <td id="account_history">usrData</td>
                             <td>
                             <a>Respositroy</a>:
                             <a id="account_destroy"></a> 

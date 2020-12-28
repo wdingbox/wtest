@@ -520,9 +520,11 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
 
     var accdir = this.get_usr_acct_dir()
     await this.change_perm_cmd(accdir)
+    this.git_proj_status(null)
     return inp
 }
-BibleObjGituser.prototype.git_proj_status = async function () {
+
+BibleObjGituser.prototype.git_proj_status = function (cbf) {
     var inp = this.m_inp
     inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
     var gitdir = this.get_usr_git_dir("/.git/config")
@@ -533,6 +535,23 @@ BibleObjGituser.prototype.git_proj_status = async function () {
         var pos1 = txt.indexOf("[branch \"master\"]")
         inp.out.state.config = txt.substring(pos0, pos1)
 
+        /////// git status
+        if (cbf) cbf()
+    }
+
+    var accdir = this.get_usr_myoj_dir()
+    if (fs.existsSync(accdir)) {
+        inp.out.state.bMyojDir = 1
+    }
+    inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
+    return inp
+}
+
+BibleObjGituser.prototype.git_status = async function () {
+    var inp = this.m_inp
+    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
+    var gitdir = this.get_usr_git_dir("/.git/config")
+    if (fs.existsSync(gitdir)) {
         /////// git status
         var git_status_cmd = `
         cd ${this.get_usr_git_dir()}
@@ -548,14 +567,8 @@ BibleObjGituser.prototype.git_proj_status = async function () {
             }
         )
     }
-
-    var accdir = this.get_usr_myoj_dir()
-    if (fs.existsSync(accdir)) {
-        inp.out.state.bMyojDir = 1
-    }
-    inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
-    return inp
 }
+
 BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     { /****.git/config
         [core]
@@ -610,7 +623,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
-BibleObjGituser.prototype.git_add_commit_push =async function (desc) {
+BibleObjGituser.prototype.git_add_commit_push = async function (desc) {
 
     password = "lll" //dev mac
     var cmd_commit = `

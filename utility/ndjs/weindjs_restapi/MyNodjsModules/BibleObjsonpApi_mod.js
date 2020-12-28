@@ -253,7 +253,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         userProject.git_proj_parse(inp)
 
-        await userProject.git_proj_status()
+        userProject.git_proj_status(async function(){
+            await userProject.git_status()
+        })
 
         var sret = JSON.stringify(inp, null, 4)
 

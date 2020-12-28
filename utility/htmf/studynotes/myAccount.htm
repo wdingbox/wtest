@@ -87,7 +87,8 @@
                 </li>
             </ol>
         </div>
-        <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"  placeholder="https://github.com/username/reposname.git" ></textarea>
+        <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"
+            placeholder="https://github.com/username/reposname.git"></textarea>
         <label for="editor1">
             Password (optional: for data saving in your repository only) <a class="help_label"
                 onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
@@ -133,7 +134,11 @@
 
 
     <script>
-        function Okey_use_this(Jsonpster) {
+        function Okey_use_this() {
+            if(!Jsonpster.inp) return alert("empty inp")
+            if(!Jsonpster.inp.usr) return alert("empty usr")
+            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
             window.opener.postMessage(Jsonpster.inp.usr, '*');
         }
         function repo_create() {
@@ -141,17 +146,17 @@
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                
+
                 dbg_pster(ret)
             })
         }
         function repo_destroy() {
-            if(!confirm("All data will be destroyed.")) return
+            if (!confirm("All data will be destroyed.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                
+
                 dbg_pster(ret)
             })
         }
@@ -160,18 +165,18 @@
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                
+
                 dbg_pster(ret)
-                Uti.Msg("Status:", ret.out)
+                Uti.Msg("Status inp.ret.out=", ret.out)
             })
         }
         function repo_pushback() {
-            if(!confirm("push data into repository")) return
+            if (!confirm("push data into repository")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-                
+
                 dbg_pster(ret)
                 Uti.Msg("Status:", ret.out)
             })
