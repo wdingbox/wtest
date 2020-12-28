@@ -55,6 +55,7 @@ var ApiJsonp_BibleObj = {
 
         var s = `
 var Jsonpster = {
+    host: "${res.req.headers.host}",
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
@@ -63,6 +64,9 @@ Url: function (){
         return this.m_src;
     },
 Run : function (cbf) {
+    this.RunAjax(cbf)
+},
+RunGet : function (cbf) {
     if (!cbf) alert('callback Response null');
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
@@ -72,7 +76,60 @@ Run : function (cbf) {
     document.body.appendChild(s);
     console.log('Jsonpster:', Jsonpster);
     this.api = this.inp.par = null;
-}};
+},
+RunPost : function (cbf) {
+    if(!cbf) return alert("cbf null.")
+    var surl = "http://${res.req.headers.host}/" + this.api
+    $.post(surl,
+        this.inp,
+        function(data, status){
+            if(cbf) cbf(data, status)
+            console.log("Data: " + data + ",Status: " + status);
+        }
+    )
+},
+RunPosts : function (cbf) {
+    if(!cbf) return alert("cbf null.")
+    var surl = "https://${res.req.headers.host}/"
+    surl = surl.replace("7778", "7775") + this.api
+    $.post(surl,
+        this.inp,
+        function(data, status){
+            if(cbf) cbf(data, status)
+            console.log("Data: " + data + ",Status: " + status);
+        }
+    )
+},
+RunAjax : function(cbf){
+    var surl = "http://${res.req.headers.host}/" + this.api
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        url: surl,
+        data: JSON.stringify(this.inp),
+        username: 'user',
+        password: 'pass',
+        crossDomain : true,
+        xhrFields: {
+            withCredentials: false
+        }
+    })
+        .success(function( data ) {
+            console.log("done");
+            cbf(data)
+        })
+        .done(function( data ) {
+            console.log("done");
+            cbf(data)
+        })
+        .fail( function(xhr, textStatus, errorThrown) {
+            console.log("surl",surl)
+            alert("xhr.responseText="+xhr.responseText);
+            alert("textStatus="+textStatus);
+        });
+}
+};
 const RestApi = JSON.parse('${jstr_RestApi}');
 `;;;;;;;;;;;;;;
 
@@ -245,7 +302,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
     },
-    ApiUsrReposData_status:async function (req, res) {
+    ApiUsrReposData_status: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
         }
@@ -253,7 +310,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         userProject.git_proj_parse(inp)
 
-        userProject.git_proj_status(async function(){
+        userProject.git_proj_status(async function () {
             await userProject.git_status()
         })
 
@@ -292,11 +349,29 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 }//// BibleRestApi ////
 
 var BibleObjJsonpApi = {
+    set_postHeader: function (res) {
+        // Website you wish to allow to connect
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+
+        // Request methods you wish to allow
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+        // Request headers you wish to allow
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+        // Set to true if you need the website to include cookies in the requests sent
+        // to the API (e.g. in case you use sessions)
+        res.setHeader('Access-Control-Allow-Credentials', true);
+
+        // Pass to next layer of middleware
+    },
     init: function (app, rootDir) {
         userProject.set_rootDir(rootDir)
         Object.keys(ApiJsonp_BibleObj).forEach(function (sapi) {
             console.log("api:", sapi)
-            app.get("/" + sapi, function (req, res) {
+            app.use("/" + sapi, function (req, res) {
+                BibleObjJsonpApi.set_postHeader(res)
+
                 ApiJsonp_BibleObj[sapi](req, res);
             })
         });

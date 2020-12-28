@@ -85,17 +85,40 @@ var BibleUti = {
 
 
     GetApiInputParamObj: function (req) {
-        console.log("req.url=", req.url);
-        var q = url.parse(req.url, true).query;
-        console.log("q=", q);
-        if (q.inp === undefined) {
-            console.log("q.inp undefined. Maybe unload or api err");
-            return q;
+        var inpObj = {}
+        if (req.method === "GET") {
+            console.log("GET: req.url=", req.url);
+            var q = url.parse(req.url, true).query;
+            console.log("q=", q);
+            if (q.inp === undefined) {
+                console.log("q.inp undefined. Maybe unload or api err");
+                return q;
+            }
+            var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
+            var inpObj = JSON.parse(s);
+            console.log("inp=", JSON.stringify(inpObj, null, 4));
+            inpObj.out = { desc: "", data: null }
+        } else if (req.method === "POST") {
+            console.log("POST:----------------")
+            var body = "";
+            req.on("data", function (chunk) {
+                body += chunk;
+                console.log("on post data:", chunk)
+            });
+
+            req.on("end", function () {
+                console.log("on post eend:", body)
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.end(body);
+            });
         }
-        var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-        var inpObj = JSON.parse(s);
-        console.log("inp=", JSON.stringify(inpObj, null, 4));
-        inpObj.out = { desc: "", data: null }
+
+        console.log("req.method", req.method)
+        console.log("req.query", req.query)
+
+        console.log("req", JSON.stringify(Object.keys(req), null, 4))
+
+
         return inpObj;
     },
 

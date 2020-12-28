@@ -1833,7 +1833,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var code = $(this).find("td:eq(1)").text()
             //$("#repository").val(reps)
             //$("#passcode").val(code)
-            MyStorage.Repositories().add({repository:reps,passcode:code})
+            MyStorage.Repositories().add({ repository: reps, passcode: code })
         });
         $("#histb").slideToggle()
     })
@@ -2825,6 +2825,16 @@ var Uti = {
         textarea.select()
         document.execCommand('copy')
         textarea.remove()
+    },
+    jq_post: function () {
+        $.post(Jsonpster.Url(),
+        {
+          name: "Donald Duck",
+          city: "Duckburg"
+        },
+        function(data, status){
+          alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 
 
