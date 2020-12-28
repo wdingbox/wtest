@@ -112,7 +112,7 @@ RunAjax : function(cbf){
         password: 'pass',
         crossDomain : true,
         xhrFields: {
-            withCredentials: false
+            withCredentials: true
         }
     })
         .success(function( data ) {
