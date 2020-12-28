@@ -95,11 +95,10 @@ var BibleUti = {
                 return q;
             }
             var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-            var inpObj = JSON.parse(s);
-            console.log("inp=", JSON.stringify(inpObj, null, 4));
+            inpObj = JSON.parse(s);
             inpObj.out = { desc: "", data: null }
         } else if (req.method === "POST") {
-            console.log("POST:----------------")
+            console.log("POST: ----------------")
             var body = "";
             req.on("data", function (chunk) {
                 body += chunk;
@@ -111,16 +110,14 @@ var BibleUti = {
                 //res.writeHead(200, { "Content-Type": "text/html" });
                 //res.end(body);
                 inpObj = JSON.parse(body)
-
-                console.log("inp=", JSON.stringify(inpObj, null, 4));
+                inpObj.out = { desc: "", data: null }
             });
         }
+        console.log("inp=", JSON.stringify(inpObj, null, 4));
 
         //console.log("req.method", req.method)
         //console.log("req.query", req.query)
-
         //console.log("req", JSON.stringify(Object.keys(req), null, 4))
-
 
         return inpObj;
     },
@@ -295,7 +292,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
 
     if ("object" !== typeof inp.usr) {
-        if(inp && inp.out && inp.out.desc) inp.out.desc = "failed inp.usr "
+        if (inp && inp.out && inp.out.desc) inp.out.desc = "failed inp.usr "
         return null
     }
     function _parse_proj_url(proj_url) {
