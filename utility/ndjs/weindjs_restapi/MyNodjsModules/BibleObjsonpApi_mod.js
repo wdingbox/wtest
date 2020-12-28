@@ -116,11 +116,11 @@ RunAjax : function(cbf){
         }
     })
         .success(function( data ) {
-            console.log("done");
+            console.log("success",data);
             cbf(data)
         })
         .done(function( data ) {
-            console.log("done");
+            console.log("done",data);
             cbf(data)
         })
         .fail( function(xhr, textStatus, errorThrown) {
