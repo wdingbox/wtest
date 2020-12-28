@@ -108,8 +108,8 @@ var BibleUti = {
 
             req.on("end", function () {
                 console.log("on post eend:", body)
-                res.writeHead(200, { "Content-Type": "text/html" });
-                res.end(body);
+                //res.writeHead(200, { "Content-Type": "text/html" });
+                //res.end(body);
             });
         }
 
