@@ -110,16 +110,16 @@ var BibleUti = {
                 console.log("on post eend:", body)
                 //res.writeHead(200, { "Content-Type": "text/html" });
                 //res.end(body);
-                inpObj = body
+                inpObj = JSON.parse(body)
 
                 console.log("inp=", JSON.stringify(inpObj, null, 4));
             });
         }
 
-        console.log("req.method", req.method)
-        console.log("req.query", req.query)
+        //console.log("req.method", req.method)
+        //console.log("req.query", req.query)
 
-        console.log("req", JSON.stringify(Object.keys(req), null, 4))
+        //console.log("req", JSON.stringify(Object.keys(req), null, 4))
 
 
         return inpObj;
