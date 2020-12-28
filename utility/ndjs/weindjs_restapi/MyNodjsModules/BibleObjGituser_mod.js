@@ -110,7 +110,9 @@ var BibleUti = {
                 console.log("on post eend:", body)
                 //res.writeHead(200, { "Content-Type": "text/html" });
                 //res.end(body);
-                inp = body
+                inpObj = body
+
+                console.log("inp=", JSON.stringify(inpObj, null, 4));
             });
         }
 
