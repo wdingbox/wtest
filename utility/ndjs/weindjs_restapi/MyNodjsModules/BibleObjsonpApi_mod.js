@@ -143,6 +143,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_base
         }
         BibleUti.GetApiInputParamObj(req, function(inp){
+            console.log("inp::", inp)
             userProject.git_proj_parse(inp)
             var RbcObj = {};
             if ( "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
