@@ -139,6 +139,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //});
     },
     ApiBibleObj_load_by_bibOj: function (req, res) {
+        console.log("inp::", ApiBibleObj_load_by_bibOj)
         if (!req || !res) {
             return inp_struct_base
         }
