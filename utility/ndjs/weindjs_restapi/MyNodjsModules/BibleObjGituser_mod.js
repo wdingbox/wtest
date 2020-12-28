@@ -292,6 +292,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
 
     if ("object" !== typeof inp.usr) {
+        console.log("inp is not valid.")
         if (inp && inp.out && inp.out.desc) inp.out.desc = "failed inp.usr "
         return null
     }
