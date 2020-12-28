@@ -37,8 +37,8 @@ const REDIS_PRIMARY_STRING = 'bungeeminingappslavedata.rca69w.ng.0001.use1.cache
 //////////////////////////////////////////
 
 const aws_credentials = {
-    accessKeyId: "AKIATBUD4GB6CSUEHKFV", //fr Credential of aws account IAM. https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SettingUp.DynamoWebService.html
-    secretAccessKey: "JPgLXVBX6KrqhMQdVkFYBP4nOuHyWrCW18Z2Kd2i", //fr Credential of aws account IAM. 
+    accessKeyId: "xxxxxxx", //fr Credential of aws account IAM. https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SettingUp.DynamoWebService.html
+    secretAccessKey: "xxxxxxxxx", //fr Credential of aws account IAM. 
     region: "us-east-1",
     endpoint: "https://dynamodb.us-east-1.amazonaws.com" //https://docs.aws.amazon.com/general/latest/gr/rande.html
 };
