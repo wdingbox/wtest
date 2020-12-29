@@ -345,13 +345,19 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
 
     return inp.usr.proj
 }
-BibleObjGituser.prototype.get_usr_acct_dir = function (res) {
+BibleObjGituser.prototype.get_usr_acct_dir = function (subpathfile) {
     if (!this.m_inp.usr.proj) return ""
-    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
+    if (!subpath) {
+        return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
+    }
+    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}${subpathfile}`
 }
-BibleObjGituser.prototype.get_usr_myoj_dir = function (res) {
+BibleObjGituser.prototype.get_usr_myoj_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
-    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}`
+    if (!subpath) {
+        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}`
+    }
+    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}${subpath}`
 }
 
 BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
@@ -361,17 +367,32 @@ BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     }
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}${subpath}`
 }
-BibleObjGituser.prototype.get_jsfname = function (RevCode) {
+BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     var inp = this.m_inp
-    //var RevCode = inp.par.fnames[0]
+    //var DocCode = inp.par.fnames[0]
+    if (!DocCode || !inp.usr.proj) return ""
     var dest_pfname = ""
-    if ("_" === RevCode[0]) {
-        RevCode = RevCode.substr(1)
-        if (inp.usr.proj) {
-            dest_pfname = `${this.get_usr_myoj_dir()}/${RevCode}_json.js`
-        }
-    } else {
-        dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${RevCode}.json.js`;
+    switch (DocCode[0]) {
+        case "_": //: _myNode, _myTakeaway,
+            {
+                var fnam = DocCode.substr(1)
+                if (inp.usr.proj) {
+                    dest_pfname = this.get_usr_myoj_dir(`/${fnam}_json.js`)
+                }
+            }
+            break
+        case ".": //: ./Dat/localStorage
+            {
+                var pfnam = DocCode.substr(1)
+                if (inp.usr.proj) {
+                    dest_pfname = this.get_usr_acct_dir(`/${pfnam}_json.js`)
+                }
+
+            }
+            break;
+        default: //: NIV, CUVS,  
+            dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${DocCode}.json.js`;
+            break;
     }
     return dest_pfname
 }

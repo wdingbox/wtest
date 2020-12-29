@@ -150,7 +150,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var jsfname = userProject.get_jsfname(trn)
+                var jsfname = userProject.get_pfxname(trn)
                 console.log("load:", jsfname)
                 var bib = BibleUti.load_BibleObj_by_fname(jsfname);
                 if (!bib.obj) {
@@ -189,7 +189,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
-                var jsfname = userProject.get_jsfname(trn)
+                var jsfname = userProject.get_pfxname(trn)
                 var bib = BibleUti.load_BibleObj_by_fname(jsfname);
                 var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
@@ -223,7 +223,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
-            var jsfname = userProject.get_jsfname(doc)
+            var jsfname = userProject.get_pfxname(doc)
             inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
 
@@ -248,7 +248,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
-        var jsfname = userProject.get_jsfname(doc)
+        var jsfname = userProject.get_pfxname(doc)
         inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
         var ss = JSON.stringify(inp)
@@ -258,7 +258,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ///////////////////////////////////
-    ApiUsrDat_write: async function (req, res) {
+    ApiUsrDat_save: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
@@ -269,20 +269,13 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
-            var jsfname = userProject.get_jsfname(doc)
+            var jsfname = userProject.get_pfxname(doc)
             inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
-
             await userProject.git_add_commit_push(inp.out.data.dbcv)
-
-            //var ss = JSON.stringify(inp)
         })
-
-        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        //res.write("Jsonpster.Response(" + ss + ");");
-        //res.end();
     },
-    ApiUsrDat_read: function (req, res) {
+    ApiUsrDat_load: function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
@@ -294,7 +287,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
-        var jsfname = userProject.get_jsfname(doc)
+        var jsfname = userProject.get_pfxname(doc)
         inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
         var ss = JSON.stringify(inp)

@@ -21,6 +21,24 @@ var MyStorage = {
         }, 500)
 
     },
+    Repo_save: function () {
+        var txt = JSON.stringify(localStorage, null, 4)
+        console.log(txt)
+        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"], dat: txt } }
+        Jsonpster.api = RestApi.ApiUsrDat_save.str
+        Jsonpster.RunAjaxPost(function(ret){
+
+        })
+    },
+    Repo_load: function () {
+        var txt = JSON.stringify(localStorage, null, 4)
+        console.log(txt)
+        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"], dat: txt } }
+        Jsonpster.api = RestApi.ApiUsrDat_load.str
+        Jsonpster.RunAjaxPost(function(ret){
+
+        })
+    },
 
     Repositories: function () {
         function StoreRepositorie() {
@@ -560,7 +578,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret)
             Uti.Msg(ret.out)
             _THIS.m_ediBtn.enable_edit(false, true)
-           
+
         })
     })
 
@@ -1843,6 +1861,13 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         else tx = "password"
         $("#passcode").attr("type", tx)
     })
+
+    $("#StorageRepo_save").bind("click", function () {
+        MyStorage.Repo_save()
+    })
+    $("#StorageRepo_load").bind("click", function () {
+        MyStorage.Repo_load()
+    })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
     if (!sid) sid = "Keyboard"
@@ -2827,13 +2852,13 @@ var Uti = {
     },
     jq_post: function () {
         $.post(Jsonpster.Url(),
-        {
-          name: "Donald Duck",
-          city: "Duckburg"
-        },
-        function(data, status){
-          alert("Data: " + data + "\nStatus: " + status);
-        });
+            {
+                name: "Donald Duck",
+                city: "Duckburg"
+            },
+            function (data, status) {
+                alert("Data: " + data + "\nStatus: " + status);
+            });
     }
 
 
@@ -3118,13 +3143,17 @@ var BibleInputMenuContainer = `
                         </tr>
                         <tr>
                             <td></td>
-                            <td>Language</td>
+                            <td>Lang</td>
                             <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option>English</option><option>Chinese</option><option>India</option></select></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td>clear</td>
-                            <td><input type="radio" onclick="MyStorage.clear();" title='clear out storage'>ClearSettings</input></td>
+                            <td>Storage</td>
+                            <td>
+                            <input type="radio" onclick="MyStorage.clear();" title='clear up storage'>Clear</input>
+                            <input type="radio" id="StorageRepo_save" title='clear up storage'>Save</input>
+                            <input type="radio" id="StorageRepo_load" title='clear up storage'>Load</input>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
