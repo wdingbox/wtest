@@ -294,7 +294,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
         var jsfname = userProject.get_pfxname(doc)
-        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
+        var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+        inp.out.data = ret.obj
+        inp.out.state = { bOk: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });

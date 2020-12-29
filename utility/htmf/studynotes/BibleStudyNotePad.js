@@ -24,21 +24,22 @@ var MyStorage = {
     Repo_save: function (cbf) {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
-        if(!Jsonpster.inp.usr) return alert("user is not set yet.")
-        Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt } 
+        if (!Jsonpster.inp.usr) return alert("user is not set yet.")
+        Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
         Uti.Msg("Repo_save:", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
             cbf(ret)
         })
     },
-    Repo_load: function () {
+    Repo_load: function (cbf) {
+        if (!Jsonpster.inp.usr) return alert("user is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
-        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"] } }
+        Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
         Jsonpster.api = RestApi.ApiUsrDat_load.str
-        Jsonpster.RunAjaxPost(function (ret) {
-
+        Jsonpster.Run(function (ret) {
+            if (cbf) cbf(ret)
         })
     },
 
@@ -1871,7 +1872,14 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#StorageRepo_load").bind("click", function () {
-        MyStorage.Repo_load()
+        $("#histb").text($(this).text() + " ...").show()
+        MyStorage.Repo_load(function(ret){
+            if(ret.out.state.bOk){
+                $("#histb").html("<font color='lightgreen'>Success</font>")
+            }else{
+                $("#histb").html("<font color='red'>failed</font>")
+            }
+        })
     })
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
