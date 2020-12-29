@@ -104,10 +104,10 @@ RunAjax : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
     $.ajax({
         type: "POST",
-        dataType: 'text',
+        dataType: 'json',
         contentType: "application/json; charset=utf-8",
         url: surl,
-        data: JSON.stringify(this.inp),
+        data: this.inp,
         username: 'user',
         password: 'pass',
         crossDomain : true,
