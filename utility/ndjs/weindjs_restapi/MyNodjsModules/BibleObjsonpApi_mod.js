@@ -170,7 +170,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         console.log(inp.out)
 
         var sret = JSON.stringify(inp);
-        console.log("sert:", sret)
+        //console.log("sert:", sret)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
