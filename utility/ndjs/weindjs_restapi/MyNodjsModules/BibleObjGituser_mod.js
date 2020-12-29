@@ -95,8 +95,9 @@ var BibleUti = {
                 return q;
             }
             var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-            inpObj = JSON.parse(s);
+            var inpObj = JSON.parse(s);
             inpObj.out = { desc: "", data: null }
+            console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
         } else if (req.method === "POST") {
             console.log("POST: ----------------")
             var body = "";
@@ -109,17 +110,15 @@ var BibleUti = {
                 console.log("on post eend:", body)
                 //res.writeHead(200, { "Content-Type": "text/html" });
                 //res.end(body);
-                inpObj = JSON.parse(body)
+                var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
+                console.log("POST: inp=", JSON.stringify(inpObj, null, 4));
             });
         }
-        console.log("inp=", JSON.stringify(inpObj, null, 4));
 
-        //console.log("req.method", req.method)
-        //console.log("req.query", req.query)
-        //console.log("req", JSON.stringify(Object.keys(req), null, 4))
-
-        return inpObj;
+        console.log("req.method", req.method)
+        console.log("req.query", req.query)
+        return {}
     },
 
     fetch_bcv: function (BibleObj, oj) {
