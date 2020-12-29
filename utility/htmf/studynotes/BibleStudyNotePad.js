@@ -1668,10 +1668,15 @@ function Tab_mark_bcv_history() {
 }
 
 Tab_mark_bcv_history.prototype.init = function () {
-    this.m_tbody = { RecentMarks: new Tab_HistoryMostRecentBody(false), RecentBooks: new Tab_HistoryMostRecentBody(true) }
+    this.m_tbody = {
+        MemoryVerse: new Tab_HistoryMostRecentBody(false),
+        RecentBooks: new Tab_HistoryMostRecentBody(true),
+        RecentMarks: new Tab_HistoryMostRecentBody(false),
+    }
     //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
     this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
     this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
+    this.m_tbody.MemoryVerse.init("#MemoryVerse", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
 
 
     var _THIS = this
@@ -1681,14 +1686,16 @@ Tab_mark_bcv_history.prototype.init = function () {
     _THIS.m_tbody.RecentMarks.show(false)
     _THIS.m_tbody[cap].show(true)
 
-    var clry = ["cyan", ""]
+    var clry = ["cyan", "lightgrey", "lightblue"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.m_tbody.RecentBooks.show(false)
         _THIS.m_tbody.RecentMarks.show(false)
+        _THIS.m_tbody.MemoryVerse.show(false)
         var cap = $(this).text()
         var ary = Object.keys(_THIS.m_tbody)
-        var idx = ary.indexOf(cap) === 0 ? 1 : 0
+        var idx = 1 + ary.indexOf(cap)
+        if (idx >= ary.length) idx = 0
         _THIS.m_tbody[ary[idx]].show(true)
         $(this).text(ary[idx]).css("background-color", clry[idx])
     });
@@ -1873,10 +1880,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#StorageRepo_load").bind("click", function () {
         $("#histb").text($(this).text() + " ...").show()
-        MyStorage.Repo_load(function(ret){
-            if(ret.out.state.bOk){
+        MyStorage.Repo_load(function (ret) {
+            if (ret.out.state.bOk) {
                 $("#histb").html("<font color='lightgreen'>Success</font>")
-            }else{
+            } else {
                 $("#histb").html("<font color='red'>failed</font>")
             }
         })
@@ -3059,6 +3066,8 @@ var BibleInputMenuContainer = `
                                 Pleas click ^ button <br>sort by str.<br>
                             </td>
                         </tr>
+                    </tbody>
+                    <tbody id='MemoryVerse'>
                     </tbody>
                     <caption>
                        <button id="clearUnse" title='clear unselected items'>x</button>
