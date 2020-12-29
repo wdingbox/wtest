@@ -118,8 +118,8 @@ var BibleUti = {
         }
         console.log("end");
 
-        //console.log("req.method", req.method)
-        //console.log("req.query", req.query)
+        console.log("req.method", req.method)
+        console.log("req.query", req.query)
         //console.log("req", JSON.stringify(Object.keys(req), null, 4))
     },
 
