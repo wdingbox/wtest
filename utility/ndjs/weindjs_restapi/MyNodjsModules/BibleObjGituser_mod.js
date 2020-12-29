@@ -54,31 +54,6 @@ var BibleUti = {
 
 
 
-    load_BibleObj_by_fname: function (jsfnm) {
-        var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", };
-
-        if (!fs.existsSync(jsfnm)) {
-            console.log("f not exit:", jsfnm)
-            return ret;
-        }
-        ret.fsize = BibleUti.GetFileSize(jsfnm);
-        if (ret.fsize > 0) {
-            var t = fs.readFileSync(jsfnm, "utf8");
-            var i = t.indexOf("{");
-            if (i > 0) {
-                ret.header = t.substr(0, i);
-                var s = t.substr(i);
-                ret.obj = JSON.parse(s);
-            }
-        }
-
-        ret.writeback = function () {
-            var s2 = JSON.stringify(this.obj, null, 4);
-            fs.writeFileSync(this.fname, this.header + s2);
-        }
-        return ret;
-    },
-
 
 
 
@@ -250,6 +225,31 @@ var BibleUti = {
     },
 
 
+    load_BibleObj_by_fname: function (jsfnm) {
+        var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", };
+
+        if (!fs.existsSync(jsfnm)) {
+            console.log("f not exit:", jsfnm)
+            return ret;
+        }
+        ret.fsize = BibleUti.GetFileSize(jsfnm);
+        if (ret.fsize > 0) {
+            var t = fs.readFileSync(jsfnm, "utf8");
+            var i = t.indexOf("{");
+            if (i > 0) {
+                ret.header = t.substr(0, i);
+                var s = t.substr(i);
+                ret.obj = JSON.parse(s);
+            }
+        }
+
+        ret.writeback = function () {
+            var s2 = JSON.stringify(this.obj, null, 4);
+            fs.writeFileSync(this.fname, this.header + s2);
+        }
+        return ret;
+    },
+
     Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
         var out = {}
         var bib = BibleUti.load_BibleObj_by_fname(jsfname);
@@ -345,12 +345,12 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
 
     return inp.usr.proj
 }
-BibleObjGituser.prototype.get_usr_acct_dir = function (subpathfile) {
+BibleObjGituser.prototype.get_usr_acct_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
     if (!subpath) {
         return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}${subpathfile}`
+    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}${subpath}`
 }
 BibleObjGituser.prototype.get_usr_myoj_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
@@ -385,7 +385,7 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
             {
                 var pfnam = DocCode.substr(1)
                 if (inp.usr.proj) {
-                    dest_pfname = this.get_usr_acct_dir(`/${pfnam}_json.js`)
+                    dest_pfname = this.get_usr_acct_dir(`${pfnam}_json.js`)
                 }
 
             }

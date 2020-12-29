@@ -21,21 +21,23 @@ var MyStorage = {
         }, 500)
 
     },
-    Repo_save: function () {
+    Repo_save: function (cbf) {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
-        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"], dat: txt } }
+        if(!Jsonpster.inp.usr) return alert("user is not set yet.")
+        Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt } 
         Jsonpster.api = RestApi.ApiUsrDat_save.str
-        Jsonpster.RunAjaxPost(function(ret){
-
+        Uti.Msg("Repo_save:", Jsonpster)
+        Jsonpster.RunAjaxPost(function (ret) {
+            cbf(ret)
         })
     },
     Repo_load: function () {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
-        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"], dat: txt } }
+        Jsonpster.inp = { par: { fnames: ["./dat/localStorage"] } }
         Jsonpster.api = RestApi.ApiUsrDat_load.str
-        Jsonpster.RunAjaxPost(function(ret){
+        Jsonpster.RunAjaxPost(function (ret) {
 
         })
     },
@@ -1807,9 +1809,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...")
-        MyStorage.Repositories().add_fr_ui()
-        Uti.Msg("repository", Jsonpster)
+        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
+        Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
             var msg = "<font color='red'>not valid</font>"
@@ -1819,9 +1821,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        MyStorage.Repositories().add_fr_ui()
-        Uti.Msg("repository", Jsonpster)
+        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+        Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
             $("#account_set_info").text("ok")
@@ -1863,7 +1865,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#StorageRepo_save").bind("click", function () {
-        MyStorage.Repo_save()
+        $("#histb").text($(this).text() + " ...").show()
+        MyStorage.Repo_save(function () {
+            $("#histb").html("<font color='lightgreen'>Success</font>")
+        })
     })
     $("#StorageRepo_load").bind("click", function () {
         MyStorage.Repo_load()

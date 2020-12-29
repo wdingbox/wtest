@@ -266,13 +266,18 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //: unlimited write size. 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
+            if (!proj) return
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
-            inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+            ret.obj = JSON.parse(inp.par.data, null, 4)
+            console.log("ret", ret)
+            ret.writeback()
+            var msg = jsfname + " saved."
 
-            await userProject.git_add_commit_push(inp.out.data.dbcv)
+            await userProject.git_add_commit_push(msg)
         })
     },
     ApiUsrDat_load: function (req, res) {
@@ -282,6 +287,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.GetApiInputParamObj(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
+        if (!proj) return
 
         userProject.git_pull()
 
