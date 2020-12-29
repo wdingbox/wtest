@@ -56,7 +56,7 @@ bibDesk.RestApi(app);
 
 
 // use it before all route definitions
-app.use(cors({origin: null}));
+app.use(cors({origin: "*"}));
 
 app.set('trust proxy', true) //:return client req.ip
 app.use(express.urlencoded({ extended: true })); //:return req.query
