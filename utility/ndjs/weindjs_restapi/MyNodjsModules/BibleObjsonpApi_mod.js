@@ -13,7 +13,6 @@ const fsPromises = require("fs").promises;
 const { BibleObjGituser, BibleUti } = require("./BibleObjGituser_mod")
 
 
-var userProject = new BibleObjGituser()
 
 
 
@@ -143,6 +142,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_base
         }
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+
         var inp = BibleUti.GetApiInputParamObj(req)
         var proj = userProject.git_proj_parse(inp)
         var RbcObj = {};
@@ -179,6 +180,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_search
         }
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var inp = BibleUti.GetApiInputParamObj(req)
         if (!inp.usr.f_path) inp.usr.f_path = ""
         var proj = userProject.git_proj_parse(inp)
@@ -216,6 +218,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
             //: unlimited write size. 
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -238,6 +241,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_base
         }
         var inp = BibleUti.GetApiInputParamObj(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
 
         userProject.git_pull()
@@ -273,6 +277,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
 
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
         inp = await userProject.git_proj_setup(res)
@@ -294,6 +299,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
 
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
         await userProject.git_proj_destroy(res)
@@ -315,6 +321,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
 
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
         userProject.git_proj_status(async function () {
@@ -340,6 +347,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.GetApiInputParamObj(req)
 
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
         await userProject.git_add_commit_push("push all changes.")
@@ -357,6 +365,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
 var BibleObjJsonpApi = {
     set_postHeader: function (res) {
+        // for cross domain post.
+
         // Website you wish to allow to connect
         res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -373,7 +383,8 @@ var BibleObjJsonpApi = {
         // Pass to next layer of middleware
     },
     init: function (app, rootDir) {
-        userProject.set_rootDir(rootDir)
+        BibleObjJsonpApi.m_rootDir = rootDir
+        //
         Object.keys(ApiJsonp_BibleObj).forEach(function (sapi) {
             console.log("api:", sapi)
             app.use("/" + sapi, function (req, res) {

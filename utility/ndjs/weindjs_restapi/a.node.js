@@ -55,7 +55,7 @@ bibDesk.RestApi(app);
 
 
 
-// use it before all route definitions
+// use it before all route definitions. for cross domain post.
 app.use(cors({origin: null}));
 
 app.set('trust proxy', true) //:return client req.ip

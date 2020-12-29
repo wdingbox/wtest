@@ -291,8 +291,8 @@ var BibleUti = {
 
 
 
-var BibleObjGituser = function () {
-
+var BibleObjGituser = function (rootDir) {
+    this.set_rootDir(rootDir)
 }
 BibleObjGituser.prototype.set_rootDir = function (rootDir) {
     this.m_rootDir = rootDir
