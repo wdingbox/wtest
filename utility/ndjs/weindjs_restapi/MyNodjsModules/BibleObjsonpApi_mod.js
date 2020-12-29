@@ -215,7 +215,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_base
         }
         BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
-            //var inp = BibleUti.GetApiInputParamObj(req)
+            //: unlimited write size. 
             var proj = userProject.git_proj_parse(inp)
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
