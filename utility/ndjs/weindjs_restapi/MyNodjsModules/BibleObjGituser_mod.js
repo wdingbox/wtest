@@ -84,8 +84,8 @@ var BibleUti = {
 
 
 
-    GetApiInputParamObj: function (req, cbf) {
-
+    GetApiInputParamObj: function (req) {
+        var inpObj = {}
         if (req.method === "GET") {
             console.log("GET: req.url=", req.url);
             var q = url.parse(req.url, true).query;
@@ -97,7 +97,7 @@ var BibleUti = {
             var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
             var inpObj = JSON.parse(s);
             inpObj.out = { desc: "", data: null }
-            if(cbf) cbf(inpObj)
+            console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
         } else if (req.method === "POST") {
             console.log("POST: ----------------")
             var body = "";
@@ -112,15 +112,13 @@ var BibleUti = {
                 //res.end(body);
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
-                console.log("inp=",JSON.stringify(inpObj,null, 4))
-                if(cbf) cbf(inpObj)
+                console.log("POST: inp=", JSON.stringify(inpObj, null, 4));
             });
         }
-        console.log("end");
 
         console.log("req.method", req.method)
         console.log("req.query", req.query)
-        //console.log("req", JSON.stringify(Object.keys(req), null, 4))
+        return {}
     },
 
     fetch_bcv: function (BibleObj, oj) {
