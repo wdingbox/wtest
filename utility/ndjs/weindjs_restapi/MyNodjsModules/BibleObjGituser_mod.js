@@ -84,26 +84,11 @@ var BibleUti = {
 
 
 
-    Post_ApiInputParamObj: function (req, res, cbf) {
+    Parse_post_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
         console.log("req.query", req.query)
 
-        var inpObj = {}
-        if (req.method === "GET") {
-            console.log("GET: req.url=", req.url);
-            var q = url.parse(req.url, true).query;
-            console.log("q=", q);
-            if (q.inp === undefined) {
-                console.log("q.inp undefined. Maybe unload or api err");
-                return q;
-            }
-            var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-            var inpObj = JSON.parse(s);
-            inpObj.out = { desc: "", data: null }
-            console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
-            cbf(inpObj, res)
-            return inpObj
-        } else if (req.method === "POST") {
+        if(req.method === "POST") {
             console.log("POST: ----------------")
             var body = "";
             req.on("data", function (chunk) {
@@ -117,16 +102,13 @@ var BibleUti = {
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
-                cbf(inpObj, res)
-                //res.writeHead(200, { "Content-Type": "text/html" });
-                //res.end(body);
+                cbf(inpObj)
             });
         }
         console.log("end of req1")
         res.writeHead(200, { "Content-Type": "text/html" });
         res.end();
         console.log("end of req2")
-        return {}
     },
     GetApiInputParamObj: function (req) {
         console.log("req.method", req.method)

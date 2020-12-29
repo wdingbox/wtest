@@ -214,21 +214,24 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_base
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
-        var proj = userProject.git_proj_parse(inp)
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
+            //var inp = BibleUti.GetApiInputParamObj(req)
+            var proj = userProject.git_proj_parse(inp)
 
-        //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
-        var doc = inp.par.fnames[0]
-        var jsfname = userProject.get_jsfname(doc)
-        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            var doc = inp.par.fnames[0]
+            var jsfname = userProject.get_jsfname(doc)
+            inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
 
 
-        await userProject.git_add_commit_push(inp.out.data.dbcv)
+            await userProject.git_add_commit_push(inp.out.data.dbcv)
 
-        var ss = JSON.stringify(inp)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
-        res.end();
+            var ss = JSON.stringify(inp)
+        })
+
+        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        //res.write("Jsonpster.Response(" + ss + ");");
+        //res.end();
     },
     ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
         if (!req || !res) {

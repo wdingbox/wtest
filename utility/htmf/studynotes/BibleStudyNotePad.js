@@ -560,8 +560,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             console.log("ret", ret)
             Uti.Msg(ret.out)
             _THIS.m_ediBtn.enable_edit(false, true)
-            if (ret.out.desc.indexOf("success") > 0) {
-            }
+           
         })
     })
 
