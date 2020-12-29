@@ -229,7 +229,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             await userProject.git_add_commit_push(inp.out.data.dbcv)
 
-            var ss = JSON.stringify(inp)
+            //var ss = JSON.stringify(inp)
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -257,6 +257,51 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
+    ///////////////////////////////////
+    ApiUsrDat_write: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
+            //: unlimited write size. 
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            var proj = userProject.git_proj_parse(inp)
+
+            //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+            var doc = inp.par.fnames[0]
+            var jsfname = userProject.get_jsfname(doc)
+            inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+
+
+            await userProject.git_add_commit_push(inp.out.data.dbcv)
+
+            //var ss = JSON.stringify(inp)
+        })
+
+        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        //res.write("Jsonpster.Response(" + ss + ");");
+        //res.end();
+    },
+    ApiUsrDat_read: function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
+        var inp = BibleUti.GetApiInputParamObj(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+        var proj = userProject.git_proj_parse(inp)
+
+        userProject.git_pull()
+
+        //inp = BibleUti.Write2vrs_txt(inp, false)
+        var doc = inp.par.fnames[0]
+        var jsfname = userProject.get_jsfname(doc)
+        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
+
+        var ss = JSON.stringify(inp)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + ss + ");");
+        res.end();
+    },
 
 
 
