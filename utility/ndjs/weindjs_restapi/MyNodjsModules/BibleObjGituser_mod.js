@@ -84,7 +84,10 @@ var BibleUti = {
 
 
 
-    GetApiInputParamObj: function (req) {
+    Post_ApiInputParamObj: function (req, res, cbf) {
+        console.log("req.method", req.method)
+        console.log("req.query", req.query)
+
         var inpObj = {}
         if (req.method === "GET") {
             console.log("GET: req.url=", req.url);
@@ -98,6 +101,8 @@ var BibleUti = {
             var inpObj = JSON.parse(s);
             inpObj.out = { desc: "", data: null }
             console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
+            cbf(inpObj, res)
+            return inpObj
         } else if (req.method === "POST") {
             console.log("POST: ----------------")
             var body = "";
@@ -108,17 +113,41 @@ var BibleUti = {
 
             req.on("end", function () {
                 console.log("on post eend:", body)
-                //res.writeHead(200, { "Content-Type": "text/html" });
-                //res.end(body);
+
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
-                console.log("POST: inp=", JSON.stringify(inpObj, null, 4));
+                console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
+                cbf(inpObj, res)
+                //res.writeHead(200, { "Content-Type": "text/html" });
+                //res.end(body);
             });
         }
-
+        console.log("end of req1")
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end();
+        console.log("end of req2")
+        return {}
+    },
+    GetApiInputParamObj: function (req) {
         console.log("req.method", req.method)
         console.log("req.query", req.query)
-        return {}
+
+        if (req.method !== "GET") {
+            return {}
+        }
+        console.log("GET: req.url=", req.url);
+        var q = url.parse(req.url, true).query;
+        console.log("q=", q);
+        if (q.inp === undefined) {
+            console.log("q.inp undefined. Maybe unload or api err");
+            return q;
+        }
+        var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
+        var inpObj = JSON.parse(s);
+        inpObj.out = { desc: "", data: null }
+        console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
+        //cbf(inpObj, res)
+        return inpObj
     },
 
     fetch_bcv: function (BibleObj, oj) {
@@ -308,7 +337,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
             return { username: username, projname: projname }
         }
         inp.out.desc = "failed parse url:" + proj_url
-        return null
+        return { username: "", projname: "" }
     }
     var proj_url = inp.usr.repository
     var passcode = inp.usr.passcode
