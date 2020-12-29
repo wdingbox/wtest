@@ -420,7 +420,7 @@ ${scmd}
             Jsonpster.inp = pster.inp
             Jsonpster.api = pster.api
             console.log("inp:", pster.inp)
-            Jsonpster.Run(function (ret) {
+            Jsonpster.RunAjaxPost(function (ret) {
                 console.log("ret", ret)
                 if (ret.out.result.indexOf("success") > 0) {
                     console.log("result", ret)

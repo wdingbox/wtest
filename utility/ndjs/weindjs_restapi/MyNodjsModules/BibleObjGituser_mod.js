@@ -88,7 +88,7 @@ var BibleUti = {
         console.log("req.method", req.method)
         console.log("req.query", req.query)
 
-        if(req.method === "POST") {
+        if (req.method === "POST") {
             console.log("POST: ----------------")
             var body = "";
             req.on("data", function (chunk) {
@@ -321,8 +321,8 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         inp.out.desc = "failed parse url:" + proj_url
         return { username: "", projname: "" }
     }
-    var proj_url = inp.usr.repository
-    var passcode = inp.usr.passcode
+    var proj_url = inp.usr.repository = inp.usr.repository.trim()
+    var passcode = inp.usr.passcode = inp.usr.passcode.trim()
 
     inp.usr.proj = _parse_proj_url(proj_url)
     if (inp.usr.proj) {
@@ -632,25 +632,28 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     }
 
     var txt = fs.readFileSync(git_config_fname, "utf8")
-    console.log("bAllowPush", bAllowPush)
+    console.log("bAllowPush:", bAllowPush)
     console.log("old:", this.m_inp.usr.repository)
     console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
     console.log("before:\n", txt)
 
     var bNeedWrite = false
     if (bAllowPush) {
-        var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        var ipos = txt.indexOf(this.m_inp.usr.repository)
+        console.log("ipos=", ipos, this.m_inp.usr.repository)
         if (ipos > 0) {
             txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
             bNeedWrite = true
         }
     } else {
-        var ipos = txt.indexOf(this.m_inp.usr.proj.repository)
+        var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        console.log("ipos=", ipos, this.m_inp.usr.proj.git_Usr_Pwd_Url)
         if (ipos > 0) {
             txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repository)
             bNeedWrite = true
         }
     }
+    console.log("bNeedWrite:", bNeedWrite)
     console.log("after:\n", txt)
 
     if (bNeedWrite) {
@@ -673,6 +676,7 @@ cd -
 `
     var _THIS = this
     var inp = this.m_inp
+    console.log("git_config_allow_push true first....")
     this.git_config_allow_push(true)
     inp.out.state_push = {}
     await BibleUti.exec_Cmd(cmd_commit).then(
