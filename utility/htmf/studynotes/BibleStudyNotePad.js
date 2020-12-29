@@ -556,7 +556,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.inp.par = par
         console.log("inp:", Jsonpster)
         Uti.Msg(Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             console.log("ret", ret)
             Uti.Msg(ret.out)
             _THIS.m_ediBtn.enable_edit(false, true)

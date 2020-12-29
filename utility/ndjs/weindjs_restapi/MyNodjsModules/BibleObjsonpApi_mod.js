@@ -65,9 +65,9 @@ Url: function (){
         return this.m_src;
     },
 Run : function (cbf) {
-    this.RunGet(cbf)
+    this.RunJsonP(cbf)
 },
-RunGet : function (cbf) {
+RunJsonP : function (cbf) {
     if (!cbf) alert('callback Response null');
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
@@ -101,7 +101,7 @@ RunPosts : function (cbf) {
         }
     )
 },
-RunAjax : function(cbf){
+RunAjaxPost : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
     $.ajax({
         type: "POST",
