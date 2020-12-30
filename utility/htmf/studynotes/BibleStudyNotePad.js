@@ -1709,7 +1709,7 @@ Tab_mark_bcv_history.prototype.init = function () {
     _THIS.show_all(false)
     _THIS.m_tbodies[cap].show(true)
 
-    var clry = ["cyan", "lightgrey", "lightblue"]
+    var clry = ["cyan", "", "orange"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
