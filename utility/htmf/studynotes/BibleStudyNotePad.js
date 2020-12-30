@@ -136,6 +136,35 @@ var MyStorage = {
         }
         return ar
     },
+
+    MostRecentInStore: function (sid) {
+        var MostRecentAry = function (sid) {
+            this.m_sid = sid
+        }
+        MostRecentAry.prototype.get_ary = function () {
+            var ar = localStorage.getItem(this.m_sid)
+            if (!ar || ar.length === 0) {
+                ar = []
+            } else {
+                ar = JSON.parse(ar)
+            }
+            return ar
+        }
+        MostRecentAry.prototype.cleanup = function () {
+            var ar = localStorage.setItem(this.m_sid, "")
+        }
+        MostRecentAry.prototype.addonTop = function (strn) {
+            if (!strn) return
+            var ar = this.get_ary()
+            Uti.addonTopOfAry(ar, strn)
+            if (!ar) {
+            } else {
+                localStorage.setItem(this.m_sid, JSON.stringify(ar))
+            }
+            return ar;
+        }
+        return new MostRecentAry(sid)
+    },
     ////--------
     addHistoryMostRecentMarks: function (strn) {
         if (!strn) return
@@ -1576,9 +1605,8 @@ function Tab_HistoryMostRecentBody(bSingpleSel) {
 }
 Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
     this.m_tbodyID = tbodyID
-    this.m_bcvHistory = MyStorage_getHistoryMostRecent()
-    this.MyStorage_getHistoryMostRecent = MyStorage_getHistoryMostRecent;
-    this.MyStorage_add2HistoryMostRecentBook = add2HistoryMostRecentBook;
+    this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyId)
+    this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
 }
 Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
     if (bShow) $(this.m_tbodyID).show()
@@ -1595,46 +1623,10 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parse_bcv(bcv)
     if (!ret) return Uti.Msg("addnew is not valid: " + bcv)
 
-    //this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
-//
-    //var ary = bcv
-    //if ("string" === typeof bcv) {
-    //    ary = [bcv]
-    //}
-    //for (var i = 0; i < ary.length; i++) {
-    //    var idx = this.m_bcvHistory.indexOf(ary[i])
-    //    if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
-    //    this.m_bcvHistory.unshift(ary[i]);
-    //}
-
-    this.MyStorage_add2HistoryMostRecentBook(bcv)
-    this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
+    this.m_MostRecentInStore.addonTop(bcv)
+    this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
     this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:max in size. fetch idx range [0, 100].
     this.update_tab()
-}
-Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
-    var _THIS = this
-    this.m_bcvHistory = []
-    $(this.m_tbodyID).find("td").each(function () {
-        var tx = $(this).text().trim()
-        if ($(this)[0].classList.contains("hili")) {
-            _THIS.m_bcvHistory.push(tx)
-        } else {
-            $(this).parent().hide()
-        }
-    })
-
-    this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
-
-    var std_bcv_strn = this.m_bcvHistory.join(", ")
-    Uti.Msg(std_bcv_strn)
-    var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(std_bcv_strn)
-    Uti.Msg(ret)
-    var stdbcv = Uti.convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn(ret.biblical_order_splitted_ary)
-    Uti.Msg(stdbcv)
-}
-Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
-    $(this.m_tbodyID).find("td").toggleClass("hili")
 }
 
 Tab_HistoryMostRecentBody.prototype.update_tab = function () {
@@ -1660,6 +1652,33 @@ Tab_HistoryMostRecentBody.prototype.update_tab = function () {
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(hiliary)
     })
 }
+Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
+    var _THIS = this
+  
+    _THIS.m_MostRecentInStore.cleanup()
+    $(this.m_tbodyID).find("td").each(function () {
+        var tx = $(this).text().trim()
+        if ($(this)[0].classList.contains("hili")) {
+            _THIS.m_MostRecentInStore.addonTop(tx)
+        } else {
+            $(this).parent().hide()
+        }
+    })
+    this.m_bcvHistory = _THIS.m_MostRecentInStore.get_ary()
+
+    this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
+
+    var std_bcv_strn = this.m_bcvHistory.join(", ")
+    Uti.Msg(std_bcv_strn)
+    var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(std_bcv_strn)
+    Uti.Msg(ret)
+    var stdbcv = Uti.convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn(ret.biblical_order_splitted_ary)
+    Uti.Msg(stdbcv)
+}
+Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
+    $(this.m_tbodyID).find("td").toggleClass("hili")
+}
+
 
 
 
@@ -1669,45 +1688,46 @@ function Tab_mark_bcv_history() {
 }
 
 Tab_mark_bcv_history.prototype.init = function () {
-    this.m_tbody = {
+    this.m_tbodies = {
         MemoryVerse: new Tab_HistoryMostRecentBody(false),
         RecentBooks: new Tab_HistoryMostRecentBody(true),
         RecentMarks: new Tab_HistoryMostRecentBody(false),
     }
     //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
-    this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.add2HistoryMostRecentBook)
-    this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.add2HistoryMostRecentBook)
-    this.m_tbody.MemoryVerse.init("#MemoryVerse", MyStorage.getHistoryMostRecentBooks, MyStorage.add2HistoryMostRecentBook)
+    this.m_tbodies.RecentMarks.init("#RecentMarks")
+    this.m_tbodies.RecentBooks.init("#RecentBooks")
+    this.m_tbodies.MemoryVerse.init("#MemoryVerse")
 
 
     var _THIS = this
 
     var cap = _THIS.getCap()
-    _THIS.m_tbody.RecentBooks.show(false)
-    _THIS.m_tbody.RecentMarks.show(false)
-    _THIS.m_tbody[cap].show(true)
+    _THIS.m_tbodies.RecentBooks.show(false)
+    _THIS.m_tbodies.RecentMarks.show(false)
+    _THIS.m_tbodies.MemoryVerse.show(false)
+    _THIS.m_tbodies[cap].show(true)
 
     var clry = ["cyan", "lightgrey", "lightblue"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
-        _THIS.m_tbody.RecentBooks.show(false)
-        _THIS.m_tbody.RecentMarks.show(false)
-        _THIS.m_tbody.MemoryVerse.show(false)
+        _THIS.m_tbodies.RecentBooks.show(false)
+        _THIS.m_tbodies.RecentMarks.show(false)
+        _THIS.m_tbodies.MemoryVerse.show(false)
         var cap = $(this).text()
-        var ary = Object.keys(_THIS.m_tbody)
+        var ary = Object.keys(_THIS.m_tbodies)
         var idx = 1 + ary.indexOf(cap)
         if (idx >= ary.length) idx = 0
-        _THIS.m_tbody[ary[idx]].show(true)
+        _THIS.m_tbodies[ary[idx]].show(true)
         $(this).text(ary[idx]).css("background-color", clry[idx])
     });
 
     $("#clearUnse").bind("click", function () {
         var cap = _THIS.getCap()
-        _THIS.m_tbody[cap].clearHistory()
+        _THIS.m_tbodies[cap].clearHistory()
     })
     $("#toggleSel").bind("click", function () {
         var cap = _THIS.getCap()
-        _THIS.m_tbody[cap].toggleSelAll()
+        _THIS.m_tbodies[cap].toggleSelAll()
     })
 }
 Tab_mark_bcv_history.prototype.getCap = function () {
@@ -1716,21 +1736,21 @@ Tab_mark_bcv_history.prototype.getCap = function () {
 }
 
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
-    this.m_tbody.RecentMarks.onClickHistoryItem(onClickHistoryItm)
-    this.m_tbody.RecentBooks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbodies.RecentMarks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbodies.RecentBooks.onClickHistoryItem(onClickHistoryItm)
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
-    this.m_tbody.RecentMarks.addnew2table(bcv)
-    this.m_tbody.RecentBooks.addnew2table(bcv)
+    this.m_tbodies.RecentMarks.addnew2table(bcv)
+    this.m_tbodies.RecentBooks.addnew2table(bcv)
 }
 Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
     var cap = this.getCap()
-    this.m_tbody[cap].clearHistory(idtxtout)
+    this.m_tbodies[cap].clearHistory(idtxtout)
 }
 Tab_mark_bcv_history.prototype.toggleSelAll = function () {
     var cap = this.getCap()
-    this.m_tbody[cap].toggleSelAll()
-    this.m_tbody[cap]
+    this.m_tbodies[cap].toggleSelAll()
+    this.m_tbodies[cap]
 }
 
 
@@ -1788,7 +1808,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //const ip = urlParams.get('ip');
         var htm = ""
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
-            hist.m_tbody.RecentMarks.addnew2table(v)
+            hist.m_tbodies.RecentMarks.addnew2table(v)
             var sln = `<a href='#${v}'>${v}</a>`
             htm += `${sln} | `
         })
@@ -1964,7 +1984,7 @@ AppInstancesManager.prototype.init = function () {
 
         //store before clear
         var ret = showup.get_selected_bcv_parm()
-        if (ret && ret.m_bcv) markHistory.m_tbody.RecentMarks.addnew2table(ret.m_bcv)
+        if (ret && ret.m_bcv) markHistory.m_tbodies.RecentMarks.addnew2table(ret.m_bcv)
 
         //clear
         showup.m_Chp.set_showupVal("")
@@ -2013,7 +2033,7 @@ AppInstancesManager.prototype.init = function () {
             digi.init_Vrs_digiKeys_by_vol()
 
             var bcv = `${vol}1:1`
-            markHistory.m_tbody.RecentBooks.addnew2table(bcv)
+            markHistory.m_tbodies.RecentBooks.addnew2table(bcv)
             //d1.init_Chp_digiKeys_by_vol()
             //d2.disable_all_digiKey(true)
 
@@ -2099,7 +2119,7 @@ AppInstancesManager.prototype.init = function () {
         par.m_tab_documentsClusterList = tab_documentsClusterList
         par.m_groupsMenuMgr = groupsMenuMgr
         popupMenu.popup(par)
-        markHistory.m_tbody.RecentMarks.addnew2table(par.m_bcv)
+        markHistory.m_tbodies.RecentMarks.addnew2table(par.m_bcv)
         $("title").text(par.m_bcv)
 
         showup.update_showup(par.m_bcv)
