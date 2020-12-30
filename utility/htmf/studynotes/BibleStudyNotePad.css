@@ -288,6 +288,7 @@ body {
     
     #Tab_CatagryOfBooks tbody,
     #Tab_NamesOfBibleDocuments tbody {
+        width: 100%;
         height: 266px;
         overflow-y: scroll;
         display: block;
