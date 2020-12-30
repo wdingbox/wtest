@@ -288,11 +288,13 @@ body {
     #Tab_NamesOfBibleDocuments{
         min-width: 5px;
     }
+    #Tab_NamesOfBibleDocuments tbody tr td{
+        background-color: blue;
+        width: 100px;
+    }
     
     #Tab_CatagryOfBooks tbody,
     #Tab_NamesOfBibleDocuments tbody {
-
-        min-width: 50px;
         height: 266px;
         overflow-y: scroll;
         display: block;
