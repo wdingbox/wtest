@@ -2898,6 +2898,7 @@ var Uti = {
 
     copy2clipboard: function (text) {
         const textarea = document.createElement('textarea')
+        textarea.style.position = "absolute";
         document.body.appendChild(textarea)
         textarea.value = text
         textarea.select()
