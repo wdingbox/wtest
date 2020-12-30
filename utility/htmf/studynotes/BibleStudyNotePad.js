@@ -675,17 +675,18 @@ function PopupMenu() {
     this.m_par = null
 }
 
-PopupMenu.prototype.init = function () {
+PopupMenu.prototype.init = function (cbf) {
     var _THIS = this
     $(this.m_id).draggable().hide()
     $(this.m_id).find("a").bind("click", function () {
         $(_THIS.m_id).hide()
     })
     $(this.m_id).find("caption").bind("click", function () {
-        var tx = $(this).text().trim()
-        if (tx.length > 0) {
-            Uti.copy2clipboard("(" + tx + ")")
+        var bcv = $(this).text().trim()
+        if (bcv.length > 0) {
+            Uti.copy2clipboard("(" + bcv + ")")
         }
+        if(cbf) cbf(bcv)
         _THIS.hide()
     })
 
@@ -1659,9 +1660,9 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     $(this.m_tbodyID).find("td").each(function () {
         var tx = $(this).text().trim()
         if ($(this)[0].classList.contains("hili")) {
-            _THIS.m_MostRecentInStore.addonTop(tx)
-        } else {
             $(this).parent().hide()
+        } else {
+            _THIS.m_MostRecentInStore.addonTop(tx)
         }
     })
     this.m_bcvHistory = _THIS.m_MostRecentInStore.get_ary()
@@ -1734,10 +1735,8 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
     this.m_tbodies.RecentBooks.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.MemoryVerse.onClickHistoryItem(onClickHistoryItm)
 }
-Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
-    this.m_tbodies.RecentMarks.addnew2table(bcv)
-    this.m_tbodies.RecentBooks.addnew2table(bcv)
-    this.m_tbodies.MemoryVerse.addnew2table(bcv)
+Tab_mark_bcv_history.prototype.addnew2table = function (itm, bcv) {
+    this.m_tbodies[itm].addnew2table(bcv)   
 }
 Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
     var cap = this.getCap()
@@ -2110,7 +2109,9 @@ AppInstancesManager.prototype.init = function () {
 
     })
 
-    popupMenu.init()
+    popupMenu.init(function(bcv){
+        markHistory.addnew2table("MemoryVerse",bcv)
+    })
     g_obt.onclick_ob_table(function () {
         //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
