@@ -1580,7 +1580,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
         MyStorage.setMostRecentSearchFile(txt)
     }
 
-    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "yellow").bind("click", function () {
+    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "lightblue").bind("click", function () {
         $(this).unbind()
         setTimeout(function () {
             _THIS.Gen_table_for_Documents()
