@@ -686,7 +686,7 @@ PopupMenu.prototype.init = function (cbf) {
         if (bcv.length > 0) {
             Uti.copy2clipboard("(" + bcv + ")")
         }
-        if(cbf) cbf(bcv)
+        if (cbf) cbf(bcv)
         _THIS.hide()
     })
 
@@ -826,7 +826,7 @@ ShowupBCV.prototype.init = function () {
         var Bkname = ""
         if (CNST.Cat2VolArr[bkc]) {
             Bkname = bkc
-        } else {
+        } else if (bkc) {
             Bkname = CNST.BibVolNameEngChn(bkc)
         }
         $(this.m_showupBkiID).text(Bkname).attr("volcode", bkc);
@@ -1124,6 +1124,11 @@ SingleKeyOutputBooksTable.prototype.show = function (bShow) {
 }
 
 SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (scat, vol_arr, alreadyhili, Yoffset) {
+
+    if (!scat || vol_arr.length === 0) {
+        $(this.m_id).hide()
+        return
+    }
     var _THIS = this
     var tid = this.m_id + " tbody"
     var bcr = $("#menuContainer")[0].getBoundingClientRect();
@@ -1143,7 +1148,7 @@ SingleKeyOutputBooksTable.prototype.Popup_BookList_Table = function (scat, vol_a
             })
             Uti.Msg(custom_cat_ary)
             MyStorage.setCustomCatAry(custom_cat_ary)
-        } else {
+        } else if (scat.length > 0) {
             var vol = $(this).attr("vol");
             _THIS.cbf_onClickItm(vol)
             $(_THIS.m_id).hide()
@@ -1378,6 +1383,7 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
         $(".cat").removeClass("hili");
         $(".v3").remove();
 
+        if (par && par.onClickItm) par.onClickItm("", [], true)
     });
 
     var _This = this;
@@ -1736,7 +1742,7 @@ Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm)
     this.m_tbodies.MemoryVerse.onClickHistoryItem(onClickHistoryItm)
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (itm, bcv) {
-    this.m_tbodies[itm].addnew2table(bcv)   
+    this.m_tbodies[itm].addnew2table(bcv)
 }
 Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
     var cap = this.getCap()
@@ -2109,8 +2115,8 @@ AppInstancesManager.prototype.init = function () {
 
     })
 
-    popupMenu.init(function(bcv){
-        markHistory.addnew2table("MemoryVerse",bcv)
+    popupMenu.init(function (bcv) {
+        markHistory.addnew2table("MemoryVerse", bcv)
     })
     g_obt.onclick_ob_table(function () {
         //$("#menuContainer").hide()
