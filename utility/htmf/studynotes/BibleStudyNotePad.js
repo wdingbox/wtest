@@ -1606,7 +1606,7 @@ Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
 
 
 function Tab_HistoryMostRecentBody(bSingpleSel) {
-    this.m_tbodyID = null; //"#Tab_mark_bcv_history"
+    this.m_tbodyID = null; //"#Tab_MostRecent_BCV"
     this.m_bSingleSel = bSingpleSel
 }
 Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
@@ -1688,12 +1688,12 @@ Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
 
 
 
-function Tab_mark_bcv_history() {
-    this.m_tableID = "#Tab_mark_bcv_history"
+function Tab_MostRecent_BCV() {
+    this.m_tableID = "#Tab_MostRecent_BCV"
 
 }
 
-Tab_mark_bcv_history.prototype.init = function () {
+Tab_MostRecent_BCV.prototype.init = function () {
     var _THIS = this
     this.m_tbodies = {
         MemoryVerse: new Tab_HistoryMostRecentBody(false),
@@ -1735,30 +1735,30 @@ Tab_mark_bcv_history.prototype.init = function () {
         _THIS.m_tbodies[cap].toggleSelAll()
     })
 }
-Tab_mark_bcv_history.prototype.getCap = function () {
+Tab_MostRecent_BCV.prototype.getCap = function () {
     var cap = $(this.m_tableID).find("caption:eq(0)").find("button").text().trim()
     return cap
 }
 
-Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
+Tab_MostRecent_BCV.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_tbodies.RecentMarks.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.RecentBooks.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.MemoryVerse.onClickHistoryItem(onClickHistoryItm)
 }
-Tab_mark_bcv_history.prototype.addnew2table = function (itm, bcv) {
+Tab_MostRecent_BCV.prototype.addnew2table = function (itm, bcv) {
     this.m_tbodies[itm].addnew2table(bcv)
 }
-Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
+Tab_MostRecent_BCV.prototype.clearHistory = function (idtxtout) {
     var cap = this.getCap()
     this.m_tbodies[cap].clearHistory(idtxtout)
 }
-Tab_mark_bcv_history.prototype.show_all = function (bShow) {
+Tab_MostRecent_BCV.prototype.show_all = function (bShow) {
     var _THIS = this
     Object.keys(_THIS.m_tbodies).forEach(function (id) {
         _THIS.m_tbodies[id].show(bShow)
     })
 }
-Tab_mark_bcv_history.prototype.toggleSelAll = function () {
+Tab_MostRecent_BCV.prototype.toggleSelAll = function () {
     var cap = this.getCap()
     this.m_tbodies[cap].toggleSelAll()
     this.m_tbodies[cap]
@@ -1944,7 +1944,7 @@ var digi = new DigitNumberInputZone()
 var skout = new SingleKeyOutputBooksTable("#Tab_OutputBooksList")
 
 var tab_category = new Tab_Category()
-var markHistory = new Tab_mark_bcv_history()
+var markHistory = new Tab_MostRecent_BCV()
 
 var tab_documentsClusterList = new Tab_DocumentsClusterList("#Tab_NamesOfBibleDocuments")
 
@@ -3078,7 +3078,7 @@ var BibleInputMenuContainer = `
                     </tbody>
                 </table>
 
-                <table id="Tab_mark_bcv_history" border="1" style="float:left;">
+                <table id="Tab_MostRecent_BCV" border="1" style="float:left;">
                     <caption>
                        <button>RecentBooks</button>
                     </caption>
