@@ -1547,7 +1547,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
         MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
     }
 
-    $(this.m_tbid + " caption button").text("Seq").css("background-color", "red").bind("click", function () {
+    $(this.m_tbid + " caption button").text("S").css("background-color", "red").bind("click", function () {
         $(this).unbind()
         setTimeout(function () {
             _THIS.Gen_table_for_Searchin()
