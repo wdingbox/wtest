@@ -1709,16 +1709,21 @@ Tab_mark_bcv_history.prototype.init = function () {
     _THIS.show_all(false)
     _THIS.m_tbodies[cap].show(true)
 
-    var clry = ["cyan", "", "orange"]
+    var clry = ["ColorMemoryVerse", "ColorRecentBooks", "ColorRecentMarks"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
         var cap = $(this).text()
         var ary = Object.keys(_THIS.m_tbodies)
+        
         var idx = 1 + ary.indexOf(cap)
         if (idx >= ary.length) idx = 0
         _THIS.m_tbodies[ary[idx]].show(true)
-        $(this).text(ary[idx]).css("background-color", clry[idx])
+        var classname = clry[idx]
+        for(var i=0;i<clry.length;i++){
+            $(this).text(ary[idx]).removeClass(clry[i])
+        }
+        $(this).text(ary[idx]).addClass(classname)
     });
 
     $("#clearUnse").bind("click", function () {

@@ -226,6 +226,15 @@ body {
     .vinCap{
         
     }
+    .ColorRecentBooks {
+        background-color: lightgray;
+    }
+    .ColorRecentMarks {
+        background-color:orange;
+    }
+    .ColorMemoryVerse {
+        background-color: cyan;
+    }
 
     button.digit{
         -webkit-appearance: none;
