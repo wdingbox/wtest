@@ -218,6 +218,11 @@ body {
     .vinNum{
         background-color: rgb(163, 17, 207);
     }
+    #bk_name{
+        background-color: rgb(29, 78, 212);
+        padding: 5px 5px 5px 5px;
+        width: 30px;
+    }
     .vinCap{
         
     }
