@@ -1511,14 +1511,14 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     });
 }
 Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
-    var str = "";
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
-
+    
     var sFile = MyStorage.getMostRecentSearchFile()
+    var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
-        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+        str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
     function moveup_selitm(_this, i) {
@@ -1547,7 +1547,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
         MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
     }
 
-    $(this.m_tbid + " caption button").text("Sequence").css("background-color", "").bind("click", function () {
+    $(this.m_tbid + " caption button").text("Sequence").css("background-color", "red").bind("click", function () {
         $(this).unbind()
         setTimeout(function () {
             _THIS.Gen_table_for_Searchin()
@@ -1570,7 +1570,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
         if (v === sFile) hil += " searchFile"
-        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+        str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
     function update_Searchin(_this) {
@@ -1580,7 +1580,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
         MyStorage.setMostRecentSearchFile(txt)
     }
 
-    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "").bind("click", function () {
+    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "yellow").bind("click", function () {
         $(this).unbind()
         setTimeout(function () {
             _THIS.Gen_table_for_Documents()
