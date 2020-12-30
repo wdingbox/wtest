@@ -1605,7 +1605,7 @@ function Tab_HistoryMostRecentBody(bSingpleSel) {
 }
 Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
     this.m_tbodyID = tbodyID
-    this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyId)
+    this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyID)
     this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
 }
 Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
@@ -1654,7 +1654,7 @@ Tab_HistoryMostRecentBody.prototype.update_tab = function () {
 }
 Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     var _THIS = this
-  
+
     _THIS.m_MostRecentInStore.cleanup()
     $(this.m_tbodyID).find("td").each(function () {
         var tx = $(this).text().trim()
@@ -1688,6 +1688,7 @@ function Tab_mark_bcv_history() {
 }
 
 Tab_mark_bcv_history.prototype.init = function () {
+    var _THIS = this
     this.m_tbodies = {
         MemoryVerse: new Tab_HistoryMostRecentBody(false),
         RecentBooks: new Tab_HistoryMostRecentBody(true),
@@ -1698,21 +1699,14 @@ Tab_mark_bcv_history.prototype.init = function () {
     this.m_tbodies.RecentBooks.init("#RecentBooks")
     this.m_tbodies.MemoryVerse.init("#MemoryVerse")
 
-
-    var _THIS = this
-
     var cap = _THIS.getCap()
-    _THIS.m_tbodies.RecentBooks.show(false)
-    _THIS.m_tbodies.RecentMarks.show(false)
-    _THIS.m_tbodies.MemoryVerse.show(false)
+    _THIS.show_all(false)
     _THIS.m_tbodies[cap].show(true)
 
     var clry = ["cyan", "lightgrey", "lightblue"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
-        _THIS.m_tbodies.RecentBooks.show(false)
-        _THIS.m_tbodies.RecentMarks.show(false)
-        _THIS.m_tbodies.MemoryVerse.show(false)
+        _THIS.show_all(false)
         var cap = $(this).text()
         var ary = Object.keys(_THIS.m_tbodies)
         var idx = 1 + ary.indexOf(cap)
@@ -1738,14 +1732,22 @@ Tab_mark_bcv_history.prototype.getCap = function () {
 Tab_mark_bcv_history.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_tbodies.RecentMarks.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.RecentBooks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbodies.MemoryVerse.onClickHistoryItem(onClickHistoryItm)
 }
 Tab_mark_bcv_history.prototype.addnew2table = function (bcv) {
     this.m_tbodies.RecentMarks.addnew2table(bcv)
     this.m_tbodies.RecentBooks.addnew2table(bcv)
+    this.m_tbodies.MemoryVerse.addnew2table(bcv)
 }
 Tab_mark_bcv_history.prototype.clearHistory = function (idtxtout) {
     var cap = this.getCap()
     this.m_tbodies[cap].clearHistory(idtxtout)
+}
+Tab_mark_bcv_history.prototype.show_all = function (bShow) {
+    var _THIS = this
+    Object.keys(_THIS.m_tbodies).forEach(function (id) {
+        _THIS.m_tbodies[id].show(bShow)
+    })
 }
 Tab_mark_bcv_history.prototype.toggleSelAll = function () {
     var cap = this.getCap()
