@@ -139,7 +139,7 @@ var MyStorage = {
     ////--------
     addHistoryMostRecentMarks: function (strn) {
         if (!strn) return
-        var ar = this.getHistoryMostRecentBook()
+        var ar = MyStorage.getHistoryMostRecentMarks()
         Uti.addonTopOfAry(ar, strn)
         if (!ar) {
         } else {
@@ -163,9 +163,9 @@ var MyStorage = {
         return ar
     },
     ////////------
-    addHistoryMostRecentBook: function (strn) {
+    add2HistoryMostRecentBook: function (strn) {
         if (!strn) return
-        var ar = this.getHistoryMostRecentBook()
+        var ar = MyStorage.getHistoryMostRecentBooks()
         Uti.addonTopOfAry(ar, strn)
         if (!ar) {
         } else {
@@ -1574,11 +1574,11 @@ function Tab_HistoryMostRecentBody(bSingpleSel) {
     this.m_tbodyID = null; //"#Tab_mark_bcv_history"
     this.m_bSingleSel = bSingpleSel
 }
-Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, MyStorage_setHistoryMostRecent) {
+Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
     this.m_tbodyID = tbodyID
     this.m_bcvHistory = MyStorage_getHistoryMostRecent()
     this.MyStorage_getHistoryMostRecent = MyStorage_getHistoryMostRecent;
-    this.MyStorage_setHistoryMostRecent = MyStorage_setHistoryMostRecent;
+    this.MyStorage_add2HistoryMostRecentBook = add2HistoryMostRecentBook;
 }
 Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
     if (bShow) $(this.m_tbodyID).show()
@@ -1595,21 +1595,22 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parse_bcv(bcv)
     if (!ret) return Uti.Msg("addnew is not valid: " + bcv)
 
+    //this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
+//
+    //var ary = bcv
+    //if ("string" === typeof bcv) {
+    //    ary = [bcv]
+    //}
+    //for (var i = 0; i < ary.length; i++) {
+    //    var idx = this.m_bcvHistory.indexOf(ary[i])
+    //    if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
+    //    this.m_bcvHistory.unshift(ary[i]);
+    //}
+
+    this.MyStorage_add2HistoryMostRecentBook(bcv)
     this.m_bcvHistory = this.MyStorage_getHistoryMostRecent()
-
-    var ary = bcv
-    if ("string" === typeof bcv) {
-        ary = [bcv]
-    }
-    for (var i = 0; i < ary.length; i++) {
-        var idx = this.m_bcvHistory.indexOf(ary[i])
-        if (idx >= 0) this.m_bcvHistory.splice(idx, 1) //remove at idx, size=1
-        this.m_bcvHistory.unshift(ary[i]);
-    }
-
-    this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:fetch idx range [0, 100].
+    this.m_bcvHistory = this.m_bcvHistory.slice(0, 100) //:max in size. fetch idx range [0, 100].
     this.update_tab()
-    this.MyStorage_setHistoryMostRecent(this.m_bcvHistory)
 }
 Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     var _THIS = this
@@ -1623,7 +1624,7 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
         }
     })
 
-    this.MyStorage_setHistoryMostRecent(this.m_bcvHistory)
+    this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
 
     var std_bcv_strn = this.m_bcvHistory.join(", ")
     Uti.Msg(std_bcv_strn)
@@ -1674,9 +1675,9 @@ Tab_mark_bcv_history.prototype.init = function () {
         RecentMarks: new Tab_HistoryMostRecentBody(false),
     }
     //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
-    this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.setHistoryMostRecentMarks)
-    this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
-    this.m_tbody.MemoryVerse.init("#MemoryVerse", MyStorage.getHistoryMostRecentBooks, MyStorage.setHistoryMostRecentBooks)
+    this.m_tbody.RecentMarks.init("#RecentMarks", MyStorage.getHistoryMostRecentMarks, MyStorage.add2HistoryMostRecentBook)
+    this.m_tbody.RecentBooks.init("#RecentBooks", MyStorage.getHistoryMostRecentBooks, MyStorage.add2HistoryMostRecentBook)
+    this.m_tbody.MemoryVerse.init("#MemoryVerse", MyStorage.getHistoryMostRecentBooks, MyStorage.add2HistoryMostRecentBook)
 
 
     var _THIS = this
@@ -2623,7 +2624,7 @@ var Uti = {
             if (idx >= 0) targetary.splice(idx, 1) //remove at idx, size=1
             targetary.unshift(ary[i]);//on top
         }
-        targetary = targetary.slice(0, 100) //:max len 100. fetch idx range [0, 100].
+        //targetary = targetary.slice(0, 100) //:max len 100. fetch idx range [0, 100].
     },
 
 
