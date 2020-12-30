@@ -13,12 +13,7 @@ body {
 
 
 
-    #chp_num{
-
-    }
-    #vrs_num{
-        
-    }
+   
 
     #menuContainer,
     #MainMenuToggler {
@@ -50,7 +45,7 @@ body {
         width: 350px;
         background: #5F95FC;
     }
-    #MainMenuToggler span, #MainMenuToggler div{
+    #MainMenuToggler span{
         display: inline-block; 
        
         text-align: center;
@@ -108,15 +103,7 @@ body {
 
 
 
-    #minus_ChpVal, #plus_ChpVal{
-        color: black;
-      
-        cursor: pointer;
-        padding: 0px 2px 5px 2px;
-        margin: 0 0 0 0;
-    }
-
-
+   
 
     .hili {
         background-color: red;
@@ -179,9 +166,6 @@ body {
         background-color: brown;
     }
 
-    .vin{
-        width:20px;
-    }
 
 
     div.tx[contenteditable] {
@@ -196,15 +180,46 @@ body {
     /*** For ***/
     
 
+    #minus_ChpVal, #plus_ChpVal{
+        color: black;
+      
+        cursor: pointer;
+        padding: 0px 2px 5px 2px;
+        margin: 0 0 0 0;
+    }
+
 
     #Tab_BibleSingleInputKey{
         background-color: rgb(31, 23, 80);
     }
-    #DigitOfChapt {
+    #DigitOfChapt, #chp_num {
         background-color: rgb(149, 97, 29); 
     }
-    #DigitOfVerse {
-        background-color:gray;
+    #DigitOfVerse,  #vrs_num {
+        background-color:rgb(99, 120, 6);
+    }
+
+    #chp_num, #vrs_num{
+        display: inline-block; 
+       
+        text-align: center;
+       
+        width: 30px;
+        height: 19px;
+
+        padding: 0px 0px 0px 0px;
+        margin: 0px 0px 0px 0px;
+        border: .1px solid black;
+        cursor: pointer;
+    }
+    .vin{
+        width:20px;
+    }
+    .vinNum{
+        background-color: rgb(163, 17, 207);
+    }
+    .vinCap{
+        
     }
 
     button.digit{
@@ -321,9 +336,7 @@ body {
         background-color: rgb(74, 155, 202);
     }
 
-    .vin {
-        height: px;
-    }
+  
 
     #sinput,#searchResult{
         width:280px;
@@ -518,9 +531,7 @@ input[title='NIV']:checked:after {
     border: 3px solid red;
 }
 
-.vinNum{
-    background-color: rgb(163, 17, 207);
-}
+
 .hiliExt{
     background-color: darkblue;
 }

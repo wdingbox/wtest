@@ -1079,7 +1079,6 @@ SingleKeyInputPanel.prototype.Get_Vol_Arr_from_KeyChar = function (ch) {
 
 function SingleKeyOutputBooksTable(tid) {
     this.m_id = tid; //"#Tab_OutputBooksList"
-    this.m_chp_vrs_clsnam = "chapvrsnum"
     this.cbf_onClickItm = null
 }
 SingleKeyOutputBooksTable.prototype.init = function (par) {
@@ -3029,7 +3028,7 @@ var BibleInputMenuContainer = `
 <div id="MainMenuToggler">
     <a id="bk_name">Select A Book</a>
     <a id="minus_ChpVal" op='—'>--</a>
-    <div class='chapvrsnum' id='chp_num'>chap</div><a id="plus_ChpVal"> : </a><div class='chapvrsnum' id='vrs_num'>ver</div>
+    <div id='chp_num'>chap</div><a id="plus_ChpVal"> : </a><div id='vrs_num'>ver</div>
 </div>
 
 <!----------------------------->
