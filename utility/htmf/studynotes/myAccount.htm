@@ -153,8 +153,9 @@
         function LoadStorageInRepos() {
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             MyStorage.Repo_load(function(ret){
-                console.log("data")
+                console.log("data",ret)
                 Uti.Msg("LoadStorage", ret)
+                if(!ret.out || !ret.out.data) return alert("repository data not available.")
                 var stb="<table border='1'><thead><tr><th></th><th>Keys</th><th>Repo</th><th>localStorage</th></tr></thead><tbody>"
                 Object.keys(ret.out.data).forEach(function(key,i){
                     key = key.trim()

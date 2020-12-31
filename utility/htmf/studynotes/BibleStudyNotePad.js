@@ -33,6 +33,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
+        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
         if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
@@ -54,7 +55,7 @@ var MyStorage = {
             Object.assign(Jsonpster.inp.usr, obj)
         }
         StoreRepositorie.prototype.get_obj_fr_ui = function () {
-            return { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val()  }
+            return { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val() }
         }
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
@@ -66,12 +67,15 @@ var MyStorage = {
             return ar
         }
         StoreRepositorie.prototype.repos_store_set = function (obj) {
-            var sobj = JSON.stringify(obj)
             var ar = this.repos_store_get()
+            if (!obj.repopath) {
+                return ar;
+            }
+            var sobj = JSON.stringify(obj)
             for (var i = 0; i < ar.length; i++) {
                 var sob = JSON.stringify(ar[i])
-                if (sob === sobj) {
-                    ar.splice(i, 1) //:remove
+                if (sob === sobj || !ar[i].repopath) {
+                    ar.splice(i, 1) //:remove it.
                 }
             }
             ar.unshift(obj) //addto head.
@@ -1849,7 +1853,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_date").bind("click", function () {
         var tx = $("#repodesc").val()
         var d = new Date()
-        $("#repodesc").val(d.toISOString().substr(0,10) + "," + d.toLocaleTimeString() + ". " + tx)
+        $("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
     $("#account_helper").bind("click", function () {
         Uti.open_child_window("./myAccount.htm", function (data) {
@@ -2890,7 +2894,8 @@ var Uti = {
     open_child_window: function (htm_fname, cbf) {
         const urlParams = new URLSearchParams(window.location.search);
         ip = urlParams.get('ip');
-        window.open(`./${htm_fname}?ip=${ip}`)
+        var parm = (ip) ? `ip=${ip}` : ""
+        window.open(`./${htm_fname}?${parm}`)
 
         window.addEventListener('message', function (e) {
             var key = e.message ? 'message' : 'data';

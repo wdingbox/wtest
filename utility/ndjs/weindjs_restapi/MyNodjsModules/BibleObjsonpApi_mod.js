@@ -268,6 +268,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
             if (!proj) return
+            await userProject.git_proj_setup(res)
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
@@ -281,7 +282,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             await userProject.git_add_commit_push(msg)
         })
     },
-    ApiUsrDat_load: function (req, res) {
+    ApiUsrDat_load: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
@@ -289,6 +290,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
         if (!proj) return
+
+        await userProject.git_proj_setup(res)
+
 
         userProject.git_pull()
 
@@ -328,7 +332,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
-        inp = await userProject.git_proj_setup(res)
+        await userProject.git_proj_setup(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
@@ -398,6 +402,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
+        await userProject.git_proj_setup(res)
         await userProject.git_add_commit_push("push all changes.")
 
         var sret = JSON.stringify(inp, null, 4)
