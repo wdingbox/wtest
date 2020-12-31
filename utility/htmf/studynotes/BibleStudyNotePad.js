@@ -2907,7 +2907,13 @@ var Uti = {
             const urlParams = new URLSearchParams(window.location.search);
             ip = urlParams.get('ip');
             if (!ip) {
-                return alert("[missed in url] ?ip=x.x.x.x", shr)
+                ip = window.location.host
+            }
+            if (!ip) {
+                ip = window.location.hostname
+            }
+            if (!ip) {
+                return alert("[missed in url] ?ip=x.x.x.x")
             }
             var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
             var bcv = ""
