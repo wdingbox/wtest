@@ -77,7 +77,7 @@ body {
     }
    
 
-    #repository_assitance{
+    #repository_assitance, #repository_description{
         float:right;
     }
 
@@ -332,7 +332,7 @@ body {
         display: block;
     }
 
-    #repository{
+    #repository, #repodesc{
         width:250px;
     }
     #tmpsel2ref thead,

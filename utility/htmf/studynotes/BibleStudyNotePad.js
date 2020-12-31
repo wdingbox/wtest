@@ -50,10 +50,11 @@ var MyStorage = {
         StoreRepositorie.prototype.repos_ui_set = function (obj) {
             $("#repository").val(obj.repository)
             $("#passcode").val(obj.passcode)
+            $("#repodesc").val(obj.repodesc)
             Object.assign(Jsonpster.inp.usr, obj)
         }
         StoreRepositorie.prototype.get_obj_fr_ui = function () {
-            return { repository: $("#repository").val(), passcode: $("#passcode").val() }
+            return { repository: $("#repository").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val()  }
         }
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
@@ -1841,9 +1842,14 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
 
-    $("#account_default").bind("click",function(){
+    $("#account_default").bind("click", function () {
         $("#repository").val("https://github.com/wdingbox/biblestudynote_pub_test.git")
         $("#passcode").val("")
+    })
+    $("#account_date").bind("click", function () {
+        var tx = $("#repodesc").val()
+        var d = new Date()
+        $("#repodesc").val(d.toISOString().substr(0,10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
     $("#account_helper").bind("click", function () {
         Uti.open_child_window("./myAccount.htm", function (data) {
@@ -3208,7 +3214,15 @@ var BibleInputMenuContainer = `
                             </span>
                             <br>
                             <textarea id="repository" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
-                            <br><a id="passcode_toggler">Passcode:</a><br>
+                            <br>
+                            <a>Description</a>:
+                            <span id="repository_description">
+                            <a id="account_date"> date</a> 
+                            </span>
+                            <br>
+                            <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
+                            <br>
+                            <a id="passcode_toggler">Passcode:</a><br>
                             <input id="passcode" type="password" value=''></input><br>
                             <button id="account_set">set</button>
                             <a id="account_set_info"></a>
