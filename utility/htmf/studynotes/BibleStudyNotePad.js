@@ -3196,7 +3196,7 @@ var BibleInputMenuContainer = `
                 <table id='' border="1" style="width:100%;">
                     <thead>
                         <tr>
-                            <td>#</td>
+                    
                             <td>desc</td>
                             <td>Setting</td>
                             
@@ -3204,25 +3204,27 @@ var BibleInputMenuContainer = `
                     </thead>
                     <tbody id="">
                         <tr>
-                            <td></td>
-                            <td id="account_history">usrData</td>
+                            <td id="account_history">User<br>Info</td>
                             <td>
-                            <a>Repository</a>:
-                            <span id="repository_assitance">
+                            <a>Repository</a>: 
+                            <div id="repository_assitance">
                             <a id="account_default"> default</a> | 
                             <a id="account_helper">help</a>
-                            </span>
+                            </div>
                             <br>
                             <textarea id="repopath" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
                             <br>
-                            <a>Description</a>:
+                            <a>Description</a>: 
                             <span id="repository_description">
-                            <a id="account_date"> date</a> 
+                            <a id="account_date">(optional)</a> 
                             </span>
                             <br>
                             <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
                             <br>
-                            <a id="passcode_toggler">Passcode:</a><br>
+                            <a id="passcode_toggler">Passcode:</a> 
+                            <span id="repository_description">
+                            <a id="account_date">(optional)</a> 
+                            </span><br>
                             <input id="passcode" type="password" value=''></input><br>
                             <button id="account_set">set</button>
                             <a id="account_set_info"></a>
@@ -3231,9 +3233,8 @@ var BibleInputMenuContainer = `
                         </tr>
                        
                         <tr>
-                            <td></td>
-                            <td>FontSize</td>
-                            <td>
+                            <td>Font</td>
+                            <td>Size:
                             <button onclick="g_obt.incFontSize(-2);" title='font-size minus'>-</button>
                             <a id='fontsize'></a>
                             <button onclick="g_obt.incFontSize(2);" title='font-size plus'>+</button>
@@ -3241,18 +3242,18 @@ var BibleInputMenuContainer = `
                              
                         </tr>
                         <tr>
-                            <td></td>
+                         
                             <td>Lang</td>
                             <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option>English</option><option>Chinese</option><option>India</option></select></td>
                         </tr>
                         <tr>
-                            <td></td>
+                         
                             <td>Storage</td>
                             <td>
                             <input type="radio" onclick="MyStorage.clear();" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>Save</input>
                             <input type="radio" id="StorageRepo_load" title='clear up storage'>Load</input>
-                            <a id="Storage_local_repos_exchange">StorageRepos</a>
+                            <a id="Storage_local_repos_exchange"></a>
                             </td>
                         </tr>
                     </tbody>

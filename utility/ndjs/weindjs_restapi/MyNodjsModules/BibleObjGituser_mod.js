@@ -12,6 +12,86 @@ const exec = require('child_process').exec;
 
 
 var BibleUti = {
+    GetFilesAryFromDir: function (startPath, deep, cb) {//startPath, filter
+        function recursiveDir(startPath, deep, outFilesArr) {
+            var files = fs.readdirSync(startPath);
+            for (var i = 0; i < files.length; i++) {
+                var filename = path.join(startPath, files[i]);
+                //console.log(filename);
+                var stat = fs.lstatSync(filename);
+                if (stat.isDirectory()) {
+                    if (deep) {
+                        recursiveDir(filename, deep, outFilesArr); //recurse
+                    }
+                    continue;
+                }/////////////////////////
+                else if (cb) {
+                    //console.log("file:",filename)
+                    if (!cb(filename)) continue
+                }
+                outFilesArr.push(filename);
+            };
+        };/////////////////////////////////////
+
+        var outFilesArr = [];
+        recursiveDir(startPath, deep, outFilesArr);
+        return outFilesArr;
+    },
+    access_dir: function (http, dir) {
+        function writebin(pathfile, contentType, res) {
+            var content = fs.readFileSync(pathfile)
+            //console.log("read:", pathfile)
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.write(content, 'binary')
+            res.end()
+        }
+        function writetxt(pathfile, contentType, res) {
+            var content = fs.readFileSync(pathfile, "utf8")
+            //console.log("read:", pathfile)
+            res.writeHead(200, { 'Content-Type': contentType });
+            res.write(content, 'utf-8')
+            res.end()
+        }
+        // ./assets/ckeditor/ckeditor.js"
+        // var dir = "./assets/ckeditor/"
+        console.log("lib svr:", dir)
+        var ftypes = {
+            '.ico': 'image/x-icon',
+            '.html': 'text/html',
+            '.htm': 'text/html',
+            '.js': 'text/javascript',
+            '.json': 'application/json',
+            '.css': 'text/css',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.wav': 'audio/wav',
+            '.mp3': 'audio/mpeg',
+            '.svg': 'image/svg+xml',
+            '.pdf': 'application/pdf',
+            '.doc': 'application/msword',
+            '.eot': 'appliaction/vnd.ms-fontobject',
+            '.ttf': 'aplication/font-sfnt'
+        }
+        var binaries = [".png", ".jpg", ".wav", ".mp3", ".svg", ".pdf", ".eot"]
+        BibleUti.GetFilesAryFromDir(dir, true, function (fname) {
+            var ret = path.parse(fname);
+            var ext = ret.ext
+            //console.log("ret:",ret)
+            if (ftypes[ext]) {
+                console.log("base:", ret.base)
+                console.log("api:", fname)
+                http.use("/" + fname, async (req, res) => {
+                    console.log('[post] resp save :', req.body, fname)
+                    if (binaries.indexOf(ext) >= 0) {
+                        writebin(fname, ftypes[ext], res)
+                    } else {
+                        writetxt(fname, ftypes[ext], res)
+                    }
+                })
+                return true
+            }
+        });
+    },
     GetFileSize: function (fnm) {
         if (fs.existsSync(fnm)) {
             const stats = fs.statSync(fnm);
@@ -321,8 +401,11 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         inp.out.desc = "failed parse url:" + proj_url
         return { username: "", projname: "" }
     }
-    var proj_url = inp.usr.repository = inp.usr.repository.trim()
+    var proj_url = inp.usr.repopath = inp.usr.repopath.trim()
     var passcode = inp.usr.passcode = inp.usr.passcode.trim()
+    var repodesc = inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, " ")
+    inp.usr.repodesc = repodesc
+
 
     inp.usr.proj = _parse_proj_url(proj_url)
     if (inp.usr.proj) {
@@ -338,7 +421,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
 
         inp.usr.proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
-            inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
+            inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
         }
         console.log("parse: inp.usr.proj=", inp.usr.proj)
     }
@@ -443,12 +526,13 @@ BibleObjGituser.prototype.git_clone = async function (res) {
 
     var clone_https = inp.usr.proj.git_Usr_Pwd_Url
     if (clone_https.length === 0) {
-        clone_https = inp.usr.repository
+        clone_https = inp.usr.repopath
     }
     if (clone_https.length === 0) {
         inp.out.git_clone_res.desc += ",no url."
         return inp
     }
+    console.log("to clone: ", clone_https)
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
@@ -654,23 +738,23 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 
     var txt = fs.readFileSync(git_config_fname, "utf8")
     console.log("bAllowPush:", bAllowPush)
-    console.log("old:", this.m_inp.usr.repository)
+    console.log("old:", this.m_inp.usr.repopath)
     console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
     console.log("before:\n", txt)
 
     var bNeedWrite = false
     if (bAllowPush) {
-        var ipos = txt.indexOf(this.m_inp.usr.repository)
-        console.log("ipos=", ipos, this.m_inp.usr.repository)
+        var ipos = txt.indexOf(this.m_inp.usr.repopath)
+        console.log("ipos=", ipos, this.m_inp.usr.repopath)
         if (ipos > 0) {
-            txt = txt.replace(this.m_inp.usr.repository, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+            txt = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
             bNeedWrite = true
         }
     } else {
         var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
         console.log("ipos=", ipos, this.m_inp.usr.proj.git_Usr_Pwd_Url)
         if (ipos > 0) {
-            txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repository)
+            txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
             bNeedWrite = true
         }
     }
@@ -681,7 +765,9 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         fs.writeFileSync(git_config_fname, txt, "utf8")
     }
 }
-BibleObjGituser.prototype.git_add_commit_push = async function (desc) {
+BibleObjGituser.prototype.git_add_commit_push = async function (msg) {
+    var _THIS = this
+    var inp = this.m_inp
 
     password = "lll" //dev mac
     var cmd_commit = `
@@ -690,13 +776,12 @@ echo ${password} | sudo -S git status
 echo ${password} | sudo -S git pull
 echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
 echo ${password} | sudo -S git add *
-echo ${password} | sudo -S git commit -m "svr update ${desc}"
+echo ${password} | sudo -S git commit -m "svr update ${msg}. ${inp.usr.repodesc}"
 echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
 echo ${password} | sudo -S git status
 cd -
 `
-    var _THIS = this
-    var inp = this.m_inp
+
     console.log("git_config_allow_push true first....")
     this.git_config_allow_push(true)
     inp.out.state_push = {}
