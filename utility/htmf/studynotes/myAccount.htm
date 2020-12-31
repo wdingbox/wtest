@@ -155,7 +155,7 @@
             MyStorage.Repo_load(function(ret){
                 console.log("data")
                 Uti.Msg("LoadStorage", ret)
-                var stb="<table border='1'><tbody>"
+                var stb="<table border='1'><thead><tr><th></th><th>Keys</th><th>Repo</th><th>localStorage</th></tr></thead><tbody>"
                 Object.keys(ret.out.data).forEach(function(key,i){
                     key = key.trim()
                     var locVal = localStorage.getItem(key)
