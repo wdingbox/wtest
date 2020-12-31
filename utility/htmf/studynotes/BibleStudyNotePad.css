@@ -77,6 +77,9 @@ body {
     }
    
 
+    #repopath, #repodesc{
+        width:250px;
+    }
     #repository_assitance, #repository_description{
         float:right;
     }
@@ -332,9 +335,7 @@ body {
         display: block;
     }
 
-    #repository, #repodesc{
-        width:250px;
-    }
+  
     #tmpsel2ref thead,
     #refslist thead {
         display: block;

@@ -87,8 +87,20 @@
                 </li>
             </ol>
         </div>
-        <textarea id="repository" value="https://github.com/wdingbox/bible_user_williamd.git"
+        <textarea id="repopath" value="https://github.com/wdingbox/bible_user_williamd.git"
             placeholder="https://github.com/username/reposname.git"></textarea>
+
+
+            <div>
+                Description
+            </div>
+            <textarea id="repodesc" value=""
+                placeholder="date, place"></textarea>
+
+                
+
+
+
         <label for="editor1">
             Password (optional: for data saving in your repository only) <a class="help_label"
                 onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
@@ -222,7 +234,7 @@
             $("#footer").prepend(stb).find("tr").bind("click", function () {
                 var rep = $(this).find("td:eq(1)").text()
                 var pws = $(this).find("td:eq(2)").text()
-                var pname = $("#repository").val(rep)
+                var pname = $("#repopath").val(rep)
                 var pcode = $("#passcode").val(pws)
                 $("tr.hili").removeClass("hili")
                 $(this).addClass("hili")

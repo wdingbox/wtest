@@ -33,7 +33,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repository) return alert("inp.usr is not set yet.")
+        if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
@@ -48,18 +48,18 @@ var MyStorage = {
             this.m_storeid = "repositories"
         }
         StoreRepositorie.prototype.repos_ui_set = function (obj) {
-            $("#repository").val(obj.repository)
+            $("#repopath").val(obj.repopath)
             $("#passcode").val(obj.passcode)
             $("#repodesc").val(obj.repodesc)
             Object.assign(Jsonpster.inp.usr, obj)
         }
         StoreRepositorie.prototype.get_obj_fr_ui = function () {
-            return { repository: $("#repository").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val()  }
+            return { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val()  }
         }
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
-                ar = [{ repository: "https://github.com/wdingbox/biblestudynote_pub_test.git", passcode: "" }]
+                ar = [{ repopath: "https://github.com/wdingbox/biblestudynote_pub_test.git", passcode: "" }]
             } else {
                 ar = JSON.parse(ar)
             }
@@ -450,7 +450,7 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    $("#RevTag_Info").text(Jsonpster.inp.usr["repository"])
+    $("#RevTag_Info").text(Jsonpster.inp.usr["repopath"])
 
     this.m_ediDiv.setId_Txt(par.m_txuid, par.m_rev, par.m_outxtObj)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -1843,7 +1843,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#account_default").bind("click", function () {
-        $("#repository").val("https://github.com/wdingbox/biblestudynote_pub_test.git")
+        $("#repopath").val("https://github.com/wdingbox/biblestudynote_pub_test.git")
         $("#passcode").val("")
     })
     $("#account_date").bind("click", function () {
@@ -1911,7 +1911,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var code = $(this).find("td:eq(1)").text()
             //$("#repository").val(reps)
             //$("#passcode").val(code)
-            MyStorage.Repositories().add({ repository: reps, passcode: code })
+            MyStorage.Repositories().add({ repopath: reps, passcode: code })
         });
         $("#histb").slideToggle()
     })
@@ -3213,7 +3213,7 @@ var BibleInputMenuContainer = `
                             <a id="account_helper">help</a>
                             </span>
                             <br>
-                            <textarea id="repository" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
+                            <textarea id="repopath" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
                             <br>
                             <a>Description</a>:
                             <span id="repository_description">
