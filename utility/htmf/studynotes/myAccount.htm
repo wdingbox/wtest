@@ -145,7 +145,16 @@
                 Uti.Msg("LoadStorage", ret)
                 var stb="<table border='1'><tbody>"
                 Object.keys(ret.out.data).forEach(function(key,i){
-                    stb+=`<tr><td>${i}</td><td>${key}</td><td>${ret.out.data[key]}</td></tr>`
+                    key = key.trim()
+                    var locVal = localStorage.getItem(key)
+                    stb+=`<tr><td>${i}</td><td>${key}</td><td>${ret.out.data[key]}</td><td>${locVal}</td></tr>`
+                })
+                Object.keys(localStorage).forEach(function(key,i){
+                    key = key.trim()
+                    if(undefined === ret.out.data[key]){
+                        var locVal = localStorage.getItem(key)
+                        stb+=`<tr><td>${i}</td><td>${key}</td><td></td><td>${locVal}</td></tr>`
+                    }
                 })
                 stb+="</tbody></table>"
                 $("#otb").html(stb)

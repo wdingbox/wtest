@@ -1609,7 +1609,7 @@ function Tab_MostRecentBody(bSingpleSel) {
     this.m_tbodyID = null; //"#Tab_MostRecent_BCV"
     this.m_bSingleSel = bSingpleSel
 }
-Tab_MostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
+Tab_MostRecentBody.prototype.init = function (tbodyID) {
     this.m_tbodyID = tbodyID
     this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyID)
     this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
