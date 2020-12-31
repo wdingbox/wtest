@@ -58,7 +58,7 @@ var MyStorage = {
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
-                ar = [{ repository: "", passcode: "" }]
+                ar = [{ repository: "https://github.com/wdingbox/biblestudynote_pub_test.git", passcode: "" }]
             } else {
                 ar = JSON.parse(ar)
             }
@@ -1841,6 +1841,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
 
+    $("#account_default").bind("click",function(){
+        $("#repository").val("https://github.com/wdingbox/biblestudynote_pub_test.git")
+        $("#passcode").val("")
+    })
     $("#account_helper").bind("click", function () {
         Uti.open_child_window("./myAccount.htm", function (data) {
             MyStorage.Repositories().add(data)
@@ -3198,13 +3202,14 @@ var BibleInputMenuContainer = `
                             <td id="account_history">usrData</td>
                             <td>
                             <a>Repository</a>:
-                            <a id="account_destroy"></a> 
-                    
+                            <span id="repository_assitance">
+                            <a id="account_default"> default</a> | 
                             <a id="account_helper">help</a>
+                            </span>
                             <br>
-                            <textarea id="repository" val='https://github.com/wdingbox/bible_obj_weid.git' ></textarea>
+                            <textarea id="repository" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
                             <br><a id="passcode_toggler">Passcode:</a><br>
-                            <input id="passcode" type="password" value='3edcFDSA'></input><br>
+                            <input id="passcode" type="password" value=''></input><br>
                             <button id="account_set">set</button>
                             <a id="account_set_info"></a>
                             </td>
