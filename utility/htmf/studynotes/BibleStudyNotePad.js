@@ -33,7 +33,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        if (!Jsonpster.inp.usr) return alert("user is not set yet.")
+        if (!Jsonpster.inp.usr || !Jsonpster.inp.usrrepository) return alert("inp.usr is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
@@ -1513,7 +1513,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
 Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
-    
+
     var sFile = MyStorage.getMostRecentSearchFile()
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
@@ -1715,12 +1715,12 @@ Tab_MostRecent_BCV.prototype.init = function () {
         _THIS.show_all(false)
         var cap = $(this).text()
         var ary = Object.keys(_THIS.m_tbodies)
-        
+
         var idx = 1 + ary.indexOf(cap)
         if (idx >= ary.length) idx = 0
         _THIS.m_tbodies[ary[idx]].show(true)
         var classname = clry[idx]
-        for(var i=0;i<clry.length;i++){
+        for (var i = 0; i < clry.length; i++) {
             $(this).text(ary[idx]).removeClass(clry[i])
         }
         $(this).text(ary[idx]).addClass(classname)
@@ -1833,19 +1833,41 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $("#NewPage").attr("href", window.location.href)
 
-
-    $("#account_helper").bind("click", function () {
+    function open_child_window(htm_fname, cbf) {
         const urlParams = new URLSearchParams(window.location.search);
         ip = urlParams.get('ip');
-        window.open("./myAccount.htm?ip=" + ip)
+        window.open(`./${htm_fname}?ip=${ip}`)
 
         window.addEventListener('message', function (e) {
             var key = e.message ? 'message' : 'data';
             var data = e[key];
             //run function//
             console.log("rev fr Child window.opener.", data)
-            MyStorage.Repositories().add(data)
+            //MyStorage.Repositories().add(data)
+            if (cbf) cbf(data)
         }, false);
+    }
+
+    $("#Storage_local_repos_exchange").bind("click", function () {
+        open_child_window("./myStorageRepos.htm", function (data) {
+            Uti.Msg("fr child win:", data)
+        })
+    })
+
+    $("#account_helper").bind("click", function () {
+        open_child_window("./myAccount.htm", function (data) {
+            MyStorage.Repositories().add(data)
+        })
+        //const urlParams = new URLSearchParams(window.location.search);
+        //ip = urlParams.get('ip');
+        //window.open("./myAccount.htm?ip=" + ip)
+        //window.addEventListener('message', function (e) {
+        //    var key = e.message ? 'message' : 'data';
+        //    var data = e[key];
+        //    //run function//
+        //    console.log("rev fr Child window.opener.", data)
+        //    MyStorage.Repositories().add(data)
+        //}, false);
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...")
@@ -3210,6 +3232,7 @@ var BibleInputMenuContainer = `
                             <input type="radio" onclick="MyStorage.clear();" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>Save</input>
                             <input type="radio" id="StorageRepo_load" title='clear up storage'>Load</input>
+                            <a id="Storage_local_repos_exchange">StorageRepos</a>
                             </td>
                         </tr>
                     </tbody>
