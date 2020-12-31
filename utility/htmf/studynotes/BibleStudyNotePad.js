@@ -1605,27 +1605,27 @@ Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
 
 
 
-function Tab_HistoryMostRecentBody(bSingpleSel) {
+function Tab_MostRecentBody(bSingpleSel) {
     this.m_tbodyID = null; //"#Tab_MostRecent_BCV"
     this.m_bSingleSel = bSingpleSel
 }
-Tab_HistoryMostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
+Tab_MostRecentBody.prototype.init = function (tbodyID, MyStorage_getHistoryMostRecent, add2HistoryMostRecentBook) {
     this.m_tbodyID = tbodyID
     this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyID)
     this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
 }
-Tab_HistoryMostRecentBody.prototype.show = function (bShow) {
+Tab_MostRecentBody.prototype.show = function (bShow) {
     if (bShow) $(this.m_tbodyID).show()
     else {
         $(this.m_tbodyID).hide()
     }
     return bShow
 }
-Tab_HistoryMostRecentBody.prototype.onClickHistoryItem = function (onClickHistoryItm) {
+Tab_MostRecentBody.prototype.onClickHistoryItem = function (onClickHistoryItm) {
     this.m_onClickHistoryItm = onClickHistoryItm
     this.update_tab()
 }
-Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
+Tab_MostRecentBody.prototype.addnew2table = function (bcv) {
     var ret = Uti.parse_bcv(bcv)
     if (!ret) return Uti.Msg("addnew is not valid: " + bcv)
 
@@ -1635,7 +1635,7 @@ Tab_HistoryMostRecentBody.prototype.addnew2table = function (bcv) {
     this.update_tab()
 }
 
-Tab_HistoryMostRecentBody.prototype.update_tab = function () {
+Tab_MostRecentBody.prototype.update_tab = function () {
     var _THIS = this
     var trs = ""
     this.m_bcvHistory.forEach(function (vcv, i) {
@@ -1658,7 +1658,7 @@ Tab_HistoryMostRecentBody.prototype.update_tab = function () {
         if (_THIS.m_onClickHistoryItm) _THIS.m_onClickHistoryItm(hiliary)
     })
 }
-Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
+Tab_MostRecentBody.prototype.clearHistory = function (idtxtout) {
     var _THIS = this
 
     _THIS.m_MostRecentInStore.cleanup()
@@ -1681,7 +1681,7 @@ Tab_HistoryMostRecentBody.prototype.clearHistory = function (idtxtout) {
     var stdbcv = Uti.convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn(ret.biblical_order_splitted_ary)
     Uti.Msg(stdbcv)
 }
-Tab_HistoryMostRecentBody.prototype.toggleSelAll = function () {
+Tab_MostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
 }
 
@@ -1696,11 +1696,11 @@ function Tab_MostRecent_BCV() {
 Tab_MostRecent_BCV.prototype.init = function () {
     var _THIS = this
     this.m_tbodies = {
-        MemoryVerse: new Tab_HistoryMostRecentBody(false),
-        RecentBooks: new Tab_HistoryMostRecentBody(true),
-        RecentMarks: new Tab_HistoryMostRecentBody(false),
+        MemoryVerse: new Tab_MostRecentBody(false),
+        RecentBooks: new Tab_MostRecentBody(true),
+        RecentMarks: new Tab_MostRecentBody(false),
     }
-    //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_HistoryMostRecentBody()
+    //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_MostRecentBody()
     this.m_tbodies.RecentMarks.init("#RecentMarks")
     this.m_tbodies.RecentBooks.init("#RecentBooks")
     this.m_tbodies.MemoryVerse.init("#MemoryVerse")

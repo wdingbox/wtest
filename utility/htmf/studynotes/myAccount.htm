@@ -129,6 +129,7 @@
 
     <div id="footer">
         <hr>
+        <div id="otb"></div>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
 
@@ -139,9 +140,15 @@
     <script>
         function LoadStorageInRepos() {
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
-            MyStorage.Repo_load(function(data){
+            MyStorage.Repo_load(function(ret){
                 console.log("data")
-                Uti.Msg("Load", data)
+                Uti.Msg("LoadStorage", ret)
+                var stb="<table border='1'><tbody>"
+                Object.keys(ret.out.data).forEach(function(key,i){
+                    stb+=`<tr><td>${i}</td><td>${key}</td><td>${ret.out.data[key]}</td></tr>`
+                })
+                stb+="</tbody></table>"
+                $("#otb").html(stb)
             })
         } 
         function Okey_use_this() {
