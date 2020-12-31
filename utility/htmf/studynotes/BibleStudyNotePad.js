@@ -3197,7 +3197,7 @@ var BibleInputMenuContainer = `
                             <td></td>
                             <td id="account_history">usrData</td>
                             <td>
-                            <a>Respositroy</a>:
+                            <a>Repository</a>:
                             <a id="account_destroy"></a> 
                     
                             <a id="account_helper">help</a>
