@@ -33,7 +33,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        if (!Jsonpster.inp.usr || !Jsonpster.inp.usrrepository) return alert("inp.usr is not set yet.")
+        if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repository) return alert("inp.usr is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
@@ -1833,29 +1833,16 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $("#NewPage").attr("href", window.location.href)
 
-    function open_child_window(htm_fname, cbf) {
-        const urlParams = new URLSearchParams(window.location.search);
-        ip = urlParams.get('ip');
-        window.open(`./${htm_fname}?ip=${ip}`)
 
-        window.addEventListener('message', function (e) {
-            var key = e.message ? 'message' : 'data';
-            var data = e[key];
-            //run function//
-            console.log("rev fr Child window.opener.", data)
-            //MyStorage.Repositories().add(data)
-            if (cbf) cbf(data)
-        }, false);
-    }
 
     $("#Storage_local_repos_exchange").bind("click", function () {
-        open_child_window("./myStorageRepos.htm", function (data) {
+        Uti.open_child_window("./myStorageRepos.htm", function (data) {
             Uti.Msg("fr child win:", data)
         })
     })
 
     $("#account_helper").bind("click", function () {
-        open_child_window("./myAccount.htm", function (data) {
+        Uti.open_child_window("./myAccount.htm", function (data) {
             MyStorage.Repositories().add(data)
         })
         //const urlParams = new URLSearchParams(window.location.search);
@@ -2890,6 +2877,20 @@ var Uti = {
     },
 
 
+    open_child_window: function (htm_fname, cbf) {
+        const urlParams = new URLSearchParams(window.location.search);
+        ip = urlParams.get('ip');
+        window.open(`./${htm_fname}?ip=${ip}`)
+
+        window.addEventListener('message', function (e) {
+            var key = e.message ? 'message' : 'data';
+            var data = e[key];
+            //run function//
+            console.log("rev fr Child window.opener.", data)
+            //MyStorage.Repositories().add(data)
+            if (cbf) cbf(data)
+        }, false);
+    },
 
     Jsonpster_crossloader: function (ip) {
         if (!ip) {
