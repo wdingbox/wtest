@@ -198,11 +198,6 @@ var MyStorage = {
         return new MostRecentAry(sid)
     },
     ////--------
-
-
-    ////////------
-
-    /////////-----
     addMostRecentSearchStrn: function (strn) {
         var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
         ret.addonTop(strn)
@@ -217,7 +212,7 @@ var MyStorage = {
     },
 
 
-    
+
 
     setMostRecentSearchFile: function (str) {
         if (!str) {
