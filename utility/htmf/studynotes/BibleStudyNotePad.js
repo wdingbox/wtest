@@ -3,7 +3,7 @@
 
 
 var MyStorage = {
-    init: function () {
+    init: function (cbf) {
         if (typeof (Storage) !== "undefined") {
             // Code for localStorage/sessionStorage.
             localStorage.setItem("test", [1, 2])
@@ -27,16 +27,7 @@ var MyStorage = {
             Uti.Msg(Jsonpster.Url());
             MyStorage.Repositories().get()
             MyStorage.Repo_load(function (ret) {
-                if (!ret.out.state.bOk) return alert("Repository is not available.")
-                var memo = ret.out.data["#MemoryVerse"]
-                if (memo) {
-                    var ar = JSON.parse(ret.out.data["#MemoryVerse"])
-                    for (var i = 0; i < ar.length; i++) {
-                        var bcv = ar[i]
-
-                    }
-                } else {
-                }
+                if (cbf) cbf(ret)
             })
         }, 3000)
 
@@ -140,28 +131,6 @@ var MyStorage = {
 
 
 
-
-
-
-
-
-    clear: function () {
-        localStorage.clear();
-    },
-
-    setSelectedDocsList: function (arr) {
-        localStorage.setItem("SelectedDocsList", arr)
-    },
-    getSelectedDocsList: function () {
-        var ar = localStorage.getItem("SelectedDocsList");
-        if (!ar || ar.length === 0) {
-            ar = ["NIV", "_myNote"]
-        } else {
-            ar = ar.split(",")
-        }
-        return ar
-    },
-
     MostRecentAryInStore: function (sid) {
         var MostRecentAry = function (sid) {
             this.m_sid = sid
@@ -210,6 +179,28 @@ var MyStorage = {
         var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
         return ret.get_ary()
     },
+
+
+
+
+
+    clear: function () {
+        localStorage.clear();
+    },
+
+    setSelectedDocsList: function (arr) {
+        localStorage.setItem("SelectedDocsList", arr)
+    },
+    getSelectedDocsList: function () {
+        var ar = localStorage.getItem("SelectedDocsList");
+        if (!ar || ar.length === 0) {
+            ar = ["NIV", "_myNote"]
+        } else {
+            ar = ar.split(",")
+        }
+        return ar
+    },
+
 
 
 
@@ -1945,7 +1936,7 @@ var AppInstancesManager = function () {
 AppInstancesManager.prototype.init = function () {
     var _This = this
 
-    MyStorage.init()
+    
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
@@ -2115,6 +2106,19 @@ AppInstancesManager.prototype.init = function () {
         $("#divPopupMenu").hide()
         //popupMenu.hide()
     })
+
+    MyStorage.init(function (ret) {
+        if (!ret.out.state.bOk) return alert("Repository is not available.")
+        var memo = ret.out.data["#MemoryVerse"]
+        if (memo) {
+            var ar = JSON.parse(ret.out.data["#MemoryVerse"])
+            for (var i = 0; i < ar.length; i++) {
+                var bcv = ar[i]
+                markHistory.addnew2table("MemoryVerse", bcv)
+            }
+        }
+    })
+    
 
     g_obt.onclick_popupLabel(function (par) {
         par.m_tab_documentsClusterList = tab_documentsClusterList
