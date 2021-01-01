@@ -33,7 +33,7 @@ var MyStorage = {
                     var ar = JSON.parse(ret.out.data["#MemoryVerse"])
                     for (var i = 0; i < ar.length; i++) {
                         var bcv = ar[i]
-                        
+
                     }
                 } else {
                 }
@@ -178,6 +178,13 @@ var MyStorage = {
         MostRecentAry.prototype.cleanup = function () {
             var ar = localStorage.setItem(this.m_sid, "")
         }
+        MostRecentAry.prototype.set_ary = function (ary) {
+            var s = ""
+            if (ary && ary.length > 0) {
+                s = JSON.stringify(ary)
+            }
+            var ar = localStorage.setItem(this.m_sid, s)
+        }
         MostRecentAry.prototype.addonTop = function (strn) {
             if (!strn) return
             var ar = this.get_ary()
@@ -191,36 +198,26 @@ var MyStorage = {
         return new MostRecentAry(sid)
     },
     ////--------
-   
-   
+
+
     ////////------
 
     /////////-----
     addMostRecentSearchStrn: function (strn) {
-        if (!strn) return
-        var ar = this.getMostRecentSearchStrn()
-        Uti.addonTopOfAry(ar, strn)
-        if (!ar) {
-        } else {
-            localStorage.setItem("MostRecentSearchStrn", JSON.stringify(ar))
-        }
+        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
+        ret.addonTop(strn)
     },
-    setMostRecentSearchStrn: function (obj) {
-        if (!obj) {
-            localStorage.setItem("MostRecentSearchStrn", "")
-        } else {
-            localStorage.setItem("MostRecentSearchStrn", JSON.stringify(obj))
-        }
+    setMostRecentSearchStrn: function (ar) {
+        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
+        ret.set_ary(ar)
     },
     getMostRecentSearchStrn: function () {
-        var ar = localStorage.getItem("MostRecentSearchStrn")
-        if (!ar || ar.length === 0) {
-            ar = []
-        } else {
-            ar = JSON.parse(ar)
-        }
-        return ar
+        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
+        return ret.get_ary()
     },
+
+
+    
 
     setMostRecentSearchFile: function (str) {
         if (!str) {
