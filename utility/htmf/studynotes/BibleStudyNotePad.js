@@ -2118,7 +2118,7 @@ AppInstancesManager.prototype.init = function () {
             }
         }
     })
-    
+
 
     g_obt.onclick_popupLabel(function (par) {
         par.m_tab_documentsClusterList = tab_documentsClusterList
@@ -3083,7 +3083,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
-                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Documents</button></caption>
+                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Translations</button></caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
