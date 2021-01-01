@@ -2988,7 +2988,7 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="Cluster_Documents" title='add tags'>Cluster-Documents</a>
+                <a id="Cluster_Documents" title='add tags'>Re-Cluster</a>
             </td>
         </tr>
     </tbody>
@@ -3083,7 +3083,7 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
-                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Translations</button></caption>
+                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Documents</button></caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
