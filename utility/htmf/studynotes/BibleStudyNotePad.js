@@ -15,10 +15,30 @@ var MyStorage = {
         }
 
 
-        //auto set afer load for input
+
+        ////////////////////////////////
+        //
         setTimeout(() => {
+            Uti.Msg("start ...", "" + window.location.href);
+            if ("undefined" === typeof Jsonpster) {
+                alert("Jsonpster server down.");
+            }
+            Uti.Msg("RestApi=", RestApi);
+            Uti.Msg(Jsonpster.Url());
             MyStorage.Repositories().get()
-        }, 500)
+            MyStorage.Repo_load(function (ret) {
+                if (!ret.out.state.bOk) return alert("Repository is not available.")
+                var memo = ret.out.data["#MemoryVerse"]
+                if (memo) {
+                    var ar = JSON.parse(ret.out.data["#MemoryVerse"])
+                    for (var i = 0; i < ar.length; i++) {
+                        var bcv = ar[i]
+                        
+                    }
+                } else {
+                }
+            })
+        }, 3000)
 
     },
     Repo_save: function (cbf) {
@@ -142,7 +162,7 @@ var MyStorage = {
         return ar
     },
 
-    MostRecentInStore: function (sid) {
+    MostRecentAryInStore: function (sid) {
         var MostRecentAry = function (sid) {
             this.m_sid = sid
         }
@@ -171,57 +191,10 @@ var MyStorage = {
         return new MostRecentAry(sid)
     },
     ////--------
-    addHistoryMostRecentMarks: function (strn) {
-        if (!strn) return
-        var ar = MyStorage.getHistoryMostRecentMarks()
-        Uti.addonTopOfAry(ar, strn)
-        if (!ar) {
-        } else {
-            localStorage.setItem("HistoryMostRecentMarks", JSON.stringify(ar))
-        }
-    },
-    setHistoryMostRecentMarks: function (obj) {
-        if (!obj) {
-            localStorage.setItem("HistoryMostRecentMarks", "")
-        } else {
-            localStorage.setItem("HistoryMostRecentMarks", JSON.stringify(obj))
-        }
-    },
-    getHistoryMostRecentMarks: function () {
-        var ar = localStorage.getItem("HistoryMostRecentMarks")
-        if (!ar || ar.length === 0) {
-            ar = []
-        } else {
-            ar = JSON.parse(ar)
-        }
-        return ar
-    },
+   
+   
     ////////------
-    add2HistoryMostRecentBook: function (strn) {
-        if (!strn) return
-        var ar = MyStorage.getHistoryMostRecentBooks()
-        Uti.addonTopOfAry(ar, strn)
-        if (!ar) {
-        } else {
-            localStorage.setItem("HistoryMostRecentBooks", JSON.stringify(ar))
-        }
-    },
-    setHistoryMostRecentBooks: function (obj) {
-        if (!obj) {
-            localStorage.setItem("HistoryMostRecentBooks", "")
-        } else {
-            localStorage.setItem("HistoryMostRecentBooks", JSON.stringify(obj))
-        }
-    },
-    getHistoryMostRecentBooks: function () {
-        var ar = localStorage.getItem("HistoryMostRecentBooks")
-        if (!ar || ar.length === 0) {
-            ar = []
-        } else {
-            ar = JSON.parse(ar)
-        }
-        return ar
-    },
+
     /////////-----
     addMostRecentSearchStrn: function (strn) {
         if (!strn) return
@@ -1616,7 +1589,7 @@ function Tab_MostRecentBody(bSingpleSel) {
 }
 Tab_MostRecentBody.prototype.init = function (tbodyID) {
     this.m_tbodyID = tbodyID
-    this.m_MostRecentInStore = MyStorage.MostRecentInStore(tbodyID)
+    this.m_MostRecentInStore = MyStorage.MostRecentAryInStore(tbodyID)
     this.m_bcvHistory = this.m_MostRecentInStore.get_ary()
 }
 Tab_MostRecentBody.prototype.show = function (bShow) {
