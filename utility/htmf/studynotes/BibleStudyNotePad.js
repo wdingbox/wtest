@@ -1459,7 +1459,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         }
     }
 
-    $(this.m_tbid + " caption button").text("Documents").css("background-color", "").bind("click", function () {
+    $(this.m_tbid + " caption button").text("Documents").css("background-color", "lightgrey").bind("click", function () {
         $(this).unbind()
         setTimeout(function () {
             _THIS.Gen_table_for_Sequencer()
