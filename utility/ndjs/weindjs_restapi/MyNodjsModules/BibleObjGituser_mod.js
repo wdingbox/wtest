@@ -670,7 +670,7 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
 
 BibleObjGituser.prototype.git_proj_status = function (cbf) {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
+    inp.out.state = { bGitDir: -1, bMyojDir: -1, bNoteEditable: -1, bRepositable: -1 }
 
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
@@ -692,13 +692,13 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
     /////// git status
     if (cbf) cbf()
 
-    inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
+    inp.out.state.bNoteEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir
     return inp
 }
 
 BibleObjGituser.prototype.git_status = async function () {
     var inp = this.m_inp
-    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
+    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bNoteEditable: 0 }
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status
@@ -848,15 +848,22 @@ cd -
     _THIS.m_inp.out.git_push_res = {}
     this.git_config_allow_push(true)
     await BibleUti.exec_Cmd(cmd_git_pull).then(
-        function (val) {
-            console.log("git_push.success:", val)
+        function (ret) {
+            console.log("git_push.success:", ret)
             _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.git_push_res.success = val
+            _THIS.m_inp.out.git_push_res.success = ret
+            _THIS.m_inp.out.state.bRepositable = 1
+            const erry = ["fatal", "Invalid"]
+            erry.forEach(function(errs){
+                if(ret.stderr.indexOf(errs)>=0){
+                    _THIS.m_inp.out.state.bRepositable = 0
+                }
+            })
         },
-        function (val) {
-            console.log("git_push.failure:", val)
+        function (ret) {
+            console.log("git_push.failure:", ret)
             _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.git_push_res.failure = val
+            _THIS.m_inp.out.git_push_res.failure = re
         }
     )
 }

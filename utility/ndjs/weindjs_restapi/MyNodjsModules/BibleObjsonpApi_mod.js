@@ -301,7 +301,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var jsfname = userProject.get_pfxname(doc)
         var ret = BibleUti.load_BibleObj_by_fname(jsfname)
         inp.out.data = ret.obj
-        inp.out.state = { bOk: 1 }
+        inp.out.state = { bNoteEditable: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -376,9 +376,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
-        userProject.git_proj_status(async function () {
-            await userProject.git_status()
+        var ret = userProject.git_proj_status(async function () {
         })
+        if(ret){
+            await userProject.git_push()
+        }
 
         var sret = JSON.stringify(inp, null, 4)
 

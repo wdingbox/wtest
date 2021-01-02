@@ -1833,9 +1833,17 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
-            var msg = "<font color='red'>not valid</font>"
-            if (ret.out.state && ret.out.state.bOk) msg = "<font color='green'>ok</font>"
-            $("#account_set_info").html(msg)
+            var sta = ret.out.state
+            var msg = "<font color='red'>Invalid Repository</font>"
+            if (sta) {
+                var colr = (sta && 1 === sta.bNoteEditable) ? "green" : "red"
+                var msg = `<font color='${colr}'>bNoteEditable=${sta.bNoteEditable}</font>`
+
+                var colr = (sta && 1 === sta.bRepositable) ? "green" : "yellow"
+                msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+            }
+
+            $("#account_set_info").html(msg).show()
         })
     })
     $("#account_destroy").bind("click", function () {
@@ -1864,8 +1872,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         }
         stb += "</table>"
 
-        $("#histb").html(stb).find("tr").bind("click", function () {
-            $("#histb").find(".hili").removeClass('hili')
+        $("#outConfig").html(stb).find("tr").bind("click", function () {
+            $("#outConfig").find(".hili").removeClass('hili')
             $(this).addClass("hili")
             var reps = $(this).find("td:eq(0)").attr("val")
             var code = $(this).find("td:eq(1)").text()
@@ -1873,7 +1881,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             //$("#passcode").val(code)
             MyStorage.Repositories().add({ repopath: reps, passcode: code })
         });
-        $("#histb").slideToggle()
+        $("#outConfig").slideToggle()
     })
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
@@ -1884,18 +1892,18 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#StorageRepo_save").bind("click", function () {
-        $("#histb").text($(this).text() + " ...").show()
+        $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_save(function () {
-            $("#histb").html("<font color='lightgreen'>Success</font>")
+            $("#outConfig").html("<font color='lightgreen'>Success</font>")
         })
     })
     $("#StorageRepo_load").bind("click", function () {
-        $("#histb").text($(this).text() + " ...").show()
+        $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_load(function (ret) {
-            if (ret.out.state.bOk) {
-                $("#histb").html("<font color='lightgreen'>Success</font>")
+            if (ret.out.state.bNoteEditable) {
+                $("#outConfig").html("<font color='lightgreen'>bNoteEditable=true</font>")
             } else {
-                $("#histb").html("<font color='red'>failed</font>")
+                $("#outConfig").html("<font color='red'>bNoteEditable=false</font>")
             }
         })
     })
@@ -1936,7 +1944,7 @@ var AppInstancesManager = function () {
 AppInstancesManager.prototype.init = function () {
     var _This = this
 
-    
+
 
     $("body").prepend(BibleInputMenuContainer);
     $("#menuContainer").draggable();
@@ -2108,8 +2116,8 @@ AppInstancesManager.prototype.init = function () {
     })
 
     MyStorage.init(function (ret) {
-        if (!ret.out.state.bOk) return alert("Repository is not available.")
-        var memo = ret.out.data["#MemoryVerse"]
+        if (!ret.out.state.bNoteEditable) return alert("bNoteEditable=false.")
+        var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
         if (memo) {
             var ar = JSON.parse(ret.out.data["#MemoryVerse"])
             for (var i = 0; i < ar.length; i++) {
@@ -3238,7 +3246,7 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                 </table>
-                <a id="histb" style="display:none"></a>
+                <div id="outConfig" style="display:none"></div>
             
 
                
