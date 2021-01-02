@@ -6,7 +6,7 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" hrefxxxxxxxxx="./BibleStudyNotePad.css?v=2020dec21b">
+    <link rel="stylesheet" href="./BibleStudyNotePad.css?v=2020dec21b">
     </link>
 
     <!-------------------------------------------->
@@ -32,11 +32,17 @@
     <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
     <style>
-        body,
+        body{
+            background-color: aliceblue;
+        }
         table {
             padding: 10px 10px 10px 10px;
             margin: 10px 10px 10px 10px;
             /*font-size:xx-large;*/
+        }
+        form{
+            background-color: rgb(204, 177, 161);
+            width: 260px;
         }
 
 
@@ -69,21 +75,21 @@
 
     <form action="" method="post">
         <div>
-            Repository <a class="help_label" onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
+            Repository: (<font color='red'>required</font>) <a class="help_label" onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
         </div>
         <div class="helpinfo Repository" id="help_Repository">
             <p>
-                To get a repository (clone HTTPS url):
+                To get your repository (clone HTTPS url):
             </p>
             <ol>
                 <li>
-                    register an account in <a href="https://github.com/">github.com</a>
+                    register an account in <a href="https://github.com/">github.com</a>. (see <a href="https://www.youtube.com/watch?v=hMfi_ONvGEs&t=0m40s">how @0:40</a>)
                 </li>
                 <li>
-                    create a New repository (public is recommended)
+                    create a New repository (see <a href="https://www.youtube.com/watch?v=hMfi_ONvGEs&t=1m40s">how @1:40</a>, "public" is recommended for beginner.)
                 </li>
                 <li>
-                    copy reposistory HTTPS url to paste into following input box.
+                    click "Clone or download" button, then click "copy" for reposistory HTTPS url. Paste it into this input box.
                 </li>
             </ol>
         </div>
@@ -92,7 +98,7 @@
 
 
             <div>
-                Description
+                Description: (optional) 
             </div>
             <textarea id="repodesc" value=""
                 placeholder="date, place"></textarea>
@@ -102,7 +108,7 @@
 
 
         <label for="editor1">
-            Password (optional: for data saving in your repository only) <a class="help_label"
+            Password: (optional) <a class="help_label"
                 onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
         </label>
         <div class="helpinfo Password">
@@ -111,14 +117,14 @@
             </a>
             <ol>
                 <li>
-                    push data into repository, or
+                    push data into repository (public or private), or
                 </li>
                 <li>
                     pull data from private repository.
                 </li>
             </ol>
             <a>
-                The password can be used right before you manually push data into the repository.
+                For security, the password can be used right before you manually push data into the repository before you left.
             </a>
         </div>
         <input id="passcode" value=""></input>
@@ -128,12 +134,14 @@
         <button onclick="repo_destroy();">Destroy</button>
         <button onclick="repo_pushback();">Push</button>
         <button onclick="repo_status();">Status</button>
-        <button onclick="Okey_use_this();">OK,use this</button>
-        <br>
+        <button onclick="Okey_use_this();">Send to Parent Window</button>
+    </p>
+    <p>
         <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
         <button onclick="LoadStorage();"></button>
-        <br>
-        <button onclick="repo_histroy();">histroy</button>
+    </p>
+    <p>
+        <button id = "histroy" onclick="repo_histroy();">histroy</button>
         <button onclick="RemoveInHistory();">RemoveInHistory</button>
     </p>
 
@@ -190,7 +198,7 @@
             })
         }
         function repo_destroy() {
-            if (!confirm("All data will be destroyed.")) return
+            if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
@@ -210,6 +218,8 @@
             })
         }
         function repo_pushback() {
+            var passcode = $("#passcode").val()
+            if(passcode.trim().length===0) return alert("passcode is required to push data into your repository.")
             if (!confirm("push data into repository")) return
             Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
@@ -217,12 +227,18 @@
             Jsonpster.Run(function (ret) {
 
                 dbg_pster(ret)
-                Uti.Msg("Status:", ret.out)
+                Uti.Msg("output status:", ret.out)
+        
+                Uti.Msg("ret.out.state_push.success.stderr=", ret.out.state_push.success.stderr)
+                var errmsg = "Invalid username or password."
+                if(ret.out.state_push.success.stderr.indexOf(errmsg)>=0){
+                    alert(errmsg)
+                }
             })
         }
         function repo_histroy() {
             var ar = MyStorage.Repositories().get()
-            var stb = "<table id='account_history_table' border='1'><caption>History</caption>"
+            var stb = "<table id='account_history_table' border='1'><caption>Most Recently Used Repository</caption>"
             for (var i = 0; i < ar.length; i++) {
                 stb += `<tr><td>${i}</td>`
                 Object.keys(ar[i]).forEach(function (key) {
@@ -274,15 +290,19 @@
         else {
             $("title").text("acct")
             dbg_pster()
+
+            $("#histroy").trigger("click")
         }
         //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-    }, 1000)
+    }, 2000)
 </script>
 <script>
     $(function () {
         //init_CKEditor()
         //init_ui_cmd()
         //load_page_by_parent_storage()
+
+        
 
 
     })

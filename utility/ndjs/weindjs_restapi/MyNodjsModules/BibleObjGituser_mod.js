@@ -667,22 +667,27 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
 BibleObjGituser.prototype.git_proj_status = function (cbf) {
     var inp = this.m_inp
     inp.out.state = { bGitDir: 0, bMyojDir: 0, bOk: 0 }
-    var gitdir = this.get_usr_git_dir("/.git/config")
-    if (fs.existsSync(gitdir)) {
-        inp.out.state.bGitDir = 1
-        var txt = fs.readFileSync(gitdir, "utf8")
-        var pos0 = txt.indexOf("[remote \"origin\"]")
-        var pos1 = txt.indexOf("[branch \"master\"]")
-        inp.out.state.config = txt.substring(pos0, pos1)
-
-        /////// git status
-        if (cbf) cbf()
-    }
 
     var accdir = this.get_usr_myoj_dir()
-    if (fs.existsSync(accdir)) {
-        inp.out.state.bMyojDir = 1
+    if (!fs.existsSync(accdir)) {
+        return inp
     }
+    inp.out.state.bMyojDir = 1
+
+    var gitdir = this.get_usr_git_dir("/.git/config")
+    if (!fs.existsSync(gitdir)) {
+        return inp
+    }
+    inp.out.state.bGitDir = 1
+
+    var txt = fs.readFileSync(gitdir, "utf8")
+    var pos0 = txt.indexOf("[remote \"origin\"]")
+    var pos1 = txt.indexOf("[branch \"master\"]")
+    inp.out.state.config = txt.substring(pos0+19, pos1)
+
+    /////// git status
+    if (cbf) cbf()
+
     inp.out.state.bOk = inp.out.state.bGitDir * inp.out.state.bMyojDir
     return inp
 }
