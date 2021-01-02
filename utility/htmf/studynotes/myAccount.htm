@@ -138,7 +138,7 @@
     </p>
     <p>
         <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
-        <button onclick="LoadStorage();"></button>
+        <xbutton onclick="LoadStorage();"></xbutton>
     </p>
     <p>
         <button id = "histroy" onclick="repo_histroy();">histroy</button>
@@ -264,7 +264,7 @@
 
             var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
             if (ret) {
-                MyStorage.Repositories().del({ repository: rep, passcode: pws })
+                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
                 $(".hili").remove()
             }
         }

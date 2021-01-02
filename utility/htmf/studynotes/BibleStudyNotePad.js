@@ -82,18 +82,26 @@ var MyStorage = {
             if (!obj.repopath) {
                 return ar;
             }
-            var sobj = JSON.stringify(obj)
             for (var i = 0; i < ar.length; i++) {
-                var sob = JSON.stringify(ar[i])
-                if (sob === sobj || !ar[i].repopath) {
+                if (obj.repopath === ar[i].repopath) {
                     ar.splice(i, 1) //:remove it.
                 }
             }
             ar.unshift(obj) //addto head.
-            Uti.Msg("Repository:set=", ar)
+            //Uti.Msg("Repository:set=", ar)
             var str = JSON.stringify(ar)
             localStorage.setItem(this.m_storeid, str)
             return ar
+        }
+        StoreRepositorie.prototype.repos_store_del = function (obj) {
+            var ar = this.repos_store_get()
+            for (var i = 0; i < ar.length; i++) {
+                if (ar[i].repopath === obj.repopath) {
+                    ar.splice(i, 1)
+                }
+            }
+            var str = JSON.stringify(ar)
+            localStorage.setItem(this.m_storeid, str)
         }
         StoreRepositorie.prototype.add = function (obj) {
             var ar = this.repos_store_set(obj)
@@ -107,23 +115,13 @@ var MyStorage = {
         StoreRepositorie.prototype.get = function (idx) {
             var ar = this.repos_store_get()
             this.repos_ui_set(ar[0])
-            Uti.Msg("Repository:get=", ar)
+            //Uti.Msg("Repository:get=", ar)
             if (Number.isInteger(idx) && idx >= 0 && idx < ar.length) {
                 return ar[ix]
             }
             return ar
         }
-        StoreRepositorie.prototype.del = function (obj) {
-            var ar = this.repos_store_get()
-            for (var i = 0; i < ar.length; i++) {
-                var sar = JSON.stringify(ar[i])
-                if (sar === JSON.stringify(obj)) {
-                    ar.splice(i, 1)
-                }
-            }
-            var str = JSON.stringify(ar)
-            localStorage.setItem(this.m_storeid, str)
-        }
+        
 
         var storeRepo = new StoreRepositorie()
         return storeRepo
@@ -1860,27 +1858,22 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         var ar = MyStorage.Repositories().get()
         var stb = "<table id='account_history_table' border='1'>"
         for (var i = 0; i < ar.length; i++) {
-            stb += "<tr>"
-            Object.keys(ar[i]).forEach(function (key, k) {
-                var str = ar[i][key]
-                if (0 === k) {
-                    str = str.substr(19)
-                }
-                stb += `<td class='repohist${k}' val='${ar[i][key]}'>${str}</td></td>`
-            })
+            var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
+            stb += `<tr><td class='repo_delete'>${i}</td>`
+            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${str}</td></td>`
             stb += "</tr>"
         }
         stb += "</table>"
 
-        $("#outConfig").html(stb).find("tr").bind("click", function () {
+        $("#outConfig").html(stb).find(".repohistory").bind("click", function () {
             $("#outConfig").find(".hili").removeClass('hili')
             $(this).addClass("hili")
-            var reps = $(this).find("td:eq(0)").attr("val")
-            var code = $(this).find("td:eq(1)").text()
-            //$("#repository").val(reps)
-            //$("#passcode").val(code)
-            MyStorage.Repositories().add({ repopath: reps, passcode: code })
+            var repopath = $(this).attr("repopath")
+            var repodesc = $(this).attr("repodesc")
+            var passcode = $(this).attr("passcode")
+            MyStorage.Repositories().add({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
+
         $("#outConfig").slideToggle()
     })
     $("#passcode_toggler").bind("click", function () {
