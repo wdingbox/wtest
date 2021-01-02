@@ -543,6 +543,7 @@ echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${pr
 echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 echo " git_clone_cmd end."
 #cd -`
+    console.log("git_clone_cmd", git_clone_cmd)
 
     //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
     function _update_inp_out_git_clone_res(msg) {
@@ -729,7 +730,10 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         //https://github.com/wdingbox:passcode@/bible_obj_weid.git
     } /////////
 
+    if (!this.m_inp.usr.repopath) return
     if (!this.m_inp.usr.proj) return
+    if (!this.m_inp.usr.proj.git_Usr_Pwd_Url) return
+
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(git_config_fname)) {
         console.log(".git/config not exist:", git_config_fname)
@@ -746,14 +750,14 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     if (bAllowPush) {
         var ipos = txt.indexOf(this.m_inp.usr.repopath)
         console.log("ipos=", ipos, this.m_inp.usr.repopath)
-        if (ipos > 0) {
+        if (ipos > 0 && this.m_inp.usr.proj.git_Usr_Pwd_Url.length > 0) {
             txt = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
             bNeedWrite = true
         }
     } else {
         var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
         console.log("ipos=", ipos, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        if (ipos > 0) {
+        if (ipos > 0 && this.m_inp.usr.proj.git_Usr_Pwd_Url.length > 0) {
             txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
             bNeedWrite = true
         }
