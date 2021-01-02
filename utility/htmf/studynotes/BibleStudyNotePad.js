@@ -25,7 +25,7 @@ var MyStorage = {
             }
             Uti.Msg("RestApi=", RestApi);
             Uti.Msg(Jsonpster.Url());
-            MyStorage.Repositories().get()
+            MyStorage.Repositories().repos_app_init()
             MyStorage.Repo_load(function (ret) {
                 if (cbf) cbf(ret)
             })
@@ -44,7 +44,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
@@ -59,15 +59,7 @@ var MyStorage = {
         function StoreRepositorie() {
             this.m_storeid = "repositories"
         }
-        StoreRepositorie.prototype.repos_ui_set = function (obj) {
-            $("#repopath").val(obj.repopath)
-            $("#passcode").val(obj.passcode)
-            $("#repodesc").val(obj.repodesc)
-            Object.assign(Jsonpster.inp.usr, obj)
-        }
-        StoreRepositorie.prototype.get_obj_fr_ui = function () {
-            return { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val() }
-        }
+        
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
@@ -103,22 +95,23 @@ var MyStorage = {
             var str = JSON.stringify(ar)
             localStorage.setItem(this.m_storeid, str)
         }
-        StoreRepositorie.prototype.add = function (obj) {
+
+        StoreRepositorie.prototype.repos_app_set = function (obj) {
+            $("#repopath").val(obj.repopath)
+            $("#passcode").val(obj.passcode)
+            $("#repodesc").val(obj.repodesc)
+            Object.assign(Jsonpster.inp.usr, obj)
             var ar = this.repos_store_set(obj)
-            this.repos_ui_set(ar[0])
-        }
-        StoreRepositorie.prototype.add_fr_ui = function () {
-            var obj = this.get_obj_fr_ui()
-            var ar = this.repos_store_set(obj)
+            return ar
+        }    
+        StoreRepositorie.prototype.repos_app_update = function () {
+            var obj = { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val() }
+            var ar = this.repos_app_set(obj)
             return ar[0]
         }
-        StoreRepositorie.prototype.get = function (idx) {
+        StoreRepositorie.prototype.repos_app_init = function () {
             var ar = this.repos_store_get()
-            this.repos_ui_set(ar[0])
-            //Uti.Msg("Repository:get=", ar)
-            if (Number.isInteger(idx) && idx >= 0 && idx < ar.length) {
-                return ar[ix]
-            }
+            this.repos_app_set(ar[0])
             return ar
         }
         
@@ -1811,22 +1804,12 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_helper").bind("click", function () {
         Uti.open_child_window("./myAccount.htm", function (data) {
-            MyStorage.Repositories().add(data)
+            MyStorage.Repositories().repos_app_set(data)
         })
-        //const urlParams = new URLSearchParams(window.location.search);
-        //ip = urlParams.get('ip');
-        //window.open("./myAccount.htm?ip=" + ip)
-        //window.addEventListener('message', function (e) {
-        //    var key = e.message ? 'message' : 'data';
-        //    var data = e[key];
-        //    //run function//
-        //    console.log("rev fr Child window.opener.", data)
-        //    MyStorage.Repositories().add(data)
-        //}, false);
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...")
-        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1846,7 +1829,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1855,7 +1838,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_history").bind("click", function () {
-        var ar = MyStorage.Repositories().get()
+        var ar = MyStorage.Repositories().repos_app_init()
         var stb = "<table id='account_history_table' border='1'>"
         for (var i = 0; i < ar.length; i++) {
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
@@ -1871,7 +1854,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var repopath = $(this).attr("repopath")
             var repodesc = $(this).attr("repodesc")
             var passcode = $(this).attr("passcode")
-            MyStorage.Repositories().add({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
 
         $("#outConfig").slideToggle()

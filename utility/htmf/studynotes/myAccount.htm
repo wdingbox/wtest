@@ -159,7 +159,7 @@
 
     <script>
         function LoadStorageInRepos() {
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             MyStorage.Repo_load(function(ret){
                 console.log("data",ret)
                 Uti.Msg("LoadStorage", ret)
@@ -184,12 +184,12 @@
         function Okey_use_this() {
             if(!Jsonpster.inp) return alert("empty inp")
             if(!Jsonpster.inp.usr) return alert("empty usr")
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
             window.opener.postMessage(Jsonpster.inp.usr, '*');
         }
         function repo_create() {
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -199,7 +199,7 @@
         }
         function repo_destroy() {
             if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -208,7 +208,7 @@
             })
         }
         function repo_status() {
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -221,7 +221,7 @@
             var passcode = $("#passcode").val()
             if(passcode.trim().length===0) return alert("passcode is required to push data into your repository.")
             if (!confirm("push data into repository")) return
-            Jsonpster.inp.usr = MyStorage.Repositories().add_fr_ui()
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -237,7 +237,7 @@
             })
         }
         function repo_histroy() {
-            var ar = MyStorage.Repositories().get()
+            var ar = MyStorage.Repositories().repos_app_init()
             var stb = "<table id='account_history_table' border='1'><caption>Most Recently Used Repository</caption>"
             for (var i = 0; i < ar.length; i++) {
                 stb += `<tr><td>${i}</td>`
