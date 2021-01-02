@@ -1836,10 +1836,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var sta = ret.out.state
             var msg = "<font color='red'>Invalid Repository</font>"
             if (sta) {
-                var colr = (sta && 1 === sta.bNoteEditable) ? "green" : "red"
+                var colr = (sta && 1 === sta.bNoteEditable) ? "lightgreen" : "red"
                 var msg = `<font color='${colr}'>bNoteEditable=${sta.bNoteEditable}</font>`
 
-                var colr = (sta && 1 === sta.bRepositable) ? "green" : "yellow"
+                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
                 msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
             }
 
