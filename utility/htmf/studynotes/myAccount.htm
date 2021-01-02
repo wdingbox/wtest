@@ -229,9 +229,9 @@
                 dbg_pster(ret)
                 Uti.Msg("output status:", ret.out)
         
-                Uti.Msg("ret.out.state_push.success.stderr=", ret.out.state_push.success.stderr)
+                Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
                 var errmsg = "Invalid username or password."
-                if(ret.out.state_push.success.stderr.indexOf(errmsg)>=0){
+                if(ret.out.git_push_res.success.stderr.indexOf(errmsg)>=0){
                     alert(errmsg)
                 }
             })

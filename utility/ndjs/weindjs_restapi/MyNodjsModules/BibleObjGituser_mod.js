@@ -541,7 +541,6 @@ BibleObjGituser.prototype.git_clone = async function (res) {
 cd ${this.m_rootDir}
 echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_dir}
 echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
-echo " git_clone_cmd end."
 #cd -`
     console.log("git_clone_cmd", git_clone_cmd)
 
@@ -660,7 +659,12 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
 
     var accdir = this.get_usr_acct_dir()
     await this.change_perm_cmd(accdir)
-    this.git_proj_status(null)
+    var retp = this.git_proj_status()
+    if (retp) {
+        await this.git_push()
+    }
+
+
     return inp
 }
 
@@ -670,20 +674,20 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
 
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
-        return inp
+        return null
     }
     inp.out.state.bMyojDir = 1
 
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(gitdir)) {
-        return inp
+        return null
     }
     inp.out.state.bGitDir = 1
 
     var txt = fs.readFileSync(gitdir, "utf8")
     var pos0 = txt.indexOf("[remote \"origin\"]")
     var pos1 = txt.indexOf("[branch \"master\"]")
-    inp.out.state.config = txt.substring(pos0+19, pos1)
+    inp.out.state.config = txt.substring(pos0 + 19, pos1)
 
     /////// git status
     if (cbf) cbf()
@@ -793,17 +797,17 @@ cd -
 
     console.log("git_config_allow_push true first....")
     this.git_config_allow_push(true)
-    inp.out.state_push = {}
+    inp.out.git_push_res = {}
     await BibleUti.exec_Cmd(cmd_commit).then(
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
-            inp.out.state_push.success = val
+            inp.out.git_push_res.success = val
         },
         function (val) {
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
-            inp.out.state_push.failure = val
+            inp.out.git_push_res.failure = val
         }
     )
 }
@@ -827,6 +831,32 @@ cd -
         function (val) {
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
+        }
+    )
+}
+
+BibleObjGituser.prototype.git_push = async function () {
+    password = "lll" //dev mac
+    var cmd_git_pull = `
+#!/bin/sh
+cd  ${this.get_usr_git_dir()}
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
+cd -
+`
+
+    var _THIS = this
+    _THIS.m_inp.out.git_push_res = {}
+    this.git_config_allow_push(true)
+    await BibleUti.exec_Cmd(cmd_git_pull).then(
+        function (val) {
+            console.log("git_push.success:", val)
+            _THIS.git_config_allow_push(false)
+            _THIS.m_inp.out.git_push_res.success = val
+        },
+        function (val) {
+            console.log("git_push.failure:", val)
+            _THIS.git_config_allow_push(false)
+            _THIS.m_inp.out.git_push_res.failure = val
         }
     )
 }
