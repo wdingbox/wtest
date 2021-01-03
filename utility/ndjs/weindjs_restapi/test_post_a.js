@@ -15,7 +15,7 @@ var cors = require('cors');
 
 const {
 
-  MASTER_SVR,
+    MASTER_SVR,
 } = require('./config/config')
 
 
@@ -38,21 +38,13 @@ var cheerio = require("cheerio"); //>> npm install cheerio
 
 
 
-//// For upload /////////
-var uploadObj = new Upload_Object();
-uploadObj.upload_page(app);
 
 //// for BibleObjApi  with Jsonpster ////////
 //var bii = new BibleObj();
 BibleObjJsonpApi.init(app, "../../../../");
 
 //// For HebrewQ study /////
-var hbrq = new HebrewQ();
-hbrq.HebrewRestApi(app);
 
-////
-var bibDesk = new BibDesk();
-bibDesk.RestApi(app);
 
 
 
@@ -65,19 +57,40 @@ app.use(express.urlencoded({ extended: true })); //:return req.query
 
 /////////////////////////////////////////////////// 
 //
-app.g_iPort = 7778;
+app.g_iPort = 8080;
 app.get("/", (req, res) => {
-  console.log("root ok");
-  console.log("res.req.headers.host=", res.req.headers.host);
-  //res.send("<script>alert(\'ss\');</script>");
-  var obj = { samp: 'ffa' };
-  var s = JSON.stringify(res.req.headers);
-  res.send("restapi Jsonpster. clientSite:" + s);
+    console.log("root ok");
+    console.log("res.req.headers.host=", res.req.headers.host);
+    //res.send("<script>alert(\'ss\');</script>");
+    var obj = { samp: 'ffa' };
+    var s = JSON.stringify(res.req.headers);
+    res.send("restapi Jsonpster. clientSite:" + s);
 });
 
-app.listen(app.g_iPort, () => {
-  console.log("nodejs app is listerning ...");
-  //hbrq.get_VocabHebrewBufObj();
+app.listen(app.g_iPort, (request, response) => {
+    const { headers, method, url } = request;
+    let body = [];
+    request.on('error', (err) => {
+        console.error(err);
+    }).on('data', (chunk) => {
+        body.push(chunk);
+    }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        // At this point, we have the headers, method, url and body, and can now
+        // do whatever we need to in order to respond to this request.
+    });
+
+
+    if (request.method === 'POST' && request.url === '/echo') {
+        console.log("get Post")
+        request.pipe(response);
+    } else {
+        console.log("end")
+        response.statusCode = 404;
+        response.end();
+    }
+    console.log("nodejs app is listerning ...");
+    //hbrq.get_VocabHebrewBufObj();
 });
 console.log("port:", app.g_iPort);
 //
@@ -86,20 +99,6 @@ console.log("port:", app.g_iPort);
 //BibleUti.access_dir(app,"bsnp")
 
 
-
-
-if (MASTER_SVR.https.port === MASTER_SVR.http.port) {
-  console.log(`\n- https diabled: MASTER_SVR.https.port === MASTER_SVR.https.port === ${MASTER_SVR.http.port} .`)
-} else {
-  //How to Fix the NET::ERR_CERT_AUTHORITY_INVALID Error
-  const options = {
-    key: fs.readFileSync('./config/https_credentials/key.pem'),
-    cert: fs.readFileSync('./config/https_credentials/cert.pem')
-  };
-  https_svr = https.createServer(options, app).listen(MASTER_SVR.https.port, async function () {
-    console.log(`* Https svr listerning: ${MASTER_SVR.https.port}\n-----------\n`);
-  });
-}
 
 
 

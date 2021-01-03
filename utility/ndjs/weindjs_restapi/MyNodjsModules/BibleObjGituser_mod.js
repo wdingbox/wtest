@@ -144,7 +144,7 @@ var BibleUti = {
         console.log("req.query", req.query)
 
         if (req.method === "POST") {
-            console.log("POST: ----------------")
+            console.log("POST: ----------------", "req.url=", req.url)
             var body = "";
             req.on("data", function (chunk) {
                 body += chunk;
@@ -154,7 +154,8 @@ var BibleUti = {
             req.on("end", function () {
                 console.log("on post eend:", body)
 
-                var inpObj = JSON.parse(body)
+                //var inpObj = JSON.parse(body)
+                var inpObj = body
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
                 cbf(inpObj)
@@ -854,8 +855,8 @@ cd -
             _THIS.m_inp.out.git_push_res.success = ret
             _THIS.m_inp.out.state.bRepositable = 1
             const erry = ["fatal", "Invalid"]
-            erry.forEach(function(errs){
-                if(ret.stderr.indexOf(errs)>=0){
+            erry.forEach(function (errs) {
+                if (ret.stderr.indexOf(errs) >= 0) {
                     _THIS.m_inp.out.state.bRepositable = 0
                 }
             })

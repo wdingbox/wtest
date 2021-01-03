@@ -101,7 +101,19 @@ RunPosts : function (cbf) {
         }
     )
 },
+Run_Post : function (cbf) {
+    if(!cbf) return alert("cbf null.")
+    var surl = "http://${res.req.headers.host}/" + this.api
+    $.post(surl,
+        this.inp
+    ).done(function(ret){
+        if(cbf) cbf(data, status)
+    })
+},
 RunAjaxPost : function(cbf){
+    this.Run_Post (cbf)
+},
+RunAjax_Type_Post : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
     $.ajax({
         type: "POST",
