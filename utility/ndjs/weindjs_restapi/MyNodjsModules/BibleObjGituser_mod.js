@@ -154,8 +154,7 @@ var BibleUti = {
             req.on("end", function () {
                 console.log("on post eend:", body)
 
-                //var inpObj = JSON.parse(body)
-                var inpObj = body
+                var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
                 cbf(inpObj)

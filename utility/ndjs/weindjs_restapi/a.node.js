@@ -13,6 +13,8 @@ var url = require('url');
 var cors = require('cors');
 
 
+
+
 const {
 
   MASTER_SVR,
@@ -55,6 +57,12 @@ var bibDesk = new BibDesk();
 bibDesk.RestApi(app);
 
 
+
+
+/**bodyParser.json(options)
+ * Parses the text as JSON and exposes the resulting object on req.body.
+ */
+app.use(bodyParser.json());
 
 // use it before all route definitions. for cross domain post.
 app.use(cors({ origin: null }));

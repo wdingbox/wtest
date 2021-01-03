@@ -111,7 +111,7 @@ Run_Post : function (cbf) {
     })
 },
 RunAjaxPost : function(cbf){
-    this.Run_Post (cbf)
+    this.RunAjax_Type_Post (cbf)
 },
 RunAjax_Type_Post : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
