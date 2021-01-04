@@ -637,7 +637,7 @@ PopupMenu.prototype.init = function (cbf) {
     $(this.m_id).find("caption").bind("click", function () {
         var bcv = $(this).text().trim()
         if (bcv.length > 0) {
-            Uti.copy2clipboard("(" + bcv + ")")
+            Uti.copy2clipboard("(" + bcv + ")", _THIS.m_id)
         }
         if (cbf) cbf(bcv)
         _THIS.hide()
@@ -1886,7 +1886,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
                 var msg2 = `bRepositable:${sta.bRepositable}`
 
                 $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
-            }else{
+            } else {
                 $("#outConfig").html(`<font color='red'>Failed: Invalid Repository</font>`)
             }
         })
@@ -1910,7 +1910,7 @@ GroupsMenuMgr.prototype.sel_default = function (sid) {
     this.close_others_of(sid)
     $("#menuContainer").show()
 }
-GroupsMenuMgr.prototype.collapse = function(){
+GroupsMenuMgr.prototype.collapse = function () {
     $(".GrpMenu").hide()
     $(".GrpMenuItemHili").removeClass("GrpMenuItemHili")
 }
@@ -2917,10 +2917,14 @@ var Uti = {
         console.log("crossload:", e.src)
     },
 
-    copy2clipboard: function (text) {
+    copy2clipboard: function (text, ele) {
         const textarea = document.createElement('textarea')
-        document.body.appendChild(textarea)
-        textarea.style.position = "absolute";
+        if (!ele) {
+            document.body.appendChild(textarea)
+        } else {
+            $(ele).append(textarea)
+        }
+        //textarea.style.position = "absolute";
         textarea.value = text
         textarea.select()
         document.execCommand('copy')
