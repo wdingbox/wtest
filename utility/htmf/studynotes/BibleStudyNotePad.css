@@ -533,7 +533,7 @@ input[title='NIV']:checked:after {
     color: rgb(203, 252, 221);
 }
 .txESV{
-    color: rgb(161, 252, 252);
+    color: cyan;
 }
 .txKJV{
     color: rgb(250, 199, 140);
