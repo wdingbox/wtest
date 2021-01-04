@@ -81,7 +81,7 @@ var BibleUti = {
                 console.log("base:", ret.base)
                 console.log("api:", fname)
                 http.use("/" + fname, async (req, res) => {
-                    console.log('[post] resp save :', req.body, fname)
+                    console.log('[post] resp write :', req.body, fname)
                     if (binaries.indexOf(ext) >= 0) {
                         writebin(fname, ftypes[ext], res)
                     } else {
@@ -155,16 +155,19 @@ var BibleUti = {
 
             req.on("end", async function () {
                 console.log("on post eend:", body)
-
+                
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
+                
+                
+                console.log("cbf start ------------------------------")
                 await cbf(inpObj)
 
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.write(JSON.stringify(inpObj))
                 res.end();
-                console.log("end of req1------------------------------")
+                console.log("finished post req------------------------------")
             });
         } else {
             res.writeHead(200, { "Content-Type": "text/html" });
@@ -547,14 +550,19 @@ BibleObjGituser.prototype.git_clone = async function (res) {
 #!/bin/sh
 cd ${this.m_rootDir}
 echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_dir}
-echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+if [ -f "${proj.git_dir}/.git/config" ]; then
+    echo "${proj.git_dir}/.git/config exists."
+    echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+else 
+    echo "${proj.git_dir}/.git/config does not exist."
+fi
+#echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
 #cd -`
     console.log("git_clone_cmd", git_clone_cmd)
 
     //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
-    function _update_inp_out_git_clone_res(msg) {
+    function _check_git_folders_existance() {
         var res = _THIS.m_inp.out.git_clone_res
-        res.msg = msg
         if (fs.existsSync(gitdir)) {
             res.bExist = true
         }
@@ -570,14 +578,15 @@ echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
-            console.log("success:", val)
+            console.log("git-clone success:", val)
             inp.out.git_clone_res.desc += ", clone success."
-            _update_inp_out_git_clone_res(val)
+            _check_git_folders_existance()
             //this.git_config_allow_push(true)
-        }, function (val) {
+        }, 
+        function (val) {
+            console.log("git-clone failure:", val)
             inp.out.git_clone_res.desc += ", clone success."
-            console.log("failure:", val)
-            _update_inp_out_git_clone_res(val)
+            _check_git_folders_existance()
         })
     return inp
 }

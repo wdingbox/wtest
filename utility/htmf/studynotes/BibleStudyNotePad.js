@@ -1878,13 +1878,17 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
                 clr = "lightgreen", msg = `saved_size:${ret.out.save_res.saved_size}B`
             }
             var sta = ret.out.state
-            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
-            var msg2 = `bRepositable:${sta.bRepositable}`
-            var push_res = ret.out.git_push_res.desc
-            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
-            var msg2 = `bRepositable:${sta.bRepositable}`
+            if (sta) {
+                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+                var msg2 = `bRepositable:${sta.bRepositable}`
+                var push_res = ret.out.git_push_res.desc
+                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+                var msg2 = `bRepositable:${sta.bRepositable}`
 
-            $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
+                $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
+            }else{
+                $("#outConfig").html(`<font color='red'>Failed: Invalid Repository</font>`)
+            }
         })
     })
     $("#StorageRepo_load").bind("click", function () {
