@@ -2238,10 +2238,6 @@ AppInstancesManager.prototype.get_search_inp = function () {
 AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     var _THIS = this
     function onclick_inpage_find_next(incrs, _this) {
-        var str = $("#sinput").val();
-
-        var reg = new RegExp(str, "g");
-
         if (undefined === document.g_NextIndex) document.g_NextIndex = 0
         document.g_NextIndex += incrs
         var matSize = $(".matInPage").length;
