@@ -2989,7 +2989,7 @@ var Uti = {
             console.log('Oops, unable to copy');
             Uti.Msg('Oops, unable to copy')
         }
-        $(ele).focus()
+        $("body").focus()
         return
         const textarea = document.createElement('textarea')
 
