@@ -616,7 +616,7 @@ PopupMenu_RevTag.prototype.init = function () {
         var bcv = _THIS.m_par.m_bcv
         var rev = _THIS.m_par.m_strTag
         txt = `"${txt}" (${bcv} ${rev})`;
-        Uti.copy2clipboard(txt)
+        Uti.copy2clipboard(txt, _THIS.m_id)
         Uti.Msg(txt);
     })
 }
@@ -637,7 +637,7 @@ PopupMenu.prototype.init = function (cbf) {
     $(this.m_id).find("caption").bind("click", function () {
         var bcv = $(this).text().trim()
         if (bcv.length > 0) {
-            Uti.copy2clipboard("(" + bcv + ")", _THIS.m_id)
+            Uti.copy2clipboard(`(${bcv})`, _THIS.m_id)
         }
         if (cbf) cbf(bcv)
         _THIS.hide()
