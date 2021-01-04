@@ -2978,9 +2978,18 @@ var Uti = {
 
     },
     copy2clipboard: function (text, ele) {
-        return this.copyTextToClipboard(text)
-        $("#txt_copy2clicpboard").val(text).select()
-
+        //return this.copyTextToClipboard(text)
+        $("#txt_copy2clicpboard").val(text).select().focus();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+            Uti.Msg('Copying text command was ' + msg)
+        } catch (err) {
+            console.log('Oops, unable to copy');
+            Uti.Msg('Oops, unable to copy')
+        }
+        return
         const textarea = document.createElement('textarea')
 
         if (!ele) {
