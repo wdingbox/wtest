@@ -2922,9 +2922,11 @@ var Uti = {
         if (!ele) {
             document.body.appendChild(textarea)
         } else {
-            $(ele).append(textarea)
+            //$(ele).append(textarea)
+            document.body.appendChild(textarea)
         }
-        //textarea.style.position = "absolute";
+        textarea.style.position = "fixed";
+        textarea.style.top = "0";
         textarea.value = text
         textarea.select()
         document.execCommand('copy')
