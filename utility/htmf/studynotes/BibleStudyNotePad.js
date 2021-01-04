@@ -2621,28 +2621,7 @@ var Uti = {
         $("#txtarea").val(results);
     },
 
-    convert_std_bcv_in_text_To_linked: function (str) {
-        Uti.Msg(str)
-        var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
-        ret.biblical_order_splitted_ary.forEach(function (v, i) {
-            var sln = `$1<a href='#${v}'>${v}</a>`
-            var reg = new RegExp(`[^\>\#\;]${v}`, "g") //issue: in <div>Gen1:1</div>
-            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // negative lookahead =(?!regex here).
-            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // (?: # begin non-capturing group
-            reg = new RegExp(`(?:(?!([\"\'][\>])([\"\'][\#])))${v}`, "g")  // (?: # begin non-capturing group
-            //reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
-            //reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
-            reg = new RegExp(`(?:([^\>\#\;]))(${v})`, "g")  //bug: div>Gen1:1 
-            reg = new RegExp(`(?:((div[>])|(.[^\>\#\;])))(${v})`, "g")  //bug: div>Gen1:1 
-            reg = new RegExp(`(([\"\']\s{0,}[\>]\s{0,}){0,}|([^\>\#]))(${v})`, "g")  //seems fix bug: div>Gen1:1 
-            reg = new RegExp(`([^\>\#])${v}|^${v}`, "g")  //fixed for crossRef
-            //reg = new RegExp(`${v}(?:((?!([\<][\/]a[\>])(?!([\"\'])))`, "g") 
-            //reg = new RegExp(`(?:(?!(${sln}))`, "g")  
-            str = str.replace(reg, sln)
-        })
-        Uti.Msg(str)
-        return str
-    },
+
     addonTopOfAry: function (targetary, addon) {
         var ary = addon
         if ("string" === typeof addon) {
@@ -2723,6 +2702,28 @@ var Uti = {
         }
 
         return ret;
+    },
+    convert_std_bcv_in_text_To_linked: function (str) {
+        Uti.Msg(str)
+        var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
+        ret.biblical_order_splitted_ary.forEach(function (v, i) {
+            var sln = `$1<a href='#${v}'>${v}</a>`
+            var reg = new RegExp(`[^\>\#\;]${v}`, "g") //issue: in <div>Gen1:1</div>
+            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // negative lookahead =(?!regex here).
+            reg = new RegExp(`(?:(?![v][\>]))${v}`, "g")  // (?: # begin non-capturing group
+            reg = new RegExp(`(?:(?!([\"\'][\>])([\"\'][\#])))${v}`, "g")  // (?: # begin non-capturing group
+            //reg = new RegExp(`(?:(?![\'][\#]))${v}`, "g")  // (?: # begin non-capturing group
+            //reg = new RegExp(`(?:(?![\'][\#])(?![\'][\>]))${v}`, "g") 
+            reg = new RegExp(`(?:([^\>\#\;]))(${v})`, "g")  //bug: div>Gen1:1 
+            reg = new RegExp(`(?:((div[>])|(.[^\>\#\;])))(${v})`, "g")  //bug: div>Gen1:1 
+            reg = new RegExp(`(([\"\']\s{0,}[\>]\s{0,}){0,}|([^\>\#]))(${v})`, "g")  //seems fix bug: div>Gen1:1 
+            reg = new RegExp(`([^\>\#])${v}|^${v}`, "g")  //fixed for crossRef
+            //reg = new RegExp(`${v}(?:((?!([\<][\/]a[\>])(?!([\"\'])))`, "g") 
+            //reg = new RegExp(`(?:(?!(${sln}))`, "g")  
+            str = str.replace(reg, sln)
+        })
+        Uti.Msg(str)
+        return str
     },
     convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn: function (ary) {
         var str = ary.join(", ")
