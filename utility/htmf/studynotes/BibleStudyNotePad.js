@@ -35,6 +35,7 @@ var MyStorage = {
     Repo_save: function (cbf) {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr) return alert("user is not set yet.")
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
@@ -59,7 +60,7 @@ var MyStorage = {
         function StoreRepositorie() {
             this.m_storeid = "repositories"
         }
-        
+
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
@@ -103,7 +104,7 @@ var MyStorage = {
             Object.assign(Jsonpster.inp.usr, obj)
             var ar = this.repos_store_set(obj)
             return ar
-        }    
+        }
         StoreRepositorie.prototype.repos_app_update = function () {
             var obj = { repopath: $("#repopath").val(), passcode: $("#passcode").val(), repodesc: $("#repodesc").val() }
             var ar = this.repos_app_set(obj)
@@ -114,7 +115,7 @@ var MyStorage = {
             this.repos_app_set(ar[0])
             return ar
         }
-        
+
 
         var storeRepo = new StoreRepositorie()
         return storeRepo
@@ -1808,7 +1809,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_set").bind("click", function () {
-        $("#account_set_info").text($(this).text() + "...")
+        $("#outConfig").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
@@ -1824,7 +1825,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
                 msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
             }
 
-            $("#account_set_info").html(msg).show()
+            $("#outConfig").html(msg).show()
         })
     })
     $("#account_destroy").bind("click", function () {
@@ -1868,10 +1869,22 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#StorageRepo_save").bind("click", function () {
-        if($("#passcode").val().trim().length===0) return !!alert("passcode is required for saving.")
+        if ($("#passcode").val().trim().length === 0) return !!alert("passcode is required for saving.")
         $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_save(function (ret) {
-            $("#outConfig").html("<font color='lightgreen'>Success</font>")
+            Uti.Msg("ret:", ret.out.save_res);//,null, 4))
+            var msg = "failed to save.", clr = "red"
+            if (ret.out.save_res && ret.out.save_res.saved_size) {
+                clr = "lightgreen", msg = `saved_size:${ret.out.save_res.saved_size}B`
+            }
+            var sta = ret.out.state
+            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var msg2 = `bRepositable:${sta.bRepositable}`
+            var push_res = ret.out.git_push_res.desc
+            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var msg2 = `bRepositable:${sta.bRepositable}`
+
+            $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
         })
     })
     $("#StorageRepo_load").bind("click", function () {

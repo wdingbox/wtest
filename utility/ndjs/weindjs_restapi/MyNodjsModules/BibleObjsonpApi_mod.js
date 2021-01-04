@@ -129,12 +129,12 @@ RunAjax_Type_Post : function(cbf){
         }
     })
         .success(function( data ) {
-            console.log("success",data);
-            cbf(data)
+            //console.log("success",data);
+            cbf(JSON.parse(data))
         })
         .done(function( data ) {
-            console.log("done",data);
-            cbf(data)
+            //console.log("done",data);
+            cbf(JSON.parse(data))
         })
         .fail( function(xhr, textStatus, errorThrown) {
             console.log("surl",surl)
@@ -280,15 +280,23 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
             if (!proj) return
-            await userProject.git_proj_setup(res)
+            var result = await userProject.git_proj_setup(res)
+            if(!result) return
 
+            
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
             var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+            if(!ret.obj) return
             ret.obj = JSON.parse(inp.par.data, null, 4)
             console.log("ret", ret)
             ret.writeback()
+
+            var save_res = {}
+            save_res.saved_size = inp.par.data.length
+            save_res.ret = ret
+            inp.out.save_res = save_res
             var msg = jsfname + " saved."
 
             await userProject.git_add_commit_push(msg)
@@ -390,7 +398,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var ret = userProject.git_proj_status(async function () {
         })
-        if(ret){
+        if (ret) {
             await userProject.git_push()
         }
 

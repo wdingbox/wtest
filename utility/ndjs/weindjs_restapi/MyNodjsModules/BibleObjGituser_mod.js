@@ -141,9 +141,11 @@ var BibleUti = {
 
     Parse_post_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
-        console.log("req.query", req.query)
+        console.log("req.url", req.url)
 
+        //req.pipe(res)
         if (req.method === "POST") {
+            //req.pipe(res)
             console.log("POST: ----------------", "req.url=", req.url)
             var body = "";
             req.on("data", function (chunk) {
@@ -151,19 +153,24 @@ var BibleUti = {
                 console.log("on post data:", chunk)
             });
 
-            req.on("end", function () {
+            req.on("end", async function () {
                 console.log("on post eend:", body)
 
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
-                cbf(inpObj)
+                await cbf(inpObj)
+
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.write(JSON.stringify(inpObj))
+                res.end();
+                console.log("end of req1------------------------------")
             });
+        } else {
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end();
+            console.log("end of req")
         }
-        console.log("end of req1")
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end();
-        console.log("end of req2")
     },
     GetApiInputParamObj: function (req) {
         console.log("req.method", req.method)
@@ -399,7 +406,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
             return { username: username, projname: projname }
         }
         inp.out.desc = "failed parse url:" + proj_url
-        return { username: "", projname: "" }
+        return null
     }
     var proj_url = inp.usr.repopath = inp.usr.repopath.trim()
     var passcode = inp.usr.passcode = inp.usr.passcode.trim()
@@ -611,7 +618,8 @@ echo " cp_template_cmd end."
     }
     return inp
 }
-BibleObjGituser.prototype.change_perm_cmd = async function (dir) {
+BibleObjGituser.prototype.change_dir_perm = async function (dir, mode) {
+    // mode : "777" 
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -624,7 +632,7 @@ BibleObjGituser.prototype.change_perm_cmd = async function (dir) {
         return inp
     }
     var password = "lll"
-    var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
+    var change_perm_cmd = `echo ${password} | sudo -S chmod -R ${mode} ${dir}`
     inp.out.change_perm = {}
 
     await BibleUti.exec_Cmd(change_perm_cmd).then(
@@ -644,21 +652,21 @@ BibleObjGituser.prototype.git_proj_setup = async function (res) {
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
-        return inp
+        return null
     }
     inp.out.desc = "setup start."
     await this.git_clone()
     var gitdir = this.get_usr_git_dir("/.git")
     if (!fs.existsSync(gitdir)) {
         inp.out.git_clone_res.bExist = false
-        return inp
+        return null
     }
-    if (!inp.out.git_clone_res.bExist) return inp
+    if (!inp.out.git_clone_res.bExist) return null
 
     await this.cp_template_to_git()
 
     var accdir = this.get_usr_acct_dir()
-    await this.change_perm_cmd(accdir)
+    await this.change_dir_perm(accdir, 777)
     var retp = this.git_proj_status()
     if (retp) {
         await this.git_push()
@@ -748,6 +756,10 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         console.log(".git/config not exist:", git_config_fname)
         return
     }
+    // fs.chmodSync(git_config_fname, 0o777, function (err) {
+    //     if (err) console.log(err);
+    //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
+    // })
 
     var txt = fs.readFileSync(git_config_fname, "utf8")
     console.log("bAllowPush:", bAllowPush)
@@ -799,15 +811,22 @@ cd -
     this.git_config_allow_push(true)
     inp.out.git_push_res = {}
     await BibleUti.exec_Cmd(cmd_commit).then(
-        function (val) {
-            console.log("success:", val)
+        function (ret) {
+            console.log("success:", ret)
             _THIS.git_config_allow_push(false)
-            inp.out.git_push_res.success = val
+            _THIS.m_inp.out.git_push_res.success = ret
+            _THIS.m_inp.out.git_push_res.desc = "deposit success."
+            const erry = ["fatal", "Invalid"]
+            erry.forEach(function (errs) {
+                if (ret.stderr.indexOf(errs) >= 0) {
+                    _THIS.m_inp.out.git_push_res.desc = "push failed." + ret.stderr
+                }
+            })
         },
-        function (val) {
-            console.log("failure:", val)
+        function (ret) {
+            console.log("failure:", ret)
             _THIS.git_config_allow_push(false)
-            inp.out.git_push_res.failure = val
+            inp.out.git_push_res.failure = ret
         }
     )
 }
