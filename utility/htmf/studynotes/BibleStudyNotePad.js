@@ -1875,7 +1875,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             Uti.Msg("ret:", ret.out.save_res);//,null, 4))
             var msg = "failed to save.", clr = "red"
             if (ret.out.save_res && ret.out.save_res.saved_size) {
-                clr = "lightgreen", msg = `saved_size:${ret.out.save_res.saved_size}B`
+                clr = "lightgreen", msg = `write_size:${ret.out.save_res.saved_size}(B)`
             }
             var sta = ret.out.state
             if (sta) {

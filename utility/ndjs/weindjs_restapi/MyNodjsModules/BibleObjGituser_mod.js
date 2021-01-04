@@ -824,7 +824,7 @@ cd -
             console.log("success:", ret)
             _THIS.git_config_allow_push(false)
             _THIS.m_inp.out.git_push_res.success = ret
-            _THIS.m_inp.out.git_push_res.desc = "deposit success."
+            _THIS.m_inp.out.git_push_res.desc = "Reposit success."
             const erry = ["fatal", "Invalid"]
             erry.forEach(function (errs) {
                 if (ret.stderr.indexOf(errs) >= 0) {
