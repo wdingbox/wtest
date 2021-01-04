@@ -2919,14 +2919,17 @@ var Uti = {
 
     copy2clipboard: function (text, ele) {
         const textarea = document.createElement('textarea')
+        textarea.style.position = "fixed";
+        textarea.style.top = "0px";
+        textarea.style.left = "0px";
         if (!ele) {
-            document.body.appendChild(textarea)
+            //document.body.appendChild(textarea)
         } else {
             //$(ele).append(textarea)
-            document.body.appendChild(textarea)
         }
-        textarea.style.position = "fixed";
-        textarea.style.top = "0";
+        document.body.appendChild(textarea);//.css("position:fixed;top:0;left:0")
+        
+        //textarea.style.left = "0";
         textarea.value = text
         textarea.select()
         document.execCommand('copy')
