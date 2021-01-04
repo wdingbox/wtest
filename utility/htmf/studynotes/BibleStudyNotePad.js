@@ -2989,6 +2989,7 @@ var Uti = {
             console.log('Oops, unable to copy');
             Uti.Msg('Oops, unable to copy')
         }
+        $(ele).focus()
         return
         const textarea = document.createElement('textarea')
 
@@ -3029,6 +3030,7 @@ const CNST = {
 var BibleInputMenuContainer = `
 <style>
 </style>
+<textarea id="txt_copy2clicpboard" style="position:fixed;width:180px;right:-175px;top:0px;padding:0;">
 
 <!----------------------------->
 <div id="divPopupMenu">
