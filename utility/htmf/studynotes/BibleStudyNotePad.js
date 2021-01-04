@@ -3030,8 +3030,6 @@ const CNST = {
 var BibleInputMenuContainer = `
 <style>
 </style>
-<textarea id="txt_copy2clicpboard" style="position:fixed;width:180px;right:-175px;top:0px;padding:0;">
-
 <!----------------------------->
 <div id="divPopupMenu">
     <table id='xxrefslist' border="1" align="left">
@@ -3358,6 +3356,7 @@ var BibleInputMenuContainer = `
 
 
 <div id='oBible'>----</div>
+<textarea id="txt_copy2clicpboard" style="position:fixed;width:180px;right:-175px;top:0px;padding:0;">
         `;//////backtick for multiple lines. 
 
 
