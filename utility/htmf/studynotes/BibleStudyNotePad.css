@@ -524,19 +524,19 @@ input[title='NIV']:checked:after {
     float: right;
 }
 .txH_G{
-    background-color: rgb(110, 77, 40);
+    color: rgb(241, 192, 136);
     text-align: right;
     width:100%;
     right: 10px;
 }
 .txBBE{
-    background-color: rgb(3, 87, 35);
+    color: rgb(203, 252, 221);
 }
 .txESV{
-    background-color: rgb(46, 63, 139);
+    color: rgb(193, 242, 248);
 }
 .txKJV{
-    background-color: rgb(8, 110, 141);
+    color: rgb(250, 199, 140);
 }
 .txCUVpy{
     background-color: rgb(78, 30, 68);
