@@ -1910,6 +1910,10 @@ GroupsMenuMgr.prototype.sel_default = function (sid) {
     this.close_others_of(sid)
     $("#menuContainer").show()
 }
+GroupsMenuMgr.prototype.collapse = function(){
+    $(".GrpMenu").hide()
+    $(".GrpMenuItemHili").removeClass("GrpMenuItemHili")
+}
 
 
 
@@ -1949,6 +1953,7 @@ AppInstancesManager.prototype.init = function () {
         evt.stopImmediatePropagation();
         //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
+        groupsMenuMgr.collapse()
         //popupMenu.hide()
     })
 
@@ -2107,6 +2112,7 @@ AppInstancesManager.prototype.init = function () {
         //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
         //popupMenu.hide()
+        groupsMenuMgr.collapse()
     })
 
     MyStorage.init(function (ret) {
