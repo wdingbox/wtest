@@ -452,8 +452,8 @@ PopupMenu_EdiTag.prototype.init = function () {
     }
     DivEditTxt.prototype.setId_Txt = function (id, rev, ouTxtObj) {
         this.m_id = "#" + id
-        this.m_otxObj = ouTxtObj
         this.m_rev = rev
+        this.m_otxObj = ouTxtObj
     }
     DivEditTxt.prototype.html = function (htm) {
         if (undefined === htm) {
@@ -469,6 +469,14 @@ PopupMenu_EdiTag.prototype.init = function () {
             Uti.Msg("not editable. cannot save")
             edx = this.m_otxObj[this.m_rev]
         }
+        edx = Uti.htmlDecode(edx.trim())
+        edx = edx.replace(/[\n\r\t]/g, '')
+        return edx
+    }
+    DivEditTxt.prototype.setEditHtm = function (txt) {
+        var edx = Uti.htmlDecode(txt.trim())
+        edx = edx.replace(/[\n\r\t]/g, '')
+        this.m_otxObj[this.m_rev] = edx
         return edx
     }
     DivEditTxt.prototype.enableEdit = function (bEnable) {
@@ -486,6 +494,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).attr("contenteditable", null)
             var showTxt = $(this.m_id).html() //storeIt
             var showTxt = Uti.convert_std_bcv_in_text_To_unlinked(showTxt)
+            showTxt = Uti.htmlDecode(showTxt.trim())
+            showTxt = showTxt.replace(/[\n\r\t]/g, '')
             this.m_otxObj[this.m_rev] = showTxt;//$(this.m_id).html() //storeIt
 
             var htmShow = Uti.convert_std_bcv_in_text_To_linked(showTxt)
@@ -529,12 +539,8 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     function _set_par_ediTxt() {
         var htmEdit = _THIS.m_ediDiv.getEditHtm()
-        htmEdit = htmEdit.trim()
-        htmEdit = Uti.htmlDecode(htmEdit) //&nbsp; --> ' '
-        htmEdit = htmEdit.replace(/[\n\r\t]/g,'')
         //if (htmEdit.length >= 2000) alert(`lengh=${htmEdit.length} > max 2000.`)
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
-        _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
@@ -583,17 +589,20 @@ PopupMenu_EdiTag.prototype.init = function () {
         var _This = this
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
-            if (ret.out.desc.indexOf("success") > 0) {
-                if (ret.out.data.txt != _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]) {
-                    var dlt = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev].length - ret.out.data.txt.length
-                    if (!confirm(`difference (${dlt}b): continue?`)) return
+            Uti.Msg(ret.out)
+            if (ret.out.desc.indexOf("success") >= 0) {
+                var edx = _THIS.m_ediDiv.getEditHtm()
+                if (ret.out.data != edx) {
+                    var dlt = edx.length - ret.out.data.length
+                    if (!confirm(`difference:${dlt}(b): continue?`)) return
                 }
-                var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
+                var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data)
                 _THIS.m_ediDiv.html(showtxt)
-                _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = ret.out.data.txt
-                _THIS.m_ediBtn.enable_edit(false, true)
+                _THIS.m_ediDiv.setEditHtm (ret.out.data)
+                _THIS.m_ediBtn.enable_edit(true, true)
                 $(_THIS.m_ediDiv.m_id).toggleClass("txt_loaded")
-                Uti.Msg(ret.out.data.txt)
+            } else {
+                alert("load failed.")
             }
         })
     })
@@ -2791,6 +2800,8 @@ var Uti = {
         function _check_std_bcv(str) {
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)/g)
             var regexp = new RegExp(/(\w{3}\s{0,}\d+\:\d+)\-(\w{3}\s{0,}\d+\:\d+)|(\w{3}\s{0,}\d+\:\d+)/g)
+            // Genesis 1:2
+            var regexp = new RegExp(/((\w{3}\s*\d+\:\d+)\-(\w{3}\s*\d+\:\d+))|(\w{3}\s*\d+\:\d+)/g)
             var pad3 = []
             var mat = str.match(regexp)
             if (mat) {

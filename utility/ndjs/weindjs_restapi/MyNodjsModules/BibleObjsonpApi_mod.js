@@ -302,6 +302,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return
         }
         console.log(karyObj)
+        inp.out.desc = "load success"
         inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
 
 
