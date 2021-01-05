@@ -27,6 +27,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
     <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
     <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
     <!-------------------------------------------->
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!----- Insert this line after script imports -->
     <script>//if (window.module) module = window.module;</script>
     <!-------------------------------------------->
@@ -386,22 +387,26 @@ ${scmd}
 
             var theData = ckEditor.getData();
             var sbody = "<body>"
-            var pos1 = theData.search(sbody) + sbody.length
+            var pos0 = theData.search(sbody)
+            if (pos0 < 0) return alert("<body> not found")
+            var pos1 = pos0 + sbody.length
             var pos2 = theData.search(/\<\/body\>/)
             var html = theData.substring(pos1, pos2)
             if (pos1 < 0 || pos2 < 0) {
-                return alert("<body> not found")
+                return alert("html body not found")
             }
             // if(pos2-pos1>2000){
             //     alert ("reach max 2000 characters limit.") //Maximum URL Size 2048
             // }
+            var txt2save = Uti.htmlDecode(html.trim())
+            txt2save = txt2save.replace(/[\n\r\t]/g, '')
 
             var pster = JSON.parse(document.m_myNotes)
             var bcv = ""
             for (const [bkc, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                 for (const [chp, vrsObj] of Object.entries(chpObj)) {
                     for (const [vrs, txt] of Object.entries(vrsObj)) {
-                        pster.inp.par.inpObj[bkc][chp][vrs] = html.trim()
+                        pster.inp.par.inpObj[bkc][chp][vrs] = txt2save.trim()
                         bcv = bkc + chp + ":" + vrs
                     }
                 }
@@ -428,6 +433,8 @@ ${scmd}
                     g_msg.pop(`<br>${bcv} <br>${ret.out.result}<br>* * * OK ! Saved * * *<br>nDlt= ${dlt}`);
                     document.m_iEdiDataLen = theData.length
                     ckEditor.resetDirty()
+                }else{
+                    alert("saving has issues.")
                 }
             })
             return

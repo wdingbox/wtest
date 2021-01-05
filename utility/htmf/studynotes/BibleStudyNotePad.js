@@ -529,6 +529,9 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     function _set_par_ediTxt() {
         var htmEdit = _THIS.m_ediDiv.getEditHtm()
+        htmEdit = htmEdit.trim()
+        htmEdit = Uti.htmlDecode(htmEdit) //&nbsp; --> ' '
+        htmEdit = htmEdit.replace(/[\n\r\t]/g,'')
         //if (htmEdit.length >= 2000) alert(`lengh=${htmEdit.length} > max 2000.`)
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
         _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = htmEdit
