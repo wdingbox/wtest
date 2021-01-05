@@ -60,39 +60,24 @@
     <form action="" method="post">
 
 
-        <div>
+        <label>
             String:
-        </div>
-        <input id="destr" list="hist_data" value="" placeholder="test string">
-        <datalist id="hist_data">
-            <option>#1Jb26:7=1Jb26:744=1Jb:744</option>
-            <option>`<a href="#Nah2:10">Nah2:10</a>, <a href="#Isa45:18">Isa45:18</a>, <a href="#Psm33:6">Psm33:6</a>,
-                <a href="#Job26:14">Job26:14</a>, <a href="#Jer4:23">Jer4:23</a>, <a href="#Isa40:12">Isa40:12</a>-<a
-                    href="#Isa40:14">Isa40:14</a>, <a href="#Psm104:30">Psm104:30`</a>
-            </option>
-            <option>#1Jb26:7=1Jb26:744=1Jb:744</option>
-            <option>#1Jb26:7=1Jb26:744=1Jb:744</option>
-        </datalist>
-        </input>
+        </label>
+        <textarea id="destr" list="hist_data" value="" placeholder="test string">
+        </textarea>
 
-        <div>
-            RegExp:
-        </div>
+        <label>RegExp: </label>
 
-        <textarea id="regex" value="">([1-3A-Z][1-z][0-9]*[\:][0-9]*)</textarea>
+        <textarea id="regex" value="">([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)</textarea>
+        <label>Replace: </label>
+
+        <textarea id="repls"><a href="#$1">$1</a></textarea>
     </form>
     <p>
         <button onclick="test_Match();">Match</button>
-        <button onclick="test_Replace();">Replace</button>
+      
     </p>
-    <p>
-        <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
-        <xbutton onclick="LoadStorage();"></xbutton>
-    </p>
-    <p>
-        <button id="histroy" onclick="repo_histroy();">histroy</button>
-        <button onclick="RemoveInHistory();">RemoveInHistory</button>
-    </p>
+  
 
 
 
@@ -100,6 +85,7 @@
         <hr>
         <div id="otable_destr"></div>
         <div id="otable_regex"></div>
+        <div id="otable_repls"></div>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
 
@@ -155,6 +141,7 @@
 
         var localstrorageHistory_destr = new LocalStrorageHistory("destr")
         var localstrorageHistory_regex = new LocalStrorageHistory("regex")
+        var localstrorageHistory_repls = new LocalStrorageHistory("repls")
 
 
 
@@ -163,25 +150,27 @@
         function test_Match() {
             var str = $("#destr").val()
             var reg = $("#regex").val()
+            var rpl = $("#repls").val()
             console.log(str)
 
             localstrorageHistory_destr.set(str)
             localstrorageHistory_regex.set(reg)
+            localstrorageHistory_repls.set(rpl)
 
             var ret = str
 
             var reg = new RegExp(reg, "g")
             var mat = str.match(reg)
             if (mat) {
-                ret += `\nMatch:\n${JSON.stringify(mat, null, 4)}`
+                ret += `\n\nMatch:\n${JSON.stringify(mat, null, 4)}`
                 console.log("mat:", mat)
             }
-            ret += "\nreplace:\n" + str.replace(reg, "$1")
+            str = str.replace(reg, rpl)
+            ret += "\n\nreplace:\n" +str
             console.log(ret)
 
             $("#txtarea").val(ret)
             return ret;
-
         }
 
 
@@ -199,6 +188,7 @@
 
             localstrorageHistory_destr.gen_table()
             localstrorageHistory_regex.gen_table()
+            localstrorageHistory_repls.gen_table()
 
         })
 
