@@ -673,7 +673,7 @@ BibleObjGituser.prototype.change_dir_perm = async function (dir, mode) {
 
     return inp
 }
-BibleObjGituser.prototype.git_proj_setup = async function (res) {
+BibleObjGituser.prototype.git_proj_setup = async function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -872,12 +872,12 @@ cd -
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
-            if(cbf) cbf(true)
+            if (cbf) cbf(true)
         },
         function (val) {
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
-            if(cbf) cbf(false)
+            if (cbf) cbf(false)
         }
     )
 }
@@ -891,8 +891,12 @@ echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
 cd -
 `
 
+
+
+
     var _THIS = this
-    _THIS.m_inp.out.git_push_res = {}
+    if(!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
+    if (!_THIS.m_inp.out.state) _THIS.m_inp.out.state = { bRepositable: -1 }
     this.git_config_allow_push(true)
     await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (ret) {
@@ -900,12 +904,17 @@ cd -
             _THIS.git_config_allow_push(false)
             _THIS.m_inp.out.git_push_res.success = ret
             _THIS.m_inp.out.state.bRepositable = 1
-            const erry = ["fatal", "Invalid"]
-            erry.forEach(function (errs) {
-                if (ret.stderr.indexOf(errs) >= 0) {
-                    _THIS.m_inp.out.state.bRepositable = 0
-                }
-            })
+
+            var mat = ret.stderr.match(/(fatal)|(Invalid)/g)
+            if (mat) {
+                _THIS.m_inp.out.state.bRepositable = 0
+            }
+            //const erry = ["fatal", "Invalid"]
+            //erry.forEach(function (errs) {
+            //    if (ret.stderr.indexOf(errs) >= 0) {
+            //        _THIS.m_inp.out.state.bRepositable = 0
+            //    }
+            //})
         },
         function (ret) {
             console.log("git_push.failure:", ret)

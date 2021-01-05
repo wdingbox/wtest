@@ -324,7 +324,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
             if (!proj) return
-            var result = await userProject.git_proj_setup(res)
+            var result = await userProject.git_proj_setup()
             if (!result) return
 
 
@@ -356,19 +356,25 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.git_proj_parse(inp)
         if (!proj) return
 
-        await userProject.git_proj_setup(res)
+        await userProject.git_proj_setup()
 
+        var retp = userProject.git_proj_status()
+        if (retp) {
+            await userProject.git_pull(function (bSuccess) {
+                inp.out.pull_bSuccess = bSuccess
+            })
 
-        await userProject.git_pull(function(bSuccess){
-            inp.out.pull_bSuccess = bSuccess
-        })
+          
+            await userProject.git_push()
+            
+        }
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
         var jsfname = userProject.get_pfxname(doc)
         var ret = BibleUti.load_BibleObj_by_fname(jsfname)
         inp.out.data = ret.obj
-        inp.out.state = { bNoteEditable: 1 }
+        if(!inp.out.state)  inp.out.state = { bNoteEditable: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -399,7 +405,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
-        await userProject.git_proj_setup(res)
+        await userProject.git_proj_setup()
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
@@ -471,7 +477,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
 
-        await userProject.git_proj_setup(res)
+        await userProject.git_proj_setup()
         await userProject.git_add_commit_push("push all changes.")
 
         var sret = JSON.stringify(inp, null, 4)

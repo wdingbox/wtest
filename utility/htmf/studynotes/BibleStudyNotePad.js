@@ -2131,6 +2131,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     MyStorage.init(function (ret) {
+        Uti.Msg("Ready ret.out", ret.out)
         if (!ret.out.state.bNoteEditable) return alert("bNoteEditable=false.")
         var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
         if (memo) {
