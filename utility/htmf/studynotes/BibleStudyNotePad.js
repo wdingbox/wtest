@@ -2557,7 +2557,7 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                             txt = _THIS.get_matched_txt(txt)
 
                             var htmtag = 'a'
-                            if (revId.match(/^_[a-zA-Z]/)) {
+                            if (revId.match(/^_[a-zA-Z]/)) {//E.g. "NIV",  "_myNote"
                                 htmtag = 'div'
                                 txt = Uti.convert_std_bcv_in_text_To_linked(txt)
                             }
