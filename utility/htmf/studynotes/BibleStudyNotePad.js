@@ -1833,8 +1833,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var sta = ret.out.state
             var msg = "<font color='red'>Invalid Repository</font>"
             if (sta) {
-                var colr = (sta && 1 === sta.bNoteEditable) ? "lightgreen" : "red"
-                var msg = `<font color='${colr}'>bNoteEditable=${sta.bNoteEditable}</font>`
+                var colr = (sta && 1 === sta.bEditable) ? "lightgreen" : "red"
+                var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
 
                 var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
                 msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
@@ -1909,10 +1909,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#StorageRepo_load").bind("click", function () {
         $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_load(function (ret) {
-            if (ret.out.state.bNoteEditable) {
-                $("#outConfig").html("<font color='lightgreen'>bNoteEditable=true</font>")
+            if (ret.out.state.bEditable) {
+                $("#outConfig").html("<font color='lightgreen'>bEditable=true</font>")
             } else {
-                $("#outConfig").html("<font color='red'>bNoteEditable=false</font>")
+                $("#outConfig").html("<font color='red'>bEditable=false</font>")
             }
         })
     })
@@ -2132,7 +2132,7 @@ AppInstancesManager.prototype.init = function () {
 
     MyStorage.init(function (ret) {
         Uti.Msg("Ready ret.out", ret.out)
-        if (!ret.out.state.bNoteEditable) return alert("bNoteEditable=false.")
+        if (!ret.out.state.bEditable) return alert("bEditable=false.")
         var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
         if (memo) {
             var ar = JSON.parse(ret.out.data["#MemoryVerse"])

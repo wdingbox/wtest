@@ -284,7 +284,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         await userProject.git_pull(function (bSuccess) {
-            inp.out.pull_bSuccess = bSuccess
+        
         })
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
@@ -361,7 +361,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var retp = userProject.git_proj_status()
         if (retp) {
             await userProject.git_pull(function (bSuccess) {
-                inp.out.pull_bSuccess = bSuccess
+
             })
 
           
@@ -374,7 +374,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var jsfname = userProject.get_pfxname(doc)
         var ret = BibleUti.load_BibleObj_by_fname(jsfname)
         inp.out.data = ret.obj
-        if(!inp.out.state)  inp.out.state = { bNoteEditable: 1 }
+        if(!inp.out.state)  inp.out.state = { bEditable: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });

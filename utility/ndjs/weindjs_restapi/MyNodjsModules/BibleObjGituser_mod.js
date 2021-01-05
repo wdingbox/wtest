@@ -705,7 +705,7 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
 
 BibleObjGituser.prototype.git_proj_status = function (cbf) {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: -1, bMyojDir: -1, bNoteEditable: -1, bRepositable: -1 }
+    inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
 
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
@@ -727,13 +727,13 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
     /////// git status
     if (cbf) cbf()
 
-    inp.out.state.bNoteEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir
+    inp.out.state.bEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir
     return inp
 }
 
 BibleObjGituser.prototype.git_status = async function () {
     var inp = this.m_inp
-    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bNoteEditable: 0 }
+    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bEditable: 0 }
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status
@@ -867,14 +867,20 @@ echo ${password} | sudo -S git pull
 cd -
 `
     var _THIS = this
+    if (!_THIS.m_inp.out.git_pull_res) _THIS.m_inp.out.git_pull_res = { bSuccess: -1 }
     this.git_config_allow_push(true)
     await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
+          
+            var mat = val.stderr.match(/(fatal)|(fail)|(error)/g)
+            _THIS.m_inp.out.git_pull_res.bSuccess = !mat
+            _THIS.m_inp.out.git_pull_res = val
             if (cbf) cbf(true)
         },
         function (val) {
+            _THIS.m_inp.out.git_pull_res = val
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
             if (cbf) cbf(false)
@@ -895,7 +901,7 @@ cd -
 
 
     var _THIS = this
-    if(!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
+    if (!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
     if (!_THIS.m_inp.out.state) _THIS.m_inp.out.state = { bRepositable: -1 }
     this.git_config_allow_push(true)
     await BibleUti.exec_Cmd(cmd_git_pull).then(
