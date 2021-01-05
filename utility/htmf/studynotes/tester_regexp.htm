@@ -105,9 +105,6 @@
             var str = localStorage.getItem(this.m_outputTableID)
             if ("undefined" === str || !str) return
 
-            function htmlEntities(str) {
-                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            }
             this.m_obj = JSON.parse(str)
 
             var _THIS = this
@@ -117,7 +114,7 @@
                     delete _THIS.m_obj[str]
                     return;
                 }
-                var enc = htmlEntities(str)
+                var enc = Uti.htmlEncode(str)
                 strs += `<tr><th>${i}</th><td>${enc}</td></td>`
             })
 
