@@ -29,7 +29,7 @@
     <!-------------------------------------------->
     <!----- Insert this line after script imports -->
     <script>//if (window.module) module = window.module;</script>
-    <script language="javascript" Csrc="./BibleStudyNotePad.js?v=20.12.4"></script>
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
     <style>
         body {
@@ -59,18 +59,14 @@
 
     <form action="" method="post">
 
-
-        <label>
-            String:
-        </label>
+        <label>String:</label>
         <textarea id="destr" list="hist_data" value="" placeholder="test string">
         </textarea>
 
         <label>RegExp: </label>
-
         <textarea id="regex" value="">([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)</textarea>
-        <label>Replace: </label>
 
+        <label>Replace: </label>
         <textarea id="repls"><a href="#$1">$1</a></textarea>
     </form>
     <p>
@@ -157,18 +153,22 @@
             localstrorageHistory_regex.set(reg)
             localstrorageHistory_repls.set(rpl)
 
-            var ret = str
+            var ret = txt = str
 
             var reg = new RegExp(reg, "g")
-            var mat = str.match(reg)
+            var mat = txt.match(reg)
             if (mat) {
                 ret += `\n\nMatch:\n${JSON.stringify(mat, null, 4)}`
                 console.log("mat:", mat)
             }
-            str = str.replace(reg, rpl)
-            ret += "\n\nreplace:\n" +str
+            txt = txt.replace(reg, rpl)
+            ret += "\n\nreplace:\n" +txt
             console.log(ret)
 
+
+            ret+="\n\nApiInput:\n" + str
+            
+            ret+="\n\nApiResults:\n"+Uti.convert_std_bcv_linked_back_to_unlinked(str)
             $("#txtarea").val(ret)
             return ret;
         }

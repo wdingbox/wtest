@@ -2728,9 +2728,9 @@ var Uti = {
     convert_std_bcv_linked_back_to_unlinked: function (str) {
         Uti.Msg(str)
         //<a href="#3Jn1:3">3Jn1:3</a> 
-        var bcv = "[1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+"
-        //var reg = new RegExp(`<a href=\"\#(bcv)\">\1</a>`)
-        //str = str.replace(reg, sln)
+        //var bcv =          `<a href=["'][\#]([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)["'][>]\1<[\/]a>`  \\1  =>regex backreferences
+        var reg = new RegExp("<a href=[\"\'][\#]([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)[\"\']>\\1<[\/]a>", "g")
+        str = str.replace(reg, "$1")
     
         Uti.Msg(str)
         return str
