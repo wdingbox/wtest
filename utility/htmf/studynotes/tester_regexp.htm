@@ -28,6 +28,9 @@
     <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
     <!-------------------------------------------->
     <!----- Insert this line after script imports -->
+    <script language="javascript"
+    src="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
+
     <script>//if (window.module) module = window.module;</script>
     <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
     <!-------------------------------------------->
@@ -64,16 +67,17 @@
         </textarea>
 
         <label>RegExp: </label>
-        <textarea id="regex" value="">([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)</textarea>
+        <textarea id="regex" value="">([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)</textarea>
 
         <label>Replace: </label>
         <textarea id="repls"><a href="#$1">$1</a></textarea>
     </form>
     <p>
         <button onclick="test_Match();">Match</button>
-      
+        <button onclick="localStorage.clear();">ClearStorage</button>
+
     </p>
-  
+
 
 
 
@@ -91,9 +95,9 @@
 
     <script>
         function LocalStrorageHistory(iid) {
-            this.m_obj = {}
             this.m_inputID = "#" + iid
             this.m_outputTableID = "#otable_" + iid
+            this.m_obj = {}
         }
         LocalStrorageHistory.prototype.set = function (val) {
             if (val.trim().length === 0) return alert("empty input")
@@ -103,9 +107,12 @@
         }
         LocalStrorageHistory.prototype.gen_table = function () {
             var str = localStorage.getItem(this.m_outputTableID)
-            if ("undefined" === str || !str) return
-
-            this.m_obj = JSON.parse(str)
+            if ("undefined" !== str && str) {
+                this.m_obj = JSON.parse(str)
+            }
+            if(!this.m_obj){
+                return
+            }
 
             var _THIS = this
             var strs = ""
@@ -124,7 +131,7 @@
                 var tx = $(this).text()
                 $(_THIS.m_inputID).val(tx)
             })
-            $(this.m_outputTableID).find("th").bind("click",function(){
+            $(this.m_outputTableID).find("th").bind("click", function () {
                 var str = $(this).next().text()
                 delete _THIS.m_obj[str]
                 $(this).empty()
@@ -132,9 +139,14 @@
             })
         }
 
+        var defaultOj_repl = { "$1": 1, '<a href=\"#$1\">$1</a>': 1 }
         var localstrorageHistory_destr = new LocalStrorageHistory("destr")
         var localstrorageHistory_regex = new LocalStrorageHistory("regex")
         var localstrorageHistory_repls = new LocalStrorageHistory("repls")
+
+        localstrorageHistory_repls.m_obj = { "$1": 1, '<a href=\"#$1\">$1</a>': 1 }
+        localstrorageHistory_regex.m_obj = { "([1-3A-Z][a-zA-Z][a-z][0-9]+[:][0-9]+)": 1, "<a href=[\"\'][\#]([1-3A-Z][a-zA-Z][a-z][0-9]+[:][0-9]+)[\"\']>\\1<[\/]a>": 1 }
+        localstrorageHistory_destr.m_obj = { "Psm33:6, Psm104:30, Rev14:7, Psm90:2, Neh9:6, Jer32:17, Psm136:5, 1Jn1:1, ": 1, '<a href="#1Jn1:1">1Jn1:1</a>, Act17:24, Rev3:14, Isa42:5, Job38:4, <a href="#2Pe3:5">2Pe3:5</a>, Mak13:19, Rev22:13, <a href="#1Ch16:26">1Ch16:26</a>, Rom1:19-Rom1:20, Isa44:24, Psm134:3, Psm124:8, Heb11:3, Rev10:6, Pro8:22-Pro8:30, <a href="#1Co8:6">1Co8:6</a>,': 1 }
 
 
 
@@ -159,15 +171,17 @@
                 console.log("mat:", mat)
             }
             txt = txt.replace(reg, rpl)
-            ret += "\n\nreplace:\n" +txt
+            ret += "\n\nreplace:\n" + txt
             console.log(ret)
 
-            
-            ret+="\n\nApiResults:\n"+Uti.convert_std_bcv_linked_back_to_unlinked(str)
 
-            ret+="\n\nhtmlDecode:\n" + Uti.htmlDecode(str)
+            ret += "\n\n convert_std_bcv_in_text_To_unlinked ApiResults:\n" + Uti.convert_std_bcv_in_text_To_unlinked(str)
 
-            ret+="\n\nhtmlEncode:\n" + Uti.htmlEncode(str)
+            ret += "\n\n convert_std_bcv_in_text_To_linked ApiResults:\n" + Uti.convert_std_bcv_in_text_To_linked(str)
+
+            ret += "\n\nhtmlDecode:\n" + Uti.htmlDecode(str)
+
+            ret += "\n\nhtmlEncode:\n" + Uti.htmlEncode(str)
 
 
             $("#txtarea").val(ret)

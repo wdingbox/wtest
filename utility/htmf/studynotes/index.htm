@@ -52,7 +52,7 @@
     <script language="javascript">
         function gen_cross_svr_link() {
             var ss = `<h3>${window.location.href}</h3>`;
-            ss+="<table border='1'><tbody><thead><tr><th>Host</th><th>PadSvr</th><th>account</td></tr></thead>";
+            ss+="<table border='1'><tbody><thead><tr><th>Host</th><th>PadSvr</th></tr></thead>";
             var ip_home = {
                 "localhost": "file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm",
                 "104.188.182.128": "",
@@ -63,7 +63,7 @@
                 var home = `<a class="openew">${ip_home[ip]}</a>`
                 var serv = `<a target='_blank' href='./BibleStudyNotePad.htm?ip=${ip}'>${ip}</a>`
                 var acct = `<a target='_blank' href='./myAccount.htm?ip=${ip}'>${ip}</a>`
-                ss += `<tr><td>${home}</td><td>${serv}</td><td>${acct}</td></tr>`
+                ss += `<tr><td>${home}</td><td>${serv}</td></tr>`
             })
             ss + "</tbody></table>"
             $("body").append(ss).find(".openew").bind("click", function () {
@@ -105,9 +105,12 @@
     <p>https://localhost:7775/</p>
     <p>http://localhost/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm</p>
     <p>Open link in a new window or tab: <a href="#bcv=gen1:1">Visit!</a></p>
+
+    <a href="./tester_regexp.htm">tester_regexp</a><br>
     <a href="./myAccount.htm">myAccount</a><br>
     <a> file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm
     </a>
+
 
 </BODY>
 

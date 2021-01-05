@@ -480,6 +480,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             if (!showTxt) {
                 showTxt = "<ol><li>a</li></ol>"
             }
+            showTxt = Uti.convert_std_bcv_in_text_To_unlinked(showTxt)
             $(this.m_id).html(showTxt)
         } else {
             $(this.m_id).attr("contenteditable", null)
@@ -582,10 +583,10 @@ PopupMenu_EdiTag.prototype.init = function () {
                     var dlt = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev].length - ret.out.data.txt.length
                     if (!confirm(`difference (${dlt}b): continue?`)) return
                 }
-                _THIS.m_ediBtn.enable_edit(false, true)
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data.txt)
                 _THIS.m_ediDiv.html(showtxt)
                 _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev] = ret.out.data.txt
+                _THIS.m_ediBtn.enable_edit(false, true)
                 $(_THIS.m_ediDiv.m_id).toggleClass("txt_loaded")
                 Uti.Msg(ret.out.data.txt)
             }
@@ -2732,11 +2733,11 @@ var Uti = {
         Uti.Msg(str)
         return str
     },
-    convert_std_bcv_linked_back_to_unlinked: function (str) {
+    convert_std_bcv_in_text_To_unlinked: function (str) {
         Uti.Msg(str)
         //<a href="#3Jn1:3">3Jn1:3</a> 
         //Note:  \\1  =>regex backreferences
-        var reg = new RegExp("<a href=[\"\'][\#]([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)[\"\']>\\1<[\/]a>", "g")
+        var reg = new RegExp("<a href=[\"\'][\#]([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)[\"\']>\\1<[\/]a>", "g")
         str = str.replace(reg, "$1")
 
         Uti.Msg(str)
