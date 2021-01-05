@@ -101,9 +101,9 @@
         }
         LocalStrorageHistory.prototype.set_default = function (ar) {
             if (!ar | ar.length === 0) return
-            ar.forEach(function (val) {
-                this.m_obj[val] = 1
-            })
+            for (var i = 0; i < ar.length; i++) {
+                this.m_obj[ar[i]] = 1
+            }
         }
         LocalStrorageHistory.prototype.set = function (val) {
             if (val.trim().length === 0) return alert("empty input")
@@ -151,7 +151,7 @@
         var localstrorageHistory_repls = new LocalStrorageHistory("repls")
 
         localstrorageHistory_repls.set_default(["$1", '<a href=\"#$1\">$1</a>'])
-        localstrorageHistory_regex.set_default(["([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)", "<a href=[\"\'][\#]([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)[\"\']>\\1<[\/]a>")
+        localstrorageHistory_regex.set_default(["([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)", "<a href=[\"\'][\#]([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)[\"\']>\\1<[\/]a>"])
         localstrorageHistory_destr.set_default(["Psm33:6, Psm104:30, Rev14:7, Psm90:2, Neh9:6, Jer32:17, Psm136:5, 1Jn1:1, ", '<a href="#1Jn1:1">1Jn1:1</a>, Act17:24, Rev3:14, Isa42:5, Job38:4, <a href="#2Pe3:5">2Pe3:5</a>, Mak13:19, Rev22:13, <a href="#1Ch16:26">1Ch16:26</a>, Rom1:19-Rom1:20, Isa44:24, Psm134:3, Psm124:8, Heb11:3, Rev10:6, Pro8:22-Pro8:30, <a href="#1Co8:6">1Co8:6</a>,'])
 
 
