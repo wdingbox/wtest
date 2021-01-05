@@ -284,7 +284,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         await userProject.git_pull(function (bSuccess) {
-            inp.out.pull_Success = bSuccess
+            inp.out.pull_bSuccess = bSuccess
         })
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
@@ -358,7 +358,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         await userProject.git_proj_setup(res)
 
 
-        userProject.git_pull()
+        await userProject.git_pull(function(bSuccess){
+            inp.out.pull_bSuccess = bSuccess
+        })
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
