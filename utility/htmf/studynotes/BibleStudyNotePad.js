@@ -464,10 +464,10 @@ PopupMenu_EdiTag.prototype.init = function () {
     DivEditTxt.prototype.getEditHtm = function () {
         var edx = ""
         if (this.isEditable()) {
-            edx = _THIS.m_ediDiv.html()
+            edx = this.html()
         } else {
             Uti.Msg("not editable. cannot save")
-            edx = _THIS.m_ediDiv.m_otxObj[_THIS.m_par.m_rev]
+            edx = this.m_otxObj[this.m_rev]
         }
         return edx
     }
@@ -484,9 +484,11 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).html(showTxt)
         } else {
             $(this.m_id).attr("contenteditable", null)
-            this.m_otxObj[this.m_rev] = $(this.m_id).html() //storeIt
+            var showTxt = $(this.m_id).html() //storeIt
+            var showTxt = Uti.convert_std_bcv_in_text_To_unlinked(showTxt)
+            this.m_otxObj[this.m_rev] = showTxt;//$(this.m_id).html() //storeIt
 
-            var htmShow = Uti.convert_std_bcv_in_text_To_linked(this.m_otxObj[this.m_rev])
+            var htmShow = Uti.convert_std_bcv_in_text_To_linked(showTxt)
             if (!htmShow) {
                 htmShow = "<ol><li>z</li></ol>"
             }
