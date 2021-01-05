@@ -857,26 +857,27 @@ cd -
         }
     )
 }
-BibleObjGituser.prototype.git_pull = function () {
+BibleObjGituser.prototype.git_pull = async function (cbf) {
     password = "lll" //dev mac
     var cmd_git_pull = `
 #!/bin/sh
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S git status
 echo ${password} | sudo -S git pull
-echo ${password} | sudo -S git status
 cd -
 `
     var _THIS = this
     this.git_config_allow_push(true)
-    BibleUti.exec_Cmd(cmd_git_pull).then(
+    await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
+            if(cbf) cbf(true)
         },
         function (val) {
             console.log("failure:", val)
             _THIS.git_config_allow_push(false)
+            if(cbf) cbf(false)
         }
     )
 }

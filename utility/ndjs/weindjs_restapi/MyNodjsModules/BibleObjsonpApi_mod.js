@@ -231,12 +231,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
             //: unlimited write size. 
-            var save_res = {desc:"to save"}
+            var save_res = { desc: "to save" }
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
             if (!proj) {
                 save_res.desc = "proj=null"
-                return 
+                return
             }
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -247,7 +247,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 save_res.desc = `load(${doc},${jsfname})=null`
                 return;
             }
-            
+
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length !== 4) {
                 save_res.desc = `err inpObj: ${JSON.stringify(karyObj)}`
@@ -263,7 +263,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             save_res.ret = bio
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} saved@ ${jsfname}`
             inp.out.save_res = save_res
-            
+
             await userProject.git_add_commit_push(save_res.desc)
         })
 
@@ -271,20 +271,41 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //res.write("Jsonpster.Response(" + ss + ");");
         //res.end();
     },
-    ApiBibleObj_read_Usr_BkcChpVrs_txt: function (req, res) {
+    ApiBibleObj_read_Usr_BkcChpVrs_txt: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
         var inp = BibleUti.GetApiInputParamObj(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
+        if (!proj) {
+            inp.out.desc = "proj=null"
+            return
+        }
 
-        userProject.git_pull()
+        await userProject.git_pull(function (bSuccess) {
+            inp.out.pull_Success = bSuccess
+        })
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
         var jsfname = userProject.get_pfxname(doc)
-        inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
+        var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+        if (!bio.obj) {
+            inp.out.desc = `load(${doc},${jsfname})=null`
+            return;
+        }
+
+        var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+        if (karyObj.kary.length < 3) {
+            inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+            return
+        }
+        console.log(karyObj)
+        inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+
+
+        //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
