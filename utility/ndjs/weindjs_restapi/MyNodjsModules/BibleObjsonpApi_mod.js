@@ -231,18 +231,40 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
             //: unlimited write size. 
+            var save_res = {desc:"to save"}
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
+            if (!proj) {
+                save_res.desc = "proj=null"
+                return 
+            }
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
-            inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+            if (!bio.obj) {
+                save_res.desc = `load(${doc},${jsfname})=null`
+                return;
+            }
+            
+            var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+            if (karyObj.kary.length !== 4) {
+                save_res.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+                return
+            }
+            console.log(karyObj)
+            bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs] = karyObj.txt
+            bio.writeback()
 
-
-            await userProject.git_add_commit_push(inp.out.data.dbcv)
-
-            //var ss = JSON.stringify(inp)
+            //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            var save_res = {}
+            save_res.saved_size = karyObj.txt.length
+            save_res.ret = bio
+            save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} saved@ ${jsfname}`
+            inp.out.save_res = save_res
+            
+            await userProject.git_add_commit_push(save_res.desc)
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -281,18 +303,19 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var proj = userProject.git_proj_parse(inp)
             if (!proj) return
             var result = await userProject.git_proj_setup(res)
-            if(!result) return
+            if (!result) return
 
-            
+
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
             var ret = BibleUti.load_BibleObj_by_fname(jsfname)
-            if(!ret.obj) return
+            if (!ret.obj) return
             ret.obj = JSON.parse(inp.par.data, null, 4)
             console.log("ret", ret)
             ret.writeback()
 
+            //// 
             var save_res = {}
             save_res.saved_size = inp.par.data.length
             save_res.ret = ret

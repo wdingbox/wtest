@@ -155,12 +155,12 @@ var BibleUti = {
 
             req.on("end", async function () {
                 console.log("on post eend:", body)
-                
+
                 var inpObj = JSON.parse(body)
                 inpObj.out = { desc: "", data: null }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
-                
-                
+
+
                 console.log("cbf start ------------------------------")
                 await cbf(inpObj)
 
@@ -338,6 +338,24 @@ var BibleUti = {
             fs.writeFileSync(this.fname, this.header + s2);
         }
         return ret;
+    },
+    inpObj_to_karyObj: function (inpObj) {
+        var keyObj = { kary: [] }
+        for (const [bkc, chpObj] of Object.entries(inpObj)) {
+            keyObj.bkc = bkc
+            keyObj.kary.push(bkc)
+            for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                keyObj.chp = chp
+                keyObj.kary.push(chp)
+                for (const [vrs, txt] of Object.entries(vrsObj)) {
+                    keyObj.vrs = vrs
+                    keyObj.txt = txt
+                    keyObj.kary.push(vrs)
+                    keyObj.kary.push(txt)
+                }
+            }
+        }
+        return keyObj;
     },
 
     Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
@@ -582,7 +600,7 @@ fi
             inp.out.git_clone_res.desc += ", clone success."
             _check_git_folders_existance()
             //this.git_config_allow_push(true)
-        }, 
+        },
         function (val) {
             console.log("git-clone failure:", val)
             inp.out.git_clone_res.desc += ", clone success."
