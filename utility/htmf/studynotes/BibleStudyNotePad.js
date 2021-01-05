@@ -2725,6 +2725,16 @@ var Uti = {
         Uti.Msg(str)
         return str
     },
+    convert_std_bcv_linked_back_to_unlinked: function (str) {
+        Uti.Msg(str)
+        //<a href="#3Jn1:3">3Jn1:3</a> 
+        var bcv = "[1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+"
+        //var reg = new RegExp(`<a href=\"\#(bcv)\">\1</a>`)
+        //str = str.replace(reg, sln)
+    
+        Uti.Msg(str)
+        return str
+    },
     convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn: function (ary) {
         var str = ary.join(", ")
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
