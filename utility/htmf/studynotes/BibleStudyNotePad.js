@@ -2703,6 +2703,13 @@ var Uti = {
 
         return ret;
     },
+    htmlDecode: function (value) {
+        return $("<textarea/>").html(value).text();
+    },
+
+    htmlEncode: function (value) {
+        return $('<textarea/>').text(value).html();
+    },
     convert_std_bcv_in_text_To_linked: function (str) {
         Uti.Msg(str)
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
@@ -2728,10 +2735,10 @@ var Uti = {
     convert_std_bcv_linked_back_to_unlinked: function (str) {
         Uti.Msg(str)
         //<a href="#3Jn1:3">3Jn1:3</a> 
-        //var bcv =          `<a href=["'][\#]([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)["'][>]\1<[\/]a>`  \\1  =>regex backreferences
+        //Note:  \\1  =>regex backreferences
         var reg = new RegExp("<a href=[\"\'][\#]([1-3A-Z][a-z]{2}[0-9]*[\:][0-9]*)[\"\']>\\1<[\/]a>", "g")
         str = str.replace(reg, "$1")
-    
+
         Uti.Msg(str)
         return str
     },

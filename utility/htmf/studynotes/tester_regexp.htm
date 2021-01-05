@@ -165,10 +165,14 @@
             ret += "\n\nreplace:\n" +txt
             console.log(ret)
 
-
-            ret+="\n\nApiInput:\n" + str
             
             ret+="\n\nApiResults:\n"+Uti.convert_std_bcv_linked_back_to_unlinked(str)
+
+            ret+="\n\nhtmlDecode:\n" + Uti.htmlDecode(str)
+
+            ret+="\n\nhtmlEncode:\n" + Uti.htmlEncode(str)
+
+
             $("#txtarea").val(ret)
             return ret;
         }
