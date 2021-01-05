@@ -130,7 +130,7 @@ RunAjax_Type_Post : function(cbf){
     })
         .success(function( data ) {
             //console.log("success",data);
-            cbf(JSON.parse(data))
+            //cbf(JSON.parse(data))
         })
         .done(function( data ) {
             //console.log("done",data);

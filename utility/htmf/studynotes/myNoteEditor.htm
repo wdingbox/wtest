@@ -427,13 +427,14 @@ ${scmd}
             console.log("inp:", pster.inp)
             Jsonpster.RunAjaxPost(function (ret) {
                 console.log("ret", ret)
-                if (ret.out.result.indexOf("success") > 0) {
-                    console.log("result", ret)
+                var res = ret.out.save_res
+                if (res && res.saved_size) {
+                    console.log("save_res.saved_size", ret)
                     var dlt = theData.length - document.m_iEdiDataLen
-                    g_msg.pop(`<br>${bcv} <br>${ret.out.result}<br>* * * OK ! Saved * * *<br>nDlt= ${dlt}`);
+                    g_msg.pop(`<br>${bcv} <br>saved_size=${ret.out.save_res.saved_size}<br>* * * OK ! Saved * * *<br>nDlt= ${dlt}`);
                     document.m_iEdiDataLen = theData.length
                     ckEditor.resetDirty()
-                }else{
+                } else {
                     alert("saving has issues.")
                 }
             })

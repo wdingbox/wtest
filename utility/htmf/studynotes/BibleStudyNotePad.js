@@ -598,7 +598,7 @@ PopupMenu_EdiTag.prototype.init = function () {
                 }
                 var showtxt = Uti.convert_std_bcv_in_text_To_linked(ret.out.data)
                 _THIS.m_ediDiv.html(showtxt)
-                _THIS.m_ediDiv.setEditHtm (ret.out.data)
+                _THIS.m_ediDiv.setEditHtm(ret.out.data)
                 _THIS.m_ediBtn.enable_edit(true, true)
                 $(_THIS.m_ediDiv.m_id).toggleClass("txt_loaded")
             } else {
@@ -2726,8 +2726,16 @@ var Uti = {
     htmlEncode: function (value) {
         return $('<textarea/>').text(value).html();
     },
+    BCV_RegPat: "([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)",
     convert_std_bcv_in_text_To_linked: function (str) {
         Uti.Msg(str)
+        str = this.convert_std_bcv_in_text_To_unlinked(str)
+
+        var reg = new RegExp(this.BCV_RegPat, "g")
+        str = str.replace(reg, '<a href="#$1">$1</a>')
+        Uti.Msg(str)
+        return str
+
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
             var sln = `$1<a href='#${v}'>${v}</a>`
@@ -2752,7 +2760,7 @@ var Uti = {
         Uti.Msg(str)
         //<a href="#3Jn1:3">3Jn1:3</a> 
         //Note:  \\1  =>regex backreferences
-        var reg = new RegExp("<a href=[\"\'][\#]([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)[\"\']>\\1<[\/]a>", "g")
+        var reg = new RegExp("<a href=[\"\'][\#]" + this.BCV_RegPat + "[\"\']>\\1<[\/]a>", "g")
         str = str.replace(reg, "$1")
 
         Uti.Msg(str)
