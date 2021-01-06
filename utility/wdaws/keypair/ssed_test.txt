@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<meta http-equiv="Refresh" content="0;url=http://52.87.154.78"
+	<meta http-equiv="Refresh" content="0;url=http://29.10.91.78991"
 		xnote="./utility/htmf/studynotes/BibleStudyNotePad.htm">
 	<title>.</title>
 	<script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
