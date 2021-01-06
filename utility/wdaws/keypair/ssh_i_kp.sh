@@ -8,7 +8,7 @@
 SvrIP="52.87.154.78"
 
 
-SRC="ssed_test.txt" 
+SRC="ssed_index.htm" 
 TARGF="../../../index.htm" 
 sed -E 's|'[0-9]+.[0-9]+.[0-9]+.[0-9]+'|'"$SvrIP"'|g'  ${SRC} > ${TARGF}
 
