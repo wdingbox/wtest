@@ -3305,7 +3305,7 @@ var BibleInputMenuContainer = `
                 
                 <br>
                 <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
-                <a target='_blank' href='../index.htm'>ref</a> | <a target='_blank' href='./index.htm'>home</a>
+                <a target='_blank' href='../index.htm'>ref</a> | <a href='https://wdingbox.github.io/ham12/'>Home</a>
                 | <a id='NewPage' target='_blank'>New</a><br>
                 
                 <textarea id="txtarea" cols='40' rows='20'  value='search results...' title='log.'>
