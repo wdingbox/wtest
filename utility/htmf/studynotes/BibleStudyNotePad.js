@@ -1829,6 +1829,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
+            Uti.set_menuContainer_color(ret)
             Uti.Msg(ret.out)
             var sta = ret.out.state
             var msg = "<font color='red'>Invalid Repository</font>"
@@ -2131,8 +2132,9 @@ AppInstancesManager.prototype.init = function () {
     })
 
     MyStorage.init(function (ret) {
+        Uti.set_menuContainer_color(ret)
         Uti.Msg("Ready ret.out", ret.out)
-        if (!ret.out.state.bEditable) return alert("bEditable=false.")
+
         var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
         if (memo) {
             var ar = JSON.parse(ret.out.data["#MemoryVerse"])
@@ -2160,10 +2162,6 @@ AppInstancesManager.prototype.init = function () {
     this.onclicks_btns_in_grpMenu_search()
     MyStorage.getBookNameLanguage()
 };
-
-
-
-
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var ret = showup.get_selected_bcv_parm()
     if (!ret.m_bcv) return
@@ -2635,6 +2633,23 @@ var Uti = {
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
         $("#txtarea").val(results);
+    },
+    set_menuContainer_color: function (ret) {
+        $("#menuContainer, #passcode, #repopath").removeClass("menuContainer_red").removeClass("menuContainer_yellow").removeClass("menuContainer_green")
+        if (ret.out.state) {
+            if (ret.out.state.bEditable <= 0) {
+                $("#menuContainer, #repopath").addClass("menuContainer_red")
+                alert("Config Repository Invalid. \n- Editing will not work.")
+            } else {
+                if (ret.out.state.bRepositable <= 0) {
+                    $("#menuContainer, #passcode").addClass("menuContainer_yellow")
+                } else {
+                    $("#menuContainer").addClass("menuContainer_green")
+                }
+            }
+        }else{
+            $("#menuContainer, #repopath").addClass("menuContainer_red")
+        }
     },
 
 

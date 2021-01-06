@@ -25,16 +25,25 @@ body {
 
     #menuContainer {
         top: 30px;
-        background-color: rgb(51, 158, 158);
 
         overflow: visible;
         display: block;
 
         height: 25px;
         width:350px;
-        
-
     }
+    .menuContainer_red{
+        background-color: red;
+    }
+    .menuContainer_yellow{
+        background-color: yellow;
+    }
+    .menuContainer_green{
+        background-color: green;
+    }
+
+
+
 
     #MainMenuToggler {
         display: block;
