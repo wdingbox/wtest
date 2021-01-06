@@ -1888,23 +1888,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         if ($("#passcode").val().trim().length === 0) return !!alert("passcode is required for saving.")
         $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_save(function (ret) {
-            Uti.Msg("ret:", ret.out.save_res);//,null, 4))
-            var msg = "failed to save.", clr = "red"
-            if (ret.out.save_res && ret.out.save_res.saved_size) {
-                clr = "lightgreen", msg = `wrote:${ret.out.save_res.saved_size}(B)`
-            }
-            var sta = ret.out.state
-            if (sta) {
-                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
-                var msg2 = `bRepositable:${sta.bRepositable}`
-                var push_res = ret.out.git_push_res.desc
-                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
-                var msg2 = `bRepositable:${sta.bRepositable}`
-
-                $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
-            } else {
-                $("#outConfig").html(`<font color='red'>Failed: Invalid Repository</font>`)
-            }
+            Uti.show_save_results(ret)
         })
     })
     $("#StorageRepo_load").bind("click", function () {
@@ -2649,6 +2633,25 @@ var Uti = {
             }
         }else{
             $("#menuContainer, #repopath").addClass("menuContainer_red")
+        }
+    },
+    show_save_results:function(ret){
+        Uti.Msg("ret.out.save_res:", ret.out.save_res);//,null, 4))
+        var msg = "failed to save.", clr = "red"
+        if (ret.out.save_res && ret.out.save_res.saved_size) {
+            clr = "lightgreen", msg = `wrote:${ret.out.save_res.saved_size}(B)`
+        }
+        var sta = ret.out.state
+        if (sta) {
+            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var msg2 = `bRepositable:${sta.bRepositable}`
+            var push_res = ret.out.git_push_res.desc
+            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var msg2 = `bRepositable:${sta.bRepositable}`
+
+            $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
+        } else {
+            $("#outConfig").html(`<font color='red'>Failed: Invalid Repository</font>`)
         }
     },
 
