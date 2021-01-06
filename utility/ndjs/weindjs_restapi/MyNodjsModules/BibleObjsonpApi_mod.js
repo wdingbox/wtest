@@ -260,8 +260,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
             var save_res = {}
             save_res.saved_size = karyObj.txt.length
-            save_res.ret = bio
-            save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} saved@ ${jsfname}`
+            //save_res.ret = bio
+            save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
             inp.out.save_res = save_res
 
             await userProject.git_add_commit_push(save_res.desc)

@@ -1886,9 +1886,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $("#StorageRepo_save").bind("click", function () {
         if ($("#passcode").val().trim().length === 0) return !!alert("passcode is required for saving.")
-        $("#outConfig").text($(this).text() + " ...").show()
+        $("#outConfig").text($(this).text() + $(this).val() + " ...").show()
         MyStorage.Repo_save(function (ret) {
             Uti.show_save_results(ret)
+            $("#StorageRepo_save").prop("checked",false)
         })
     })
     $("#StorageRepo_load").bind("click", function () {
@@ -3378,7 +3379,7 @@ var BibleInputMenuContainer = `
                          
                             <td>Storage</td>
                             <td>
-                            <input type="radio" onclick="MyStorage.clear();" title='clear up storage'>Clear</input>
+                            <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveToRepos</input>  
                             <a type="radio" id="StorageRepo_load" title='clear up storage'></a>
                             <a id="Storage_local_repos_exchange"></a>
