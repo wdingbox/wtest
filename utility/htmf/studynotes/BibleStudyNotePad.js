@@ -466,7 +466,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         if (this.isEditable()) {
             edx = this.html()
         } else {
-            Uti.Msg("not editable. cannot save")
+            //Uti.Msg("uneditable text")
             edx = this.m_otxObj[this.m_rev]
         }
         edx = Uti.htmlDecode(edx.trim())
@@ -584,9 +584,9 @@ PopupMenu_EdiTag.prototype.init = function () {
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
-        console.log("inp:", Jsonpster)
+        console.log("Jsonpster:", Jsonpster)
         Uti.Msg(Jsonpster)
-        var _This = this
+    
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
             Uti.Msg(ret.out)
@@ -602,7 +602,7 @@ PopupMenu_EdiTag.prototype.init = function () {
                 _THIS.m_ediBtn.enable_edit(true, true)
                 $(_THIS.m_ediDiv.m_id).toggleClass("txt_loaded")
             } else {
-                alert("load failed.")
+                alert("load failed. ")
             }
         })
     })
@@ -2681,7 +2681,7 @@ var Uti = {
             ret.chp = "" + parseInt(mat[2]);
             ret.vrs = "" + parseInt(mat[3]);
         } else {
-            Uti.Msg("bcv format err:", sbcv)
+            console.log("not a std bcv:", sbcv)
             return null
         }
         ///////validation for std bcv.
@@ -2743,12 +2743,12 @@ var Uti = {
     },
     BCV_RegPat: "([1-3A-Z][a-zA-Z][a-z][0-9]+[\:][0-9]+)",
     convert_std_bcv_in_text_To_linked: function (str) {
-        Uti.Msg(str)
+        //Uti.Msg(str)
         str = this.convert_std_bcv_in_text_To_unlinked(str)
 
         var reg = new RegExp(this.BCV_RegPat, "g")
         str = str.replace(reg, '<a href="#$1">$1</a>')
-        Uti.Msg(str)
+        //Uti.Msg(str)
         return str
 
         var ret = Uti.convert_std_bcv_str_To_uniq_biblicalseq_splitted_ary(str)
@@ -2772,13 +2772,13 @@ var Uti = {
         return str
     },
     convert_std_bcv_in_text_To_unlinked: function (str) {
-        Uti.Msg(str)
+        //Uti.Msg(str)
         //<a href="#3Jn1:3">3Jn1:3</a> 
         //Note:  \\1  =>regex backreferences
         var reg = new RegExp("<a href=[\"\'][\#]" + this.BCV_RegPat + "[\"\']>\\1<[\/]a>", "g")
         str = str.replace(reg, "$1")
 
-        Uti.Msg(str)
+        //Uti.Msg(str)
         return str
     },
     convert_std_uniq_biblicalseq_splitted_ary_To_dashed_strn: function (ary) {
