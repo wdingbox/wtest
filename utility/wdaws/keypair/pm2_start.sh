@@ -3,6 +3,7 @@ cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
 pm2 list
 pm2 delete 0
 pm2 start a.node.js --watch 
+pm2 log
 
 
 ##########################

@@ -52,6 +52,8 @@ git clone https://github.com/wdingbox/bible_obj_lib.git
 git clone https://github.com/wdingbox/bible_obj_usr.git
 git clone https://github.com/wdingbox/hebrew_ciu.git
 
+cd /var/www/html
+cp ./wdaws/ham12/utility/wdaws/*.htm ./index.htm
 
 cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
 pm2 start a.node.js --watch 
