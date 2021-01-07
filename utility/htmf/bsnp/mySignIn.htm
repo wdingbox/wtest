@@ -203,6 +203,7 @@
             window.opener.postMessage(Jsonpster.inp.usr, '*');
         }
         function repo_create() {
+            $("#otb").html("<font color='black'>Start sign in</font>")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
@@ -211,7 +212,7 @@
                 if (1 === ret.out.state.bRepositable) {
                     window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                 } else {
-                    $("#otb").html("<font color='red'>Error Repository or passcode</font>")
+                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
                 }
             })
         }
@@ -279,6 +280,7 @@
         else {
             $("title").text("signin")
             dbg_pster()
+            var ar = MyStorage.Repositories().repos_app_init()
 
             //$("#histroy").trigger("click")
         }
