@@ -586,7 +586,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
         console.log("Jsonpster:", Jsonpster)
         Uti.Msg(Jsonpster)
-    
+
         Jsonpster.Run(function (ret) {
             console.log("ret", ret.out.data)
             Uti.Msg(ret.out)
@@ -1824,7 +1824,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_set").bind("click", function () {
-        $("#outConfig").text($(this).text() + "...").show()
+        $("#account_set_info").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
@@ -1841,7 +1841,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
                 msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
             }
 
-            $("#outConfig").html(msg).show()
+            $("#account_set_info").html(msg).show()
         })
     })
     $("#account_destroy").bind("click", function () {
@@ -1889,7 +1889,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("#outConfig").text($(this).text() + $(this).val() + " ...").show()
         MyStorage.Repo_save(function (ret) {
             Uti.show_save_results(ret)
-            $("#StorageRepo_save").prop("checked",false)
+            $("#StorageRepo_save").prop("checked", false)
         })
     })
     $("#StorageRepo_load").bind("click", function () {
@@ -1900,6 +1900,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             } else {
                 $("#outConfig").html("<font color='red'>bEditable=false</font>")
             }
+        })
+    })
+    $("#StorageRepo_Signout").bind("click", function () {
+        if (!confirm("Make sure you have saved repos before you sign out. \n(it could be destroyed).")) return
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+        Jsonpster.Run(function (ret) {
+            $("body").attr("onbeforeunload", null)
+            window.open("./index.htm", "_self")
         })
     })
 }
@@ -2632,11 +2641,11 @@ var Uti = {
                     $("#menuContainer").addClass("menuContainer_green")
                 }
             }
-        }else{
+        } else {
             $("#menuContainer, #repopath").addClass("menuContainer_red")
         }
     },
-    show_save_results:function(ret){
+    show_save_results: function (ret) {
         Uti.Msg("ret.out.save_res:", ret.out.save_res);//,null, 4))
         var msg = "failed to save.", clr = "red"
         if (ret.out.save_res && ret.out.save_res.saved_size) {
@@ -2972,7 +2981,7 @@ var Uti = {
         }
 
         var e = document.createElement("script");
-        if(ip.indexOf(":")<0) ip+=":7778"
+        if (ip.indexOf(":") < 0) ip += ":7778"
         e.src = `http://${ip}/Jsonpster/`;
         document.body.appendChild(e);
         console.log("crossload:", e.src)
@@ -3383,7 +3392,7 @@ var BibleInputMenuContainer = `
                             <td>Storage</td>
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
-                            <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveToRepos</input>  
+                            <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveRepos</input>  
                             <a type="radio" id="StorageRepo_load" title='clear up storage'></a> | 
                             <a id="StorageRepo_Signout" title='Sign Out and Exist'>SignOut</a>
                             <a id="Storage_local_repos_exchange"></a>
