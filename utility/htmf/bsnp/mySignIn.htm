@@ -25,6 +25,7 @@
         body {
             background-color: aliceblue;
             margin: 10px 10px 10px 10px;
+            width: 90%;
         }
 
         .centered_elem {
@@ -36,8 +37,17 @@
             width: 100%;
             text-align: center;
 
-            margin: 0px 0px 0px 0px;
-            padding: 0px 0px 0px 0px;
+            margin: 0px 10px 10px 10px;
+            padding: 0px 10px 10px 10px;
+        }
+
+
+        form {
+            background-color: rgb(204, 177, 161);
+            width: 100%;
+
+            margin: 10px 10px 0px 10px;
+            padding: 10px 10px 0px 10px;
         }
 
         table {
@@ -45,15 +55,6 @@
             margin: 10px 10px 10px 10px;
             /*font-size:xx-large;*/
         }
-
-        form {
-            background-color: rgb(204, 177, 161);
-            width: 100%;
-
-            margin: 0px 0px 0px 0px;
-            padding: 0px 0px 0px 0px;
-        }
-
 
         .white_space_nowrap {
             white-space: nowrap;
@@ -83,11 +84,12 @@
     <p style="text-align: center;margin-top: 50px;">Welcome to</p>
     <h2 style="text-align: center;margin-top: 50px;">Bible Study Note Pad</h2>
 
-    <h3 style="text-align: center;margin-top: 50px;">Sign In Page</h3>
+    
 
 
 
-    <form action="" method="post">
+    <form action="">
+        <h3 style="text-align: center;margin-top: 50px;">Sign In Page</h3>
         <div>
             Repository: (<font color='red'>required</font>) <a class="help_label"
                 onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
@@ -203,7 +205,7 @@
             window.opener.postMessage(Jsonpster.inp.usr, '*');
         }
         function repo_create() {
-            $("#otb").html("<font color='black'>Start sign in</font>")
+            $("#otb").html("<font color='black'>Start to sign in ... </font>")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
