@@ -1791,7 +1791,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             var sln = `<a href='#${v}'>${v}</a>`
             htm += `${sln} | `
         })
-        $("#txtdiv").html(htm)
+        $("#operation_res").html(htm)
         Uti.Msg(htm)
 
         str = Uti.convert_std_bcv_in_text_To_linked(str)
@@ -1884,11 +1884,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("#passcode").attr("type", tx)
     })
 
-    $("#StorageRepo_save").bind("click", function () {
+    $("#StorageRepo_save").on("change", function () {
         if ($("#passcode").val().trim().length === 0) return !!alert("passcode is required for saving.")
-        $("#outConfig").text($(this).text() + $(this).val() + " ...").show()
+        var val = $(this).val()
+        console.log(val)
+        if (val === "off") return alert("is running")
+        $("#operation_res").text(`${$(this).next().text()} ${val} ...`).show()
+        
         MyStorage.Repo_save(function (ret) {
-            Uti.show_save_results(ret)
+            Uti.show_save_results(ret, "#operation_res")
             $("#StorageRepo_save").prop("checked", false)
         })
     })
@@ -1902,7 +1906,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             }
         })
     })
-    $("#StorageRepo_Signout").bind("click", function () {
+    $(".StorageRepo_Signout").bind("click", function () {
         if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
@@ -2645,7 +2649,7 @@ var Uti = {
             $("#menuContainer, #repopath").addClass("menuContainer_red")
         }
     },
-    show_save_results: function (ret) {
+    show_save_results: function (ret, eid) {
         Uti.Msg("ret.out.save_res:", ret.out.save_res);//,null, 4))
         var msg = "failed to save.", clr = "red"
         if (ret.out.save_res && ret.out.save_res.saved_size) {
@@ -2659,9 +2663,9 @@ var Uti = {
             var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             var msg2 = `bRepositable:${sta.bRepositable}`
 
-            $("#outConfig").html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
+            $(eid).html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
         } else {
-            $("#outConfig").html(`<font color='red'>Failed: Invalid Repository</font>`)
+            $(eid).html(`<font color='red'>Failed: Invalid Repository</font>`)
         }
     },
 
@@ -3315,20 +3319,6 @@ var BibleInputMenuContainer = `
 
             <!----------------------------->
 
-            <div class="GrpMenu" id="grp_DevTool"  style="float:left;display:none;">
-                <button id="Check_bcv">Check(bcv)</button>
-                <a id="txtdiv"></a>
-                
-                <br>
-                <button onclick="$('#txtarea').val('');" title='clearout txt'>x</button>
-                <a target='_blank' href='../index.htm'>ref</a> | <a href='https://wdingbox.github.io/ham12/'>Home</a>
-                | <a id='NewPage' target='_blank'>New</a><br>
-                
-                <textarea id="txtarea" cols='40' rows='20'  value='search results...' title='log.'>
-                </textarea><br>
-
-            </div>
-
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_Config"  style="float:left;display:none;">
@@ -3362,7 +3352,7 @@ var BibleInputMenuContainer = `
                             <br>
                             <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
                             <br>
-                            <a id="passcode_toggler">Passcode:</a> 
+                            <a id="passcode_toggler">Password:</a> 
                             <span id="repository_description">
                             <a></a> 
                             </span><br>
@@ -3392,20 +3382,48 @@ var BibleInputMenuContainer = `
                             <td>Storage</td>
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
-                            <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveRepos</input>  
+                            
                             <a type="radio" id="StorageRepo_load" title='clear up storage'></a> 
-                            <a id="StorageRepo_Signout" title='Sign Out and Exist'> | SignOut</a>
+                            
                             <a id="Storage_local_repos_exchange"></a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="outConfig" style="display:none"></div>
-            
-
-               
-            
             </div> 
+
+            <!----------------------------->
+
+            <div class="GrpMenu" id="grp_SignOut"  style="float:left;display:none;width:342px">
+              
+                <table border='1' style="float:right;right:10px">
+                <tbody>
+                <tr><td>
+                
+                <a href='https://wdingbox.github.io/ham12/'>Home</a> |
+                <a id='NewPage' target='_blank'>New</a> | 
+                <a target='_blank' href='../index.htm'>ref</a> | 
+
+                <input type="radio" id="StorageRepo_save"/>
+                <label for="StorageRepo_save" title='clear up storage'>SaveRepository</label> | 
+                <button class="StorageRepo_Signout">Sign Out</button>
+                </td></tr>
+                </tbody>
+                </table>
+                <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+++</a>
+                <div id="DevTool" style='display:none;'>
+                <button onclick="$('#txtarea').val('');$('#operation_res').text('+++')" title='clearout txt'>x</button>
+                <button id="Check_bcv">Check(bcv)</button>
+                <textarea id="txtarea" cols='40' rows='20'  value='search results...' title='log.'>
+                </div>
+                
+                
+               
+                </textarea><br>
+                
+
+            </div>
             <!--------- end of GroupsContainer ------>
         </div>
     </div>
