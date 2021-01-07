@@ -1903,7 +1903,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#StorageRepo_Signout").bind("click", function () {
-        if (!confirm("Make sure you have saved repos before you sign out. \n(it could be destroyed).")) return
+        if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
@@ -3350,7 +3350,7 @@ var BibleInputMenuContainer = `
                             <a>Repository</a>: 
                             <div id="repository_assitance">
                             <a id="account_default"> default</a> | 
-                            <a id="account_helper">help</a>
+                            <a id="account_helper">More</a>
                             </div>
                             <br>
                             <textarea id="repopath" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
@@ -3364,7 +3364,7 @@ var BibleInputMenuContainer = `
                             <br>
                             <a id="passcode_toggler">Passcode:</a> 
                             <span id="repository_description">
-                            <a id="account_date">(optional)</a> 
+                            <a></a> 
                             </span><br>
                             <input id="passcode" type="password" value=''></input><br>
                             <button id="account_set">set</button>
@@ -3393,8 +3393,8 @@ var BibleInputMenuContainer = `
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveRepos</input>  
-                            <a type="radio" id="StorageRepo_load" title='clear up storage'></a> | 
-                            <a id="StorageRepo_Signout" title='Sign Out and Exist'>SignOut</a>
+                            <a type="radio" id="StorageRepo_load" title='clear up storage'></a> 
+                            <a id="StorageRepo_Signout" title='Sign Out and Exist'> | SignOut</a>
                             <a id="Storage_local_repos_exchange"></a>
                             </td>
                         </tr>
