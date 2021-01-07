@@ -3382,6 +3382,7 @@ var BibleInputMenuContainer = `
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveToRepos</input>  
                             <a type="radio" id="StorageRepo_load" title='clear up storage'></a>
+                            <a type="radio" id="StorageRepo_Signout title='clear up storage'>SignOut</a>
                             <a id="Storage_local_repos_exchange"></a>
                             </td>
                         </tr>

@@ -1,12 +1,13 @@
 <html>
 
 <head>
-    <base target="_blank" />
+    <title>sign</title>
+    <base target="xxx_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" href="./BibleStudyNotePad.css?v=2020dec21b">
+    <link rel="stylesheet" xxhref="./BibleStudyNotePad.css?v=2020dec21b">
     </link>
 
     <!-------------------------------------------->
@@ -52,7 +53,8 @@
             white-space: nowrap;
         }
 
-        textarea, .txarea {
+        textarea,
+        .txarea {
             width: 100%;
         }
 
@@ -107,18 +109,16 @@
         </div>
         <div>
             <textarea id="repopath" value="https://github.com/wdingbox/bible_user_williamd.git"
-            placeholder="https://github.com/username/reposname.git"></textarea>
+                placeholder="https://github.com/username/reposname.git">https://github.com/wdingbox/biblestudynote_pub_test.git</textarea>
         </div>
-       
+
 
         <br>
         <div>
             Description: (optional)
         </div>
-        <div class=".txarea">
-
+        <div>
             <textarea id="repodesc" value="" placeholder="date, place"></textarea>
-            <hr/>
         </div>
 
 
@@ -126,9 +126,10 @@
 
         <br>
 
-        <label for="editor1">
-            Password: (optional) <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
-        </label>
+        <div for="editor1">
+            Password: (<font color='red'>required</font>) <a class="help_label"
+                onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
+        </div>
         <div class="helpinfo Password">
             <a>
                 The passwod is required for
@@ -147,28 +148,29 @@
             </a>
         </div>
         <input id="passcode" value=""></input>
+        <br>
+        <br>
     </form>
-    <p>
-        <button onclick="repo_create();">Create</button>
-        <button onclick="repo_destroy();">Destroy</button>
-        <button onclick="repo_pushback();">Push</button>
-        <button onclick="repo_status();">Status</button>
-        <button onclick="Okey_use_this();">Send to Parent Window</button>
+    <p><button onclick="repo_create();">Sing In</button>
+        <a onclick="repo_destroy();"></a>
+        <a onclick="repo_pushback();"></a>
+        <a onclick="repo_status();"></a>
+        <a onclick="Okey_use_this();"></a>
     </p>
     <p>
-        <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
-        <xbutton onclick="LoadStorage();"></xbutton>
+        <a onclick="LoadStorageInRepos();"></a>
+        <a onclick="LoadStorage();"></a>
     </p>
     <p>
-        <button id="histroy" onclick="repo_histroy();">histroy</button>
-        <button onclick="RemoveInHistory();">RemoveInHistory</button>
+        <a id="histroy" onclick="repo_histroy();"></a>
+        <a onclick="RemoveInHistory();"></a>
     </p>
 
 
 
     <div id="footer">
-        <hr>
         <div id="otb"></div>
+        <hr>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
 
@@ -190,8 +192,12 @@
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
-
                 dbg_pster(ret)
+                if (1 === ret.out.state.bRepositable) {
+                    window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                } else {
+                    $("#otb").html("<font color='red'>Error Repository or passcode</font>")
+                }
             })
         }
         function repo_destroy() {
@@ -214,8 +220,8 @@
                 Uti.Msg("Status inp.ret.out=", ret.out)
             })
         }
-   
-       
+
+
         function RemoveInHistory() {
             var rep = $(".hili").find("td:eq(1)").text()
             var pws = $(".hili").find("td:eq(2)").text()
@@ -236,7 +242,7 @@
     })
 </script>
 <script>
-    Uti.Jsonpster_crossloader()
+    var g_ip = Uti.Jsonpster_crossloader()
     function dbg_pster(dat) {
         var ss = dat
         if ("object" === typeof dat) {
@@ -251,10 +257,10 @@
             alert("Jsonpster not exist.")
         }
         else {
-            $("title").text("acct")
+            $("title").text("signin")
             dbg_pster()
 
-            $("#histroy").trigger("click")
+            //$("#histroy").trigger("click")
         }
         //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
     }, 2000)

@@ -2971,9 +2971,11 @@ var Uti = {
         }
 
         var e = document.createElement("script");
-        e.src = `http://${ip}:7778/Jsonpster/`;
+        if(ip.indexOf(":")<0) ip+=":7778"
+        e.src = `http://${ip}/Jsonpster/`;
         document.body.appendChild(e);
         console.log("crossload:", e.src)
+        return ip
     },
 
     copyTextToClipboard: function (text) {
@@ -3381,7 +3383,8 @@ var BibleInputMenuContainer = `
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
                             <input type="radio" id="StorageRepo_save" title='clear up storage'>SaveToRepos</input>  
-                            <a type="radio" id="StorageRepo_load" title='clear up storage'></a>
+                            <a type="radio" id="StorageRepo_load" title='clear up storage'></a> | 
+                            <a id="StorageRepo_Signout" title='Sign Out and Exist'>SignOut</a>
                             <a id="Storage_local_repos_exchange"></a>
                             </td>
                         </tr>
