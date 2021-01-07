@@ -2954,7 +2954,7 @@ var Uti = {
                 ip = window.location.hostname
             }
             if (!ip) {
-                return alert("[missed in url] ?ip=x.x.x.x")
+                return alert("not localhost or missed in url with ?ip=x.x.x.x")
             }
             var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
             var bcv = ""
@@ -2967,7 +2967,8 @@ var Uti = {
         }
 
         if ("undefined" != typeof RestApi) {
-            return console.log("Jsonpster is already loaded. Ignore", ip)
+            console.log("Jsonpster is already loaded. Ignore", ip)
+            return ip
         }
 
         var e = document.createElement("script");
