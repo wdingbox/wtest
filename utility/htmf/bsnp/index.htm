@@ -1,122 +1,269 @@
-<HTML manifest___xxx="BiblePad-2015.appcache">
+<html>
 
-<HEAD>
-    <TITLE>Bindx</TITLE>
-    <base target="_blank" />
+<head>
+    <title>sign</title>
+    <base target="xxx_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
 
-    <link rel="stylesheet" xxhref="./BibleInputMethod.css?v=2020dec2a">
+    <link rel="stylesheet" xxhref="./BibleStudyNotePad.css?v=2020dec21b">
     </link>
 
+    <!-------------------------------------------->
+    <!---- Insert this before scripts import; then restor back later -->
+    <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <!-------------- jq --------------------->
+    <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
+    <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
+        note="selfseversite"></script>
+    <!-------------- ckeditor only--------------------->
+    <script src="../../../assets/ckeditor/ckeditor.js"></script>
+    <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
+    <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
 
 
-
-
-    <script xxxxxxxxsrc="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
-    <script language="javascript" src="../../htmjs/jq/jquery.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!---------->
-    <script language="javascript" src="../../htmjs/jq/table_Indexer.js"></script>
-    <script language="javascript" src="../../htmjs/jq/jquery.tablesorter.js"></script>
-    <!--------->
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/BBE.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/CUVS.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/CUVsen.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/H_G.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/KJV.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/NIV.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/CUVpy.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/STUS.json.js"></script>
-    <script language="javascript" xxxxsrc="../../../jsdb/jsBibleStruct/WLVS.json.js"></script>
-
-    <script language="javascript" src="../../../../bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
-    <script language="javascript"
-        xxxxxsrc="https://wdingbox.github.io/bible_obj_lib/jsdb/jsBibleStruct/All_Max_struct_json.js"></script>
-
-    <!---------->
-    <script language="javascript" src="./BibleStudyNotePad.js"></script>
-    <!------ api ---->
-
-
-
-
-
-
+    <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
+    <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
+    <!-------------------------------------------->
+    <!----- Insert this line after script imports -->
+    <script>//if (window.module) module = window.module;</script>
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
+    <!-------------------------------------------->
+    <script language="javascript" src="https://52.87.154.78:7778/Jsonpster"></script>
+    <!-------------------------------------------->
     <style>
-    </style>
+        body {
+            background-color: aliceblue;
+        }
 
+        table {
+            padding: 10px 10px 10px 10px;
+            margin: 10px 10px 10px 10px;
+            /*font-size:xx-large;*/
+        }
 
-
-    <script language="javascript">
-        function gen_cross_svr_link(svrIP) {
-            var ss = `<a>${window.location.href}</a><br><br>`;
-            ss+="<table border='1'><tbody><thead><tr><th>Host</th></tr></thead>";
-            var ip_home = {
-                "104.188.182.128": "http://104.188.182.128",
-                "wdingbox.github.io": `https://wdingbox.github.io/ham12`
-            }
-
-            ip_home[svrIP] = `http://${svrIP}`
-
-
-            Object.keys(ip_home).forEach(function (ip) {
-                var home = `<a class="openew">${ip_home[ip]}</a>`
-                var serv = `<a target='_blank' href='./BibleStudyNotePad.htm?ip=${ip}'>${ip}</a>`
-                var acct = `<a target='_blank' href='./myAccount.htm?ip=${ip}'>${ip}</a>`
-                ss += `<tr><td>${home}</td></tr>`
-            })
-            ss + "</tbody></table>"
-            $("body").append(ss).find(".openew").bind("click", function () {
-                var url = $(this).text()
-                window.open(url, "_blank")
-            })
+        form {
+            background-color: rgb(204, 177, 161);
+            width: 100%;
         }
 
 
-        $(document).ready(function () {
-            gen_cross_svr_link("52.87.154.78")
+        .white_space_nowrap {
+            white-space: nowrap;
+        }
 
-        });/////////////
+        textarea,
+        .txarea {
+            width: 100%;
+        }
 
-    </script>
+        .hili {
+            background-color: red;
+        }
 
-</HEAD>
+        .help_label {
+            float: right;
+        }
 
-<BODY xonbeforeunload="return 'leave?';">
-    Application Features:
-    <ol>
-        <li>Quick positioning of any verse (QPV).</li>
-        <li>Take a note of verse.</li>
-        <li>Search any word in verse.</li>
-        <li>Link external resouces for verse.</li>
-    </ol>
-    Design Features:
-    <ol>
-        <li>The Bible oriented app tool -- the walking stick ( (Hebrew: מַטֶּה‎ matteh, translated "rod" in the King James Bible) of Moses.</li>
-        <li>No login is requred</li>
-        <li>No installation is required.</li>
-        <li>Users own their data (UOD).</li>
-        <li>Platform for sharing data.</li>
-    </ol>
-  
-   
+        .helpinfo {
+            display: none;
+            margin-left: 50px;
+        }
+    </style>
+</head>
 
-    <p>http://localhost:7778/</p>
-    <p>https://localhost:7775/</p>
-    <p>http://localhost/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm</p>
-    <p> file:///Users/weiding/Sites/weidroot/weidroot_2017-01-06/app/github/wdingbox/ham12/utility/htmf/studynotes/index.htm
+<body>
+
+
+
+    <form action="" method="post">
+        <div>
+            Repository: (<font color='red'>required</font>) <a class="help_label"
+                onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
+        </div>
+        <div class="helpinfo Repository" id="help_Repository">
+            <p>
+                To get your repository (clone HTTPS url):
+            </p>
+            <ol>
+                <li>
+                    register an account in <a href="https://github.com/">github.com</a>. (see <a
+                        href="https://www.youtube.com/watch?v=hMfi_ONvGEs&t=0m40s">how @0:40</a>)
+                </li>
+                <li>
+                    create a New repository (see <a href="https://www.youtube.com/watch?v=hMfi_ONvGEs&t=1m40s">how
+                        @1:40</a>, "public" is recommended for beginner.)
+                </li>
+                <li>
+                    click green button ["Clone or download"],(see <a
+                        href="https://www.youtube.com/watch?v=hMfi_ONvGEs&t=3m05s">how @3:05</a>) then click <svg
+                        version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-clippy"
+                        aria-label="The clipboard icon" role="img">
+                        <path fill-rule="evenodd"
+                            d="M5.75 1a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-3a.75.75 0 00-.75-.75h-4.5zm.75 3V2.5h3V4h-3zm-2.874-.467a.75.75 0 00-.752-1.298A1.75 1.75 0 002 3.75v9.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 13.25v-9.5a1.75 1.75 0 00-.874-1.515.75.75 0 10-.752 1.298.25.25 0 01.126.217v9.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-9.5a.25.25 0 01.126-.217z">
+                        </path>
+                    </svg> ["copy" HTTPS url]. Paste it into this input box.
+                </li>
+            </ol>
+        </div>
+        <div>
+            <textarea id="repopath" value="https://github.com/wdingbox/bible_user_williamd.git"
+                placeholder="https://github.com/username/reposname.git">https://github.com/wdingbox/biblestudynote_pub_test.git</textarea>
+        </div>
+
+
+        <br>
+        <div>
+            Description: (optional)
+        </div>
+        <div>
+            <textarea id="repodesc" value="" placeholder="date, place"></textarea>
+        </div>
+
+
+
+
+        <br>
+
+        <div for="editor1">
+            Password: (<font color='red'>required</font>) <a class="help_label"
+                onclick="$('.helpinfo.Password').toggle('slow');">help?</a>
+        </div>
+        <div class="helpinfo Password">
+            <a>
+                The passwod is required for
+            </a>
+            <ol>
+                <li>
+                    push data into repository (public or private), or
+                </li>
+                <li>
+                    pull data from private repository.
+                </li>
+            </ol>
+            <a>
+                For security, the password can be used right before you manually push data into the repository before
+                you left.
+            </a>
+        </div>
+        <input id="passcode" value=""></input>
+        <br>
+        <br>
+    </form>
+    <p><button onclick="repo_create();">Sing In</button>
+        <a onclick="repo_destroy();"></a>
+        <a onclick="repo_pushback();"></a>
+        <a onclick="repo_status();"></a>
+        <a onclick="Okey_use_this();"></a>
+    </p>
+    <p>
+        <a onclick="LoadStorageInRepos();"></a>
+        <a onclick="LoadStorage();"></a>
+    </p>
+    <p>
+        <a id="histroy" onclick="repo_histroy();"></a>
+        <a onclick="RemoveInHistory();"></a>
     </p>
 
 
 
-    <a href="./BibleStudyNotePad.htm">BibleStudyNotePad</a><br>
-    <a href="./myAccount.htm">myAccount</a><br>
-    <a href="./tester_regexp.htm">tester_regexp</a><br>
-    <a href="#bcv=gen1:1">test!</a><br>
+    <div id="footer">
+        <div id="otb"></div>
+        <hr>
+        <textarea id="txtarea" rows="25"></textarea>
+    </div>
 
-  
-</BODY>
 
-</HTML>
+
+
+
+    <script>
+
+        function Okey_use_this() {
+            if (!Jsonpster.inp) return alert("empty inp")
+            if (!Jsonpster.inp.usr) return alert("empty usr")
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
+            window.opener.postMessage(Jsonpster.inp.usr, '*');
+        }
+        function repo_create() {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.api = RestApi.ApiUsrReposData_create.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+                dbg_pster(ret)
+                if (1 === ret.out.state.bRepositable) {
+                    window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                } else {
+                    $("#otb").html("<font color='red'>Error Repository or passcode</font>")
+                }
+            })
+        }
+        function repo_destroy() {
+            if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+
+                dbg_pster(ret)
+            })
+        }
+        function repo_status() {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.api = RestApi.ApiUsrReposData_status.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+
+                dbg_pster(ret)
+                Uti.Msg("Status inp.ret.out=", ret.out)
+            })
+        }
+
+
+        function RemoveInHistory() {
+            var rep = $(".hili").find("td:eq(1)").text()
+            var pws = $(".hili").find("td:eq(2)").text()
+
+            var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
+            if (ret) {
+                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
+                $(".hili").remove()
+            }
+        }
+    </script>
+</body>
+
+</html>
+<script>
+    $(function () {
+
+    })
+</script>
+<script>
+    //var g_ip = Uti.Jsonpster_crossloader()
+    function dbg_pster(dat) {
+        var ss = dat
+        if ("object" === typeof dat) {
+            var ss = "ret=" + JSON.stringify(dat, null, 4)
+        }
+        ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
+        ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
+        $("#txtarea").val(ss)
+    }
+    setTimeout(() => {
+        if (undefined === Jsonpster) {
+            alert("Jsonpster not exist.")
+        }
+        else {
+            $("title").text("signin")
+            dbg_pster()
+
+            //$("#histroy").trigger("click")
+        }
+        //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+    }, 2000)
+</script>
