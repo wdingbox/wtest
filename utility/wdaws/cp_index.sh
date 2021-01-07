@@ -1,0 +1,7 @@
+
+
+
+
+
+
+sudo cp var_www_html_index.htm /var/www/html/.
