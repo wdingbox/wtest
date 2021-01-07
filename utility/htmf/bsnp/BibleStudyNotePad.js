@@ -1967,6 +1967,7 @@ AppInstancesManager.prototype.init = function () {
         evt.stopImmediatePropagation();
         //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
+        $("#Tab_OutputBooksList").hide()
         groupsMenuMgr.collapse()
         //popupMenu.hide()
     })
@@ -2125,6 +2126,7 @@ AppInstancesManager.prototype.init = function () {
     g_obt.onclick_ob_table(function () {
         //$("#menuContainer").hide()
         $("#divPopupMenu").hide()
+        $("#Tab_OutputBooksList").hide()
         //popupMenu.hide()
         groupsMenuMgr.collapse()
     })
@@ -2485,6 +2487,7 @@ OutputBibleTable.prototype.Set_Event_output_table = function (tbid) {
 
         Uti.Msg(txt);
         $("#divPopupMenu").hide()
+        $("#Tab_OutputBooksList").hide()
     });
 }
 OutputBibleTable.prototype.Gen_output_table = function (cbf) {
