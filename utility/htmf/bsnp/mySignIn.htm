@@ -31,17 +31,18 @@
 
         form {
             background-color: rgb(204, 177, 161);
-     
+
 
             margin: 0px 10px 0px 10px;
             padding: 1px 10px 0px 10px;
         }
+
         .centered_elem {
             display: block;
             margin-left: auto;
             margin-right: auto;
             background-color: rgb(204, 177, 161);
-          
+
             text-align: center;
             margin: 0px 10px 0px 10px;
             padding: 0px 10px 10px 10px;
@@ -82,7 +83,7 @@
     <p style="text-align: center;margin-top: 50px;">Welcome to</p>
     <h2 style="text-align: center;margin-top: 50px;">Bible Study Note Pad</h2>
 
-    
+
 
 
 
@@ -183,7 +184,7 @@
 
 
 
-    <div id="footer"  style="text-align: center;margin-top: 50px;">
+    <div id="footer" style="text-align: center;margin-top: 50px;">
         <div id="otb"></div>
         <hr id="toggle_txtarea">
         <textarea id="txtarea" rows="25"></textarea>
@@ -209,10 +210,14 @@
             dbg_pster()
             Jsonpster.Run(function (ret) {
                 dbg_pster(ret)
-                if (1 === ret.out.state.bRepositable) {
-                    window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-                } else {
-                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
+                if (ret.out.state) {
+                    if (1 === ret.out.state.bRepositable) {
+                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                    } else {
+                        $("#otb").html("<font color='red'>Error: Wrong Password</font>")
+                    }
+                }else{
+                    $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
                 }
             })
         }
