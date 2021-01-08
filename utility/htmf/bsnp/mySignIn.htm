@@ -90,8 +90,9 @@
     <form action="">
         <h3 style="text-align: center;margin-top: 50px;">Sign In Page</h3>
         <div>
-            Repository https url: (<font color='red'>required</font>) <a class="help_label"
-                onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
+            <a id="">Repository:</a> (<font color='red'>required</font>)
+            [ <a class="" id="Format_Check">Format Check</a> ]
+            <a class="help_label" onclick="$('.helpinfo.Repository').toggle('slow');">help?</a>
         </div>
         <div class="helpinfo Repository" id="help_Repository">
 
@@ -117,6 +118,31 @@
                     paste it in our page.
                 </li>
             </ol>
+
+            <table border='1'>
+                <caption>Formats of Repository String</caption>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Format</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>full https url</td>
+                        <td>https://github.com/usrname/repositoryname.git</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>compound IDs</td>
+                        <td>usrname/repositoryname</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
         </div>
         <div>
             <textarea id="repopath" value="https://github.com/wdingbox/bible_user_williamd.git"
@@ -199,11 +225,19 @@
             if (!Jsonpster.inp) return alert("empty inp")
             if (!Jsonpster.inp.usr) return alert("empty usr")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
-            
+
+
         }
         function repo_create() {
             $("#otb").html("<font color='black'>Start to sign in ... </font>")
+
+            var repopath = $("#repopath").val()
+            var reo = Uti.validate_repository_url(repopath)
+            if (!reo) {
+                $("#otb").html("<font color='red'>Error format: Repository</font>")
+                return;
+            }
+
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
@@ -259,14 +293,29 @@
 <script>
     $(function () {
         $("#txtarea").hide()
-        $("#toggle_txtarea").bind("click", function () {
+        $("#toggle_txtarea").on("click", function () {
             $("#txtarea").toggle()
         })
 
-        $("#label_password").bind("click", function () {
+        $("#label_password").on("click", function () {
             var typns = $("#passcode").attr("type")
             typns = ("password" === typns) ? "text" : "password"
             $("#passcode").attr("type", typns)
+        })
+
+        $("#Format_Check").on("click", function () {
+            var repopath = $("#repopath").val()
+            var reob = Uti.validate_repository_url(repopath)
+            if (!reob) return alert("empty")
+            if (reob.format === 2) {
+                $("#repopath").val(reob.user_repo)
+            }
+            if (reob.format === 1) {
+                $("#repopath").val(reob.full_path)
+            }
+            var ar = ["", "https url", "compound IDs"]
+            $(this).text(ar[reob.format])
+
         })
 
     })

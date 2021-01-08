@@ -101,6 +101,9 @@ var MyStorage = {
             $("#repopath").val(obj.repopath)
             $("#passcode").val(obj.passcode)
             $("#repodesc").val(obj.repodesc)
+            var reob = Uti.validate_repository_url(obj.repopath)
+            if (!reob) return
+            obj.repopath = reob.full_path
             Object.assign(Jsonpster.inp.usr, obj)
             var ar = this.repos_store_set(obj)
             return ar
@@ -1823,18 +1826,18 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
-    $("#label_repopath").on("clicl",function(){
-        var val = $("#repopath").val()
-        const hds = "https://github.com/"
-        var reg = new RegExp("^(https[\:]\/\/github[\.]com/)(.+)([\.]git)$")
-        var mat = val.match(reg)
-        if(mat){
-
+    $("#Format_Check").on("click", function () {
+        var repopath = $("#repopath").val()
+        var reob = Uti.validate_repository_url(repopath)
+        if (!reob) return alert("empty")
+        if (reob.format === 2) {
+            $("#repopath").val(reob.user_repo)
         }
-        if(val.indexOf(hds)===0){
-
+        if (reob.format === 1) {
+            $("#repopath").val(reob.full_path)
         }
-
+        var ar = ["", "https url", "compound IDs"]
+        $(this).text(ar[reob.format])
     })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
@@ -1903,7 +1906,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         console.log(val)
         if (val === "off") return alert("is running")
         $("#operation_res").text(`${$(this).next().text()} ${val} ...`).show()
-        
+
         MyStorage.Repo_save(function (ret) {
             Uti.show_save_results(ret, "#operation_res")
             $("#StorageRepo_save").prop("checked", false)
@@ -2685,7 +2688,27 @@ var Uti = {
         }
     },
 
+    validate_repository_url: function (repoath) {
+        if (!repoath) return alert("repopath is not defined.")
+        repoath = repoath.trim()
+        if (repoath.length === 0) return alert("repopath is empty")
 
+        var mat = repoath.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/](.*))[\.]git$/)
+        if (mat && mat.length === 4) {
+            console.log("mat:", mat)
+            return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
+        }
+
+        var mat = repoath.match(/^(?:(?!ab).)+$/) //https://stackoverflow.com/questions/977251/regular-expressions-and-negating-a-whole-character-group
+        var mat = repoath.match(/^(?:(?!https\:\/\/github\.com[\/]).)+$/)
+        var mat = repoath.match(/^(?:(?!https\:\/\/github\.com[\/]))([^\/]+)[\/]([^\.\/]+)(?:(?![\.]git))$/)
+        if (mat && mat.length === 3) { //Format:username/reponame
+            console.log("mat:", mat)
+            var fullpath = `https://github.com/${repoath}.git`
+            return { format: 1, desc: "user_repo", full_path: fullpath, user_repo: mat[0], user: mat[1], repo: mat[2] }
+        }
+        return alert("Invalid string format of repository:", repopath)
+    },
     addonTopOfAry: function (targetary, addon) {
         var ary = addon
         if ("string" === typeof addon) {
@@ -3353,9 +3376,9 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td id="account_history">User<br>Info</td>
                             <td>
-                            <a id="label_repopath">Repository</a>: 
+                            <a id="">Repository</a>: 
                             <div id="repository_assitance">
-                            <a id="account_default"> default</a> | 
+                            <a id="Format_Check" xxid="account_default">Format</a> | 
                             <a id="account_helper">More</a>
                             </div>
                             <br>
