@@ -352,7 +352,7 @@ var BibleUti = {
                 console.log("on post eend:", body)
 
                 var inpObj = JSON.parse(body)
-                inpObj.out = { desc: "", data: null }
+                inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 } }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
 
 
@@ -774,7 +774,7 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
 
 BibleObjGituser.prototype.git_status = async function () {
     var inp = this.m_inp
-    if (!inp.out.state) return
+    if (!inp.out.state) return console.log("*** Fatal Error: inp.out.state = null")
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status
@@ -782,13 +782,13 @@ BibleObjGituser.prototype.git_status = async function () {
         cd ${this.get_usr_git_dir()}
         git status
         git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
-        inp.out.state.git_status = {}
+        inp.out.git_status = {}
         await BibleUti.exec_Cmd(git_status_cmd).then(
             function (val) {
-                inp.out.state.git_status.success = val
+                inp.out.git_status.success = val
             },
             function (val) {
-                inp.out.state.git_status.failure = val
+                inp.out.git_status.failure = val
             }
         )
     }
