@@ -1823,6 +1823,19 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
+    $("#label_repopath").on("clicl",function(){
+        var val = $("#repopath").val()
+        const hds = "https://github.com/"
+        var reg = new RegExp("^(https[\:]\/\/github[\.]com/)(.+)([\.]git)$")
+        var mat = val.match(reg)
+        if(mat){
+
+        }
+        if(val.indexOf(hds)===0){
+
+        }
+
+    })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
@@ -3340,7 +3353,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td id="account_history">User<br>Info</td>
                             <td>
-                            <a>Repository</a>: 
+                            <a id="label_repopath">Repository</a>: 
                             <div id="repository_assitance">
                             <a id="account_default"> default</a> | 
                             <a id="account_helper">More</a>

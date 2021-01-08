@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <title>regexp</title>
     <base target="_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
@@ -48,6 +49,7 @@
         textarea,
         input {
             width: 100%;
+            font-size: xx-large;
         }
 
         .hili {
@@ -171,6 +173,11 @@
             var ret = txt = str
 
             var reg = new RegExp(reg, "g")
+            var srr = txt.search(reg)
+            if(srr){
+                console.log(srr);
+            }
+
             var mat = txt.match(reg)
             if (mat) {
                 ret += `\n\nMatch:\n${JSON.stringify(mat, null, 4)}`
