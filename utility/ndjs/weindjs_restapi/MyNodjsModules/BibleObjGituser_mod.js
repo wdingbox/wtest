@@ -672,7 +672,7 @@ BibleObjGituser.prototype.cp_template_to_git = async function (res) {
 #!/bin/sh
 echo ${password} | sudo -S mkdir -p ${acctDir}
 echo ${password} | sudo -S chmod -R 777 ${acctDir}
-echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}
+echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}
 echo ${password} | sudo -S chmod -R 777 ${acctDir}
 echo " cp_template_cmd end."
 #cd -`
