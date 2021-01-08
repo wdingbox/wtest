@@ -60,17 +60,18 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
-encrypt_pwd: function(){
-    if(1===this.bEncrpted) return;
-    this.bEncrpted = 1
-    this.inp.usr.passcode = atob(this.inp.usr.passcode.trim())
+encrypt_usr: function(){
+    if(!this.inp.usr.passcode_encrypted){
+        this.inp.usr.passcode_encrypted = 1;
+        this.inp.usr.passcode = atob(this.inp.usr.passcode.trim())
+    }
 },
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
     return this.m_src;
 },
 Run : function (cbf) {
-    this.encrypt_pwd();
+    this.encrypt_usr()
     this.RunJsonP(cbf)
 },
 RunJsonP : function (cbf) {
@@ -117,7 +118,7 @@ xxRun_Post : function (cbf) {
     })
 },
 RunAjaxPost : function(cbf){
-    this.encrypt_pwd();
+    this.encrypt_usr()
     this.RunAjax_Type_Post (cbf)
 },
 RunAjax_Type_Post : function(cbf){

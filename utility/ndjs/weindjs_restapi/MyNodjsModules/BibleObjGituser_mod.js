@@ -420,24 +420,27 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
 
-        var mat = proj_url.match(reg)
-        //console.log("mat", mat)
-        if (mat) {
-            //console.log(mat)
-            var username = mat[1]
-            var projname = mat[2]
+        var mat = proj_url.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/]([^\.]*))[\.]git$/)
+        if (mat && mat.length === 4) {
+            console.log("mat:", mat)
+            //return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
+            var username = mat[2]
+            var projname = mat[3]
             return { username: username, projname: projname }
         }
         inp.out.desc = "failed parse url:" + proj_url
         return null
     }
-    var proj_url = inp.usr.repopath = inp.usr.repopath.trim()
-    var passcode = inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
-    var repodesc = inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, " ")
-    inp.usr.repodesc = repodesc
-
-
-    inp.usr.proj = _parse_proj_url(proj_url)
+    inp.usr.repopath = inp.usr.repopath.trim()
+    if(inp.usr.passcode_encrypted){
+        inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
+    }else{
+        console.log("password not emcrypted.", inp.usr.passcode)
+    }
+    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, " ")
+    
+    
+    inp.usr.proj = _parse_proj_url(inp.usr.repopath)
     if (inp.usr.proj) {
         const baseDir = "bible_study_notes/usrs"
         var gitDir = `${baseDir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
@@ -451,7 +454,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
 
         inp.usr.proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
-            inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
+            inp.usr.proj.git_Usr_Pwd_Url = `https://${inp.usr.proj.username}:${inp.usr.passcode}@github.com/${inp.usr.proj.username}/${inp.usr.proj.projname}.git`
         }
         console.log("parse: inp.usr.proj=", inp.usr.proj)
     }

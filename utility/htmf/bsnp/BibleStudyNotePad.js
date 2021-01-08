@@ -37,6 +37,8 @@ var MyStorage = {
         console.log(txt)
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr) return alert("user is not set yet.")
+        
+
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
         Uti.Msg("Repo_save:", Jsonpster)
@@ -47,6 +49,8 @@ var MyStorage = {
     Repo_load: function (cbf) {
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
+        
+
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
@@ -104,7 +108,7 @@ var MyStorage = {
             var reob = Uti.validate_repository_url(obj.repopath)
             if (!reob) return
             obj.repopath = reob.full_path
-            Object.assign(Jsonpster.inp.usr, obj)
+            //////bad idea:  Object.assign(Jsonpster.inp.usr, obj)
             var ar = this.repos_store_set(obj)
             return ar
         }
@@ -405,7 +409,7 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    $("#RevTag_Info").text(Jsonpster.inp.usr["repopath"])
+    $("#RevTag_Info").text(Jsonpster.inp.usr.repopath)
 
     this.m_ediDiv.setId_Txt(par.m_txuid, par.m_rev, par.m_outxtObj)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -1843,6 +1847,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1864,6 +1869,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1926,6 +1932,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $(".StorageRepo_Signout").bind("click", function () {
         if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
             $("body").attr("onbeforeunload", null)
@@ -2709,7 +2716,7 @@ var Uti = {
         repoath = repoath.trim()
         if (repoath.length === 0) return alert("repopath is empty")
 
-        var mat = repoath.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/](.*))[\.]git$/)
+        var mat = repoath.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/]([^\.]*))[\.]git$/)
         if (mat && mat.length === 4) {
             console.log("mat:", mat)
             return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
@@ -3456,7 +3463,7 @@ var BibleInputMenuContainer = `
                 <tbody>
                 <tr><td>
                 
-                <a href='https://wdingbox.github.io/ham12/'>Home</a> |
+                <a href='https://bsnp21.github.io/home/' owner='williamwding' email='yahoo.com' xxxhref='https://wdingbox.github.io/ham12/'>Home</a> |
                 <a id='NewPage' target='_blank'>New</a> | 
                 <a target='_blank' href='../index.htm'>ref</a> | 
 
