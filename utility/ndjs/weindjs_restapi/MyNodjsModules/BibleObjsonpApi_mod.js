@@ -165,7 +165,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
 
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
         var proj = userProject.git_proj_parse(inp)
         var RbcObj = {};
         if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
@@ -202,7 +202,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_search
         }
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
         if (!inp.usr.f_path) inp.usr.f_path = ""
         var proj = userProject.git_proj_parse(inp)
 
@@ -283,7 +283,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_base
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
         if (!proj) {
@@ -359,7 +359,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_base
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
         if (!proj) return
@@ -408,7 +408,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
@@ -430,7 +430,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
@@ -452,7 +452,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)
@@ -480,7 +480,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        var inp = BibleUti.GetApiInputParamObj(req)
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.git_proj_parse(inp)

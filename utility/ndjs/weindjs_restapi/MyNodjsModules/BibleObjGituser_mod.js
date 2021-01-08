@@ -177,8 +177,8 @@ var BibleUti = {
             console.log("end of req")
         }
     },
-    GetApiInputParamObj: function (req) {
-        console.log("req.method", req.method)
+    Parse_req_GET_to_inp: function (req) {
+        console.log("\n\nreq.method", req.method)
         console.log("req.query", req.query)
 
         if (req.method !== "GET") {
@@ -410,12 +410,16 @@ BibleObjGituser.prototype.set_rootDir = function (rootDir) {
 
 BibleObjGituser.prototype.git_proj_parse = function (inp) {
     this.m_inp = inp
+    if (!inp || !inp.out) {
+        return null
+    }
 
     if ("object" !== typeof inp.usr) {
         console.log("inp is not valid.")
-        if (inp && inp.out && inp.out.desc) inp.out.desc = "failed inp.usr "
+        inp.out.desc = "null=inp.usr "
         return null
     }
+
     function _parse_proj_url(proj_url) {
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
@@ -428,20 +432,31 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
             var projname = mat[3]
             return { username: username, projname: projname }
         }
-        inp.out.desc = "failed parse url:" + proj_url
         return null
     }
-    inp.usr.repopath = inp.usr.repopath.trim()
-    if(inp.usr.passcode_encrypted){
-        inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
-    }else{
-        console.log("password not emcrypted.", inp.usr.passcode)
+    function _decode_passcode(inp) {
+        ////decode: password.
+        if (inp.usr.passcode_encrypted) {
+            inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
+        } else {
+            console.log("password not encrypted.", inp.usr.passcode)
+        }
     }
-    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, " ")
-    
-    
-    inp.usr.proj = _parse_proj_url(inp.usr.repopath)
-    if (inp.usr.proj) {
+    function _check_pub_testing(inp) {
+        ////SpecialTestRule: repopath must be same as password.
+        inp.usr.repopath = inp.usr.repopath.trim()
+        const PUB_TEST = "pub_test"
+        if (inp.usr.repopath.indexOf(PUB_TEST) === 0) {
+            console.log("This is for PUB_TEST.")
+            if (inp.usr.repopath !== inp.usr.passcode) {
+                return null
+            } else {
+                inp.usr.passcode = "3edcFDSA"
+            }
+        }
+        return inp.usr
+    }
+    function _parse_proj_dir(inp) {
         const baseDir = "bible_study_notes/usrs"
         var gitDir = `${baseDir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
@@ -458,6 +473,24 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         }
         console.log("parse: inp.usr.proj=", inp.usr.proj)
     }
+
+
+    inp.usr.proj = _parse_proj_url(inp.usr.repopath)
+    if (!inp.usr.proj) {
+        inp.out.desc = "invalid repospath."
+        return null;
+    }
+
+    _decode_passcode(inp)
+
+    if (null === _check_pub_testing(inp)) {
+        inp.out.desc = "failed pub test."
+        return null
+    }
+
+    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
+
+    _parse_proj_dir(inp)
 
     return inp.usr.proj
 }
@@ -878,7 +911,7 @@ cd -
         function (val) {
             console.log("success:", val)
             _THIS.git_config_allow_push(false)
-          
+
             var mat = val.stderr.match(/(fatal)|(fail)|(error)/g)
             _THIS.m_inp.out.git_pull_res.bSuccess = !mat
             _THIS.m_inp.out.git_pull_res = val
