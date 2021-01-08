@@ -178,7 +178,7 @@ var BibleUti = {
         }
     },
     Parse_req_GET_to_inp: function (req) {
-        console.log("\n\nreq.method", req.method)
+        console.log("\n\nreq.method (expect GET)", req.method)
         console.log("req.query", req.query)
 
         if (req.method !== "GET") {
