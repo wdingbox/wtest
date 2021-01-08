@@ -9,6 +9,8 @@ const fsPromises = require("fs").promises;
 //var SvcUti = require("./SvcUti.module").SvcUti;
 const exec = require('child_process').exec;
 
+var btoa = require('btoa');
+
 
 
 var BibleUti = {
@@ -430,7 +432,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         return null
     }
     var proj_url = inp.usr.repopath = inp.usr.repopath.trim()
-    var passcode = inp.usr.passcode = inp.usr.passcode.trim()
+    var passcode = inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
     var repodesc = inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, " ")
     inp.usr.repodesc = repodesc
 

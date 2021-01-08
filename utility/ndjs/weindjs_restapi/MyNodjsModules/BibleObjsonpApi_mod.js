@@ -60,11 +60,17 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
+encrypt_pwd: function(){
+    if(1===this.bEncrpted) return;
+    this.bEncrpted = 1
+    this.inp.usr.passcode = atob(this.inp.usr.passcode.trim())
+},
 Url: function (){
-        this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
-        return this.m_src;
-    },
+    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
+    return this.m_src;
+},
 Run : function (cbf) {
+    this.encrypt_pwd();
     this.RunJsonP(cbf)
 },
 RunJsonP : function (cbf) {
@@ -78,7 +84,7 @@ RunJsonP : function (cbf) {
     console.log('Jsonpster:', Jsonpster);
     this.api = this.inp.par = null;
 },
-RunPost : function (cbf) {
+xxRunPost : function (cbf) {
     if(!cbf) return alert("cbf null.")
     var surl = "http://${res.req.headers.host}/" + this.api
     $.post(surl,
@@ -89,7 +95,7 @@ RunPost : function (cbf) {
         }
     )
 },
-RunPosts : function (cbf) {
+xxRunPosts : function (cbf) {
     if(!cbf) return alert("cbf null.")
     var surl = "https://${res.req.headers.host}/"
     surl = surl.replace("7778", "7775") + this.api
@@ -101,7 +107,7 @@ RunPosts : function (cbf) {
         }
     )
 },
-Run_Post : function (cbf) {
+xxRun_Post : function (cbf) {
     if(!cbf) return alert("cbf null.")
     var surl = "http://${res.req.headers.host}/" + this.api
     $.post(surl,
@@ -111,6 +117,7 @@ Run_Post : function (cbf) {
     })
 },
 RunAjaxPost : function(cbf){
+    this.encrypt_pwd();
     this.RunAjax_Type_Post (cbf)
 },
 RunAjax_Type_Post : function(cbf){
