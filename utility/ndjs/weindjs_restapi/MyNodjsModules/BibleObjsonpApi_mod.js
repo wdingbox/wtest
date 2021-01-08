@@ -62,8 +62,11 @@ var Jsonpster = {
     inp: ${structall},
 encrypt_usr: function(){
     if(!this.inp.usr.passcode_encrypted){
-        this.inp.usr.passcode_encrypted = 1;
-        this.inp.usr.passcode = atob(this.inp.usr.passcode.trim())
+        //this.inp.usr.passcode_encrypted = 1;
+        //this.inp.usr.passcode_old = this.inp.usr.passcode
+        //this.inp.usr.passcode = atob(this.inp.usr.passcode)
+    }else{
+        alert("alredy encrypted???")
     }
 },
 Url: function (){
@@ -207,7 +210,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.git_proj_parse(inp)
 
         var RbcObj = {};
-        if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
+        if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_pfxname(trn)
@@ -286,33 +289,21 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
-        if (!proj) {
-            inp.out.desc = "proj=null"
-            return
-        }
-
-        await userProject.git_pull(function (bSuccess) {
-        
-        })
-
-        //inp = BibleUti.Write2vrs_txt(inp, false)
         var doc = inp.par.fnames[0]
         var jsfname = userProject.get_pfxname(doc)
         var bio = BibleUti.load_BibleObj_by_fname(jsfname);
-        if (!bio.obj) {
-            inp.out.desc = `load(${doc},${jsfname})=null`
-            return;
-        }
-
         var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
         if (karyObj.kary.length < 3) {
             inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
-            return
         }
-        console.log(karyObj)
-        inp.out.desc = "load success"
-        inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
-
+        if (proj && bio.obj && karyObj.kary.length >= 3) {
+            await userProject.git_pull(function (bSuccess) {
+            })
+            inp.out.desc = "load success"
+            inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+        } else {
+            inp.out.desc = "failed git pull and load"
+        }
 
         //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
@@ -372,9 +363,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             })
 
-          
+
             await userProject.git_push()
-            
+
         }
 
         //inp = BibleUti.Write2vrs_txt(inp, false)
@@ -382,7 +373,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var jsfname = userProject.get_pfxname(doc)
         var ret = BibleUti.load_BibleObj_by_fname(jsfname)
         inp.out.data = ret.obj
-        if(!inp.out.state)  inp.out.state = { bEditable: 1 }
+        if (!inp.out.state) inp.out.state = { bEditable: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -409,11 +400,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.Parse_req_GET_to_inp(req)
-
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.git_proj_parse(inp)
+        var ret = userProject.git_proj_parse(inp)
+        if (ret) {
+            await userProject.git_proj_setup()
+        }
 
-        await userProject.git_proj_setup()
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)

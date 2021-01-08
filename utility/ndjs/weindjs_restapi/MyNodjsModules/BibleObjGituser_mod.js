@@ -140,65 +140,6 @@ var BibleUti = {
 
 
 
-
-    Parse_post_req_to_inp: function (req, res, cbf) {
-        console.log("req.method", req.method)
-        console.log("req.url", req.url)
-
-        //req.pipe(res)
-        if (req.method === "POST") {
-            //req.pipe(res)
-            console.log("POST: ----------------", "req.url=", req.url)
-            var body = "";
-            req.on("data", function (chunk) {
-                body += chunk;
-                console.log("on post data:", chunk)
-            });
-
-            req.on("end", async function () {
-                console.log("on post eend:", body)
-
-                var inpObj = JSON.parse(body)
-                inpObj.out = { desc: "", data: null }
-                console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
-
-
-                console.log("cbf start ------------------------------")
-                await cbf(inpObj)
-
-                res.writeHead(200, { "Content-Type": "application/json" });
-                res.write(JSON.stringify(inpObj))
-                res.end();
-                console.log("finished post req------------------------------")
-            });
-        } else {
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end();
-            console.log("end of req")
-        }
-    },
-    Parse_req_GET_to_inp: function (req) {
-        console.log("\n\nreq.method (expect GET)", req.method)
-        console.log("req.query", req.query)
-
-        if (req.method !== "GET") {
-            return {}
-        }
-        console.log("GET: req.url=", req.url);
-        var q = url.parse(req.url, true).query;
-        console.log("q=", q);
-        if (q.inp === undefined) {
-            console.log("q.inp undefined. Maybe unload or api err");
-            return q;
-        }
-        var s = decodeURIComponent(q.inp);//must for client's encodeURIComponent
-        var inpObj = JSON.parse(s);
-        inpObj.out = { desc: "", data: null }
-        console.log("GET: inp=", JSON.stringify(inpObj, null, 4));
-        //cbf(inpObj, res)
-        return inpObj
-    },
-
     fetch_bcv: function (BibleObj, oj) {
         //console.log("fetch_bcv oj", JSON.stringify(oj, null, 4))
         if (!oj || Object.keys(oj).length === 0) return BibleObj
@@ -390,6 +331,67 @@ var BibleUti = {
         }
         return out
     },
+
+
+
+    Parse_post_req_to_inp: function (req, res, cbf) {
+        console.log("req.method", req.method)
+        console.log("req.url", req.url)
+
+        //req.pipe(res)
+        if (req.method === "POST") {
+            //req.pipe(res)
+            console.log("POST: ----------------", "req.url=", req.url)
+            var body = "";
+            req.on("data", function (chunk) {
+                body += chunk;
+                console.log("on post data:", chunk)
+            });
+
+            req.on("end", async function () {
+                console.log("on post eend:", body)
+
+                var inpObj = JSON.parse(body)
+                inpObj.out = { desc: "", data: null }
+                console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
+
+
+                console.log("cbf start ------------------------------")
+                await cbf(inpObj)
+
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.write(JSON.stringify(inpObj))
+                res.end();
+                console.log("finished post req------------------------------")
+            });
+        } else {
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end();
+            console.log("end of req")
+        }
+    },
+    Parse_req_GET_to_inp: function (req) {
+        console.log("\n\n\n-req.method (GET?)", req.method)
+        console.log("-GET: req.url=", req.url);
+        console.log("-req.query", req.query)
+
+        if (req.method !== "GET") {
+            return null
+        }
+        //console.log("GET: req.url=", req.url);
+        //var q = url.parse(req.url, true).query;
+        //console.log("q=", q);
+        if (req.query.inp === undefined) {
+            console.log("q.inp undefined. Maybe unload or api err");
+            return null;
+        }
+        var sin = decodeURIComponent(req.query.inp);//must for client's encodeURIComponent
+        var inpObj = JSON.parse(sin);
+        inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 } }
+        console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
+        //cbf(inpObj, res)
+        return inpObj
+    },
     //// BibleUti /////
 }
 
@@ -436,7 +438,7 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
     }
     function _decode_passcode(inp) {
         ////decode: password.
-        if (inp.usr.passcode_encrypted) {
+        if (1 === inp.usr.passcode_encrypted) {
             inp.usr.passcode = btoa(inp.usr.passcode);//.trim()
         } else {
             console.log("password not encrypted.", inp.usr.passcode)
@@ -446,26 +448,27 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         ////SpecialTestRule: repopath must be same as password.
         inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test"
-        if (inp.usr.repopath.indexOf(PUB_TEST) === 0) {
-            console.log("This is for PUB_TEST.")
-            if (inp.usr.repopath !== inp.usr.passcode) {
+        if (inp.usr.proj.projname.indexOf(PUB_TEST) === 0) {
+            if (inp.usr.proj.projname !== inp.usr.passcode) {
+                console.log("This is for pub_test only but discord to the rule.")
                 return null
             } else {
+                console.log("This is for pub_test only: sucessfully pass the rule.")
                 inp.usr.passcode = "3edcFDSA"
             }
         }
         return inp.usr
     }
     function _parse_proj_dir(inp) {
-        const baseDir = "bible_study_notes/usrs"
-        var gitDir = `${baseDir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
+        const base_Dir = "bible_study_notes/usrs"
+        var gitDir = `${base_Dir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
 
-        inp.usr.proj.baseDir = baseDir
-        inp.usr.proj.git_dir = `${gitDir}`
+        inp.usr.proj.base_Dir = base_Dir
+        inp.usr.proj.git_root = `${gitDir}`
         inp.usr.proj.acct_dir = `${rw_Dir}`
-        inp.usr.proj.dest_myoj = `${tarDir}`
+        inp.usr.proj.dest_myo = `${tarDir}`
 
         inp.usr.proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
@@ -504,17 +507,17 @@ BibleObjGituser.prototype.get_usr_acct_dir = function (subpath) {
 BibleObjGituser.prototype.get_usr_myoj_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
     if (!subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}`
+        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myoj}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}${subpath}`
 }
 
 BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     if (!this.m_inp.usr.proj) return ""
     if (undefined === subpath || null === subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}`
+        return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.git_dir}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}${subpath}`
 }
 BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     var inp = this.m_inp
@@ -560,7 +563,7 @@ BibleObjGituser.prototype.git_proj_destroy = async function (res) {
     var git_setup_cmd = `
 #!/bin/sh
 cd ${this.m_rootDir}
-echo ${password} | sudo -S rm -rf ${proj.git_dir}
+echo ${password} | sudo -S rm -rf ${proj.git_root}
 echo " git_setup_cmd end."
 #cd -`
 
@@ -605,18 +608,18 @@ BibleObjGituser.prototype.git_clone = async function (res) {
     var git_clone_cmd = `
 #!/bin/sh
 cd ${this.m_rootDir}
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_dir}
-if [ -f "${proj.git_dir}/.git/config" ]; then
-    echo "${proj.git_dir}/.git/config exists."
-    echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
+if [ -f "${proj.git_root}/.git/config" ]; then
+    echo "${proj.git_root}/.git/config exists."
+    echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
 else 
-    echo "${proj.git_dir}/.git/config does not exist."
+    echo "${proj.git_root}/.git/config does not exist."
 fi
-#echo ${password} | sudo -S chmod  777 ${proj.git_dir}/.git/config
+#echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
 #cd -`
     console.log("git_clone_cmd", git_clone_cmd)
 
-    //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_dir
+    //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_root
     function _check_git_folders_existance() {
         var res = _THIS.m_inp.out.git_clone_res
         if (fs.existsSync(gitdir)) {
@@ -743,7 +746,7 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
 
 BibleObjGituser.prototype.git_proj_status = function (cbf) {
     var inp = this.m_inp
-    inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
+    //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
 
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
@@ -771,7 +774,7 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
 
 BibleObjGituser.prototype.git_status = async function () {
     var inp = this.m_inp
-    if (!inp.out.state) inp.out.state = { bGitDir: 0, bMyojDir: 0, bEditable: 0 }
+    if (!inp.out.state) return
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status
@@ -826,33 +829,26 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
     // })
 
-    var txt = fs.readFileSync(git_config_fname, "utf8")
-    console.log("bAllowPush:", bAllowPush)
-    console.log("old:", this.m_inp.usr.repopath)
-    console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
-    console.log("before:\n", txt)
-
-    var bNeedWrite = false
-    if (bAllowPush) {
-        var ipos = txt.indexOf(this.m_inp.usr.repopath)
-        console.log("ipos=", ipos, this.m_inp.usr.repopath)
-        if (ipos > 0 && this.m_inp.usr.proj.git_Usr_Pwd_Url.length > 0) {
-            txt = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-            bNeedWrite = true
+    if (!this.m_git_config_old || !this.m_git_config_new) {
+        var txt = fs.readFileSync(git_config_fname, "utf8")
+        var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
+        var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        if (ipos1 < 0 || ipos2 >= 0) {
+            console.log("old:", this.m_inp.usr.repopath)
+            console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+            console.log("git_config_fname not normal.", ipos1, ipos2, txt)
+            return
         }
-    } else {
-        var ipos = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        console.log("ipos=", ipos, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        if (ipos > 0 && this.m_inp.usr.proj.git_Usr_Pwd_Url.length > 0) {
-            txt = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
-            bNeedWrite = true
-        }
+        this.m_git_config_old = txt
+        this.m_git_config_new = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
     }
-    console.log("bNeedWrite:", bNeedWrite)
-    console.log("after:\n", txt)
 
-    if (bNeedWrite) {
-        fs.writeFileSync(git_config_fname, txt, "utf8")
+    if (bAllowPush) {
+        fs.writeFileSync(git_config_fname, this.m_git_config_new, "utf8")
+        console.log("bAllowPush=1:url =", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    } else {
+        fs.writeFileSync(git_config_fname, this.m_git_config_old, "utf8")
+        console.log("bAllowPush=0:url =", this.m_inp.usr.repopath)
     }
 }
 BibleObjGituser.prototype.git_add_commit_push = async function (msg) {
@@ -940,7 +936,7 @@ cd -
 
     var _THIS = this
     if (!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
-    if (!_THIS.m_inp.out.state) _THIS.m_inp.out.state = { bRepositable: -1 }
+    //if (!_THIS.m_inp.out.state) _THIS.m_inp.out.state = { bRepositable: -1 }
     this.git_config_allow_push(true)
     await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (ret) {
