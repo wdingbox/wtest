@@ -1826,19 +1826,20 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
-    $("#Format_Check").on("click", function () {
-        var repopath = $("#repopath").val()
-        var reob = Uti.validate_repository_url(repopath)
-        if (!reob) return alert("empty")
-        if (reob.format === 2) {
-            $("#repopath").val(reob.user_repo)
-        }
-        if (reob.format === 1) {
-            $("#repopath").val(reob.full_path)
-        }
-        var ar = ["", "https url", "compound IDs"]
-        $(this).text(ar[reob.format])
-    })
+    Uti.visual_check_repository("#Format_Check")
+    // $("#Format_Check").on("click", function () {
+    //     var repopath = $("#repopath").val()
+    //     var reob = Uti.validate_repository_url(repopath)
+    //     if (!reob) return alert("empty")
+    //     if (reob.format === 2) {
+    //         $("#repopath").val(reob.user_repo)
+    //     }
+    //     if (reob.format === 1) {
+    //         $("#repopath").val(reob.full_path)
+    //     }
+    //     var ar = ["", "https url", "user repos"]
+    //     $(this).text(ar[reob.format])
+    // })
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
@@ -2688,6 +2689,21 @@ var Uti = {
         }
     },
 
+    visual_check_repository:function(eid){
+        $(eid).on("click", function () {
+            var repopath = $("#repopath").val()
+            var reob = Uti.validate_repository_url(repopath)
+            if (!reob) return alert("empty")
+            if (reob.format === 2) {
+                $("#repopath").val(reob.user_repo)
+            }
+            if (reob.format === 1) {
+                $("#repopath").val(reob.full_path)
+            }
+            var ar = ["", "https url", "user repos"]
+            $(this).text(ar[reob.format])
+        })
+    },
     validate_repository_url: function (repoath) {
         if (!repoath) return alert("repopath is not defined.")
         repoath = repoath.trim()
