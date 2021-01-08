@@ -830,17 +830,25 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     // })
 
     if (!this.m_git_config_old || !this.m_git_config_new) {
-        var txt = fs.readFileSync(git_config_fname, "utf8")
+        var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
         var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
         var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        if (ipos1 < 0 || ipos2 >= 0) {
-            console.log("old:", this.m_inp.usr.repopath)
-            console.log("new:", this.m_inp.usr.proj.git_Usr_Pwd_Url)
-            console.log("git_config_fname not normal.", ipos1, ipos2, txt)
-            return
+
+        console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
+        console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+
+        if (ipos1 > 0) {
+            olds = txt
+            news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
         }
-        this.m_git_config_old = txt
-        this.m_git_config_new = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        if (ipos2 > 0) {
+            news = txt
+            olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
+
+            console.log("initial git_config_fname not normal:",txt)
+        }
+        this.m_git_config_old = olds
+        this.m_git_config_new = news
     }
 
     if (bAllowPush) {
