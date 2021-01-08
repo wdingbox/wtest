@@ -68,7 +68,7 @@ var MyStorage = {
         StoreRepositorie.prototype.repos_store_get = function () {
             var ar = localStorage.getItem(this.m_storeid);
             if (!ar || ar.length === 0) {
-                ar = [{ repopath: "https://github.com/wdingbox/biblestudynote_pub_test.git", passcode: "" }]
+                ar = [{ repopath: "https://github.com/bsnp21/pub_test.git", passcode: "pub_test" }]
             } else {
                 ar = JSON.parse(ar)
             }
@@ -1817,7 +1817,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#account_default").bind("click", function () {
-        $("#repopath").val("https://github.com/wdingbox/biblestudynote_pub_test.git")
+        $("#repopath").val("https://github.com/bsnp21/pub_test.git")
         $("#passcode").val("")
     })
     $("#account_date").bind("click", function () {
@@ -3405,7 +3405,7 @@ var BibleInputMenuContainer = `
                             <a id="account_helper">More</a>
                             </div>
                             <br>
-                            <textarea id="repopath" value='https://github.com/wdingbox/biblestudynote_pub_test.git' placeholder='https://github.com/wdingbox/biblestudynote_pub_test.git' ></textarea>
+                            <textarea id="repopath" value='https://github.com/bsnp21/pub_test.git' placeholder='https://github.com/bsnp21/pub_test.git' ></textarea>
                             <br>
                             <a>Description</a>: 
                             <span id="repository_description">
