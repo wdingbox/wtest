@@ -762,13 +762,15 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
     if (!fs.existsSync(accdir)) {
         return null
     }
+    inp.out.state.bMyojDir = 1
+    
     var accdir = this.get_usr_dat_dir()
     if (!fs.existsSync(accdir)) {
         inp.out.state.bDatDir = 0
     }
     inp.out.state.bDatDir = 1
 
-    inp.out.state.bMyojDir = 1
+   
 
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(gitdir)) {
