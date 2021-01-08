@@ -353,27 +353,25 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.git_proj_parse(inp)
-        if (!proj) return
+        if (proj) {
 
-        await userProject.git_proj_setup()
+            await userProject.git_proj_setup()
 
-        var retp = userProject.git_proj_status()
-        if (retp) {
-            await userProject.git_pull(function (bSuccess) {
+            var retp = userProject.git_proj_status()
+            if (retp) {
+                await userProject.git_pull(function (bSuccess) {
 
-            })
+                })
+                await userProject.git_push()
+            }
 
-
-            await userProject.git_push()
-
+            //inp = BibleUti.Write2vrs_txt(inp, false)
+            var doc = inp.par.fnames[0]
+            var jsfname = userProject.get_pfxname(doc)
+            var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+            inp.out.data = ret.obj
+            if (!inp.out.state) inp.out.state.bEditable = 1
         }
-
-        //inp = BibleUti.Write2vrs_txt(inp, false)
-        var doc = inp.par.fnames[0]
-        var jsfname = userProject.get_pfxname(doc)
-        var ret = BibleUti.load_BibleObj_by_fname(jsfname)
-        inp.out.data = ret.obj
-        if (!inp.out.state) inp.out.state = { bEditable: 1 }
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -425,9 +423,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.git_proj_parse(inp)
+        if (userProject.git_proj_parse(inp)) {
+            await userProject.git_proj_destroy(res)
+        }
 
-        await userProject.git_proj_destroy(res)
         var sret = JSON.stringify(inp, null, 4)
 
         console.log("oup is ", inp.out)
@@ -447,12 +446,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.git_proj_parse(inp)
-
-        var ret = userProject.git_proj_status(async function () {
-        })
-        if (ret) {
-            await userProject.git_push()
+        if (userProject.git_proj_parse(inp)) {
+            var ret = userProject.git_proj_status(async function () {
+            })
+            if (ret) {
+                await userProject.git_push()
+            }
         }
 
         var sret = JSON.stringify(inp, null, 4)
@@ -475,10 +474,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.git_proj_parse(inp)
-
-        await userProject.git_proj_setup()
-        await userProject.git_add_commit_push("push all changes.")
+        if (userProject.git_proj_parse(inp)) {
+            await userProject.git_proj_setup()
+            await userProject.git_add_commit_push("push all changes.")
+        }
 
         var sret = JSON.stringify(inp, null, 4)
 
