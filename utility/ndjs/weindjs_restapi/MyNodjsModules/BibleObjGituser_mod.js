@@ -352,7 +352,7 @@ var BibleUti = {
                 console.log("on post eend:", body)
 
                 var inpObj = JSON.parse(body)
-                inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 } }
+                inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
 
 
@@ -387,7 +387,7 @@ var BibleUti = {
         }
         var sin = decodeURIComponent(req.query.inp);//must for client's encodeURIComponent
         var inpObj = JSON.parse(sin);
-        inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 } }
+        inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
         console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
         //cbf(inpObj, res)
         return inpObj
@@ -464,11 +464,13 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         var gitDir = `${base_Dir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
+        var datDir = `${rw_Dir}/dat`
 
         inp.usr.proj.base_Dir = base_Dir
         inp.usr.proj.git_root = `${gitDir}`
         inp.usr.proj.acct_dir = `${rw_Dir}`
         inp.usr.proj.dest_myo = `${tarDir}`
+        inp.usr.proj.dest_dat = `${datDir}`
 
         inp.usr.proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
@@ -510,6 +512,13 @@ BibleObjGituser.prototype.get_usr_myoj_dir = function (subpath) {
         return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}`
     }
     return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}${subpath}`
+}
+BibleObjGituser.prototype.get_usr_dat_dir = function (subpath) {
+    if (!this.m_inp.usr.proj) return ""
+    if (!subpath) {
+        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_dat}`
+    }
+    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_dat}${subpath}`
 }
 
 BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
@@ -752,6 +761,12 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
     if (!fs.existsSync(accdir)) {
         return null
     }
+    var accdir = this.get_usr_dat_dir()
+    if (!fs.existsSync(accdir)) {
+        inp.out.state.bDatDir = 0
+    }
+    inp.out.state.bDatDir = 1
+
     inp.out.state.bMyojDir = 1
 
     var gitdir = this.get_usr_git_dir("/.git/config")
@@ -768,7 +783,7 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
     /////// git status
     if (cbf) cbf()
 
-    inp.out.state.bEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir
+    inp.out.state.bEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir * inp.out.state.bDatDir
     return inp
 }
 
