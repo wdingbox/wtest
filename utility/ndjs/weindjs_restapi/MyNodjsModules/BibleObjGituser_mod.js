@@ -745,7 +745,7 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
 
     var accdir = this.get_usr_acct_dir()
     await this.change_dir_perm(accdir, 777)
-    var retp = this.git_proj_status()
+    var retp = this.profile_state()
     if (retp) {
         await this.git_push()
     }
@@ -754,40 +754,66 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
     return inp
 }
 
-BibleObjGituser.prototype.git_proj_status = function (cbf) {
-    var inp = this.m_inp
+BibleObjGituser.prototype.profile_state = function (cbf) {
+    if (!this.m_inp.out || !this.m_inp.out.state) return console.log("******Fatal Error.")
+    var stat = this.m_inp.out.state
     //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
 
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
-        return null
+        stat.bMyojDir = 0
+        //return null
     }
-    inp.out.state.bMyojDir = 1
+    stat.bMyojDir = 1
 
     var accdir = this.get_usr_dat_dir()
     if (!fs.existsSync(accdir)) {
-        inp.out.state.bDatDir = 0
+        stat.bDatDir = 0
     }
-    inp.out.state.bDatDir = 1
+    stat.bDatDir = 1
 
-   
-
-    var gitdir = this.get_usr_git_dir("/.git/config")
-    if (!fs.existsSync(gitdir)) {
-        return null
+    var git_config_fname = this.get_usr_git_dir("/.git/config")
+    if (!fs.existsSync(git_config_fname)) {
+        //return null
+        stat.bGitDir = 0
     }
-    inp.out.state.bGitDir = 1
+    stat.bGitDir = 1
 
-    var txt = fs.readFileSync(gitdir, "utf8")
-    var pos0 = txt.indexOf("[remote \"origin\"]")
-    var pos1 = txt.indexOf("[branch \"master\"]")
-    inp.out.state.config = txt.substring(pos0 + 19, pos1)
+
+    //if (!this.m_git_config_old || !this.m_git_config_new) {
+    var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
+    var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
+    var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+
+    console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
+    console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+
+    if (ipos1 > 0) {
+        olds = txt
+        news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    }
+    if (ipos2 > 0) {
+        news = txt
+        olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
+
+        console.log("initial git_config_fname not normal:", txt)
+    }
+    if ((ipos1 * ipos2) < 0) {
+        this.m_git_config_old = olds
+        this.m_git_config_new = news
+
+        //var txt = fs.readFileSync(git_config_fname, "utf8")
+        var pos0 = txt.indexOf("[remote \"origin\"]")
+        var pos1 = txt.indexOf("\n\tfetch = +refs");//("[branch \"master\"]")
+        stat.config = txt.substring(pos0 + 19, pos1)
+    }
+    //}
 
     /////// git status
-    if (cbf) cbf()
+    stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
 
-    inp.out.state.bEditable = inp.out.state.bGitDir * inp.out.state.bMyojDir * inp.out.state.bDatDir
-    return inp
+    if (cbf) cbf()
+    return stat
 }
 
 BibleObjGituser.prototype.git_status = async function () {
@@ -863,7 +889,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
             news = txt
             olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
 
-            console.log("initial git_config_fname not normal:",txt)
+            console.log("initial git_config_fname not normal:", txt)
         }
         this.m_git_config_old = olds
         this.m_git_config_new = news
@@ -993,15 +1019,15 @@ cd -
 BibleObjGituser.prototype.cmd_exec = async function () {
     var _THIS = this
     var inp = this.m_inp
-   
-    if(!inp.par) {
-        inp.out.desc="no par"
+
+    if (!inp.par) {
+        inp.out.desc = "no par"
         return
     }
 
     console.log("inp.par.cmdline: ", inp.par.cmdline)
-    if(!inp.par.cmdline) {
-        inp.out.desc="no inp.par.cmdline"
+    if (!inp.par.cmdline) {
+        inp.out.desc = "no inp.par.cmdline"
         return
     }
 
@@ -1019,12 +1045,12 @@ echo ${password} | sudo ${inp.par.cmdline}
         function (val) {
             console.log("cmd_exec success:", val)
             inp.out.cmd_exec.desc = "cmd_exec success."
-            inp.out.cmd_exec.res=val
+            inp.out.cmd_exec.res = val
         },
         function (val) {
             console.log("cmd_exec failure:", val)
             inp.out.cmd_exec.desc = "cmd_exec success."
-            inp.out.cmd_exec.res=val
+            inp.out.cmd_exec.res = val
         })
     return inp
 }

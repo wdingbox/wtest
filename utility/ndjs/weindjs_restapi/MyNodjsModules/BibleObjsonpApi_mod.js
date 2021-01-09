@@ -357,8 +357,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             await userProject.git_proj_setup()
 
-            var retp = userProject.git_proj_status()
-            if (retp) {
+            var retp = userProject.profile_state()
+            if (0) {
                 await userProject.git_pull(function (bSuccess) {
 
                 })
@@ -447,9 +447,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.git_proj_parse(inp)) {
-            var ret = userProject.git_proj_status(async function () {
+            var ret = userProject.profile_state(async function () {
             })
-            if (ret) {
+            if (0) {
                 await userProject.git_push()
             }
         }
