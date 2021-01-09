@@ -231,11 +231,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
-    ApiBibleObj_write_Usr_BkcChpVrs_txt_asyn: async function (req, res) {
-        if (!req || !res) {
-            return inp_struct_search
-        }
-    },
+  
     ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
@@ -267,13 +263,18 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 return
             }
             console.log(karyObj)
+            if (!bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]) {
+                bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs] = ""
+            }
+            var dlt = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs].length - karyObj.txt.length
             bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs] = karyObj.txt
             bio.writeback()
 
             //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
             var save_res = {}
             save_res.saved_size = karyObj.txt.length
-            //save_res.ret = bio
+            save_res.len = karyObj.txt.length
+            save_res.dlt = dlt
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
             inp.out.save_res = save_res
 
@@ -340,7 +341,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //// 
             var save_res = {}
-            save_res.saved_size = "len:"+inp.par.data.length +",dlt:"+ret.dlt_size
+            save_res.saved_size = "len:" + inp.par.data.length + ",dlt:" + ret.dlt_size
             save_res.dlt = ret.dlt_size
             save_res.len = inp.par.data.length
             inp.par.data = ""
@@ -392,11 +393,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
     ///////////////////////////////////
 
-    ApiUsrReposData_create_async: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
-    },
+ 
     ApiUsrReposData_create: async function (req, res) {
         console.log("ApiUsrReposData_create")
         if (!req || !res) {
@@ -416,11 +413,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    ApiUsrReposData_destroy_async: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
-    },
+
     ApiUsrReposData_destroy: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
@@ -439,11 +432,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-    ApiUsrReposData_status_async: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
-    },
+   
     ApiUsrReposData_status: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
@@ -467,11 +456,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
-    ApiUsrReposData_git_push_async: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
-    },
+  
     ApiUsrReposData_git_push: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
