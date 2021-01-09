@@ -625,7 +625,7 @@ fi
 #cd -`
     console.log("git_clone_cmd", git_clone_cmd)
 
- 
+
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
@@ -719,6 +719,7 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
     var stat = this.profile_state()
     if (stat.bEditable > 0) {
         inp.out.desc += "|already setup."
+        await this.git_pull()
         return null
     }
     if (stat.bGitDir !== 1) {
@@ -726,19 +727,12 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
         stat = this.profile_state()
     }
 
-    // var gitdir = this.get_usr_git_dir("/.git")
-    // if (!fs.existsSync(gitdir)) {
-    //     inp.out.git_clone_res.bExist = false
-    //     return null
-    // }
-    // if (!inp.out.git_clone_res.bExist) return null
-
     if (stat.bMyojDir !== 1) {
         await this.cp_template_to_git()
         stat = this.profile_state()
     }
 
-    if (stat.bMyojDir == 1) {
+    if (stat.bMyojDir === 1) {
         var accdir = this.get_usr_acct_dir()
         await this.change_dir_perm(accdir, 777)
     }
@@ -749,7 +743,38 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
 
     return inp
 }
+BibleObjGituser.prototype.load_git_config = function () {
+    var git_config_fname = this.get_usr_git_dir("/.git/config")
+    //if (!this.m_git_config_old || !this.m_git_config_new) {
+    var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
+    var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
+    var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
 
+    console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
+    console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+
+    if (ipos1 > 0) {
+        olds = txt
+        news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    }
+    if (ipos2 > 0) {
+        news = txt
+        olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
+
+        console.log("initial git_config_fname not normal:", txt)
+    }
+    if ((ipos1 * ipos2) < 0) {
+        this.m_git_config_old = olds
+        this.m_git_config_new = news
+
+        //var txt = fs.readFileSync(git_config_fname, "utf8")
+        var pos0 = txt.indexOf("[remote \"origin\"]")
+        var pos1 = txt.indexOf("\n\tfetch = +refs");//("[branch \"master\"]")
+        this.m_inp.out.state.config = txt.substring(pos0 + 19, pos1)
+    }
+    //}
+    return this.m_inp.out.state.config
+}
 BibleObjGituser.prototype.profile_state = function (cbf) {
     if (!this.m_inp.out || !this.m_inp.out.state) return console.log("******Fatal Error.")
     var stat = this.m_inp.out.state
@@ -777,34 +802,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
         return stat;
     }
 
-    //if (!this.m_git_config_old || !this.m_git_config_new) {
-    var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
-    var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
-    var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
-
-    console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
-    console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-
-    if (ipos1 > 0) {
-        olds = txt
-        news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-    }
-    if (ipos2 > 0) {
-        news = txt
-        olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
-
-        console.log("initial git_config_fname not normal:", txt)
-    }
-    if ((ipos1 * ipos2) < 0) {
-        this.m_git_config_old = olds
-        this.m_git_config_new = news
-
-        //var txt = fs.readFileSync(git_config_fname, "utf8")
-        var pos0 = txt.indexOf("[remote \"origin\"]")
-        var pos1 = txt.indexOf("\n\tfetch = +refs");//("[branch \"master\"]")
-        stat.config = txt.substring(pos0 + 19, pos1)
-    }
-    //}
+    stat.config = this.load_git_config()
 
     /////// git status
     stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
@@ -822,7 +820,7 @@ BibleObjGituser.prototype.git_status = async function () {
         var git_status_cmd = `
         cd ${this.get_usr_git_dir()}
         git status
-        git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
+        #git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
         inp.out.git_status = {}
         await BibleUti.exec_Cmd(git_status_cmd).then(
             function (val) {
@@ -865,31 +863,14 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         console.log(".git/config not exist:", git_config_fname)
         return
     }
+
     // fs.chmodSync(git_config_fname, 0o777, function (err) {
     //     if (err) console.log(err);
     //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
     // })
 
     if (!this.m_git_config_old || !this.m_git_config_new) {
-        var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
-        var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
-        var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
-
-        console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
-        console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-
-        if (ipos1 > 0) {
-            olds = txt
-            news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
-        }
-        if (ipos2 > 0) {
-            news = txt
-            olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
-
-            console.log("initial git_config_fname not normal:", txt)
-        }
-        this.m_git_config_old = olds
-        this.m_git_config_new = news
+        this.load_git_config()
     }
 
     if (bAllowPush) {
@@ -900,32 +881,34 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         console.log("bAllowPush=0:url =", this.m_inp.usr.repopath)
     }
 }
-BibleObjGituser.prototype.git_add_commit_push = async function (msg) {
+BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
     var _THIS = this
     var inp = this.m_inp
+    if (undefined == punPush || "#" !== punPush) punPush = ""
 
     password = "lll" //dev mac
     var cmd_commit = `
 cd  ${this.get_usr_git_dir()}
-echo ${password} | sudo -S git status
-echo ${password} | sudo -S git pull
-echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
+## echo ${password} | sudo -S git status
+## echo ${password} | sudo -S git pull
+## echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
 echo ${password} | sudo -S git add *
-echo ${password} | sudo -S git commit -m "svr update ${msg}. ${inp.usr.repodesc}"
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
-echo ${password} | sudo -S git status
-cd -
+echo ${password} | sudo -S git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}"
+${punPush}echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
 `
 
     console.log("git_config_allow_push true first....")
-    this.git_config_allow_push(true)
+    if (punPush.length === 0) {
+        this.git_config_allow_push(true)
+    }
+
     inp.out.git_push_res = {}
     await BibleUti.exec_Cmd(cmd_commit).then(
         function (ret) {
             console.log("success:", ret)
             _THIS.git_config_allow_push(false)
             _THIS.m_inp.out.git_push_res.success = ret
-            _THIS.m_inp.out.git_push_res.desc = "Reposit success."
+            
             const erry = ["fatal", "Invalid"]
             erry.forEach(function (errs) {
                 if (ret.stderr.indexOf(errs) >= 0) {
@@ -945,8 +928,8 @@ BibleObjGituser.prototype.git_pull = async function (cbf) {
     var cmd_git_pull = `
 #!/bin/sh
 cd  ${this.get_usr_git_dir()}
-echo ${password} | sudo -S git status
-echo ${password} | sudo -S git pull
+### echo ${password} | sudo -S git status
+echo ${password} | sudo -S git pull 
 cd -
 `
     var _THIS = this

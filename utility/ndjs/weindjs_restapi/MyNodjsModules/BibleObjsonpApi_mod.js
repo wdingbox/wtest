@@ -275,7 +275,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
             inp.out.save_res = save_res
 
-            await userProject.git_add_commit_push(save_res.desc)
+            await userProject.git_add_commit_push(save_res.desc, "#");////#:not push
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
