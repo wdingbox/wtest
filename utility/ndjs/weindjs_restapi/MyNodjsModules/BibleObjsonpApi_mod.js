@@ -495,19 +495,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.git_proj_parse(inp)) {
 
-            var cmds = inp.par.data
-            inp.out.Cmdline_Exec = {}
-            await BibleUti.exec_Cmd(cmds).then(
-                function (val) {
-                    console.log("Cmdline_Exec success:", val)
-                    inp.out.Cmdline_Exec.desc = "success."
-                    inp.out.Cmdline_Exec.res = val
-                },
-                function (val) {
-                    console.log("Cmdline_Exec failure:", val)
-                    inp.out.Cmdline_Exec.desc = "failure."
-                    inp.out.Cmdline_Exec.res = val
-                })
+            await userProject.cmd_exec()
         }
 
         var sret = JSON.stringify(inp, null, 4)

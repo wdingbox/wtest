@@ -763,7 +763,7 @@ BibleObjGituser.prototype.git_proj_status = function (cbf) {
         return null
     }
     inp.out.state.bMyojDir = 1
-    
+
     var accdir = this.get_usr_dat_dir()
     if (!fs.existsSync(accdir)) {
         inp.out.state.bDatDir = 0
@@ -990,7 +990,37 @@ cd -
     )
 }
 
+BibleObjGituser.prototype.cmd_exec = async function () {
+    var _THIS = this
+    var inp = this.m_inp
+   
 
+    console.log("inp.par.cmdline: ", inp.par.cmdline)
+    if(!inp.par.cmdline) return
+
+    //console.log("proj", proj)
+    var password = "lll" //dev mac
+    var scmd = `
+#!/bin/sh
+cd ${this.get_usr_git_dir()}
+echo ${password} | sudo ${inp.par.cmdline}
+#cd -`
+    console.log("git_clone_cmd", scmd)
+
+    inp.out.git_clone_res.cmdline = {}
+    await BibleUti.exec_Cmd(scmd).then(
+        function (val) {
+            console.log("git-clone success:", val)
+            inp.out.cmdline.desc += ", clone success."
+            inp.out.cmdline.res=val
+        },
+        function (val) {
+            console.log("git-clone failure:", val)
+            inp.out.cmdline.desc += ", clone success."
+            inp.out.cmdline.res=val
+        })
+    return inp
+}
 
 
 
