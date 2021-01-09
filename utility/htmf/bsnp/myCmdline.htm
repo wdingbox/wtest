@@ -294,19 +294,24 @@
 <script>
     Uti.Jsonpster_crossloader()
     function dbg_pster(dat) {
+        if (!this.idx) this.idx = 1
+        this.idx++
         if (!dat) {
-            ss = "\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
+            ss = `${this.idx}\nJsonpster = ` + JSON.stringify(Jsonpster, null, 4)
             $("#txtarea").val(ss)
             return
         }
         var ss = $("#txtarea").val()
-        if (ss.length > 3000) ss = "";
+        if (ss.length > 10000) ss = "";
+        ss += "\n[" + this.idx + "]\n";
         if ("object" === typeof dat) {
-            var sd = "\n\nret=" + JSON.stringify(dat, null, 4)
-            //sd = sd.replace("\\n","\n")
-            ss = sd + ss;
+            var sd = "ret=" + JSON.stringify(dat, null, 4)
+            sd = sd.replace("\\n", "\n")
+            ss += "\n" + sd;
+        } else {
+            ss += "\n" + dat
         }
-        ss = ss.replace(/(\\n)/g, "\n")
+        //ss = ss.replace(/(\\n)/g, "\n")
         //ss = "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
         //ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
         $("#txtarea").val(ss)
@@ -356,17 +361,19 @@
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
             Jsonpster.Run(function (ret) {
-                //dbg_pster(ret)
+                dbg_pster(ret)
                 var res = ret.out.cmd_exec.res
+                var str2 = ""
                 Object.keys(res).forEach(function (key) {
 
                     var str = res[key];
                     if (str) {
-                        str = str.replace("\\n", "\n")
-                        dbg_pster(str)
+                        str2 += "\n" + str.replace("\\n", "\n")
+
                     }
                     //dbg_pster(key)
                 })
+                dbg_pster(str2)
             })
         })
 
