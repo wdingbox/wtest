@@ -272,7 +272,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
             var save_res = {}
-            save_res.saved_size = karyObj.txt.length
+            save_res.saved_size = "" + karyObj.txt.length + ",dlt:" + dlt
             save_res.len = karyObj.txt.length
             save_res.dlt = dlt
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
