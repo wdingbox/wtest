@@ -166,9 +166,10 @@
 
         <br>
 
-        <div for="editor1" id="label_password">
-            Password: (<font color='red'>required</font>) <a class="help_label"
-                onclick="$('.helpinfo.Password').toggle('slow');"></a>
+        <div>
+            <a for="editor1" id="label_password">Password </a> : 
+            (<a style="color:red;" id="required_password_test">required</a>)
+            <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">.</a>
         </div>
         <div class="helpinfo Password">
             <a>
@@ -249,7 +250,7 @@
             Jsonpster.Run(function (ret) {
                 dbg_pster(ret)
                 if (ret.out.state) {
-                    if (1 === ret.out.state.bRepositable) {
+                    if (1 === ret.out.state.bEditable) {
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
@@ -308,6 +309,12 @@
             var typns = $("#passcode").attr("type")
             typns = ("password" === typns) ? "text" : "password"
             $("#passcode").attr("type", typns)
+        })
+
+        $("#required_password_test").on("click",function(){
+            var repopath = $("#repopath").val()
+            var ret = Uti.validate_repository_url(repopath)
+            $("#passcode").val(ret.repo)
         })
 
         Uti.visual_check_repository("#Format_Check")

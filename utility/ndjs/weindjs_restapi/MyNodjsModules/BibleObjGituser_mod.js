@@ -273,14 +273,14 @@ var BibleUti = {
                 ret.header = t.substr(0, i);
                 var s = t.substr(i);
                 ret.obj = JSON.parse(s);
-                
+
             }
         }
 
         ret.writeback = function () {
             var s2 = JSON.stringify(this.obj, null, 4);
             fs.writeFileSync(this.fname, this.header + s2);
-            ret.dlt_size =  ret.header.length + s2.length - ret.fsize 
+            ret.dlt_size = ret.header.length + s2.length - ret.fsize
         }
         return ret;
     },
@@ -447,6 +447,9 @@ BibleObjGituser.prototype.git_proj_parse = function (inp) {
         }
     }
     function _check_pub_testing(inp) {
+        if (inp.usr.passcode.length === 0) {
+            return inp.usr
+        }
         ////SpecialTestRule: repopath must be same as password.
         inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test"
@@ -635,6 +638,10 @@ fi
             inp.out.git_clone_res.desc += ", clone success."
             inp.out.git_clone_res.success = val
             //this.git_config_allow_push(true)
+            if (inp.usr.passcode.length > 0) {
+                //if clone with password ok, it would ok for pull/push 
+                inp.out.state.bRepositable = 1
+            }
         },
         function (val) {
             console.log("git-clone failure:", val)
@@ -801,6 +808,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     if (!fs.existsSync(git_config_fname)) {
         stat.bGitDir = 0
         stat.bEditable = 0
+        stat.bRepositable = 0
         return stat;
     }
 
@@ -808,6 +816,11 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
 
     /////// git status
     stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
+    this.m_inp.out.state.bRepositable = 0
+    if (this.m_inp.usr.passcode.length > 0) {
+        //if clone with password ok, it would ok for pull/push 
+        stat.bRepositable = 1
+    }
 
     if (cbf) cbf()
     return stat
