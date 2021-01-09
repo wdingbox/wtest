@@ -157,12 +157,13 @@
     </p>
 
 
-
     <div id="footer">
         <hr>
+
         <div id="otb"></div>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
+    <div id="cmdtab"></div>
 
 
 
@@ -171,7 +172,7 @@
     <script>
         function LoadStorageInRepos() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             MyStorage.Repo_load(function (ret) {
                 console.log("data", ret)
                 Uti.Msg("LoadStorage", ret)
@@ -197,14 +198,14 @@
             if (!Jsonpster.inp) return alert("empty inp")
             if (!Jsonpster.inp.usr) return alert("empty usr")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
             window.opener.postMessage(Jsonpster.inp.usr, '*');
-            
+
         }
         function repo_create() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -215,7 +216,7 @@
         function repo_destroy() {
             if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -225,7 +226,7 @@
         }
         function repo_status() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -239,7 +240,7 @@
             if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
             if (!confirm("push data into repository")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -315,60 +316,56 @@
     }, 2000)
 </script>
 <script>
+    var cmdary =
+        [
+            "ls -al",
+            "ls -al account",
+            "pwd",
+            "git status",
+            "-S git pull",
+            "git diff",
+            "git add *",
+            "git commit -m 'updat'",
+            "git push",
+            "-S GIT_TERMINAL_PROMPT=0 git push",
+            "ps aux"
+        ]
+    function gen_cmdline_table(ar) {
+        var stab = "<table border='1'><caption>cmdline</caption><tbody>"
+        for (var i = 0; i < ar.length; i++) {
+            stab += `<tr><td>${i}</td><td class='cmdln'>${ar[i]}</td></tr>`
+        }
+        stab += "</tbody></table>"
+        $("#cmdtab").html(stab).find(".cmdln").bind("click", function () {
+            $("#cmdtab").find(".hili").removeClass("hili")
+            $(this).addClass("hili")
+            var cmd = $(this).text()
+            console.log(cmd)
+
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.inp.par = { cmdline: cmd }
+            Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
+            //dbg_pster()
+            Jsonpster.Run(function (ret) {
+                //dbg_pster(ret)
+                var res = ret.out.cmd_exec.res
+                Object.keys(res).forEach(function (key) {
+                    
+                    var str = res[key];
+                    if (str) {
+                        str = str.replace("\\n", "\n")
+                        dbg_pster(str)
+                    }
+                    //dbg_pster(key)
+                })
+            })
+        })
+
+    }
     $(function () {
-        var str = `, <a href="#Nah2:10">Nah2:10</a>, <a href="#Isa45:18">Isa45:18</a>, <a href="#Psm33:6">Psm33:6</a>, <a href="#Job26:14">Job26:14</a>, <a href="#Jer4:23">Jer4:23</a>, <a href="#Isa40:12">Isa40:12</a>-<a href="#Isa40:14">Isa40:14</a>, <a href="#Psm104:30">Psm104:30</a>`
 
-        function test(str) {
-            var bcv = "[1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+"
-            var reg = new RegExp("[\<]a href=[\"\'][\#]([1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+)[\"\'][\>]\1[\<][\/]a[\>]", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("mat:", mat)
-            }
-            var ret = str.replace(reg, "$1")
-            console.log(ret)
-            return ret;
-        }
-        var ret = test(str)
-        console.log("ret", ret)
+        gen_cmdline_table(cmdary)
 
-
-        function test1() {
-            var str = "#1Jb26:7=1Jb26:744=1Jb:744";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]*[\:][0-9]*)", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test1 mat:", mat)
-            }
-        }
-        test1()
-        function test2() {
-            var str = "#1Jb26:7=1Jb2:744";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]{1,}[\:][0-9]{1,})", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test2 mat:", mat)
-            }
-        }
-        test2()
-        function test3() {
-            var str = "#1Jb26:7=1Jb26:7k44";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]{1,}[\:][0-9]{1,})\=\1", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test3 mat:", mat)
-            }
-        }
-        test3()
-        function test4() {
-            var str = " axaxa, bxbxb and cxcxc.";
-            var reg = new RegExp("([a-c])x\1x\1", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test4 mat:", mat)
-            }
-        }
-        test4()
 
 
 

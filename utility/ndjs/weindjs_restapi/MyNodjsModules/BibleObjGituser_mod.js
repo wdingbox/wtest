@@ -994,9 +994,16 @@ BibleObjGituser.prototype.cmd_exec = async function () {
     var _THIS = this
     var inp = this.m_inp
    
+    if(!inp.par) {
+        inp.out.desc="no par"
+        return
+    }
 
     console.log("inp.par.cmdline: ", inp.par.cmdline)
-    if(!inp.par.cmdline) return
+    if(!inp.par.cmdline) {
+        inp.out.desc="no inp.par.cmdline"
+        return
+    }
 
     //console.log("proj", proj)
     var password = "lll" //dev mac
@@ -1007,17 +1014,17 @@ echo ${password} | sudo ${inp.par.cmdline}
 #cd -`
     console.log("git_clone_cmd", scmd)
 
-    inp.out.git_clone_res.cmdline = {}
+    inp.out.cmd_exec = {}
     await BibleUti.exec_Cmd(scmd).then(
         function (val) {
-            console.log("git-clone success:", val)
-            inp.out.cmdline.desc += ", clone success."
-            inp.out.cmdline.res=val
+            console.log("cmd_exec success:", val)
+            inp.out.cmd_exec.desc = "cmd_exec success."
+            inp.out.cmd_exec.res=val
         },
         function (val) {
-            console.log("git-clone failure:", val)
-            inp.out.cmdline.desc += ", clone success."
-            inp.out.cmdline.res=val
+            console.log("cmd_exec failure:", val)
+            inp.out.cmd_exec.desc = "cmd_exec success."
+            inp.out.cmd_exec.res=val
         })
     return inp
 }
