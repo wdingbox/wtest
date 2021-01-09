@@ -791,6 +791,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(git_config_fname)) {
         stat.bGitDir = 0
+        stat.bEditable = 0
         return stat;
     }
 
