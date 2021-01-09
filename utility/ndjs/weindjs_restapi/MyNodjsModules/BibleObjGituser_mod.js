@@ -568,23 +568,20 @@ BibleObjGituser.prototype.git_proj_destroy = async function (res) {
     }
 
     //console.log("proj", proj)
-    var password = "lll" //dev mac
-    var git_setup_cmd = `
-#!/bin/sh
-cd ${this.m_rootDir}
-echo ${password} | sudo -S rm -rf ${proj.git_root}
-echo " git_setup_cmd end."
-#cd -`
-
     var gitdir = this.get_usr_git_dir()
+    var password = "lll" //dev mac
+    var proj_destroy = `echo ${password} | sudo -S rm -rf ${gitdir}`
+
+
     if (fs.existsSync(`${gitdir}`)) {
-        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(git_setup_cmd)
-        inp.out.git_setup_cmd = git_setup_cmd
+        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(proj_destroy)
         inp.out.desc += "destroyed git dir: " + gitdir
     }
+    this.profile_state()
+
     return inp
 }
-BibleObjGituser.prototype.git_clone = async function (res) {
+BibleObjGituser.prototype.git_clone = async function () {
     var _THIS = this
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -597,7 +594,7 @@ BibleObjGituser.prototype.git_clone = async function (res) {
     inp.out.git_clone_res = { desc: "git-clone", bExist: false }
     var gitdir = this.get_usr_git_dir("/.git")
     if (fs.existsSync(gitdir)) {
-        inp.out.git_clone_res.desc += ",already done."
+        inp.out.git_clone_res.desc += "|already done."
         inp.out.git_clone_res.bExist = true
         return inp
     }
@@ -628,33 +625,19 @@ fi
 #cd -`
     console.log("git_clone_cmd", git_clone_cmd)
 
-    //inp.out.git_clone_res.desc += ",clone git dir: " + proj.git_root
-    function _check_git_folders_existance() {
-        var res = _THIS.m_inp.out.git_clone_res
-        if (fs.existsSync(gitdir)) {
-            res.bExist = true
-        }
-        var myojdir = _THIS.get_usr_myoj_dir()
-        if (fs.existsSync(myojdir)) {
-            res.desc += ", with data."
-            res.bGitDat = true
-        } else {
-            res.desc += ", empty git data."
-            res.bGitDat = false
-        }
-    }
+ 
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     await BibleUti.exec_Cmd(git_clone_cmd).then(
         function (val) {
             console.log("git-clone success:", val)
             inp.out.git_clone_res.desc += ", clone success."
-            _check_git_folders_existance()
+            inp.out.git_clone_res.success = val
             //this.git_config_allow_push(true)
         },
         function (val) {
             console.log("git-clone failure:", val)
             inp.out.git_clone_res.desc += ", clone success."
-            _check_git_folders_existance()
+            inp.out.git_clone_res.failure = val
         })
     return inp
 }
@@ -763,7 +746,6 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
     if (0) {
         //await this.git_push()
     }
-
 
     return inp
 }
