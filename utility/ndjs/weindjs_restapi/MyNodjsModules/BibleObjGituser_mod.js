@@ -273,12 +273,14 @@ var BibleUti = {
                 ret.header = t.substr(0, i);
                 var s = t.substr(i);
                 ret.obj = JSON.parse(s);
+                
             }
         }
 
         ret.writeback = function () {
             var s2 = JSON.stringify(this.obj, null, 4);
             fs.writeFileSync(this.fname, this.header + s2);
+            ret.dlt_size =  ret.header.length + s2.length - ret.fsize 
         }
         return ret;
     },
@@ -908,7 +910,7 @@ ${punPush}echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
             console.log("success:", ret)
             _THIS.git_config_allow_push(false)
             _THIS.m_inp.out.git_push_res.success = ret
-            
+
             const erry = ["fatal", "Invalid"]
             erry.forEach(function (errs) {
                 if (ret.stderr.indexOf(errs) >= 0) {

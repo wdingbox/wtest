@@ -249,6 +249,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 save_res.desc = "proj=null"
                 return
             }
+            var stat = userProject.profile_state()
+            if (stat.bEditable !== 1) return
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
@@ -323,8 +325,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.git_proj_parse(inp)
             if (!proj) return
-            var result = await userProject.git_proj_setup()
-            if (!result) return
+            var stat = userProject.profile_state()
+            if (stat.bEditable !== 1) return
 
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -338,8 +340,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //// 
             var save_res = {}
-            save_res.saved_size = inp.par.data.length
-            save_res.ret = ret
+            save_res.saved_size = "len:"+inp.par.data.length +",dlt:"+ret.dlt_size
+            save_res.dlt = ret.dlt_size
+            save_res.len = inp.par.data.length
+            inp.par.data = ""
+            //save_res.ret = ret
             inp.out.save_res = save_res
             var msg = jsfname + " saved."
 
