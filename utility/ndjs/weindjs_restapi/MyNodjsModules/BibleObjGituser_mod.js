@@ -733,21 +733,35 @@ BibleObjGituser.prototype.git_proj_setup = async function () {
         return null
     }
     inp.out.desc = "setup start."
-    await this.git_clone()
-    var gitdir = this.get_usr_git_dir("/.git")
-    if (!fs.existsSync(gitdir)) {
-        inp.out.git_clone_res.bExist = false
+    var stat = this.profile_state()
+    if (stat.bEditable > 0) {
+        inp.out.desc += "|already setup."
         return null
     }
-    if (!inp.out.git_clone_res.bExist) return null
+    if (stat.bGitDir !== 1) {
+        await this.git_clone()
+        stat = this.profile_state()
+    }
 
-    await this.cp_template_to_git()
+    // var gitdir = this.get_usr_git_dir("/.git")
+    // if (!fs.existsSync(gitdir)) {
+    //     inp.out.git_clone_res.bExist = false
+    //     return null
+    // }
+    // if (!inp.out.git_clone_res.bExist) return null
 
-    var accdir = this.get_usr_acct_dir()
-    await this.change_dir_perm(accdir, 777)
+    if (stat.bMyojDir !== 1) {
+        await this.cp_template_to_git()
+        stat = this.profile_state()
+    }
+
+    if (stat.bMyojDir == 1) {
+        var accdir = this.get_usr_acct_dir()
+        await this.change_dir_perm(accdir, 777)
+    }
     var retp = this.profile_state()
-    if (retp) {
-        await this.git_push()
+    if (0) {
+        //await this.git_push()
     }
 
 
@@ -759,26 +773,26 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     var stat = this.m_inp.out.state
     //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
 
+
+    stat.bMyojDir = 1
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
         stat.bMyojDir = 0
-        //return null
     }
-    stat.bMyojDir = 1
 
+
+    stat.bDatDir = 1
     var accdir = this.get_usr_dat_dir()
     if (!fs.existsSync(accdir)) {
         stat.bDatDir = 0
     }
-    stat.bDatDir = 1
 
+    stat.bGitDir = 1
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(git_config_fname)) {
-        //return null
         stat.bGitDir = 0
+        return stat;
     }
-    stat.bGitDir = 1
-
 
     //if (!this.m_git_config_old || !this.m_git_config_new) {
     var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
