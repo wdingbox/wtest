@@ -1932,7 +1932,6 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $(".StorageRepo_Signout").bind("click", function () {
         if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
             $("body").attr("onbeforeunload", null)

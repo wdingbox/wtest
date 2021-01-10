@@ -123,6 +123,7 @@ xxRun_Post : function (cbf) {
 RunAjaxPost : function(cbf){
     this.encrypt_usr()
     this.RunAjax_Type_Post (cbf)
+    this.api = this.inp.par = null;
 },
 RunAjax_Type_Post : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
@@ -419,7 +420,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             return inp_struct_account_setup
         }
         var inp = BibleUti.Parse_req_GET_to_inp(req)
-
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.git_proj_parse(inp)) {
             await userProject.git_proj_destroy(res)
