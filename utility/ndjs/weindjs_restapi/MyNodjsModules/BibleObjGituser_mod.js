@@ -638,70 +638,7 @@ BibleObjGituser.prototype.proj_destroy = async function (res) {
 
     return inp
 }
-BibleObjGituser.prototype.git_clone = async function () {
-    var _THIS = this
-    var inp = this.m_inp
-    var proj = inp.usr.proj;
-    if (!proj) {
-        inp.out.desc += ", failed inp.usr parse"
-        console.log("failed-git-parse", inp.out.desc)
-        return inp
-    }
 
-    inp.out.git_clone_res = { desc: "git-clone", bExist: false }
-    var gitdir = this.get_usr_git_dir("/.git")
-    if (fs.existsSync(gitdir)) {
-        inp.out.git_clone_res.desc += "|already done."
-        inp.out.git_clone_res.bExist = true
-        return inp
-    }
-
-    var clone_https = inp.usr.proj.git_Usr_Pwd_Url
-    if (clone_https.length === 0) {
-        clone_https = inp.usr.repopath
-    }
-    if (clone_https.length === 0) {
-        inp.out.git_clone_res.desc += ",no url."
-        return inp
-    }
-    console.log("to clone: ", clone_https)
-
-    //console.log("proj", proj)
-    var password = "lll" //dev mac
-    var git_clone_cmd = `
-#!/bin/sh
-cd ${this.m_rootDir}
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
-if [ -f "${proj.git_root}/.git/config" ]; then
-    echo "${proj.git_root}/.git/config exists."
-    echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
-else 
-    echo "${proj.git_root}/.git/config does not exist."
-fi
-#echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
-#cd -`
-    console.log("git_clone_cmd", git_clone_cmd)
-
-
-    inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
-    await BibleUti.exec_Cmd(git_clone_cmd).then(
-        function (val) {
-            console.log("git-clone success:", val)
-            inp.out.git_clone_res.desc += ", clone success."
-            inp.out.git_clone_res.success = val
-            //this.git_config_allow_push(true)
-            if (inp.usr.passcode.length > 0) {
-                //if clone with password ok, it would ok for pull/push 
-                inp.out.state.bRepositable = 1
-            }
-        },
-        function (val) {
-            console.log("git-clone failure:", val)
-            inp.out.git_clone_res.desc += ", clone success."
-            inp.out.git_clone_res.failure = val
-        })
-    return inp
-}
 BibleObjGituser.prototype.cp_template_to_git = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -843,6 +780,71 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     return stat
 }
 
+
+BibleObjGituser.prototype.git_clone = async function () {
+    var _THIS = this
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed-git-parse", inp.out.desc)
+        return inp
+    }
+
+    inp.out.git_clone_res = { desc: "git-clone", bExist: false }
+    var gitdir = this.get_usr_git_dir("/.git")
+    if (fs.existsSync(gitdir)) {
+        inp.out.git_clone_res.desc += "|already done."
+        inp.out.git_clone_res.bExist = true
+        return inp
+    }
+
+    var clone_https = inp.usr.proj.git_Usr_Pwd_Url
+    if (clone_https.length === 0) {
+        clone_https = inp.usr.repopath
+    }
+    if (clone_https.length === 0) {
+        inp.out.git_clone_res.desc += ",no url."
+        return inp
+    }
+    console.log("to clone: ", clone_https)
+
+    //console.log("proj", proj)
+    var password = "lll" //dev mac
+    var git_clone_cmd = `
+#!/bin/sh
+cd ${this.m_rootDir}
+echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
+if [ -f "${proj.git_root}/.git/config" ]; then
+    echo "${proj.git_root}/.git/config exists."
+    echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
+else 
+    echo "${proj.git_root}/.git/config does not exist."
+fi
+#echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
+#cd -`
+    console.log("git_clone_cmd", git_clone_cmd)
+
+
+    inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
+    await BibleUti.exec_Cmd(git_clone_cmd).then(
+        function (val) {
+            console.log("git-clone success:", val)
+            inp.out.git_clone_res.desc += ", clone success."
+            inp.out.git_clone_res.success = val
+            //this.git_config_allow_push(true)
+            if (inp.usr.passcode.length > 0) {
+                //if clone with password ok, it would ok for pull/push 
+                inp.out.state.bRepositable = 1
+            }
+        },
+        function (val) {
+            console.log("git-clone failure:", val)
+            inp.out.git_clone_res.desc += ", clone success."
+            inp.out.git_clone_res.failure = val
+        })
+    return inp
+}
 BibleObjGituser.prototype.git_status = async function () {
     var inp = this.m_inp
     if (!inp.out.state) return console.log("*** Fatal Error: inp.out.state = null")

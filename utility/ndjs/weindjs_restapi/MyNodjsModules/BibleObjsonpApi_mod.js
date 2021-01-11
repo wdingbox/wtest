@@ -232,7 +232,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
-  
+
     ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
         if (!req || !res) {
             return inp_struct_base
@@ -264,12 +264,19 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 return
             }
             console.log(karyObj)
-            if (!bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]) {
-                bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs] = ""
+            var pChp = bio.obj[karyObj.bkc][karyObj.chp];//[karyObj.vrs]
+            if (!pChp[karyObj.vrs]) {
+                pChp[karyObj.vrs] = ""
             }
-            var dlt = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs].length - karyObj.txt.length
-            bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs] = karyObj.txt
-            bio.writeback()
+           
+            var dlt =  karyObj.txt.length - pChp[karyObj.vrs].length
+            if(pChp[karyObj.vrs] === karyObj.txt){
+                console.log("Not to save: the new txt is same as original txt-----.")
+            }else{
+                console.log("Save: new txt differs original txt-----.dlt=", dlt)
+                pChp[karyObj.vrs] = karyObj.txt
+                bio.writeback()
+            }
 
             //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
             var save_res = {}
@@ -394,7 +401,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
     ///////////////////////////////////
 
- 
+
     ApiUsrReposData_create: async function (req, res) {
         console.log("ApiUsrReposData_create")
         if (!req || !res) {
@@ -432,7 +439,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + sret + ");");
         res.end();
     },
-   
+
     ApiUsrReposData_status: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
@@ -456,7 +463,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
-  
+
     ApiUsrReposData_git_push: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
