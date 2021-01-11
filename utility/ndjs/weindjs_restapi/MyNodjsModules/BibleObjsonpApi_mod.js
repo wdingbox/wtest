@@ -268,11 +268,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (!pChp[karyObj.vrs]) {
                 pChp[karyObj.vrs] = ""
             }
-           
-            var dlt =  karyObj.txt.length - pChp[karyObj.vrs].length
-            if(pChp[karyObj.vrs] === karyObj.txt){
+
+            var dlt = karyObj.txt.length - pChp[karyObj.vrs].length
+            if (pChp[karyObj.vrs] === karyObj.txt) {
                 console.log("Not to save: the new txt is same as original txt-----.")
-            }else{
+            } else {
                 console.log("Save: new txt differs original txt-----.dlt=", dlt)
                 pChp[karyObj.vrs] = karyObj.txt
                 bio.writeback()

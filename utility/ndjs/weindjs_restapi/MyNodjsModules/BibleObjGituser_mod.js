@@ -400,17 +400,20 @@ var BibleUti = {
 
 
 
-function BibleObjBackendService (){
-    this.m_watchlist = []
-
+function BibleObjBackendService() {
+    this.m_watchAccounts = {}
 }
-BibleObjBackendService.prototype.bind_folder_event = function(dir){
-    if(this.m_watchlist.indexOf(dir)>=0) return
-    this.m_watchlist.push(dir)
-    fs.watch(dir,{recursive:true}, function(evt,fname){
-        console.log("\n******************* event:",evt, fname)
-        console.log("\n")
-    })
+BibleObjBackendService.prototype.bind_folder_event = function (dir) {
+    var _THIS = this
+    if (undefined === this.m_watchAccounts[dir]) {
+        this.m_watchAccounts[dir] = 0
+        fs.watch(dir, { recursive: true }, function (evt, fname) {
+            console.log("\n******************* event:", evt, fname)
+            console.log("\n")
+             
+        })
+        return
+    }
 }
 var g_BibleObjBackendService = new BibleObjBackendService()
 
@@ -418,7 +421,7 @@ var g_BibleObjBackendService = new BibleObjBackendService()
 
 var BibleObjGituser = function (rootDir) {
     this.m_backendService = g_BibleObjBackendService
-    
+
     this.set_rootDir(rootDir)
 }
 BibleObjGituser.prototype.set_rootDir = function (rootDir) {
