@@ -400,19 +400,32 @@ var BibleUti = {
 
 
 
+function BibleObjBackendService (){
+    this.m_watchlist = []
 
-
+}
+BibleObjBackendService.prototype.bind_folder_event = function(dir){
+    if(this.m_watchlist.indexOf(dir)>=0) return
+    this.m_watchlist.push(dir)
+    fs.watch(dir,{recursive:true}, function(evt,fname){
+        console.log("\n******************* event:",evt, fname)
+        console.log("\n")
+    })
+}
+var g_BibleObjBackendService = new BibleObjBackendService()
 
 
 
 var BibleObjGituser = function (rootDir) {
+    this.m_backendService = g_BibleObjBackendService
+    
     this.set_rootDir(rootDir)
 }
 BibleObjGituser.prototype.set_rootDir = function (rootDir) {
     this.m_rootDir = rootDir
 }
 
-BibleObjGituser.prototype.git_proj_parse = function (inp) {
+BibleObjGituser.prototype.proj_parse = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
         return null
@@ -562,9 +575,48 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
+BibleObjGituser.prototype.proj_setup = async function () {
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed git setup", inp.out.desc)
+        return null
+    }
+    inp.out.desc = "setup start."
+    var stat = this.profile_state()
+    if (stat.bEditable > 0) {
+        inp.out.desc += "|already setup."
+        await this.git_pull()
+        //return null
+    }
+    if (stat.bGitDir !== 1) {
+        await this.git_clone()
+        stat = this.profile_state()
+    }
+
+    if (stat.bMyojDir !== 1) {
+        await this.cp_template_to_git()
+        stat = this.profile_state()
+    }
+
+    if (stat.bMyojDir === 1) {
+        var accdir = this.get_usr_acct_dir()
+        await this.change_dir_perm(accdir, 777)
+    }
+
+    var retp = this.profile_state()
+    if (0) {
+        //await this.git_push()
+    }
+
+    this.m_backendService.bind_folder_event(this.get_usr_acct_dir())
 
 
-BibleObjGituser.prototype.git_proj_destroy = async function (res) {
+    return inp
+}
+
+BibleObjGituser.prototype.proj_destroy = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -716,42 +768,7 @@ BibleObjGituser.prototype.change_dir_perm = async function (dir, mode) {
 
     return inp
 }
-BibleObjGituser.prototype.git_proj_setup = async function () {
-    var inp = this.m_inp
-    var proj = inp.usr.proj;
-    if (!proj) {
-        inp.out.desc += ", failed inp.usr parse"
-        console.log("failed git setup", inp.out.desc)
-        return null
-    }
-    inp.out.desc = "setup start."
-    var stat = this.profile_state()
-    if (stat.bEditable > 0) {
-        inp.out.desc += "|already setup."
-        await this.git_pull()
-        return null
-    }
-    if (stat.bGitDir !== 1) {
-        await this.git_clone()
-        stat = this.profile_state()
-    }
 
-    if (stat.bMyojDir !== 1) {
-        await this.cp_template_to_git()
-        stat = this.profile_state()
-    }
-
-    if (stat.bMyojDir === 1) {
-        var accdir = this.get_usr_acct_dir()
-        await this.change_dir_perm(accdir, 777)
-    }
-    var retp = this.profile_state()
-    if (0) {
-        //await this.git_push()
-    }
-
-    return inp
-}
 BibleObjGituser.prototype.load_git_config = function () {
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     //if (!this.m_git_config_old || !this.m_git_config_new) {
