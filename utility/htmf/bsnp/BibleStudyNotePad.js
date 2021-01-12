@@ -214,7 +214,7 @@ var MyStorage = {
             localStorage.setItem("MostRecentSearchFile", "")
         } else {
             localStorage.setItem("MostRecentSearchFile", str)
-            $("#Tab_regex_history_lst").find("caption").text(str)
+            $("#SearchInCaption").text(str)
         }
     },
     getMostRecentSearchFile: function () {
@@ -2381,7 +2381,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     })
     $("#searchNextresult").bind("click", function () {
         $(this).text("In:")
-        $("#sinput").val("")
+        $("#sinput").val("").focus()
     })
     $("#RemoveSearchStrn").bind("click", function () {
         var ar = []
@@ -3399,7 +3399,7 @@ var BibleInputMenuContainer = `
                 <button id="RemoveSearchStrn">Delete selected</button>
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                <caption>CUVS</caption>
+                <caption id="SearchInCaption">CUVS</caption>
                 <tbody>
                     <tr>
                         <td>
