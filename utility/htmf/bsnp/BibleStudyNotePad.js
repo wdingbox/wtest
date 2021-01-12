@@ -37,7 +37,7 @@ var MyStorage = {
         console.log(txt)
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr) return alert("user is not set yet.")
-        
+
 
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
@@ -49,7 +49,7 @@ var MyStorage = {
     Repo_load: function (cbf) {
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
-        
+
 
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
@@ -1405,21 +1405,35 @@ function Tab_DocumentsClusterList(tid) {
 }
 Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
-    this.Gen_table_for_Documents()
+    this.Set_TabState("Documents")
 
     var _THIS = this
-    $(this.m_tbid + " caption").find(".docSwitch").bind("click", function () {
+    $(this.m_tbid + " caption").find(".docSwitch").on("click", function () {
         var val = $(this).attr("title")
         $(this).parent().find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
         $(this).parent().find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
         $(this).addClass("HiliSelctedDoc")
-        switch(val){
-            case "Documents":  _THIS.Gen_table_for_Documents(); break;
-            case "Order_seq":  _THIS.Gen_table_for_Sequencer(); break;
-            case "Search_In":  _THIS.Gen_table_for_Searchin(); break;
+        switch (val) {
+            case "Documents": _THIS.Gen_table_for_Documents(); break;
+            case "Order_seq": _THIS.Gen_table_for_Sequencer(); break;
+            case "Search_In": _THIS.Gen_table_for_Searchin(); break;
             default: alert("fatal error")
         }
     })
+}
+Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
+
+    var _THIS = this
+    $(this.m_tbid + " caption").find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
+    $(this.m_tbid + " caption").find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
+    $(this.m_tbid + " caption").find(`*[title=${val}]`).addClass("HiliSelctedDoc")
+    switch (val) {
+        case "Documents": _THIS.Gen_table_for_Documents(); break;
+        case "Order_seq": _THIS.Gen_table_for_Sequencer(); break;
+        case "Search_In": _THIS.Gen_table_for_Searchin(); break;
+        default: alert("fatal error")
+    }
+
 }
 
 Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
@@ -1429,7 +1443,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
     var selary = clusterinfo.tags
 
     var _THIS = this
-   
+
     var trs = ""
     $.each(AllDocsArr, function (i, v) {
         var hil = "";
@@ -1449,7 +1463,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
     $(this.m_tbid + " caption").find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
     $(this.m_tbid + " caption").find("button:eq(0)").addClass("HiliSelctedDocFromTag")
 
-  
+
     $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
         $(this).toggleClass("hili")
         par.BCVtagClusterInfo.newselary = get_selectedDocs()
@@ -1491,7 +1505,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         }
     }
 
-   
+
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_seletedItems(this)
         update_hili(this)
@@ -1686,7 +1700,7 @@ Tab_MostRecent_BCV.prototype.init = function () {
     _THIS.show_all(false)
     _THIS.m_tbodies["RecentBooks"].show(true)
 
-    
+
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
@@ -1750,7 +1764,7 @@ GroupsMenuMgr.prototype.close_others_of = function (sid) {
     //close others
     $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function () {
         var sid = $(this).attr("sid")
-        $("#"+sid).hide()
+        $("#" + sid).hide()
     })
     _THIS.m_popupBookList.show(false)
 }
@@ -1759,18 +1773,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     var _THIS = this
 
-    // var eBar = document.createElement("div")
-    // $(this.m_grpContainerID).find(".GrpMenu").each(function () {
-    //     var sid = $(this).attr("id")
-    //     var name = " " + sid.substr(4) //:grp_Keyboard
-    //     var eac = document.createElement("a")
-    //     $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
-    //     $(eBar).append(eac).append(" | ")
-    // });
-
     $(this.m_grpContainerID).find("div:eq(0)").find("a[sid]").on("click", function () {
         var sid = $(this).attr("sid");
-        $("#"+sid).slideToggle()
+        $("#" + sid).slideToggle()
         _THIS.close_others_of(sid)
 
         $(this).toggleClass("GrpMenuItemHili")
@@ -1826,23 +1831,11 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     Uti.visual_check_repository("#Format_Check")
-    // $("#Format_Check").on("click", function () {
-    //     var repopath = $("#repopath").val()
-    //     var reob = Uti.validate_repository_url(repopath)
-    //     if (!reob) return alert("empty")
-    //     if (reob.format === 2) {
-    //         $("#repopath").val(reob.user_repo)
-    //     }
-    //     if (reob.format === 1) {
-    //         $("#repopath").val(reob.full_path)
-    //     }
-    //     var ar = ["", "https url", "user repos"]
-    //     $(this).text(ar[reob.format])
-    // })
+
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        
+
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1864,7 +1857,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        
+
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -1936,9 +1929,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 }
 GroupsMenuMgr.prototype.sel_default = function (sid) {
     if (!sid) sid = "Keyboard"
-    var sid = "#grp_" + sid
+    var sid = "grp_" + sid
     $(this.m_grpContainerID).find(`a[sid='${sid}']`).addClass("GrpMenuItemHili")
-    $(sid).show();
+    $("#" + sid).show();
     this.close_others_of(sid)
     $("#menuContainer").show()
 }
@@ -2343,10 +2336,11 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         });
 
         var str = MyStorage.getMostRecentSearchFile()
-        $("#Tab_regex_history_lst").find("caption").text(str)
-        $("#Tab_regex_history_lst").find("caption").bind("click", function () {
+        $("#SearchInCaption").text(str)
+        $("#SearchInCaption").on("click", function () {
             //goto Cluster tab.
-            groupsMenuMgr.sel_default("Cluster")
+            groupsMenuMgr.sel_default("Cluster") 
+            tab_documentsClusterList.Set_TabState("Search_In")
         })
     }
 
@@ -2397,23 +2391,23 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     })
     $("#REGEXP_AND").bind("click", function () {
         var s = $("#sinput").val().trim();
-        if(s.length===0)return alert("empty")
+        if (s.length === 0) return alert("empty")
         MyStorage.addMostRecentSearchStrn(s)
         var ar = s.split(" ")
         var sss = ""
-        ar.forEach(function(str){
-            if(str.length>0){
-                sss +=`(?=.*${str})`
+        ar.forEach(function (str) {
+            if (str.length > 0) {
+                sss += `(?=.*${str})`
             }
         })
         $("#sinput").val(sss)
     })
     $("#REGEXP_IgnoreCase").bind("click", function () {
         var s = $("#sinput").val().trim();
-        if(s.length===0)return alert("empty")
+        if (s.length === 0) return alert("empty")
         MyStorage.addMostRecentSearchStrn(s)
-        
-        var sss = "/"+s+"/i"
+
+        var sss = "/" + s + "/i"
         $("#sinput").val(sss)
     })
 
@@ -2712,7 +2706,7 @@ var Uti = {
         }
     },
 
-    visual_check_repository:function(eid){
+    visual_check_repository: function (eid) {
         $(eid).on("click", function () {
             var repopath = $("#repopath").val()
             var reob = Uti.validate_repository_url(repopath)
@@ -3337,7 +3331,7 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
-                    <button class='docSwitch HiliSelctedDoc' title='Documents'>D</button>
+                    <button class='docSwitch' title='Documents'>D</button>
                     <button class='docSwitch' title='Order_seq'>O</button>
                     <button class='docSwitch' title='Search_In'>S</button>
                     </caption>
