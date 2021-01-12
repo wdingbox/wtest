@@ -2400,6 +2400,28 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         })
         MyStorage.setMostRecentSearchStrn(ar)
     })
+    $("#REGEXP_AND").bind("click", function () {
+        var s = $("#sinput").val().trim();
+        if(s.length===0)return alert("empty")
+        MyStorage.addMostRecentSearchStrn(s)
+        var ar = s.split(" ")
+        var sss = ""
+        ar.forEach(function(str){
+            if(str.length>0){
+                sss +=`(?=.*${str})`
+            }
+        })
+        $("#sinput").val(sss)
+    })
+    $("#REGEXP_IgnoreCase").bind("click", function () {
+        var s = $("#sinput").val().trim();
+        if(s.length===0)return alert("empty")
+        MyStorage.addMostRecentSearchStrn(s)
+        
+        var sss = "/"+s+"/i"
+        $("#sinput").val(sss)
+    })
+
     gen_search_strn_history()
 }
 
@@ -3375,6 +3397,8 @@ var BibleInputMenuContainer = `
                 </tbody>
             </table>
             <br>
+            <button id="REGEXP_AND">AND</button><br>
+            <button id="REGEXP_IgnoreCase">IgnoreCase</button><br>
             <button id="RemoveSearchStrn">Delete selected</button>
             </div>
 

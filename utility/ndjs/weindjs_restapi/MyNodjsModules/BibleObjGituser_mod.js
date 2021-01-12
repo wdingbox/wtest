@@ -183,6 +183,35 @@ var BibleUti = {
     },
 
     search_str_in_bcvR: function (bcvR, Fname, searchStrn) {
+        function _parse_global_parm(searchPat) {
+            var arsrmat = searchPat.match(/^\/(.*)\/([a-z]*)$/)
+            var exparm = "g"
+            if (arsrmat && arsrmat.length === 3) {
+                console.log(arsrmat)
+                searchPat = arsrmat[1]
+                exparm += arsrmat[2]
+            }
+            return { searchPat: searchPat, parm: exparm };
+        }
+        var parsePat = _parse_global_parm(searchStrn)
+        console.log("searchStrn=", searchStrn)
+        function _parse_AND(searchPat) {
+            var andary = []
+            var andmat = searchPat.match(/[\(][\?][\=][\.][\*]([^\)]+)[\)]/g)   //(?=.*Sarai)(?=.*Abram)
+            if (andmat) {
+                console.log(andmat)
+                andmat.forEach(function (fand) {
+                    var cors = fand.match(/(?:[\(][\?][\=][\.][\*])([^\)]+)([\)])/)
+                    if (cors.length === 3) andary.push(cors[1])
+                    console.log("cors", cors)
+                })
+            }
+            return andary;
+        }
+        var andary = _parse_AND(searchStrn)
+        console.log("andary:", andary)
+
+
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(bcvR)) {
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
@@ -190,11 +219,25 @@ var BibleUti = {
                     var bFound = false
                     for (const [rev, txt] of Object.entries(revObj)) {
                         if (rev === Fname) {
-                            var rep = new RegExp(searchStrn, "g");
+                            var rep = new RegExp(parsePat.searchPat, parsePat.parm);
                             var mat = txt.match(rep);
                             if (mat) {
+                                mat.forEach(function (s, i) {
+                                    if (s.length > 0) console.log(i, s)
+                                })
                                 bFound = true
-                                var txtFound = txt.replace(mat[0], "<font class='matInSvr'>" + mat[0] + "</font>");
+                                var txtFound = txt
+
+                                if (andary.length === 0) {
+                                    var repex = new RegExp(mat[0], "g")
+                                    txtFound = txt.replace(repex, "<font class='matInSvr'>" + mat[0] + "</font>");
+                                } else {
+                                    andary.forEach(function (strkey) {
+                                        var repex = new RegExp(strkey, "g")
+                                        txtFound = txtFound.replace(repex, "<font class='matInSvr'>" + strkey + "</font>");
+                                    })
+                                }
+
                                 bcvR[bkc][chp][vrs][rev] = txtFound
                             }
                         }
@@ -206,6 +249,26 @@ var BibleUti = {
                             if (!retOb[bkc][chp][vrs]) retOb[bkc][chp][vrs] = {};//BibleObj[bkc][chp]
                             retOb[bkc][chp][vrs][rev] = txt
                         }
+                    }
+                }
+            }
+        }
+        return retOb
+    },
+    search_str_in_bibObj__not_used: function (bibObj, searchStrn) {
+        var retOb = {}
+        for (const [bkc, chpObj] of Object.entries(bibObj)) {
+            for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                for (const [vrs, txt] of Object.entries(vrsObj)) {
+                    var rep = new RegExp(searchStrn, "g");
+                    var mat = txt.match(rep);
+                    if (mat) {
+                        var txtFound = txt.replace(mat[0], "<font class='matInSvr'>" + mat[0] + "</font>");
+
+                        if (!retOb[bkc]) retOb[bkc] = {}
+                        if (!retOb[bkc][chp]) retOb[bkc][chp] = {};//BibleObj[bkc][chp]
+                        if (!retOb[bkc][chp][vrs]) retOb[bkc][chp][vrs] = {};//BibleObj[bkc][chp]
+                        retOb[bkc][chp][vrs][rev] = txtFound
                     }
                 }
             }
@@ -410,7 +473,7 @@ BibleObjBackendService.prototype.bind_folder_event = function (dir) {
         fs.watch(dir, { recursive: true }, function (evt, fname) {
             console.log("\n******************* event:", evt, fname)
             console.log("\n")
-             
+
         })
         return
     }
