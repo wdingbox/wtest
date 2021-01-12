@@ -120,6 +120,7 @@ body {
     .hili {
         background-color: red;
     }
+   
   
 
     .hiliScroll2View {
@@ -221,7 +222,7 @@ body {
 
         padding: 0px 0px 0px 0px;
         margin: 0px 0px 0px 0px;
-        border: .1px solid black;
+        
         cursor: pointer;
     }
     .vin{
@@ -254,7 +255,7 @@ body {
         margin: 0 0 0 0;
     }
     #SignOut_repopathname{
-        color: lightgreen;
+        border:1px solid lightgrey;
     }
 
     .ColorRecentMarks {
@@ -289,9 +290,10 @@ body {
 
     .hili_digi_key {
         border: 1px solid red;
-        background-color: ;
     }
-
+    .hiliKbd{
+        border: 2px solid red;
+    }
 
 
 

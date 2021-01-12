@@ -996,11 +996,11 @@ SingleKeyInputPanel.prototype.gen_panel = function (par) {
     s += "</tr>";
 
     $(this.m_tbody).html(s).find(".vin").bind("click", function () {
-        var alreadyHili = $(this)[0].classList.contains('hili')
+        var alreadyHili = $(this)[0].classList.contains('hiliKbd')
         console.log("alreadyHili", alreadyHili)
 
-        $(".vin").removeClass("hili");
-        $(this).addClass("hili");
+        $(".vin").removeClass("hiliKbd");
+        $(this).addClass("hiliKbd");
         //
 
         var ch = $(this).text();
