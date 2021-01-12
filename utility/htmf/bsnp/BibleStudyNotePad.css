@@ -326,7 +326,7 @@ body {
 
 
     #Tab_regex_history_lst td {
-        width: 100px;
+        
         overflow: hidden;
         display: inline-block;
         white-space: nowrap;

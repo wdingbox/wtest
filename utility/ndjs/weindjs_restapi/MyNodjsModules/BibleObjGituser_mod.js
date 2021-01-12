@@ -229,11 +229,11 @@ var BibleUti = {
                                 var txtFound = txt
 
                                 if (andary.length === 0) {
-                                    var repex = new RegExp(mat[0], "g")
+                                    var repex = new RegExp(mat[0], parsePat.parm)
                                     txtFound = txt.replace(repex, "<font class='matInSvr'>" + mat[0] + "</font>");
                                 } else {
                                     andary.forEach(function (strkey) {
-                                        var repex = new RegExp(strkey, "g")
+                                        var repex = new RegExp(strkey, parsePat.parm)
                                         txtFound = txtFound.replace(repex, "<font class='matInSvr'>" + strkey + "</font>");
                                     })
                                 }

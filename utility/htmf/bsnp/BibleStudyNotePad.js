@@ -3382,7 +3382,10 @@ var BibleInputMenuContainer = `
                 <button id="Btn_InPage" title="search on local table">Page</button>
                 <button id="Btn_Prev"  title="hili prev in page">Prev</button>
                 <button id="Btn_Next"  title="hili next in page">Next</button>
-                
+                <br>
+                <button id="REGEXP_AND">AND</button>
+                <button id="REGEXP_IgnoreCase">IgnoreCase</button>
+                <button id="RemoveSearchStrn">Delete selected</button>
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>CUVS</caption>
@@ -3396,10 +3399,7 @@ var BibleInputMenuContainer = `
                     </tr>
                 </tbody>
             </table>
-            <br>
-            <button id="REGEXP_AND">AND</button><br>
-            <button id="REGEXP_IgnoreCase">IgnoreCase</button><br>
-            <button id="RemoveSearchStrn">Delete selected</button>
+           
             </div>
 
             <!----------------------------->
