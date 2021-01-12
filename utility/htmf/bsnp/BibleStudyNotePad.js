@@ -106,7 +106,12 @@ var MyStorage = {
             $("#passcode").val(obj.passcode)
             $("#repodesc").val(obj.repodesc)
             var reob = Uti.validate_repository_url(obj.repopath)
-            if (!reob) return
+            if (!reob) {
+                $("#SignOut_repopathname").text("ErrorRepo")
+                return
+            }
+            $("#SignOut_repopathname").text(reob.repo)
+
             obj.repopath = reob.full_path
             //////bad idea:  Object.assign(Jsonpster.inp.usr, obj)
             var ar = this.repos_store_set(obj)
@@ -2720,6 +2725,7 @@ var Uti = {
             }
             var ar = ["", "https url", "user repos"]
             $(this).text(ar[reob.format])
+            $("#SignOut_repopathname").text(reob.repo)
         })
     },
     validate_repository_url: function (repoath) {
@@ -3300,7 +3306,7 @@ var BibleInputMenuContainer = `
             <a sid='grp_Cluster'>Cluster</a> |
             <a sid='grp_Search'>Search</a> |
             <a sid='grp_Config'>Config</a> |
-            <a sid='grp_SignOut' id="SignOut_repopathname">pub_test04</a>
+            <a sid='grp_SignOut' id="SignOut_repopathname">Reponame...</a>
     
             </div>
 
