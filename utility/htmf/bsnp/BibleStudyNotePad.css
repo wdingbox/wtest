@@ -238,14 +238,17 @@ body {
     .vinCap{
         
     }
-    .ColorRecentBooks {
-        background-color: lightgray;
-    }
+   
+    
+    
     .ColorRecentMarks {
-        background-color:orange;
+        background-color:cyan;
     }
-    .ColorMemoryVerse {
+    .HiliSelctedDoc {
         background-color: cyan;
+    }
+    .HiliSelctedDocFromTag{
+        background-color: orange;
     }
 
     button.digit{

@@ -1401,6 +1401,20 @@ function Tab_DocumentsClusterList(tid) {
 Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
     this.Gen_table_for_Documents()
+
+    var _THIS = this
+    $(this.m_tbid + " caption").find("button").bind("click", function () {
+        var val = $(this).attr("title")
+        $(this).parent().find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
+        $(this).parent().find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
+        $(this).addClass("HiliSelctedDoc")
+        switch(val){
+            case "Documents":  _THIS.Gen_table_for_Documents(); break;
+            case "Order_seq":  _THIS.Gen_table_for_Sequencer(); break;
+            case "Search_In":  _THIS.Gen_table_for_Searchin(); break;
+            default: alert("fatal error")
+        }
+    })
 }
 
 Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
@@ -1410,7 +1424,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
     var selary = clusterinfo.tags
 
     var _THIS = this
-    var sFile = MyStorage.getMostRecentSearchFile()
+   
     var trs = ""
     $.each(AllDocsArr, function (i, v) {
         var hil = "";
@@ -1426,12 +1440,11 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
         })
         return ar
     }
-    $(this.m_tbid + " caption button").text(par.m_bcv).css("background-color", "red").bind("click", function () {
-        $(this).unbind()
-        setTimeout(function () {
-            _THIS.Gen_table_for_Documents()
-        }, 10)
-    })
+
+    $(this.m_tbid + " caption").find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
+    $(this.m_tbid + " caption").find("button:eq(0)").addClass("HiliSelctedDocFromTag")
+
+  
     $(this.m_tbid + " tbody").html(trs).find(".cbkn").bind("click", function () {
         $(this).toggleClass("hili")
         par.BCVtagClusterInfo.newselary = get_selectedDocs()
@@ -1473,12 +1486,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         }
     }
 
-    $(this.m_tbid + " caption button").text("Documents").css("background-color", "lightgrey").bind("click", function () {
-        $(this).unbind()
-        setTimeout(function () {
-            _THIS.Gen_table_for_Sequencer()
-        }, 10)
-    })
+   
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_seletedItems(this)
         update_hili(this)
@@ -1522,12 +1530,6 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
         MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
     }
 
-    $(this.m_tbid + " caption button").text("Seqence").css("background-color", "red").bind("click", function () {
-        $(this).unbind()
-        setTimeout(function () {
-            _THIS.Gen_table_for_Searchin()
-        }, 10)
-    })
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         $(this).unbind()
         moveup_selitm(this, +1)
@@ -1555,12 +1557,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
         MyStorage.setMostRecentSearchFile(txt)
     }
 
-    $(this.m_tbid + " caption button").text("Searchin").css("background-color", "lightblue").bind("click", function () {
-        $(this).unbind()
-        setTimeout(function () {
-            _THIS.Gen_table_for_Documents()
-        }, 10)
-    })
+
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_Searchin(this)
         _THIS.m_onClickItm2Select()
@@ -1684,7 +1681,7 @@ Tab_MostRecent_BCV.prototype.init = function () {
     _THIS.show_all(false)
     _THIS.m_tbodies["RecentBooks"].show(true)
 
-    var clry = ["ColorMemoryVerse", "ColorRecentBooks", "ColorRecentMarks"]
+    
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
@@ -3324,7 +3321,11 @@ var BibleInputMenuContainer = `
                 </table>
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
-                    <caption><button title='Names of Bible' Rev="select" Seq="moveUp" Dn="moveDn">Documents</button></caption>
+                    <caption>
+                    <button title='Documents' class='HiliSelctedDoc'>D</button>
+                    <button title='Order_seq'>O</button>
+                    <button title='Search_In'>S</button>
+                    </caption>
                     <thead id=""></thead>
                     <tbody>
                         <tr>
