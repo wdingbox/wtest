@@ -1680,25 +1680,18 @@ Tab_MostRecent_BCV.prototype.init = function () {
     this.m_tbodies.RecentBooks.init("#RecentBooks")
     this.m_tbodies.MemoryVerse.init("#MemoryVerse")
 
-    var cap = _THIS.getCap()
+    //var cap = _THIS.getCap()
     _THIS.show_all(false)
-    _THIS.m_tbodies[cap].show(true)
+    _THIS.m_tbodies["RecentBooks"].show(true)
 
     var clry = ["ColorMemoryVerse", "ColorRecentBooks", "ColorRecentMarks"]
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
-        var cap = $(this).text()
-        var ary = Object.keys(_THIS.m_tbodies)
-
-        var idx = 1 + ary.indexOf(cap)
-        if (idx >= ary.length) idx = 0
-        _THIS.m_tbodies[ary[idx]].show(true)
-        var classname = clry[idx]
-        for (var i = 0; i < clry.length; i++) {
-            $(this).text(ary[idx]).removeClass(clry[i])
-        }
-        $(this).text(ary[idx]).addClass(classname)
+        var cap = $(this).attr("title")
+        _THIS.m_tbodies[cap].show(true)
+        $(this).parent().find(".ColorRecentMarks").removeClass("ColorRecentMarks")
+        $(this).addClass("ColorRecentMarks")
     });
 
     $("#clearUnse").bind("click", function () {
@@ -3342,7 +3335,7 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_MostRecent_BCV" border="1" style="float:left;">
                     <caption>
-                       <button>RecentBooks</button>
+                       <button class='ColorRecentMarks' title="RecentBooks">B</button><button title="RecentMarks">T</button><button title="MemoryVerse">M</button>
                     </caption>
                     <thead></thead>
                     <tbody id='RecentBooks'>
