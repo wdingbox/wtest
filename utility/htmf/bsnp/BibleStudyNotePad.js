@@ -1408,7 +1408,7 @@ Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.Gen_table_for_Documents()
 
     var _THIS = this
-    $(this.m_tbid + " caption").find("button").bind("click", function () {
+    $(this.m_tbid + " caption").find(".docSwitch").bind("click", function () {
         var val = $(this).attr("title")
         $(this).parent().find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
         $(this).parent().find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
@@ -3337,9 +3337,9 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
-                    <button title='Documents' class='HiliSelctedDoc'>D</button>
-                    <button title='Order_seq'>O</button>
-                    <button title='Search_In'>S</button>
+                    <button class='docSwitch HiliSelctedDoc' title='Documents'>D</button>
+                    <button class='docSwitch' title='Order_seq'>O</button>
+                    <button class='docSwitch' title='Search_In'>S</button>
                     </caption>
                     <thead id=""></thead>
                     <tbody>

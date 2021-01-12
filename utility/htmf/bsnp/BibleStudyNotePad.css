@@ -288,6 +288,22 @@ body {
         color:rgb(150, 146, 146);
     }
 
+    button.docSwitch{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+       
+        outline: 0px solid transparent;
+        padding: 1px 2px 1px 2px;
+        margin: 1px 1px 1px 1px;
+       
+    
+        border: none;
+      
+      
+        color:black;
+    }
+
     .hili_digi_key {
         border: 1px solid red;
     }
