@@ -3351,7 +3351,9 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_MostRecent_BCV" border="1" style="float:left;">
                     <caption>
-                       <button class='ColorRecentMarks' title="RecentBooks">B</button><button title="RecentMarks">T</button><button title="MemoryVerse">M</button>
+                       <button class='docSwitch ColorRecentMarks' title="RecentBooks">B</button>
+                       <button class='docSwitch' title="RecentMarks">T</button>
+                       <button class='docSwitch' title="MemoryVerse">M</button>
                     </caption>
                     <thead></thead>
                     <tbody id='RecentBooks'>
