@@ -162,9 +162,13 @@ body {
         border: 5px solid red;
     }
 
-    .searchFile {
+    .searchFile, #SearchInCaption {
         color: black;
         border: 1px solid black;
+    }
+    #SearchInCaption{
+        background-color: red;
+        padding: 0 10px 0 10px;
     }
 
     sub {
@@ -369,7 +373,9 @@ body {
         overflow: hidden;
         display: inline-block;
         white-space: nowrap;
+        width: 100%;
     }
+   
 
     #Tab_regex_history_lst thead,
     #Tab_MostRecent_BCV thead {
@@ -503,6 +509,7 @@ body {
 input[type='checkbox'] {
 	margin-top: -30px;
 }
+
 
 input[type='checkbox'] {
 	-webkit-font-smoothing: antialiased;

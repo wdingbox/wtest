@@ -1579,7 +1579,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_Searchin(this)
-        _THIS.m_onClickItm2Select()
+        _THIS.m_onClickItm2Select("Search_In")
     });
 }
 
@@ -2098,8 +2098,13 @@ AppInstancesManager.prototype.init = function () {
     tab_documentsClusterList.Init_Docs_Table({
         onClickItm: function (par) {
             if (par) {
-                if ("string" === typeof (par) && "reloadtable" === par) {
-                    _This.loadBible_chapter_by_bibOj();
+                if ("string" === typeof (par)) {
+                    if ("reloadtable" === par) {
+                        _This.loadBible_chapter_by_bibOj();
+                    }
+                    if ("Search_In" === par) {
+                        groupsMenuMgr.sel_default("Search")
+                    }
                 } else if ("object" === typeof (par)) {
                     _This.loadBible_verse_by_bibOj(par);
                 }
@@ -2339,7 +2344,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         $("#SearchInCaption").text(str)
         $("#SearchInCaption").on("click", function () {
             //goto Cluster tab.
-            groupsMenuMgr.sel_default("Cluster") 
+            groupsMenuMgr.sel_default("Cluster")
             tab_documentsClusterList.Set_TabState("Search_In")
         })
     }
@@ -3380,7 +3385,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
-
+                Search In: <a id="SearchInCaption" class="searchFile">CUVS</a>
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
                 <div id="searchNextresult" style="width:50px;float:left;">In:</div>
                 <button id="Btn_InSvr" title="search on servr">Svr</button>
@@ -3393,7 +3398,7 @@ var BibleInputMenuContainer = `
                 <button id="RemoveSearchStrn">Delete selected</button>
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                <caption id="SearchInCaption">CUVS</caption>
+                <caption>Search History</caption>
                 <tbody>
                     <tr>
                         <td>
