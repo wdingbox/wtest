@@ -255,7 +255,9 @@ body {
         margin: 0 0 0 0;
     }
     #SignOut_repopathname{
-        border:1px solid lightgrey;
+        border-top-width: 2px;
+        border-top-style: solid;
+        border-top-color: coral;
     }
 
     .ColorRecentMarks {
