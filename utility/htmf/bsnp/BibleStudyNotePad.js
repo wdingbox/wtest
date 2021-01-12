@@ -1745,7 +1745,7 @@ GroupsMenuMgr.prototype.close_others_of = function (sid) {
     //close others
     $(`.GrpMenuItemHili[sid!='${sid}']`).removeClass("GrpMenuItemHili").each(function () {
         var sid = $(this).attr("sid")
-        $(sid).hide()
+        $("#"+sid).hide()
     })
     _THIS.m_popupBookList.show(false)
 }
@@ -1754,18 +1754,18 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     var _THIS = this
 
-    var eBar = document.createElement("div")
-    $(this.m_grpContainerID).find(".GrpMenu").each(function () {
-        var sid = $(this).attr("id")
-        var name = " " + sid.substr(4) //:grp_Keyboard
-        var eac = document.createElement("a")
-        $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
-        $(eBar).append(eac).append(" | ")
-    });
+    // var eBar = document.createElement("div")
+    // $(this.m_grpContainerID).find(".GrpMenu").each(function () {
+    //     var sid = $(this).attr("id")
+    //     var name = " " + sid.substr(4) //:grp_Keyboard
+    //     var eac = document.createElement("a")
+    //     $(eac).text(name).attr("sid", "#" + sid).css("padding-bottom", "2px")
+    //     $(eBar).append(eac).append(" | ")
+    // });
 
-    $(this.m_grpContainerID).prepend(eBar).find("a[sid]").bind("click", function () {
+    $(this.m_grpContainerID).find("div:eq(0)").find("a[sid]").on("click", function () {
         var sid = $(this).attr("sid");
-        $(sid).slideToggle()
+        $("#"+sid).slideToggle()
         _THIS.close_others_of(sid)
 
         $(this).toggleClass("GrpMenuItemHili")
@@ -3292,8 +3292,17 @@ var BibleInputMenuContainer = `
 
 <div id="menuContainer">
     <div id="BibInputMenuHolder">
+    
         <div id="GroupsContainer" style="display:visual">
 
+            <div id="HorizMenuBar">
+            <a sid='grp_Keyboard'>Keyboard</a> |
+            <a sid='grp_Cluster'>Cluster</a> |
+            <a sid='grp_Search'>Search</a> |
+            <a sid='grp_Config'>Config</a> |
+            <a sid='grp_SignOut' id="SignOut_repopathname">pub_test04</a>
+    
+            </div>
 
             <div class="GrpMenu" id="grp_Keyboard" style="float:left;display:none;">
                 <table border="1">
