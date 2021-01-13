@@ -144,10 +144,11 @@
         <button onclick="repo_create();">Create</button>
         <button onclick="repo_destroy();">Destroy</button>
         <button onclick="repo_pushback();">Push</button>
+        <button onclick="repo_pulldown();">Pull</button>
         <button onclick="repo_status();">Status</button>
-        <button onclick="Okey_use_this();">Send to Parent Window</button>
     </p>
     <p>
+        <button onclick="Okey_use_this();">Send to Parent Window</button>
         <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
         <xbutton onclick="LoadStorage();"></xbutton>
     </p>
@@ -157,12 +158,14 @@
     </p>
 
 
-
     <div id="footer">
         <hr>
+
         <div id="otb"></div>
+        <button onclick="$('#txtarea').val('')">x</button>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
+    <div id="cmdtab"></div>
 
 
 
@@ -171,7 +174,7 @@
     <script>
         function LoadStorageInRepos() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             MyStorage.Repo_load(function (ret) {
                 console.log("data", ret)
                 Uti.Msg("LoadStorage", ret)
@@ -197,14 +200,14 @@
             if (!Jsonpster.inp) return alert("empty inp")
             if (!Jsonpster.inp.usr) return alert("empty usr")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
             window.opener.postMessage(Jsonpster.inp.usr, '*');
-            
+
         }
         function repo_create() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_create.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -215,7 +218,7 @@
         function repo_destroy() {
             if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -225,7 +228,6 @@
         }
         function repo_status() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -239,7 +241,7 @@
             if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
             if (!confirm("push data into repository")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
+
             Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -250,6 +252,26 @@
                 Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
                 var errmsg = "Invalid username or password."
                 if (ret.out.git_push_res.success.stderr.indexOf(errmsg) >= 0) {
+                    alert(errmsg)
+                }
+            })
+        }
+        function repo_pulldown() {
+            var passcode = $("#passcode").val()
+            if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
+            if (!confirm("pull down data")) return
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+            Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+
+                dbg_pster(ret)
+                Uti.Msg("output status:", ret.out)
+
+                //Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
+                var errmsg = "Invalid username or password."
+                if (ret.out.git_pull_res.success.stderr.indexOf(errmsg) >= 0) {
                     alert(errmsg)
                 }
             })
@@ -291,88 +313,98 @@
 
 </html>
 <script>
-    Uti.Jsonpster_crossloader()
-    function dbg_pster(dat) {
-        var ss = dat
-        if ("object" === typeof dat) {
-            var ss = "ret=" + JSON.stringify(dat, null, 4)
-        }
-        ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
-        ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
-        $("#txtarea").val(ss)
-    }
-    setTimeout(() => {
-        if (undefined === Jsonpster) {
-            alert("Jsonpster not exist.")
-        }
-        else {
-            $("title").text("acct")
-            dbg_pster()
 
-            $("#histroy").trigger("click")
+
+    function dbg_pster(dat) {
+        if (!this.idx) this.idx = 1
+        this.idx++
+        var ss = ""
+        if (!dat) {
+            ss = `${this.idx}\nJsonpster = ` + JSON.stringify(Jsonpster, null, 4)
+        } else {
+            ss = $("#txtarea").val()
+            if (ss.length > 10000) ss = "";
+            ss += "\n[" + this.idx + "]\n";
+            if ("object" === typeof dat) {
+                var sd = "ret=" + JSON.stringify(dat, null, 4)
+                sd = sd.replace(/\\n/g, "\n")
+                ss += "\n" + sd;
+            } else {
+                ss += "\n" + dat
+            }
         }
-        //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-    }, 2000)
+
+        $("#txtarea").val(ss)
+        var textarea = document.getElementById('txtarea');
+        textarea.scrollTop = textarea.scrollHeight;
+    }
+
 </script>
 <script>
+    var cmdary =
+        [
+            "pwd",
+            "ls -al",
+            "ls -al account",
+            "ls -al account/dat",
+            "ls -al account/myoj",
+            "git status",
+            "git diff",
+            "git add *",
+            "git commit -m 'updat'",
+            "-S git pull",
+            "git push",
+            "-S GIT_TERMINAL_PROMPT=0 git push",
+            "ps aux"
+        ]
+    function gen_cmdline_table(ar) {
+        var stab = "<table border='1'><caption>cmdline</caption><tbody>"
+        for (var i = 0; i < ar.length; i++) {
+            stab += `<tr><td>${i}</td><td class='cmdln'>${ar[i]}</td></tr>`
+        }
+        stab += "</tbody></table>"
+        $("#cmdtab").html(stab).find(".cmdln").bind("click", function () {
+            $("#cmdtab").find(".hili").removeClass("hili")
+            $(this).addClass("hili")
+            var cmd = $(this).text()
+            console.log(cmd)
+
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.inp.par = { cmdline: cmd }
+            Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
+            //dbg_pster()
+            Jsonpster.Run(function (ret) {
+                dbg_pster(ret)
+                var res = ret.out.cmd_exec_res.success
+                var str2 = ""
+                Object.keys(res).forEach(function (key) {
+                    var str = res[key];
+                    if (!!str) {
+                        str2 += "\n" + str.replace("\\n", "\n")
+                    }
+                    //dbg_pster(key)
+                })
+                dbg_pster(str2)
+            })
+        })
+
+    }
     $(function () {
-        var str = `, <a href="#Nah2:10">Nah2:10</a>, <a href="#Isa45:18">Isa45:18</a>, <a href="#Psm33:6">Psm33:6</a>, <a href="#Job26:14">Job26:14</a>, <a href="#Jer4:23">Jer4:23</a>, <a href="#Isa40:12">Isa40:12</a>-<a href="#Isa40:14">Isa40:14</a>, <a href="#Psm104:30">Psm104:30</a>`
 
-        function test(str) {
-            var bcv = "[1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+"
-            var reg = new RegExp("[\<]a href=[\"\'][\#]([1-3A-Z][1-z][0-9]+[\s]*\:[0-9]+)[\"\'][\>]\1[\<][\/]a[\>]", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("mat:", mat)
+        Uti.Jsonpster_crossloader()
+        gen_cmdline_table(cmdary)
+        setTimeout(() => {
+            if (undefined === Jsonpster) {
+                alert("Jsonpster not exist.")
             }
-            var ret = str.replace(reg, "$1")
-            console.log(ret)
-            return ret;
-        }
-        var ret = test(str)
-        console.log("ret", ret)
+            else {
+                $("title").text("acct")
+                dbg_pster()
 
-
-        function test1() {
-            var str = "#1Jb26:7=1Jb26:744=1Jb:744";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]*[\:][0-9]*)", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test1 mat:", mat)
+                $("#histroy").trigger("click")
             }
-        }
-        test1()
-        function test2() {
-            var str = "#1Jb26:7=1Jb2:744";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]{1,}[\:][0-9]{1,})", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test2 mat:", mat)
-            }
-        }
-        test2()
-        function test3() {
-            var str = "#1Jb26:7=1Jb26:7k44";
-            var reg = new RegExp("([1-3A-Z][1-z][0-9]{1,}[\:][0-9]{1,})\=\1", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test3 mat:", mat)
-            }
-        }
-        test3()
-        function test4() {
-            var str = " axaxa, bxbxb and cxcxc.";
-            var reg = new RegExp("([a-c])x\1x\1", "g")
-            var mat = str.match(reg)
-            if (mat) {
-                console.log("test4 mat:", mat)
-            }
-        }
-        test4()
-
-
-
-
+            //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+        }, 2000)
 
     })
 </script>
