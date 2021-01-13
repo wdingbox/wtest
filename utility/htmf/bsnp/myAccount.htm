@@ -165,7 +165,8 @@
         <button onclick="$('#txtarea').val('')">x</button>
         <textarea id="txtarea" rows="25"></textarea>
     </div>
-    <div id="cmdtab"></div>
+    <hr id="toggle_cmdtab" onclick='$("#cmdtab").toggle();'/>
+    <div id="cmdtab" style="display: none;"></div>
 
 
 
@@ -390,6 +391,7 @@
 
     }
     $(function () {
+        
 
         Uti.Jsonpster_crossloader()
         gen_cmdline_table(cmdary)
