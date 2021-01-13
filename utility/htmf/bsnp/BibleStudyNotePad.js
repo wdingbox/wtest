@@ -13,11 +13,6 @@ var MyStorage = {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
         }
-
-
-
-
-
     },
     Repo_save: function (cbf) {
         var txt = JSON.stringify(localStorage, null, 4)
