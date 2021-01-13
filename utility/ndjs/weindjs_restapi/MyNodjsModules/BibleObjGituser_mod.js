@@ -94,12 +94,12 @@ var BibleUti = {
             }
         });
     },
-    GetFileSize: function (fnm) {
+    GetFileStat: function (fnm) {
         if (fs.existsSync(fnm)) {
             const stats = fs.statSync(fnm);
-            return stats.size;
+            return stats;//.size; //mtime modifited
         }
-        return -1;
+        return { size: -1, mtime: 0 };
     },
     exec_Cmd: async function (command) {
         return new Promise(async (resolve, reject) => {
@@ -328,7 +328,8 @@ var BibleUti = {
             console.log("f not exit:", jsfnm)
             return ret;
         }
-        ret.fsize = BibleUti.GetFileSize(jsfnm);
+        ret.stat = BibleUti.GetFileStat(jsfnm)
+        ret.fsize = ret.stat.size;
         if (ret.fsize > 0) {
             var t = fs.readFileSync(jsfnm, "utf8");
             var i = t.indexOf("{");
@@ -490,7 +491,7 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     var dary = this.getDirectories(srcPath);
     this.output.m_totDirs += dary.length;
     this.output.m_totFiles += fary.length;
-   
+
     for (var i = 0; i < dary.length; i++) {
         var spath = dary[i];
         //console.log(spath)
@@ -499,7 +500,7 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
         console.log("sfl", sfl, doc)
-        if(doc !== sfl) continue
+        if (doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
         this.output.m_totSize += stats.size;

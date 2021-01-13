@@ -552,6 +552,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 //await userProject.git_pull(function (bSuccess) {
                 //})
                 inp.out.desc = "load success"
+                var usr_repo = nary[6]+"/"+nary[7] +"@" + (new Date(bio.stat.mtime)).toISOString().substr(0,10)
                 inp.out.data[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
                 inp.out.desc = "failed git pull and load"
