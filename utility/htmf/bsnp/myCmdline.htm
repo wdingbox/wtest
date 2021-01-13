@@ -343,14 +343,16 @@
 <script>
     var cmdary =
         [
+            "pwd",
             "ls -al",
             "ls -al account",
-            "pwd",
+            "ls -al account/dat",
+            "ls -al account/myoj",
             "git status",
-            "-S git pull",
             "git diff",
             "git add *",
             "git commit -m 'updat'",
+            "-S git pull",
             "git push",
             "-S GIT_TERMINAL_PROMPT=0 git push",
             "ps aux"
@@ -373,14 +375,12 @@
             //dbg_pster()
             Jsonpster.Run(function (ret) {
                 dbg_pster(ret)
-                var res = ret.out.cmd_exec.res
+                var res = ret.out.cmd_exec_res.success
                 var str2 = ""
                 Object.keys(res).forEach(function (key) {
-
                     var str = res[key];
-                    if (str) {
+                    if (!!str) {
                         str2 += "\n" + str.replace("\\n", "\n")
-
                     }
                     //dbg_pster(key)
                 })
