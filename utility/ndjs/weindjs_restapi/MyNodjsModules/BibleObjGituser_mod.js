@@ -1124,12 +1124,12 @@ echo ${password} | sudo ${inp.par.cmdline}
     await BibleUti.exec_Cmd(scmd).then(
         function (val) {
             console.log("cmd_exec success:", val)
-            inp.out.cmd_exec.desc = "cmd_exec success."
+            inp.out.cmd_exec.desc = "success."
             inp.out.cmd_exec.res = val
         },
         function (val) {
             console.log("cmd_exec failure:", val)
-            inp.out.cmd_exec.desc = "cmd_exec success."
+            inp.out.cmd_exec.desc = "failure."
             inp.out.cmd_exec.res = val
         })
     return inp
