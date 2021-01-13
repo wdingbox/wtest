@@ -143,6 +143,11 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
         </p>
 
     </div>
+    <table border="1">
+        <tbody  id="allusrs">
+
+        </tbody>
+    </table>
 
 
 
@@ -499,11 +504,19 @@ ${scmd}
             Jsonpster.Run(function (ret) {
                 console.log("ret", ret)
                 var res = ret.out.data
+                var trs=""
                 if (res) {
+                    Object.keys(res).forEach(function(key){
+                        var txt = res[key]
+                        console.log("key", key)
+                        console.log("txt", txt)
+                        trs+=`<tr><td><div>${key}</div><div>${txt}</div></td></tr>`
+                    })
                     
                 } else {
                     alert("saving has issues.")
                 }
+                $("#allusrs").html(trs)
             })
         }
     </script>

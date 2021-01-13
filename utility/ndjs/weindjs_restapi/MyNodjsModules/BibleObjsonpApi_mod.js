@@ -537,26 +537,40 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.proj_parse(inp)
         var doc = inp.par.fnames[0]
 
-        var docfilname = userProject.get_DocCode_Fname(doc)
-        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
 
         inp.out.data = {}
         //////----
+        function __load_bcv(jsfname){
+            var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+            var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+            if (karyObj.kary.length < 3) {
+                inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+            }
+            if (proj && bio.obj && karyObj.kary.length >= 3) {
+                //await userProject.git_pull(function (bSuccess) {
+                //})
+                inp.out.desc = "load success"
+                inp.out.data[jsfname] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+            } else {
+                inp.out.desc = "failed git pull and load"
+            }
+        }
         var jsfname = userProject.get_pfxname(doc)
-        var bio = BibleUti.load_BibleObj_by_fname(jsfname);
-        var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
-        if (karyObj.kary.length < 3) {
-            inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
-        }
-        if (proj && bio.obj && karyObj.kary.length >= 3) {
-            //await userProject.git_pull(function (bSuccess) {
-            //})
-            inp.out.desc = "load success"
-            inp.out.data[jsfname] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
-        } else {
-            inp.out.desc = "failed git pull and load"
-        }
+        __load_bcv(jsfname)
+        
         /////----
+        var docfilname = userProject.get_DocCode_Fname(doc)
+        var docfilname2 = userProject.get_usr_myoj_dir("/"+docfilname)
+        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
+        console.log("jsfn:",jsfname)
+        for(var i=0; i<outfil.m_olis.length;i++){
+            var jsfn = outfil.m_olis[i]
+            if(docfilname2 === jsfn)continue;
+            console.log("jsfn=",jsfn)
+            __load_bcv(jsfn)
+        }
+
+
 
         //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
