@@ -286,7 +286,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
             inp.out.save_res = save_res
 
-            await userProject.git_add_commit_push(save_res.desc, "#");////#:not push
+            await userProject.git_add_commit_push(save_res.desc, "#");////#:not push;slow/uninsure
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -473,7 +473,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
             await userProject.proj_setup()
-            await userProject.git_add_commit_push("push all changes.", "#")
+            await userProject.git_add_commit_push("push hard.", "");//real push hard.
         }
 
         var sret = JSON.stringify(inp, null, 4)

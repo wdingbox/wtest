@@ -681,7 +681,6 @@ BibleObjGituser.prototype.proj_setup = async function () {
 
     return inp
 }
-
 BibleObjGituser.prototype.proj_destroy = async function (res) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -703,6 +702,47 @@ BibleObjGituser.prototype.proj_destroy = async function (res) {
     this.profile_state()
 
     return inp
+}
+BibleObjGituser.prototype.profile_state = function (cbf) {
+    if (!this.m_inp.out || !this.m_inp.out.state) return console.log("******Fatal Error.")
+    var stat = this.m_inp.out.state
+    //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
+
+
+    stat.bMyojDir = 1
+    var accdir = this.get_usr_myoj_dir()
+    if (!fs.existsSync(accdir)) {
+        stat.bMyojDir = 0
+    }
+
+
+    stat.bDatDir = 1
+    var accdir = this.get_usr_dat_dir()
+    if (!fs.existsSync(accdir)) {
+        stat.bDatDir = 0
+    }
+
+    stat.bGitDir = 1
+    var git_config_fname = this.get_usr_git_dir("/.git/config")
+    if (!fs.existsSync(git_config_fname)) {
+        stat.bGitDir = 0
+        stat.bEditable = 0
+        stat.bRepositable = 0
+        return stat;
+    }
+
+    stat.config = this.load_git_config()
+
+    /////// git status
+    stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
+    this.m_inp.out.state.bRepositable = 0
+    if (this.m_inp.usr.passcode.length > 0) {
+        //if clone with password ok, it would ok for pull/push 
+        stat.bRepositable = 1
+    }
+
+    if (cbf) cbf()
+    return stat
 }
 
 BibleObjGituser.prototype.cp_template_to_git = async function (res) {
@@ -803,47 +843,6 @@ BibleObjGituser.prototype.load_git_config = function () {
     }
     //}
     return this.m_inp.out.state.config
-}
-BibleObjGituser.prototype.profile_state = function (cbf) {
-    if (!this.m_inp.out || !this.m_inp.out.state) return console.log("******Fatal Error.")
-    var stat = this.m_inp.out.state
-    //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
-
-
-    stat.bMyojDir = 1
-    var accdir = this.get_usr_myoj_dir()
-    if (!fs.existsSync(accdir)) {
-        stat.bMyojDir = 0
-    }
-
-
-    stat.bDatDir = 1
-    var accdir = this.get_usr_dat_dir()
-    if (!fs.existsSync(accdir)) {
-        stat.bDatDir = 0
-    }
-
-    stat.bGitDir = 1
-    var git_config_fname = this.get_usr_git_dir("/.git/config")
-    if (!fs.existsSync(git_config_fname)) {
-        stat.bGitDir = 0
-        stat.bEditable = 0
-        stat.bRepositable = 0
-        return stat;
-    }
-
-    stat.config = this.load_git_config()
-
-    /////// git status
-    stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
-    this.m_inp.out.state.bRepositable = 0
-    if (this.m_inp.usr.passcode.length > 0) {
-        //if clone with password ok, it would ok for pull/push 
-        stat.bRepositable = 1
-    }
-
-    if (cbf) cbf()
-    return stat
 }
 
 
