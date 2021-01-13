@@ -541,6 +541,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.data = {}
         //////----
         function __load_bcv(jsfname){
+            var nary = jsfname.split("/")
+            var usr_repo = nary[6]+"/"+nary[7]
             var bio = BibleUti.load_BibleObj_by_fname(jsfname);
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length < 3) {
@@ -550,7 +552,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 //await userProject.git_pull(function (bSuccess) {
                 //})
                 inp.out.desc = "load success"
-                inp.out.data[jsfname] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+                inp.out.data[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
                 inp.out.desc = "failed git pull and load"
             }
