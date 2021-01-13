@@ -463,8 +463,11 @@ var BibleUti = {
 
 
 var SvrUsrsBCV = function () {
+}
+SvrUsrsBCV.prototype.set_rootDir = function (srcpath) {
+    this.m_rootDir = srcpath
     this.output = {
-        m_olis: "",
+        m_olis: [],
         m_totSize: 0,
         m_totFiles: 0,
         m_totDirs: 0
@@ -487,24 +490,30 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     var dary = this.getDirectories(srcPath);
     this.output.m_totDirs += dary.length;
     this.output.m_totFiles += fary.length;
-    var nodnam = path.basename(srcPath);
-    if (nodnam === ".") nodnam = "[ . / ]";
-    this.output.m_olis += `<span class='dir'><a class='dirNode' path='./${srcPath}'>${nodnam}</a> <a class='NumDirs'>( ${dary.length}</a> / <a class='NumFiles'>${fary.length} )</a><a class='totInfo'></a></span>\n
-        <ol class='collapse'>\n`;
+   
     for (var i = 0; i < dary.length; i++) {
         var spath = dary[i];
         //console.log(spath)
-        this.getFary(path.join(srcPath, spath));
+        this.getFary(path.join(srcPath, spath), doc);
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
+        console.log("sfl", sfl, doc)
+        if(doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
         this.output.m_totSize += stats.size;
-        this.output.m_olis += `<li class='lifile'><a class='file' href='${pathfile}'>${sfl}</a>  (<a class='fsize'>${stats.size.toLocaleString()}</a> B)</li>\n`;
+        this.output.m_olis.push(pathfile);
     }
-    this.output.m_olis += "</ol>";
 }
+SvrUsrsBCV.prototype.gen_all_files_of = function (doc) {
+    this.getFary(this.m_rootDir, doc)
+    return this.output
+}
+
+
+
+
 
 
 function BibleObjBackendService() {
@@ -532,6 +541,11 @@ var g_BibleObjBackendService = new BibleObjBackendService()
 
 
 
+
+
+
+
+
 var BibleObjGituser = function (rootDir) {
     if (!rootDir.match(/\/$/)) rootDir += "/"
 
@@ -539,8 +553,11 @@ var BibleObjGituser = function (rootDir) {
 
     this.m_sRootNode = "bible_study_notes"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
-    this.m_backendService.set_rootDir(rootDir + this.m_sRootNode)
+    var pathrootdir = rootDir + this.m_sRootNode
+    this.m_backendService.set_rootDir(pathrootdir)
 
+    this.m_SvrUsrsBCV = new SvrUsrsBCV()
+    this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
     this.set_rootDir(rootDir)
 }
 BibleObjGituser.prototype.set_rootDir = function (rootDir) {

@@ -440,6 +440,7 @@ ${scmd}
             })
             return
         }
+       
         function get_pathname_fr_window_location() {
             var regex = new RegExp("/___maverick.editor.html$")
             var root = window.location.pathname.replace(regex, "")
@@ -463,13 +464,14 @@ ${scmd}
             if (!document.m_myNotes) return alert("No parent storage for myNote.")
 
             var pster = JSON.parse(document.m_myNotes)
-            localStorage.setItem("myNote", "")
+            //localStorage.setItem("myNote", "")
             console.log("Storage myNode", pster)
             var e = document.createElement("script");
             e.src = `${pster.url}Jsonpster/`;
             document.body.appendChild(e);
 
             setTimeout(() => {
+                load_allusrs_bcv()
                 for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
@@ -488,6 +490,22 @@ ${scmd}
             //});
             //return false;
         }
+        function load_allusrs_bcv(){
+            var pster = JSON.parse(document.m_myNotes)
+            console.log("load_allusrs_bcv", pster)
+            Jsonpster.inp = pster.inp
+            Jsonpster.api = RestApi.ApiBibleObj_read_AllUsrs_BkcChpVrs_txt.str
+            console.log("inp:", pster.inp)
+            Jsonpster.Run(function (ret) {
+                console.log("ret", ret)
+                var res = ret.out.data
+                if (res) {
+                    
+                } else {
+                    alert("saving has issues.")
+                }
+            })
+        }
     </script>
 </body>
 
@@ -502,6 +520,7 @@ ${scmd}
         init_CKEditor()
         init_ui_cmd()
         load_page_by_parent_storage()
+        
 
 
     })

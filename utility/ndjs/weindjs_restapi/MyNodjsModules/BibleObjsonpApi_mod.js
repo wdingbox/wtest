@@ -301,6 +301,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
         var doc = inp.par.fnames[0]
+
+        var docfilname = userProject.get_DocCode_Fname(doc)
+        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
+        console.log(doc, outfil)
+
         var jsfname = userProject.get_pfxname(doc)
         var bio = BibleUti.load_BibleObj_by_fname(jsfname);
         var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
@@ -531,6 +536,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
         var doc = inp.par.fnames[0]
+
+        var docfilname = userProject.get_DocCode_Fname(doc)
+        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
+
+        inp.out.data = {}
+        //////----
         var jsfname = userProject.get_pfxname(doc)
         var bio = BibleUti.load_BibleObj_by_fname(jsfname);
         var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
@@ -541,10 +552,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //await userProject.git_pull(function (bSuccess) {
             //})
             inp.out.desc = "load success"
-            inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+            inp.out.data[jsfname] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
         } else {
             inp.out.desc = "failed git pull and load"
         }
+        /////----
 
         //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
