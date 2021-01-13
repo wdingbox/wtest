@@ -259,7 +259,7 @@
         function repo_pulldown() {
             var passcode = $("#passcode").val()
             if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
-            if (!confirm("push data into repository")) return
+            if (!confirm("pull down data")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
 
             Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
