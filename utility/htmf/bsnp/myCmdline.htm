@@ -293,42 +293,32 @@
 
 </html>
 <script>
-    Uti.Jsonpster_crossloader()
+
+
     function dbg_pster(dat) {
         if (!this.idx) this.idx = 1
         this.idx++
+        var ss = ""
         if (!dat) {
             ss = `${this.idx}\nJsonpster = ` + JSON.stringify(Jsonpster, null, 4)
-            $("#txtarea").val(ss)
-            return
-        }
-        var ss = $("#txtarea").val()
-        if (ss.length > 10000) ss = "";
-        ss += "\n[" + this.idx + "]\n";
-        if ("object" === typeof dat) {
-            var sd = "ret=" + JSON.stringify(dat, null, 4)
-            sd = sd.replace(/\\n/g, "\n")
-            ss += "\n" + sd;
         } else {
-            ss += "\n" + dat
+            ss = $("#txtarea").val()
+            if (ss.length > 10000) ss = "";
+            ss += "\n[" + this.idx + "]\n";
+            if ("object" === typeof dat) {
+                var sd = "ret=" + JSON.stringify(dat, null, 4)
+                sd = sd.replace(/\\n/g, "\n")
+                ss += "\n" + sd;
+            } else {
+                ss += "\n" + dat
+            }
         }
 
         $("#txtarea").val(ss)
         var textarea = document.getElementById('txtarea');
         textarea.scrollTop = textarea.scrollHeight;
     }
-    setTimeout(() => {
-        if (undefined === Jsonpster) {
-            alert("Jsonpster not exist.")
-        }
-        else {
-            $("title").text("acct")
-            dbg_pster()
 
-            $("#histroy").trigger("click")
-        }
-        //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-    }, 2000)
 </script>
 <script>
     var cmdary =
@@ -381,12 +371,20 @@
     }
     $(function () {
 
+        Uti.Jsonpster_crossloader()
         gen_cmdline_table(cmdary)
+        setTimeout(() => {
+            if (undefined === Jsonpster) {
+                alert("Jsonpster not exist.")
+            }
+            else {
+                $("title").text("acct")
+                dbg_pster()
 
-
-
-
-
+                $("#histroy").trigger("click")
+            }
+            //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+        }, 2000)
 
     })
 </script>
