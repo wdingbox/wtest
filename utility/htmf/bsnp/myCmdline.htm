@@ -314,6 +314,8 @@
         }
 
         $("#txtarea").val(ss)
+        var textarea = document.getElementById('txtarea');
+        textarea.scrollTop = textarea.scrollHeight;
     }
     setTimeout(() => {
         if (undefined === Jsonpster) {
