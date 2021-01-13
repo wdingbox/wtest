@@ -462,9 +462,56 @@ var BibleUti = {
 
 
 
+var SvrUsrsBCV = function () {
+    this.output = {
+        m_olis: "",
+        m_totSize: 0,
+        m_totFiles: 0,
+        m_totDirs: 0
+    }
+}
+SvrUsrsBCV.prototype.getDirectories = function (srcpath) {
+    return fs.readdirSync(srcpath).filter(function (file) {
+        if ("." === file[0]) return false;
+        return fs.statSync(path.join(srcpath, file)).isDirectory();
+    });
+}
+SvrUsrsBCV.prototype.getPathfiles = function (srcpath) {
+    return fs.readdirSync(srcpath).filter(function (file) {
+        if ("." === file[0]) return false;
+        return fs.statSync(srcpath + '/' + file).isFile();
+    });
+}
+SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
+    var fary = this.getPathfiles(srcPath);
+    var dary = this.getDirectories(srcPath);
+    this.output.m_totDirs += dary.length;
+    this.output.m_totFiles += fary.length;
+    var nodnam = path.basename(srcPath);
+    if (nodnam === ".") nodnam = "[ . / ]";
+    this.output.m_olis += `<span class='dir'><a class='dirNode' path='./${srcPath}'>${nodnam}</a> <a class='NumDirs'>( ${dary.length}</a> / <a class='NumFiles'>${fary.length} )</a><a class='totInfo'></a></span>\n
+        <ol class='collapse'>\n`;
+    for (var i = 0; i < dary.length; i++) {
+        var spath = dary[i];
+        //console.log(spath)
+        this.getFary(path.join(srcPath, spath));
+    }
+    for (var k = 0; k < fary.length; k++) {
+        var sfl = fary[k];
+        var pathfile = path.join(srcPath, sfl);
+        var stats = fs.statSync(pathfile);
+        this.output.m_totSize += stats.size;
+        this.output.m_olis += `<li class='lifile'><a class='file' href='${pathfile}'>${sfl}</a>  (<a class='fsize'>${stats.size.toLocaleString()}</a> B)</li>\n`;
+    }
+    this.output.m_olis += "</ol>";
+}
+
 
 function BibleObjBackendService() {
     this.m_watchAccounts = {}
+}
+BibleObjBackendService.prototype.set_rootDir = function (rootDir) {
+    this.m_rootDir = rootDir
 }
 BibleObjBackendService.prototype.bind_folder_event = function (dir) {
     var _THIS = this
@@ -478,12 +525,21 @@ BibleObjBackendService.prototype.bind_folder_event = function (dir) {
         return
     }
 }
+BibleObjBackendService.prototype.get_rootDir = function (doc) {
+    this.m_rootDir = rootDir
+}
 var g_BibleObjBackendService = new BibleObjBackendService()
 
 
 
 var BibleObjGituser = function (rootDir) {
+    if (!rootDir.match(/\/$/)) rootDir += "/"
+
     this.m_backendService = g_BibleObjBackendService
+
+    this.m_sRootNode = "bible_study_notes"
+    this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
+    this.m_backendService.set_rootDir(rootDir + this.m_sRootNode)
 
     this.set_rootDir(rootDir)
 }
@@ -543,8 +599,9 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         }
         return inp.usr
     }
-    function _parse_proj_dir(inp) {
-        const base_Dir = "bible_study_notes/usrs"
+
+    function _parse_proj_dir(inp, base_Dir) {
+        //const base_Dir = "bible_study_notes/usrs"
         var gitDir = `${base_Dir}/${inp.usr.proj.username}/${inp.usr.proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
@@ -579,7 +636,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 
     inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 
-    _parse_proj_dir(inp)
+    _parse_proj_dir(inp, this.m_sBaseUsrs)
 
     return inp.usr.proj
 }
@@ -612,6 +669,12 @@ BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     }
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}${subpath}`
 }
+
+BibleObjGituser.prototype.get_DocCode_Fname = function (DocCode) {
+    if (DocCode[0] != "_") return ""
+    var fnam = DocCode.substr(1)
+    return `${fnam}_json.js`
+}
 BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     var inp = this.m_inp
     //var DocCode = inp.par.fnames[0]
@@ -620,9 +683,9 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     switch (DocCode[0]) {
         case "_": //: _myNode, _myTakeaway,
             {
-                var fnam = DocCode.substr(1)
+                var fnam = this.get_DocCode_Fname(DocCode)
                 if (inp.usr.proj) {
-                    dest_pfname = this.get_usr_myoj_dir(`/${fnam}_json.js`)
+                    dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
                 }
             }
             break
@@ -1007,7 +1070,7 @@ ${punPush}echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
         function (ret) {
             console.log("success:", ret)
             _THIS.m_inp.out.git_add_commit_push_res.success = ret
-            
+
             const erry = ["fatal", "Invalid"]
             erry.forEach(function (errs) {
                 if (ret.stderr.indexOf(errs) >= 0) {
@@ -1038,7 +1101,7 @@ cd -
     await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (val) {
             console.log("success:", val)
-            
+
             var mat = val.stderr.match(/(fatal)|(fail)|(error)/g)
             _THIS.m_inp.out.git_pull_res.bSuccess = !mat
             _THIS.m_inp.out.git_pull_res.success = val

@@ -522,6 +522,37 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
+    /////
+    ApiBibleObj_read_AllUsrs_BkcChpVrs_txt:function(req, res){
+        if (!req || !res) {
+            return inp_struct_base
+        }
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+        var proj = userProject.proj_parse(inp)
+        var doc = inp.par.fnames[0]
+        var jsfname = userProject.get_pfxname(doc)
+        var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+        var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+        if (karyObj.kary.length < 3) {
+            inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+        }
+        if (proj && bio.obj && karyObj.kary.length >= 3) {
+            //await userProject.git_pull(function (bSuccess) {
+            //})
+            inp.out.desc = "load success"
+            inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+        } else {
+            inp.out.desc = "failed git pull and load"
+        }
+
+        //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
+
+        var ss = JSON.stringify(inp)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + ss + ");");
+        res.end();
+    }
 
 }//// BibleRestApi ////
 
