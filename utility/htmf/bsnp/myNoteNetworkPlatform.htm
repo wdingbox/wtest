@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Editing</title>
+
+    <!-------------------------------------------->
+    <!---- Insert this before scripts import; then restor back later -->
+    <script>//if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <!-------------- jq --------------------->
+    <script ____src="./doc_files/jquery-2_1_3.min.js"></script>
+    <script src="https://wdingbox.github.io/ham12/jq/jquery-2_1_3.min.js"></script>
+    <script xxxxxxxsrc="http://localhost:7878/assets/ckeditor/adapters/jq/jquery-2_1_3.min.js"
+        note="selfseversite"></script>
+    <!-------------- ckeditor only--------------------->
+    <script src="../../../assets/ckeditor/ckeditor.js"></script>
+    <script src="../../../assets/ckeditor/samples/old/sample.js"></script>
+    <link href="../../../assets/ckeditor/samples/old/sample.css" rel="stylesheet">
+
+
+    <script ___src="http://localhost:7878/assets/ckeditor/ckeditor.js" note="selfseversite"></script>
+    <script ___src="http://localhost:7878/assets/ckeditor/samples/old/sample.js"></script>
+    <!-------------------------------------------->
+    <script language="javascript" src="./BibleStudyNotePad.js?v=20.12.4"></script>
+    <!----- Insert this line after script imports -->
+    <script>//if (window.module) module = window.module;</script>
+    <!-------------------------------------------->
+    <style>
+        .editor_state_max {
+            z-index: 999999;
+            position: absolute;
+            right: 20px;
+            background-color: antiquewhite;
+        }
+
+        #input,
+        #output {
+            background-color: black;
+            color: white;
+            overflow: auto
+        }
+
+
+        #idbtn_exec_cmd {
+            background-color: grey;
+        }
+
+        .white_space_nowrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body onbeforeunload="return 'leave?';">
+
+
+
+
+
+
+    <table border="1">
+        <caption id="scap"></caption>
+        <tbody  id="allusrs">
+
+        </tbody>
+    </table>
+
+
+
+
+
+    <script>
+        var ckEditor;
+        
+        
+        ////////window.onload = changeEnter;
+
+        function _MSG() {
+            this.m_len = 0
+            this.m_sChangeLen = ""
+        }
+        _MSG.prototype.dlt = function (len) {
+            if (undefined === len || !len) {
+                this.m_sChangeLen = ""
+                return ""
+            }
+            var dlt = len - this.m_len
+            this.m_sChangeLen = `len change: ${len}-${this.m_len}=${dlt}`
+            this.m_len = len
+            return this.m_sChangeLen
+        }
+        _MSG.prototype.pop = function (s, styp) {
+            if (!styp) styp = "info"
+            s = `[${(new Date()).toISOString()}] ${s} ${this.m_sChangeLen} `
+            $("#histlog").prepend(`<option>${s}</option>`)
+            if (ckEditor) ckEditor.showNotification(s, styp);//
+            this.m_sChangeLen = ""
+            return this
+        }
+        var g_msg = new _MSG()
+
+
+
+        function gen_wordfreq_cmd() {
+            var ret = get_pathname_fr_window_location()
+            var git_cmd_txt = `#!/bin/bash
+######################
+# svr side cmd
+node ./nodexe/wordFrqObj/engHtm2wordFrq/htm2FrqTable_eng.nde.js ${ret.root}/${ret.name}
+######################`;
+            $("#input").val(git_cmd_txt)
+            return git_cmd_txt;
+        }
+        function gen_git_cmd_batch() {
+            var ret = get_pathname_fr_window_location()
+            var git_cmd_txt = `#!/bin/bash
+######################
+# goto customer folder.
+cd ${ret.root}
+git add ${ret.name}
+git commit -m "changed."
+git status
+######################`;
+            $("#input").val(git_cmd_txt)
+            return git_cmd_txt;
+        }
+        function gen_insite_sh_cmd(scmd) {
+            var ret = get_pathname_fr_window_location()
+            var cmd_txt = `#!/bin/bash
+######################
+# goto customer folder.
+cd ${ret.root}
+#
+echo ${scmd}
+${scmd}
+######################`;
+            $("#input").val(cmd_txt)
+            return cmd_txt;
+        }
+        function gen_ui_sh_cmd() {
+            var val = $("#gen_sh_cmd").val()
+            switch (val) {
+                case "git_batch": return gen_git_cmd_batch();
+                case "WordFreq": return gen_wordfreq_cmd()
+                default: return gen_insite_sh_cmd(val)
+            }
+
+        }
+
+
+        function __exec_ui_cmd() {
+            //alert(theData);
+            var shcmd = $("#input").val()
+            console.log("git cmd:", shcmd)
+            $.post("http://localhost:7878/shell_cmd",
+                {
+                    "sh_script": shcmd
+                },
+                function (result) {
+                    console.log("git cmd result:", result);
+                    g_msg.pop(`Cmd for git.` + result.output.replace(/\n/g, "<br>"));
+                    $("#output").val(result.output)
+                }).fail(function (er) {
+                    g_msg.pop(`*** saved failed:${er}`, "warning")
+                }).done(function (ret) {
+                    console.log("done:", ret)
+                });
+        }
+        
+       
+        function get_pathname_fr_window_location() {
+            var regex = new RegExp("/___maverick.editor.html$")
+            var root = window.location.pathname.replace(regex, "")
+            var name = window.location.search.replace("?fname=", "")
+            var pathname = root + "/" + name
+            return { name: name, pathname: pathname, root: root }
+        }
+        function init_ui_cmd() {
+            console.log(window.location)
+            var ret = get_pathname_fr_window_location()
+            $("title").text(ret.pathname)
+            gen_git_cmd_batch()
+            $("#gen_sh_cmd").append(`<option>open ${ret.name}</option>`)
+            $("#gen_sh_cmd").append(`<option>open file://${ret.root}/___maverick.editor.html?fname=${ret.name}</option>`)
+            $("#gen_sh_cmd").append(`<option>open ./${ret.name}___wordfreq.htm</option>`)
+            console.log(ret.name)
+        }
+        function load_page_by_parent_storage() {
+            console.log(window.location)
+            document.m_myNotes = localStorage.getItem("myNote")
+            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+
+            var pster = JSON.parse(document.m_myNotes)
+            //localStorage.setItem("myNote", "")
+            console.log("Storage myNode", pster)
+            var e = document.createElement("script");
+            e.src = `${pster.url}Jsonpster/`;
+            document.body.appendChild(e);
+
+            setTimeout(() => {
+                load_allusrs_bcv()
+                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+            }, 1000)
+            //});
+            //return false;
+        }
+        function load_allusrs_bcv(){
+            var pster = JSON.parse(document.m_myNotes)
+            var inpOj = pster.inp.par.inpObj
+            var scap = Uti.parse_bcv(inpOj)
+            $("#scap").text(scap)
+
+            console.log("load_allusrs_bcv", pster)
+            Jsonpster.inp = pster.inp
+            Jsonpster.api = RestApi.ApiBibleObj_read_AllUsrs_BkcChpVrs_txt.str
+            console.log("inp:", pster.inp)
+            Jsonpster.Run(function (ret) {
+                console.log("ret", ret)
+                var res = ret.out.data
+                var trs=""
+                if (res) {
+                    Object.keys(res).forEach(function(key){
+                        var txt = res[key]
+                        console.log("key", key)
+                        console.log("txt", txt)
+                        trs+=`<tr><td><div>${key}</div><div>${txt}</div></td></tr>`
+                    })
+                    
+                } else {
+                    alert("saving has issues.")
+                }
+                $("#allusrs").html(trs)
+            })
+        }
+    </script>
+</body>
+
+</html>
+<script>
+    if ("undefined" === typeof localStorage) {
+        alert("localStorage not supported")
+    }
+</script>
+<script>
+    $(function () {
+        //init_CKEditor()
+        init_ui_cmd()
+        load_page_by_parent_storage()
+        
+
+
+    })
+</script>

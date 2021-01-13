@@ -556,6 +556,13 @@ PopupMenu_EdiTag.prototype.init = function () {
         return false;// diable href open
     })
 
+    $("#RevTag_SocialNetworkPlatform").bind("click", function () {
+        if (_set_par_ediTxt()) {
+            return true;// enable href open.
+        }
+        return false;// diable href open
+    })
+
     $("#RevTag_Save").bind("click", function () {
         var par = _set_par_ediTxt()
         if (!par) {
@@ -2773,6 +2780,24 @@ var Uti = {
 
     parse_bcv: function (sbcv, txt, outOj) {
         if (!sbcv) return null
+        if("object"===typeof(sbcv)){
+            var ar = []
+            Object.keys(sbcv).forEach(function(bkc){
+                ar.push(bkc)
+                Object.keys(sbcv[bkc]).forEach(function(chp){
+                    ar.push(chp)
+                    Object.keys(sbcv[bkc][chp]).forEach(function(vrs){
+                        ar.push(vrs)
+                    })
+                })
+            })
+            if(ar.length===3){
+                return `${ar[0]}${ar[1]}:${ar[2]}`
+            }
+            else{
+                return ar.join(" ")
+            }
+        }
 
         sbcv = sbcv.replace(/\s/g, "");
         if (sbcv.length === 0) return alert("please select an item first.");
@@ -3260,6 +3285,11 @@ var BibleInputMenuContainer = `
                 <a id="RevTag_Edit_External" target="_blank" href="myNoteEditor.htm">External Editor</a>
             </td>
         </tr>
+        <tr>
+        <td>
+            <a id="RevTag_SocialNetworkPlatform" target="_blank" href="myNoteNetworkPlatform.htm">Social Network Platform</a>
+        </td>
+    </tr>
         <tr>
             <td>
                 <a id="RevTag_Save">Save</a>
