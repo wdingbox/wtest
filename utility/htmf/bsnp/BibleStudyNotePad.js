@@ -16,20 +16,7 @@ var MyStorage = {
 
 
 
-        ////////////////////////////////
-        //
-        setTimeout(() => {
-            Uti.Msg("start ...", "" + window.location.href);
-            if ("undefined" === typeof Jsonpster) {
-                alert("Jsonpster server down.");
-            }
-            Uti.Msg("RestApi=", RestApi);
-            Uti.Msg(Jsonpster.Url());
-            MyStorage.Repositories().repos_app_init()
-            MyStorage.Repo_load(function (ret) {
-                if (cbf) cbf(ret)
-            })
-        }, 3000)
+
 
     },
     Repo_save: function (cbf) {
@@ -2064,16 +2051,7 @@ AppInstancesManager.prototype.init = function () {
         }
     })
 
-    if (window.m_bcv) {//frm url. 
-        var ret = Uti.parse_bcv(window.m_bcv)
-        if (ret) {
-            showup.setAsChildren()
-            showup.update_showup(window.m_bcv)
-            setTimeout(function () {
-                _This.loadBible_chapter_by_bibOj()
-            }, 3000)
-        }
-    }
+
 
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
@@ -2148,17 +2126,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     MyStorage.init(function (ret) {
-        Uti.set_menuContainer_color(ret)
-        Uti.Msg("Ready ret.out", ret.out)
 
-        var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
-        if (memo) {
-            var ar = JSON.parse(ret.out.data["#MemoryVerse"])
-            for (var i = 0; i < ar.length; i++) {
-                var bcv = ar[i]
-                markHistory.addnew2table("MemoryVerse", bcv)
-            }
-        }
     })
 
 
@@ -2177,7 +2145,52 @@ AppInstancesManager.prototype.init = function () {
 
     this.onclicks_btns_in_grpMenu_search()
     MyStorage.getBookNameLanguage()
+
+    this.init_load_storage()
 };
+AppInstancesManager.prototype.init_load_storage = function () {
+
+    var _This = this
+    function _load_bcv_from_url_param() {
+        if (window.m_bcv) {//frm url. 
+            var ret = Uti.parse_bcv(window.m_bcv)
+            if (ret) {
+                showup.setAsChildren()
+                showup.update_showup(window.m_bcv)
+                setTimeout(function () {
+                    _This.loadBible_chapter_by_bibOj()
+                }, 1000)
+            }
+        }
+    }
+
+    ////////////////////////////////
+    //
+    setTimeout(() => {
+        Uti.Msg("start ...", "" + window.location.href);
+        if ("undefined" === typeof Jsonpster) {
+            alert("Jsonpster server down.");
+        }
+        Uti.Msg("RestApi=", RestApi);
+        Uti.Msg(Jsonpster.Url());
+        MyStorage.Repositories().repos_app_init()
+        MyStorage.Repo_load(function (ret) {
+            //if (cbf) cbf(ret)
+            Uti.set_menuContainer_color(ret)
+            Uti.Msg("Ready ret.out", ret.out)
+
+            var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
+            if (memo) {
+                var ar = JSON.parse(ret.out.data["#MemoryVerse"])
+                for (var i = 0; i < ar.length; i++) {
+                    var bcv = ar[i]
+                    markHistory.addnew2table("MemoryVerse", bcv)
+                }
+            }
+            _load_bcv_from_url_param()
+        })
+    }, 1000)
+}
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var ret = showup.get_selected_bcv_parm()
     if (!ret.m_bcv) return
