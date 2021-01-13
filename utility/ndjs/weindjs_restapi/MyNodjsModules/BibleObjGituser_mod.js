@@ -846,6 +846,55 @@ BibleObjGituser.prototype.load_git_config = function () {
 }
 
 
+BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
+    { /****.git/config
+        [core]
+                repositoryformatversion = 0
+                filemode = true
+                bare = false
+                logallrefupdates = true
+                ignorecase = true
+                precomposeunicode = true
+        [remote "origin"]
+                url = https://github.com/wdingbox/bible_obj_weid.git
+                fetch = +refs/heads/*:refs/remotes/origin/*
+        [branch "master"]
+                remote = origin
+                merge = refs/heads/master
+        ******/
+
+        //https://github.com/wdingbox/bible_obj_weid.git
+        //https://github.com/wdingbox:passcode@/bible_obj_weid.git
+    } /////////
+
+    if (!this.m_inp.usr.repopath) return
+    if (!this.m_inp.usr.proj) return
+    if (!this.m_inp.usr.proj.git_Usr_Pwd_Url) return
+
+    var git_config_fname = this.get_usr_git_dir("/.git/config")
+    if (!fs.existsSync(git_config_fname)) {
+        console.log(".git/config not exist:", git_config_fname)
+        return
+    }
+
+    // fs.chmodSync(git_config_fname, 0o777, function (err) {
+    //     if (err) console.log(err);
+    //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
+    // })
+
+    if (!this.m_git_config_old || !this.m_git_config_new) {
+        this.load_git_config()
+    }
+
+    if (bAllowPush) {
+        fs.writeFileSync(git_config_fname, this.m_git_config_new, "utf8")
+        console.log("bAllowPush=1:url =", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    } else {
+        fs.writeFileSync(git_config_fname, this.m_git_config_old, "utf8")
+        console.log("bAllowPush=0:url =", this.m_inp.usr.repopath)
+    }
+}
+
 BibleObjGituser.prototype.git_clone = async function () {
     var _THIS = this
     var inp = this.m_inp
@@ -920,66 +969,18 @@ BibleObjGituser.prototype.git_status = async function () {
         cd ${this.get_usr_git_dir()}
         git status
         #git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
-        inp.out.git_status = {}
+        inp.out.git_status_res = {}
         await BibleUti.exec_Cmd(git_status_cmd).then(
             function (val) {
-                inp.out.git_status.success = val
+                inp.out.git_status_res.success = val
             },
             function (val) {
-                inp.out.git_status.failure = val
+                inp.out.git_status_res.failure = val
             }
         )
     }
 }
 
-BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
-    { /****.git/config
-        [core]
-                repositoryformatversion = 0
-                filemode = true
-                bare = false
-                logallrefupdates = true
-                ignorecase = true
-                precomposeunicode = true
-        [remote "origin"]
-                url = https://github.com/wdingbox/bible_obj_weid.git
-                fetch = +refs/heads/*:refs/remotes/origin/*
-        [branch "master"]
-                remote = origin
-                merge = refs/heads/master
-        ******/
-
-        //https://github.com/wdingbox/bible_obj_weid.git
-        //https://github.com/wdingbox:passcode@/bible_obj_weid.git
-    } /////////
-
-    if (!this.m_inp.usr.repopath) return
-    if (!this.m_inp.usr.proj) return
-    if (!this.m_inp.usr.proj.git_Usr_Pwd_Url) return
-
-    var git_config_fname = this.get_usr_git_dir("/.git/config")
-    if (!fs.existsSync(git_config_fname)) {
-        console.log(".git/config not exist:", git_config_fname)
-        return
-    }
-
-    // fs.chmodSync(git_config_fname, 0o777, function (err) {
-    //     if (err) console.log(err);
-    //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
-    // })
-
-    if (!this.m_git_config_old || !this.m_git_config_new) {
-        this.load_git_config()
-    }
-
-    if (bAllowPush) {
-        fs.writeFileSync(git_config_fname, this.m_git_config_new, "utf8")
-        console.log("bAllowPush=1:url =", this.m_inp.usr.proj.git_Usr_Pwd_Url)
-    } else {
-        fs.writeFileSync(git_config_fname, this.m_git_config_old, "utf8")
-        console.log("bAllowPush=0:url =", this.m_inp.usr.repopath)
-    }
-}
 BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
     var _THIS = this
     var inp = this.m_inp
@@ -1001,24 +1002,24 @@ ${punPush}echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
         this.git_config_allow_push(true)
     }
 
-    inp.out.git_push_res = {}
+    inp.out.git_add_commit_push_res = {}
     await BibleUti.exec_Cmd(cmd_commit).then(
         function (ret) {
             console.log("success:", ret)
-            _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.git_push_res.success = ret
-
+            _THIS.m_inp.out.git_add_commit_push_res.success = ret
+            
             const erry = ["fatal", "Invalid"]
             erry.forEach(function (errs) {
                 if (ret.stderr.indexOf(errs) >= 0) {
-                    _THIS.m_inp.out.git_push_res.desc = "push failed." + ret.stderr
+                    _THIS.m_inp.out.git_add_commit_push_res.desc = "push failed." + ret.stderr
                 }
             })
+            _THIS.git_config_allow_push(false)
         },
         function (ret) {
             console.log("failure:", ret)
+            inp.out.git_add_commit_push_res.failure = ret
             _THIS.git_config_allow_push(false)
-            inp.out.git_push_res.failure = ret
         }
     )
 }
@@ -1037,18 +1038,18 @@ cd -
     await BibleUti.exec_Cmd(cmd_git_pull).then(
         function (val) {
             console.log("success:", val)
-            _THIS.git_config_allow_push(false)
-
+            
             var mat = val.stderr.match(/(fatal)|(fail)|(error)/g)
             _THIS.m_inp.out.git_pull_res.bSuccess = !mat
-            _THIS.m_inp.out.git_pull_res = val
+            _THIS.m_inp.out.git_pull_res.success = val
             if (cbf) cbf(true)
+            _THIS.git_config_allow_push(false)
         },
         function (val) {
-            _THIS.m_inp.out.git_pull_res = val
+            _THIS.m_inp.out.git_pull_res.failure = val
             console.log("failure:", val)
-            _THIS.git_config_allow_push(false)
             if (cbf) cbf(false)
+            _THIS.git_config_allow_push(false)
         }
     )
 }
@@ -1059,11 +1060,7 @@ BibleObjGituser.prototype.git_push = async function () {
 #!/bin/sh
 cd  ${this.get_usr_git_dir()}
 echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
-cd -
 `
-
-
-
 
     var _THIS = this
     if (!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
@@ -1074,23 +1071,18 @@ cd -
             console.log("git_push.success:", ret)
             _THIS.git_config_allow_push(false)
             _THIS.m_inp.out.git_push_res.success = ret
-            _THIS.m_inp.out.state.bRepositable = 1
 
+            _THIS.m_inp.out.state.bRepositable = 1
             var mat = ret.stderr.match(/(fatal)|(Invalid)/g)
             if (mat) {
                 _THIS.m_inp.out.state.bRepositable = 0
             }
-            //const erry = ["fatal", "Invalid"]
-            //erry.forEach(function (errs) {
-            //    if (ret.stderr.indexOf(errs) >= 0) {
-            //        _THIS.m_inp.out.state.bRepositable = 0
-            //    }
-            //})
         },
         function (ret) {
             console.log("git_push.failure:", ret)
             _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.git_push_res.failure = re
+            _THIS.m_inp.out.state.bRepositable = 0
+            _THIS.m_inp.out.git_push_res.failure = ret
         }
     )
 }
@@ -1119,17 +1111,15 @@ echo ${password} | sudo ${inp.par.cmdline}
 #cd -`
     console.log("git_clone_cmd", scmd)
 
-    inp.out.cmd_exec = {}
+    inp.out.cmd_exec_res = {}
     await BibleUti.exec_Cmd(scmd).then(
         function (val) {
             console.log("cmd_exec success:", val)
-            inp.out.cmd_exec.desc = "success."
-            inp.out.cmd_exec.res = val
+            inp.out.cmd_exec_res.success = val
         },
         function (val) {
             console.log("cmd_exec failure:", val)
-            inp.out.cmd_exec.desc = "failure."
-            inp.out.cmd_exec.res = val
+            inp.out.cmd_exec_res.failure = val
         })
     return inp
 }

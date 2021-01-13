@@ -144,10 +144,11 @@
         <button onclick="repo_create();">Create</button>
         <button onclick="repo_destroy();">Destroy</button>
         <button onclick="repo_pushback();">Push</button>
+        <button onclick="repo_pulldown();">Pull</button>
         <button onclick="repo_status();">Status</button>
-        <button onclick="Okey_use_this();">Send to Parent Window</button>
     </p>
     <p>
+        <button onclick="Okey_use_this();">Send to Parent Window</button>
         <button onclick="LoadStorageInRepos();">LoadStorageInRepos</button>
         <xbutton onclick="LoadStorage();"></xbutton>
     </p>
@@ -227,7 +228,6 @@
         }
         function repo_status() {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-
             Jsonpster.api = RestApi.ApiUsrReposData_status.str
             dbg_pster()
             Jsonpster.Run(function (ret) {
@@ -252,6 +252,26 @@
                 Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
                 var errmsg = "Invalid username or password."
                 if (ret.out.git_push_res.success.stderr.indexOf(errmsg) >= 0) {
+                    alert(errmsg)
+                }
+            })
+        }
+        function repo_pulldown() {
+            var passcode = $("#passcode").val()
+            if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
+            if (!confirm("push data into repository")) return
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+            Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
+            dbg_pster()
+            Jsonpster.Run(function (ret) {
+
+                dbg_pster(ret)
+                Uti.Msg("output status:", ret.out)
+
+                //Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
+                var errmsg = "Invalid username or password."
+                if (ret.out.git_pull_res.success.stderr.indexOf(errmsg) >= 0) {
                     alert(errmsg)
                 }
             })

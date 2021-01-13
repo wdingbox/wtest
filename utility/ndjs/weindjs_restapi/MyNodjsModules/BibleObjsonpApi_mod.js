@@ -484,6 +484,26 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
+    ApiUsrReposData_git_pull: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
+
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+        if (userProject.proj_parse(inp)) {
+            await userProject.proj_setup()
+            await userProject.git_pull();
+        }
+
+        var sret = JSON.stringify(inp, null, 4)
+
+        console.log("oup is ", inp.out)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
+        res.end();
+    },
+
     ApiUsr_Cmdline_Exec: async function (req, res) {
         if (!req || !res) {
             return inp_struct_account_setup
