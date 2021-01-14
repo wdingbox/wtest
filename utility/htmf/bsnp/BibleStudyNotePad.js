@@ -1,7 +1,4 @@
 
-
-
-
 var MyStorage = {
     init: function (cbf) {
         if (typeof (Storage) !== "undefined") {
@@ -9,6 +6,16 @@ var MyStorage = {
             localStorage.setItem("test", [1, 2])
             var ar = localStorage.getItem("test")
             console.log("Storage test: ", ar)
+
+
+            var selidsary=["#SensitiveDegree", "#LanguageSel"]
+            for(var i=0;i<selidsary.length;i++){
+                var eid = selidsary[i]
+                this.get_select_val(eid)
+            }
+            //this.get_select_val("#SensitiveDegree")
+            //this.get_select_val("#LanguageSel")
+
         } else {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
@@ -238,17 +245,24 @@ var MyStorage = {
         CNST.Cat2VolArr.Custom = ar
         return ar
     },
+ 
 
-    onChange_BookNameLanguage: function () {
-        var v = $("#LanguageSel").val()
-        Uti.Msg(v)
-        localStorage.setItem("BookNameLanguage", v)
-    },
-    getBookNameLanguage: function () {
-        var v = localStorage.getItem("BookNameLanguage")
-        $("#LanguageSel").val(v)
+    get_select_val: function (eid) {
+        if(!eid||eid[0]!=="#") return "eid incorrent format."
+        var v = localStorage.getItem(eid)
+        if(null === v) v = $(eid).attr("default_val")
+        if(null === v || undefined === v) return alert(eid+" is not set. err.")
+        $(eid).val(v);
+        $(eid).change(function(){
+            var val = $(this).val()
+            localStorage.setItem(eid, val)
+            var txt = $(this).find(`option[value='${val}']`).text()
+            Uti.Msg(`on change ${eid}:`,val,":", txt)
+        })
         return v
     },
+
+    
 }
 
 
@@ -2147,7 +2161,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     this.onclicks_btns_in_grpMenu_search()
-    MyStorage.getBookNameLanguage()
+   
 
     this.init_load_storage()
 };
@@ -2738,7 +2752,7 @@ var Uti = {
             if (reob.format === 1) {
                 $("#repopath").val(reob.full_path)
             }
-            var ar = ["", "https url", "user repos"]
+            var ar = ["", "https-url", "user-repos"]
             $(this).text(ar[reob.format])
             $("#SignOut_repopathname").text(reob.repo)
         })
@@ -3491,7 +3505,12 @@ var BibleInputMenuContainer = `
                             <a></a> 
                             </span><br>
                             <input id="passcode" type="password" value=''></input><br>
-                            <button id="account_set">set</button>
+                            <select id='SensitiveDegree' default_val='2' title='SensitiveDegree'>
+                                <option value='2'>private</option>
+                                <option value='1'>protected</option>
+                                <option value='0'>public</option>
+                            </select>
+                            <button id="account_set">Dock</button>
                             <a id="account_set_info"></a>
                             </td>
                             
@@ -3509,7 +3528,11 @@ var BibleInputMenuContainer = `
                         <tr>
                          
                             <td>Lang</td>
-                            <td><select id="LanguageSel" onchange="MyStorage.onChange_BookNameLanguage()"><option>English</option><option>Chinese</option><option>India</option></select></td>
+                            <td><select id="LanguageSel" default_val="English">
+                                <option value='English'>English</option>
+                                <option value='Chinese'>Chinese</option>
+                                <option value='India'>India</option>
+                            </select></td>
                         </tr>
                         <tr>
                          
@@ -3675,7 +3698,7 @@ CNST.BiBookName = {
     "Rev": ['Revelation', 'revelation', '启示录',],
 };
 CNST.BibVolNameEngChn = function (Vid) {
-    var slan = MyStorage.getBookNameLanguage()
+    var slan = MyStorage.get_select_val("#LanguageSel")
     switch (slan) {
         case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
     }
