@@ -150,10 +150,10 @@
         <div id="DocBtnExplaination" class="helpinfo">
             <ol>
                 Thinking of your repository as a ship, BSNP server as the bank.
-                <li><b>Dock</b>: Your repository ties up at the BSNP server.</li>
-                <li><b>Undock</b>: Your repository leaves/disconnect the BSNP server. BSNP users cannot view/share your data anymore.</li>
-                <li><b>Load</b>: to push data from BSNP server into your repository during docked.</li>
-                <li><b>Unlooad</b>: to pull data from your repository to the BSNP server during docked.</li>
+                <li><b>Dock</b>: Your repository ties up at BSNP server. Your data can be viewed by others.</li>
+                <li><b>Undock</b>: Your repository leaves BSNP server. Your data in BSNP server will be deleted. No one can view your data anymore.</li>
+                <li><b>Load</b>: to push data from BSNP server to your repository during docked.</li>
+                <li><b>Unlooad</b>: to pull data from your repository to BSNP server during docked.</li>
             </ol>
 
         </div>
@@ -228,7 +228,7 @@
             })
         }
         function repo_destroy() {
-            if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
+            if (!confirm("The Bible study notes you wrote in server-site will be destroyed permanently.")) return
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
 
             Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
