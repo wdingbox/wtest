@@ -66,7 +66,7 @@
 
         .helpinfo {
             display: none;
-            margin-left: 50px;
+            margin-left: 0px;
         }
     </style>
 </head>
@@ -141,11 +141,22 @@
         <input id="passcode" value=""></input>
     </form>
     <p>
-        <button onclick="repo_create();">Create</button>
-        <button onclick="repo_destroy();">Destroy</button>
-        <button onclick="repo_pushback();">Push</button>
-        <button onclick="repo_pulldown();">Pull</button>
+        <button onclick="repo_create();">Dock</button>
+        <button onclick="repo_destroy();">Undock</button>
+        <button onclick="repo_pushback();">Load</button>
+        <button onclick="repo_pulldown();">Unload</button>
         <button onclick="repo_status();">Status</button>
+        <a onclick="$('#DocBtnExplaination').toggle()">help?</a>
+        <div id="DocBtnExplaination" class="helpinfo">
+            <ol>
+                Thinking of your repository as a ship, BSNP server as the bank.
+                <li><b>Dock</b>: Your repository ties up at the BSNP server.</li>
+                <li><b>Undock</b>: Your repository leaves/disconnect the BSNP server. BSNP users cannot view/share your data anymore.</li>
+                <li><b>Load</b>: to push data from BSNP server into your repository during docked.</li>
+                <li><b>Unlooad</b>: to pull data from your repository to the BSNP server during docked.</li>
+            </ol>
+
+        </div>
     </p>
     <p>
         <button onclick="Okey_use_this();">Send to Parent Window</button>
