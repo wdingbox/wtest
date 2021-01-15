@@ -3301,7 +3301,7 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
         <td>
-            <a id="RevTag_SocialNetworkPlatform" target="_blank" href="myNoteNetworkPlatform.htm">Social Network Platform</a>
+            <a id="RevTag_SocialNetworkPlatform" target="_blank" href="myNoteNetworkPlatform.htm">Cross-Network Platform</a>
         </td>
     </tr>
         <tr>
