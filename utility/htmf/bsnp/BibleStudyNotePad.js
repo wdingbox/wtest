@@ -3438,7 +3438,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
-                Search In: <a id="SearchInCaption" class="searchFile">CUVS</a>
+                Document: <a id="SearchInCaption" class="searchFile">CUVS</a>
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
                 <div id="searchNextresult" style="width:50px;float:left;">In:</div>
                 <button id="Btn_InSvr" title="search on servr">Svr</button>
