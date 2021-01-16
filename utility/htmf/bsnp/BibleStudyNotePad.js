@@ -1830,7 +1830,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
     $("#account_helper").bind("click", function () {
-        Uti.open_child_window("./myAccount.htm", function (data) {
+        Uti.open_child_window("./mySignIn.htm", function (data) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
