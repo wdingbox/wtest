@@ -70,7 +70,9 @@
         .hili {
             background-color: red;
         }
-
+        .deleted_repo{
+            text-decoration: line-through;
+        }
         .help_label {
             float: right;
         }
@@ -194,7 +196,7 @@
         <br>
     </form>
     <div class="centered_elem">
-        <button onclick="repo_create();">Sign In</button> <a id=''>Forgot</a>
+        <button onclick="repo_create();">Sign In</button> <a id='Forgot' style="float:right;">Forgot</a>
     </div>
     <p class=".centered_elem">
         <a onclick="repo_destroy();"></a>
@@ -218,6 +220,7 @@
         <hr id="toggle_txtarea">
         <textarea id="txtarea" rows="25"></textarea>
     </div>
+    <div id="account_history" style="display: none;">.</div>
 
 
 
@@ -318,6 +321,10 @@
         })
 
         Uti.visual_check_repository("#Format_Check")
+
+        $("#Forgot").on("click",function(){
+            PageUti.account_history("#account_history")
+        })
 
     })
 </script>

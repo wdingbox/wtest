@@ -2659,14 +2659,14 @@ var g_obt = new OutputBibleTable()
 var PageUti = {
     account_history:function(eid){
         var ar = MyStorage.Repositories().repos_app_init()
-        var stb = "<table id='account_history_table' border='1'>"
+        var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
         for (var i = 0; i < ar.length; i++) {
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
             stb += `<tr><td class='repo_delete'>${i}</td>`
             stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${str}</td></td>`
             stb += "</tr>"
         }
-        stb += "</table>"
+        stb += "</tbody></table>"
 
         $(eid).html(stb).find(".repohistory").bind("click", function () {
             $(eid).find(".hili").removeClass('hili')
@@ -2676,6 +2676,30 @@ var PageUti = {
             var passcode = $(this).attr("passcode")
             MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
+
+        function RemoveInHistory() {
+            var rep = $(".hili").find("td:eq(1)").text()
+            var pws = $(".hili").find("td:eq(2)").text()
+
+            var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
+            if (ret) {
+                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
+                $(".hili").remove()
+            }
+        }
+        $(eid).find(".repo_delete").bind("click",function(){
+            var rep = $(this).next().attr("repopath")
+            var pws = $(this).next().attr("passcode")
+
+            $(this).next().toggleClass("deleted_repo")
+            if($(this).next()[0].classList.contains("deleted_repo")){
+                console.log("contains: deleted_repo")
+                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
+            }else{
+                console.log("not have: deleted_repo")
+                MyStorage.Repositories().repos_app_set({ repopath: rep, repodesc: !repodesc ? "" : repodesc, passcode: pws })
+            }
+        })
 
         $(eid).slideToggle()
     }
