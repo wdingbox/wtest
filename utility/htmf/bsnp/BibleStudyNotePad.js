@@ -2677,16 +2677,7 @@ var PageUti = {
             MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
 
-        function RemoveInHistory() {
-            var rep = $(".hili").find("td:eq(1)").text()
-            var pws = $(".hili").find("td:eq(2)").text()
-
-            var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
-            if (ret) {
-                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
-                $(".hili").remove()
-            }
-        }
+    
         $(eid).find(".repo_delete").bind("click",function(){
             var rep = $(this).next().attr("repopath")
             var pws = $(this).next().attr("passcode")
