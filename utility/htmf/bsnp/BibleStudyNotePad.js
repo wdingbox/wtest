@@ -8,8 +8,8 @@ var MyStorage = {
             console.log("Storage test: ", ar)
 
 
-            var selidsary=["#SensitiveDegree", "#LanguageSel"]
-            for(var i=0;i<selidsary.length;i++){
+            var selidsary = ["#SensitiveDegree", "#LanguageSel"]
+            for (var i = 0; i < selidsary.length; i++) {
                 var eid = selidsary[i]
                 this.get_select_val(eid)
             }
@@ -245,24 +245,24 @@ var MyStorage = {
         CNST.Cat2VolArr.Custom = ar
         return ar
     },
- 
+
 
     get_select_val: function (eid) {
-        if(!eid||eid[0]!=="#") return "eid incorrent format."
+        if (!eid || eid[0] !== "#") return "eid incorrent format."
         var v = localStorage.getItem(eid)
-        if(null === v) v = $(eid).attr("default_val")
-        if(null === v || undefined === v) return alert(eid+" is not set. err.")
+        if (null === v) v = $(eid).attr("default_val")
+        if (null === v || undefined === v) return alert(eid + " is not set. err.")
         $(eid).val(v);
-        $(eid).change(function(){
+        $(eid).change(function () {
             var val = $(this).val()
             localStorage.setItem(eid, val)
             var txt = $(this).find(`option[value='${val}']`).text()
-            Uti.Msg(`on change ${eid}:`,val,":", txt)
+            Uti.Msg(`on change ${eid}:`, val, ":", txt)
         })
         return v
     },
 
-    
+
 }
 
 
@@ -2142,7 +2142,7 @@ AppInstancesManager.prototype.init = function () {
     })
 
     this.onclicks_btns_in_grpMenu_search()
-   
+
 
     this.init_load_storage()
 };
@@ -2657,7 +2657,7 @@ var g_obt = new OutputBibleTable()
 
 
 var PageUti = {
-    account_history:function(eid){
+    account_history: function (eid) {
         var ar = MyStorage.Repositories().repos_app_init()
         var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
         for (var i = 0; i < ar.length; i++) {
@@ -2677,22 +2677,206 @@ var PageUti = {
             MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
 
-    
-        $(eid).find(".repo_delete").bind("click",function(){
+
+        $(eid).find(".repo_delete").bind("click", function () {
             var rep = $(this).next().attr("repopath")
             var pws = $(this).next().attr("passcode")
 
             $(this).next().toggleClass("deleted_repo")
-            if($(this).next()[0].classList.contains("deleted_repo")){
+            if ($(this).next()[0].classList.contains("deleted_repo")) {
                 console.log("contains: deleted_repo")
                 MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
-            }else{
+            } else {
                 console.log("not have: deleted_repo")
                 MyStorage.Repositories().repos_app_set({ repopath: rep, repodesc: !repodesc ? "" : repodesc, passcode: pws })
             }
         })
 
         $(eid).slideToggle()
+    },
+    repo_create: function (bSginIn) {
+        $("#otb").html("<font color='black'>Start to sign in ... </font>")
+
+        var repopath = $("#repopath").val()
+        var reo = Uti.validate_repository_url(repopath)
+        if (!reo) {
+            $("#otb").html("<font color='red'>Error format: Repository</font>")
+            return;
+        }
+
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+        Jsonpster.api = RestApi.ApiUsrReposData_create.str
+
+        Uti.Msg("start", Jsonpster)
+        Jsonpster.Run(function (ret) {
+            Uti.Msg("ret.out.state", ret.out.state)
+            if (ret.out.state) {
+                if (1 === ret.out.state.bEditable) {
+                    $("#otb").html("<font color='green'>Success</font>")
+                    if (bSginIn) {
+                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                    } else {
+                        $("#txtarea").show()
+                    }
+                } else {
+                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
+                }
+            } else {
+                $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
+            }
+        })
+    },
+    repo_destroy: function () {
+        if (!confirm("The Bible study notes you wrote in server-site will be erased.")) return
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+        Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+        Uti.Msg("start", Jsonpster)
+        Jsonpster.Run(function (ret) {
+            $("#otb").html("<font color='green'>Repos is undocked.</font>")
+            Uti.Msg("ret", ret)
+        })
+    },
+    repo_status: function () {
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.api = RestApi.ApiUsrReposData_status.str
+        Uti.Msg("start", Jsonpster)
+        Jsonpster.Run(function (ret) {
+
+            $("#otb").html("<font color='green'>ok.</font>")
+            PageUti.repos_status_display(ret, "#otb")
+            Uti.Msg("Status inp.ret.out=", ret.out)
+        })
+    },
+    repos_status_display: function (ret, eid) {
+        var sta = ret.out.state
+        var msg = "<font color='red'>Invalid Repository</font>"
+        if (sta) {
+            var colr = (sta && 1 === sta.bEditable) ? "lightgreen" : "red"
+            var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
+
+            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+        }
+
+        $(eid).html(msg).show()
+    },
+    repo_pushback: function () {
+        var passcode = $("#passcode").val()
+        if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
+        if (!confirm("push data into repository")) return
+
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+        Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
+        Uti.Msg("start", Jsonpster)
+        Jsonpster.Run(function (ret) {
+
+            //Uti.Msg("ret", ret)
+            $("#otb").html("<font color='green'>Push is done.</font>")
+            Uti.Msg("output status:", ret.out)
+
+            Uti.Msg("ret.out.git_add_commit_push_res.success.stderr=", ret.out.git_add_commit_push_res.success.stderr)
+            var errmsg = "Invalid username or password."
+            if (ret.out.git_add_commit_push_res.success.stderr.indexOf(errmsg) >= 0) {
+                alert(errmsg)
+            }
+        })
+    },
+    repo_pulldown: function () {
+        var passcode = $("#passcode").val()
+        if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
+        if (!confirm("pull down data")) return
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+        Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
+        Uti.Msg("Jsonpster", Jsonpster)
+        Jsonpster.Run(function (ret) {
+
+            $("#otb").html("<font color='green'>Pull is done.</font>")
+            //dbg_pster(ret)
+            Uti.Msg("output status:", ret.out)
+
+            //Uti.Msg("ret.out.git_push_res.success.stderr=", ret.out.git_push_res.success.stderr)
+            var errmsg = "Invalid username or password."
+            if (ret.out.git_pull_res.success.stderr.indexOf(errmsg) >= 0) {
+                alert(errmsg)
+            }
+        })
+    },
+    gen_cmdline_table: function (eid, ar) {
+        var cmdary =
+            [
+                "pwd",
+                "ls -al",
+                "ls -al account",
+                "ls -al account/dat",
+                "ls -al account/myoj",
+                "git status",
+                "git diff",
+                "git log",
+                "git add *",
+                "git commit -m 'updat'",
+                "-S git pull",
+                "git push",
+                "-S GIT_TERMINAL_PROMPT=0 git push",
+                "ps aux"
+            ]
+        if (!ar) ar = cmdary
+        var stab = "<table border='1'><caption>cmdline</caption><tbody>"
+        for (var i = 0; i < ar.length; i++) {
+            stab += `<tr><td>${i}</td><td class='cmdln'>${ar[i]}</td></tr>`
+        }
+        stab += "</tbody></table>"
+        $(eid).html(stab).find(".cmdln").bind("click", function () {
+            $(eid).find(".hili").removeClass("hili")
+            $(this).addClass("hili")
+            var cmd = $(this).text()
+            console.log(cmd)
+
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.inp.par = { cmdline: cmd }
+            Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
+            //dbg_pster()
+            Jsonpster.Run(function (ret) {
+                Uti.Msg(ret)
+                var res = ret.out.cmd_exec_res.success
+                var str2 = ""
+                Object.keys(res).forEach(function (key) {
+                    var str = res[key];
+                    if (!!str) {
+                        str2 += "\n" + str.replace("\\n", "\n")
+                    }
+                    //dbg_pster(key)
+                })
+                Uti.Msg(str2)
+            })
+        })
+    },
+    LoadStorageInRepos: function (eid) {
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+        MyStorage.Repo_load(function (ret) {
+            console.log("data", ret)
+            Uti.Msg("LoadStorage", ret)
+            if (!ret.out || !ret.out.data) return alert("repository data not available.")
+            var stb = "<table border='1'><thead><tr><th></th><th>Keys</th><th>Repo</th><th>localStorage</th></tr></thead><tbody>"
+            Object.keys(ret.out.data).forEach(function (key, i) {
+                key = key.trim()
+                var locVal = localStorage.getItem(key)
+                stb += `<tr><td>${i}</td><td>${key}</td><td>${ret.out.data[key]}</td><td>${locVal}</td></tr>`
+            })
+            Object.keys(localStorage).forEach(function (key, i) {
+                key = key.trim()
+                if (undefined === ret.out.data[key]) {
+                    var locVal = localStorage.getItem(key)
+                    stb += `<tr><td>${i}</td><td>${key}</td><td></td><td>${locVal}</td></tr>`
+                }
+            })
+            stb += "</tbody></table>"
+            $(eid).html(stb)
+        })
     }
 }
 
@@ -2721,7 +2905,7 @@ var Uti = {
         var oldtxt = $("#txtarea").val().substr(0, 7000)
         var results = `[${Uti.Msg_Idx++}]\n${str}\n\n\n` + oldtxt
 
-        $("#txtarea").val(results);
+        $("#txtarea").show().val(results);
     },
     set_menuContainer_color: function (ret) {
         $("#menuContainer, #passcode, #repopath").removeClass("menuContainer_red").removeClass("menuContainer_yellow").removeClass("menuContainer_green")
@@ -2813,21 +2997,21 @@ var Uti = {
 
     parse_bcv: function (sbcv, txt, outOj) {
         if (!sbcv) return null
-        if("object"===typeof(sbcv)){
+        if ("object" === typeof (sbcv)) {
             var ar = []
-            Object.keys(sbcv).forEach(function(bkc){
+            Object.keys(sbcv).forEach(function (bkc) {
                 ar.push(bkc)
-                Object.keys(sbcv[bkc]).forEach(function(chp){
+                Object.keys(sbcv[bkc]).forEach(function (chp) {
                     ar.push(chp)
-                    Object.keys(sbcv[bkc][chp]).forEach(function(vrs){
+                    Object.keys(sbcv[bkc][chp]).forEach(function (vrs) {
                         ar.push(vrs)
                     })
                 })
             })
-            if(ar.length===3){
+            if (ar.length === 3) {
                 return `${ar[0]}${ar[1]}:${ar[2]}`
             }
-            else{
+            else {
                 return ar.join(" ")
             }
         }

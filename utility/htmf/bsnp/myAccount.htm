@@ -144,19 +144,18 @@
     <p>
         <button onclick="repo_create();">Dock</button>
         <button onclick="repo_destroy();">Undock</button>
-        <button onclick="repo_pushback();">Load</button>
-        <button onclick="repo_pulldown();">Unload</button>
+        <button onclick="repo_pushback();">push</button>
+        <button onclick="repo_pulldown();">pull</button>
         <button onclick="repo_status();">Status</button>
         <a onclick="$('#DocBtnExplaination').toggle()">help?</a>
         <div id="DocBtnExplaination" class="helpinfo">
             <ol>
                 Thinking of your repository as a ship, BSNP server as bank.
-                <li><b>Dock</b>: Your repository ties up at BSNP server. Your data can be viewed by others.</li>
-                <li><b>Undock</b>: Your repository leaves BSNP server. Your data in BSNP server will be deleted. No one can view your data anymore.</li>
-                <li><b>Load</b>: to push data from BSNP server to your repository during docked.</li>
-                <li><b>Unlooad</b>: to pull data from your repository to BSNP server during docked.</li>
+                <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
+                <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No one can view your data anymore.</li>
+                <li><b>Push</b>: to push data to your repository during docked.</li>
+                <li><b>Pull</b>: to pull data from your repository during docked.</li>
             </ol>
-
         </div>
     </p>
     <p>
@@ -371,38 +370,7 @@
             "-S GIT_TERMINAL_PROMPT=0 git push",
             "ps aux"
         ]
-    function gen_cmdline_table(ar) {
-        var stab = "<table border='1'><caption>cmdline</caption><tbody>"
-        for (var i = 0; i < ar.length; i++) {
-            stab += `<tr><td>${i}</td><td class='cmdln'>${ar[i]}</td></tr>`
-        }
-        stab += "</tbody></table>"
-        $("#cmdtab").html(stab).find(".cmdln").bind("click", function () {
-            $("#cmdtab").find(".hili").removeClass("hili")
-            $(this).addClass("hili")
-            var cmd = $(this).text()
-            console.log(cmd)
-
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            Jsonpster.inp.par = { cmdline: cmd }
-            Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
-            //dbg_pster()
-            Jsonpster.Run(function (ret) {
-                dbg_pster(ret)
-                var res = ret.out.cmd_exec_res.success
-                var str2 = ""
-                Object.keys(res).forEach(function (key) {
-                    var str = res[key];
-                    if (!!str) {
-                        str2 += "\n" + str.replace("\\n", "\n")
-                    }
-                    //dbg_pster(key)
-                })
-                dbg_pster(str2)
-            })
-        })
-
-    }
+    
     $(function () {
         
 

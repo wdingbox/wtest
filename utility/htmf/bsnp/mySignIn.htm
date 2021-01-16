@@ -196,31 +196,55 @@
         <br>
     </form>
     <div class="centered_elem">
-        <button onclick="repo_create();">Sign In</button> <a id='Forgot' style="float:right;">Forgot</a>
+        <button onclick="PageUti.repo_create(1);">Sign In</button> 
+        <div style="float:right;">
+
+            <a id='Forgot' >Forgot</a> | 
+            <a id='Test' onclick="$('#testPanel').toggle();">Test</a>
+        </div>
     </div>
-    <p class=".centered_elem">
-        <a onclick="repo_destroy();"></a>
-        <a onclick="repo_pushback();"></a>
-        <a onclick="repo_status();"></a>
-        <a onclick="Okey_use_this();"></a>
-    </p>
+
+    <div class="test" id='testPanel' style="display:none;">
+        <div class="centered_elem">
+        <button onclick="PageUti.repo_create();">Dock</button>
+        <button onclick="PageUti.repo_destroy();">Undock</button>
+        <button onclick="PageUti.repo_pushback();">push</button>
+        <button onclick="PageUti.repo_pulldown();">pull</button>
+        <button onclick="PageUti.repo_status();">Status</button>
+        <a onclick="PageUti.gen_cmdline_table('#account_history');">CmdLines</a> |
+        <a onclick="Okey_use_this();">SetParent</a> |
+        <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
+        
+        <a class="help_label" onclick="$('#DocBtnExplaination').toggle()">help?</a>
+        <div id="DocBtnExplaination" class="helpinfo">
+            <ol>
+                Thinking of your repository as a ship, BSNP server as riverbank.
+                <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
+                <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No one can view your data anymore.</li>
+                <li><b>Push</b>: to push data to your repository during docked.</li>
+                <li><b>Pull</b>: to pull data from your repository during docked.</li>
+            </ol>
+        </div>
+        </div>
+    </div>
+
     <p>
         <a onclick="LoadStorageInRepos();"></a>
         <a onclick="LoadStorage();"></a>
     </p>
     <p>
-        <a id="histroy" onclick="repo_histroy();"></a>
-        <a onclick="RemoveInHistory();"></a>
+      
     </p>
 
 
 
+    <div style="text-align: center;margin-top: 50px;" onclick="$('#txtarea').val('');" id="otb"></div>
+    <hr id="toggle_txtarea">
+    <div id="account_history" style="display: none;">.</div>
     <div id="footer" style="text-align: center;margin-top: 50px;">
-        <div id="otb"></div>
-        <hr id="toggle_txtarea">
+       
         <textarea id="txtarea" rows="25"></textarea>
     </div>
-    <div id="account_history" style="display: none;">.</div>
 
 
 
@@ -229,74 +253,81 @@
     <script>
 
         function Okey_use_this() {
+
             if (!Jsonpster.inp) return alert("empty inp")
             if (!Jsonpster.inp.usr) return alert("empty usr")
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+
+            Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
+            window.opener.postMessage(Jsonpster.inp.usr, '*');
             
-
-
         }
-        function repo_create() {
-            $("#otb").html("<font color='black'>Start to sign in ... </font>")
-
-            var repopath = $("#repopath").val()
-            var reo = Uti.validate_repository_url(repopath)
-            if (!reo) {
-                $("#otb").html("<font color='red'>Error format: Repository</font>")
-                return;
-            }
-
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
-            Jsonpster.api = RestApi.ApiUsrReposData_create.str
-            dbg_pster()
-            Jsonpster.Run(function (ret) {
-                dbg_pster(ret)
-                if (ret.out.state) {
-                    if (1 === ret.out.state.bEditable) {
-                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-                    } else {
-                        $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
-                    }
-                } else {
-                    $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
-                }
-            })
-        }
-        function repo_destroy() {
-            if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
-            Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
-            dbg_pster()
-            Jsonpster.Run(function (ret) {
-
-                dbg_pster(ret)
-            })
-        }
-        function repo_status() {
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-            
-            Jsonpster.api = RestApi.ApiUsrReposData_status.str
-            dbg_pster()
-            Jsonpster.Run(function (ret) {
-
-                dbg_pster(ret)
-                Uti.Msg("Status inp.ret.out=", ret.out)
-            })
-        }
-
-
-        function RemoveInHistory() {
-            var rep = $(".hili").find("td:eq(1)").text()
-            var pws = $(".hili").find("td:eq(2)").text()
-
-            var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
-            if (ret) {
-                MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
-                $(".hili").remove()
-            }
-        }
+        // function repo_create(bSginIn) {
+        //     $("#otb").html("<font color='black'>Start to sign in ... </font>")
+// 
+        //     var repopath = $("#repopath").val()
+        //     var reo = Uti.validate_repository_url(repopath)
+        //     if (!reo) {
+        //         $("#otb").html("<font color='red'>Error format: Repository</font>")
+        //         return;
+        //     }
+// 
+        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        //     
+        //     Jsonpster.api = RestApi.ApiUsrReposData_create.str
+        //     dbg_pster()
+        //     Jsonpster.Run(function (ret) {
+        //         dbg_pster(ret)
+        //         if (ret.out.state) {
+        //             if (1 === ret.out.state.bEditable) {
+        //                 $("#otb").html("<font color='green'>Success</font>")
+        //                 if(bSginIn){
+        //                     window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+        //                 }else{
+        //                     $("#txtarea").show()
+        //                 }
+        //             } else {
+        //                 $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
+        //             }
+        //         } else {
+        //             $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
+        //         }
+        //     })
+        // }
+        // function repo_destroy() {
+        //     if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
+        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        //     
+        //     Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
+        //     dbg_pster()
+        //     Jsonpster.Run(function (ret) {
+// 
+        //         dbg_pster(ret)
+        //     })
+        // }
+        // function repo_status() {
+        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        //     
+        //     Jsonpster.api = RestApi.ApiUsrReposData_status.str
+        //     dbg_pster()
+        //     Jsonpster.Run(function (ret) {
+// 
+        //         dbg_pster(ret)
+        //         Uti.Msg("Status inp.ret.out=", ret.out)
+        //     })
+        // }
+// 
+// 
+        // function RemoveInHistory() {
+        //     var rep = $(".hili").find("td:eq(1)").text()
+        //     var pws = $(".hili").find("td:eq(2)").text()
+// 
+        //     var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
+        //     if (ret) {
+        //         MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
+        //         $(".hili").remove()
+        //     }
+        // }
     </script>
 </body>
 
