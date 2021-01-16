@@ -3685,39 +3685,7 @@ var BibleInputMenuContainer = `
                         </tr>
                     </thead>
                     <tbody id="">
-                        <tr>
-                            <td id="account_history">User<br>Info</td>
-                            <td>
-                            <a id="">Repository</a>: 
-                            <div id="repository_assitance">
-                            <a id="Format_Check" xxid="account_default">Format</a> | 
-                            <a id="account_helper">More</a>
-                            </div>
-                            <br>
-                            <textarea id="repopath" value='https://github.com/bsnp21/pub_test.git' placeholder='https://github.com/bsnp21/pub_test.git' ></textarea>
-                            <br>
-                            <a>Description</a>: 
-                            <span id="repository_description">
-                            <a id="account_date">(optional)</a> 
-                            </span>
-                            <br>
-                            <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
-                            <br>
-                            <a id="passcode_toggler">Password:</a> 
-                            <span id="repository_description">
-                            <a></a> 
-                            </span><br>
-                            <input id="passcode" type="password" value=''></input><br>
-                            <select id='SensitiveDegree' default_val='2' title='SensitiveDegree'>
-                                <option value='2'>private</option>
-                                <option value='1'>protected</option>
-                                <option value='0'>public</option>
-                            </select>
-                            <button id="account_set">Dock</button>
-                            <a id="account_set_info"></a>
-                            </td>
-                            
-                        </tr>
+                        
                        
                         <tr>
                             <td>Font</td>
@@ -3742,6 +3710,9 @@ var BibleInputMenuContainer = `
                             <td>Storage</td>
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
+
+                            <input type="radio" id="StorageRepo_save"/>
+                            <label for="StorageRepo_save" title='clear up storage'>SaveRepository</label> | 
                             
                             <a type="radio" id="StorageRepo_load" title='clear up storage'></a> 
                             
@@ -3750,14 +3721,14 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                 </table>
-                <div id="outConfig" style="display:none"></div>
+                
             </div> 
 
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_SignOut"  style="float:left;display:none;width:342px">
               
-                <table border='1' style="float:right;right:10px">
+                <table border='1' style="float:right;right:10px; width:100%;">
                 <tbody>
                 <tr><td>
                 
@@ -3765,12 +3736,51 @@ var BibleInputMenuContainer = `
                 <a id='NewPage' target='_blank'>New</a> | 
                 <a target='_blank' href='../index.htm'>ref</a> | 
 
-                <input type="radio" id="StorageRepo_save"/>
-                <label for="StorageRepo_save" title='clear up storage'>SaveRepository</label> | 
+                
                 <button class="StorageRepo_Signout">Sign Out</button>
                 </td></tr>
+                
+                <tr>
+                    <td>
+                    <a id="account_history">Repository</a>: 
+                    <div id="repository_assitance">
+                    <a id="Format_Check" xxid="account_default">Format</a> | 
+                    <a id="account_helper">More</a>
+                    </div>
+                    <br>
+                    <textarea id="repopath" value='https://github.com/bsnp21/pub_test.git' placeholder='https://github.com/bsnp21/pub_test.git' ></textarea>
+                    <br>
+                    <a>Description</a>: 
+                    <span id="repository_description">
+                    <a id="account_date">(optional)</a> 
+                    </span>
+                    <br>
+                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
+                    <br>
+                    <a id="passcode_toggler">Password:</a> 
+                    <span id="repository_description">
+                    <a></a> 
+                    </span><br>
+                    <input id="passcode" type="password" value=''></input><br>
+                    <select id='SensitiveDegree' default_val='2' title='SensitiveDegree'>
+                        <option value='2'>private</option>
+                        <option value='1'>protected</option>
+                        <option value='0'>public</option>
+                    </select>
+                    <button id="account_set">Dock</button>
+                    <a id="account_set_info"></a>
+                    </td>
+                    
+                </tr>
                 </tbody>
                 </table>
+                <div id="outConfig" style="display:none"></div>
+
+
+
+
+
+
                 <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+++</a>
                 <div id="DevTool" style='display:none;'>
                 <button onclick="$('#txtarea').val('');$('#operation_res').text('+++')" title='clearout txt'>x</button>
