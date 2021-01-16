@@ -1870,26 +1870,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_history").bind("click", function () {
-        var ar = MyStorage.Repositories().repos_app_init()
-        var stb = "<table id='account_history_table' border='1'>"
-        for (var i = 0; i < ar.length; i++) {
-            var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
-            stb += `<tr><td class='repo_delete'>${i}</td>`
-            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${str}</td></td>`
-            stb += "</tr>"
-        }
-        stb += "</table>"
-
-        $("#outConfig").html(stb).find(".repohistory").bind("click", function () {
-            $("#outConfig").find(".hili").removeClass('hili')
-            $(this).addClass("hili")
-            var repopath = $(this).attr("repopath")
-            var repodesc = $(this).attr("repodesc")
-            var passcode = $(this).attr("passcode")
-            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
-        });
-
-        $("#outConfig").slideToggle()
+        PageUti.account_history("#outConfig")
     })
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
@@ -2675,7 +2656,30 @@ var g_obt = new OutputBibleTable()
 
 
 
+var PageUti = {
+    account_history:function(eid){
+        var ar = MyStorage.Repositories().repos_app_init()
+        var stb = "<table id='account_history_table' border='1'>"
+        for (var i = 0; i < ar.length; i++) {
+            var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
+            stb += `<tr><td class='repo_delete'>${i}</td>`
+            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${str}</td></td>`
+            stb += "</tr>"
+        }
+        stb += "</table>"
 
+        $(eid).html(stb).find(".repohistory").bind("click", function () {
+            $(eid).find(".hili").removeClass('hili')
+            $(this).addClass("hili")
+            var repopath = $(this).attr("repopath")
+            var repodesc = $(this).attr("repodesc")
+            var passcode = $(this).attr("passcode")
+            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+        });
+
+        $(eid).slideToggle()
+    }
+}
 
 
 
