@@ -238,11 +238,10 @@
 
 
 
-    <div style="text-align: center;margin-top: 50px;" onclick="$('#txtarea').val('');" id="otb"></div>
+    <div style="text-align: center;margin-top: 50px;" onclick="$('#txtarea').val('');" id="otb">...</div>
     <hr id="toggle_txtarea">
     <div id="account_history" style="display: none;">.</div>
     <div id="footer" style="text-align: center;margin-top: 50px;">
-       
         <textarea id="txtarea" rows="25"></textarea>
     </div>
 
@@ -262,72 +261,7 @@
             window.opener.postMessage(Jsonpster.inp.usr, '*');
             
         }
-        // function repo_create(bSginIn) {
-        //     $("#otb").html("<font color='black'>Start to sign in ... </font>")
-// 
-        //     var repopath = $("#repopath").val()
-        //     var reo = Uti.validate_repository_url(repopath)
-        //     if (!reo) {
-        //         $("#otb").html("<font color='red'>Error format: Repository</font>")
-        //         return;
-        //     }
-// 
-        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        //     
-        //     Jsonpster.api = RestApi.ApiUsrReposData_create.str
-        //     dbg_pster()
-        //     Jsonpster.Run(function (ret) {
-        //         dbg_pster(ret)
-        //         if (ret.out.state) {
-        //             if (1 === ret.out.state.bEditable) {
-        //                 $("#otb").html("<font color='green'>Success</font>")
-        //                 if(bSginIn){
-        //                     window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-        //                 }else{
-        //                     $("#txtarea").show()
-        //                 }
-        //             } else {
-        //                 $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
-        //             }
-        //         } else {
-        //             $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
-        //         }
-        //     })
-        // }
-        // function repo_destroy() {
-        //     if (!confirm("The Bible Study Note you wrote will be destroyed permanently.")) return
-        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        //     
-        //     Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
-        //     dbg_pster()
-        //     Jsonpster.Run(function (ret) {
-// 
-        //         dbg_pster(ret)
-        //     })
-        // }
-        // function repo_status() {
-        //     Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        //     
-        //     Jsonpster.api = RestApi.ApiUsrReposData_status.str
-        //     dbg_pster()
-        //     Jsonpster.Run(function (ret) {
-// 
-        //         dbg_pster(ret)
-        //         Uti.Msg("Status inp.ret.out=", ret.out)
-        //     })
-        // }
-// 
-// 
-        // function RemoveInHistory() {
-        //     var rep = $(".hili").find("td:eq(1)").text()
-        //     var pws = $(".hili").find("td:eq(2)").text()
-// 
-        //     var ret = confirm("remove in history?\n" + rep + "\n" + pws, "reposit")
-        //     if (ret) {
-        //         MyStorage.Repositories().repos_store_del({ repopath: rep, passcode: pws })
-        //         $(".hili").remove()
-        //     }
-        // }
+       
     </script>
 </body>
 
@@ -362,26 +296,18 @@
 <script>
     var g_ip = Uti.Jsonpster_crossloader()
 
-    function dbg_pster(dat) {
-        var ss = dat
-        if ("object" === typeof dat) {
-            var ss = "ret=" + JSON.stringify(dat, null, 4)
-        }
-        ss += "\n\n\nJsonpster = " + JSON.stringify(Jsonpster, null, 4)
-        ss += "\n\n\nRestApi=" + JSON.stringify(RestApi, null, 4)
-        $("#txtarea").val(ss)
-    }
+   
     setTimeout(() => {
         if (undefined === Jsonpster) {
             alert("Jsonpster not exist.")
         }
         else {
             $("title").text("signin")
-            dbg_pster()
+            Uti.Msg("Sign-In")
             var ar = MyStorage.Repositories().repos_app_init()
 
             //$("#histroy").trigger("click")
         }
         //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-    }, 2000)
+    }, 1000)
 </script>

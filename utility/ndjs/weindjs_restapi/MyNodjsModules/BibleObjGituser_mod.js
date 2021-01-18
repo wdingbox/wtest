@@ -733,9 +733,9 @@ BibleObjGituser.prototype.proj_setup = async function () {
     inp.out.desc = "setup start."
     var stat = this.profile_state()
     if (stat.bEditable > 0) {
+        stat.bExist = 1
         inp.out.desc += "|already setup."
         await this.git_pull()
-        //return null
     }
     if (stat.bGitDir !== 1) {
         await this.git_clone()
@@ -762,7 +762,7 @@ BibleObjGituser.prototype.proj_setup = async function () {
 
     return inp
 }
-BibleObjGituser.prototype.proj_destroy = async function (res) {
+BibleObjGituser.prototype.proj_destroy = async function (bPushBeforeDelete) {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -770,10 +770,20 @@ BibleObjGituser.prototype.proj_destroy = async function (res) {
         return inp
     }
 
+    if(true === bPushBeforeDelete) {
+        await this.git_push()
+    }
+    if(0===this.m_inp.out.state.bRepositable){
+        //case push failed. Don't delete
+        return inp
+    }
+
     //console.log("proj", proj)
     var gitdir = this.get_usr_git_dir()
     var password = "lll" //dev mac
-    var proj_destroy = `echo ${password} | sudo -S rm -rf ${gitdir}`
+    var proj_destroy = `
+    echo ${password} | sudo -S rm -rf ${gitdir}
+    `
 
 
     if (fs.existsSync(`${gitdir}`)) {
@@ -1040,15 +1050,17 @@ fi
         })
     return inp
 }
-BibleObjGituser.prototype.git_status = async function () {
+BibleObjGituser.prototype.git_status = async function (_sb) {
     var inp = this.m_inp
     if (!inp.out.state) return console.log("*** Fatal Error: inp.out.state = null")
+
+    if(undefined === _sb ) _sb=""
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status
         var git_status_cmd = `
         cd ${this.get_usr_git_dir()}
-        git status
+        git status ${_sb}
         #git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
         inp.out.git_status_res = {}
         await BibleUti.exec_Cmd(git_status_cmd).then(

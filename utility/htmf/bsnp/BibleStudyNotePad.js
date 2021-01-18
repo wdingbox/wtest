@@ -2814,6 +2814,7 @@ var PageUti = {
                 "ls -al account/dat",
                 "ls -al account/myoj",
                 "git status",
+                "git status -sb",
                 "git diff",
                 "git log",
                 "git add *",
@@ -3545,8 +3546,10 @@ var BibleInputMenuContainer = `
 
 <div id="MainMenuToggler">
     <a id="bk_name">Select A Book</a>
-    <a id="minus_ChpVal" op='—'>--</a>
-    <div id='chp_num'>chap</div><a id="plus_ChpVal"> : </a><div id='vrs_num'>ver</div>
+    <a id="minus_ChpVal" op='—'>&nbsp;-&nbsp;</a>
+    <div id='chp_num'>chap</div>
+    <a id="plus_ChpVal">&nbsp;:&nbsp;</a> 
+    <div id='vrs_num'>ver</div>
 </div>
 
 <!----------------------------->

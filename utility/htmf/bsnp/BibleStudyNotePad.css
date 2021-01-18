@@ -198,11 +198,14 @@ body {
     
 
     #minus_ChpVal, #plus_ChpVal{
+   
         color: black;
-      
+        background-color: rgb(185, 132, 108);
         cursor: pointer;
-        padding: 0px 2px 5px 2px;
+        padding: 0px 5px 3px 5px;
         margin: 0 0 0 0;
+        text-align: center;
+     
     }
 
 
@@ -211,6 +214,8 @@ body {
     }
     #DigitOfChapt, #chp_num {
         background-color: rgb(149, 97, 29); 
+        padding: 0px 3px 3px 3px;
+        margin: 0 0 0 0;
     }
     #DigitOfVerse,  #vrs_num {
         background-color:rgb(99, 120, 6);
