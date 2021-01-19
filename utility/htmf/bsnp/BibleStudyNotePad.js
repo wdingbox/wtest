@@ -665,7 +665,7 @@ PopupMenu.prototype.init = function (cbf) {
     $(this.m_id).find("a").bind("click", function () {
         $(_THIS.m_id).hide()
     })
-    $(this.m_id).find("caption").bind("click", function () {
+    $("#divPopupMenu_CaptionBCV").on("click", function () {
         var bcv = $(this).text().trim()
         if (bcv.length > 0) {
             Uti.copy2clipboard(`(${bcv})`, this)
@@ -730,7 +730,17 @@ PopupMenu.prototype.popup = function (par) {
             this.popupMenu_RevTag.init_popup(par)
         }
     }
-    $(this.m_id).find("caption").text(par.m_bcv)
+    $("#divPopupMenu_CaptionBCV").text(par.m_bcv)
+    if(par.m_bcv){
+        var stores = MyStorage.MostRecentAryInStore("#MemoryVerse")
+        //this.m_tbodies.MemoryVerse.init("#MemoryVerse")
+        var ary  = stores.get_ary()
+        if(ary.indexOf(par.m_bcv)>=0){
+            $("#divPopupMenu_CaptionBCV").addClass("divPopupMenu_CaptionBCV_memo")
+        }else{
+            $("#divPopupMenu_CaptionBCV").removeClass("divPopupMenu_CaptionBCV_memo")
+        }
+    }
 
     if (par.m_alreadyHili) {
         $(this.m_id).toggle();
@@ -3564,7 +3574,7 @@ var BibleInputMenuContainer = `
             </td>
         </tr>
     </tbody>
-    <caption>--</caption>
+    <caption><div id='divPopupMenu_CaptionBCV'></div></caption>
     </table>
 </div>
 
