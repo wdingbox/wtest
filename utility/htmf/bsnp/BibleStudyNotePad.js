@@ -731,13 +731,13 @@ PopupMenu.prototype.popup = function (par) {
         }
     }
     $("#divPopupMenu_CaptionBCV").text(par.m_bcv)
-    if(par.m_bcv){
+    if (par.m_bcv) {
         var stores = MyStorage.MostRecentAryInStore("#MemoryVerse")
         //this.m_tbodies.MemoryVerse.init("#MemoryVerse")
-        var ary  = stores.get_ary()
-        if(ary.indexOf(par.m_bcv)>=0){
+        var ary = stores.get_ary()
+        if (ary.indexOf(par.m_bcv) >= 0) {
             $("#divPopupMenu_CaptionBCV").addClass("divPopupMenu_CaptionBCV_memo")
-        }else{
+        } else {
             $("#divPopupMenu_CaptionBCV").removeClass("divPopupMenu_CaptionBCV_memo")
         }
     }
@@ -1895,10 +1895,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         var val = $(this).val()
         console.log(val)
         if (val === "off") return alert("is running")
-        $("#operation_res").text(`${$(this).next().text()} ${val} ...`).show()
+        $("#StorageRepo_save_res").text(`${$(this).next().text()} ${val} ...`).show()
 
         MyStorage.Repo_save(function (ret) {
-            Uti.show_save_results(ret, "#operation_res")
+            Uti.show_save_results(ret, "#StorageRepo_save_res")
             $("#StorageRepo_save").prop("checked", false)
         })
     })
@@ -2126,7 +2126,7 @@ AppInstancesManager.prototype.init = function () {
         markHistory.addnew2table("MemoryVerse", bcv)
 
         MyStorage.Repo_save(function (ret) {
-            Uti.show_save_results(ret, "#operation_res")
+            Uti.show_save_results(ret, "#StorageRepo_save_res")
             Uti.Msg("MyStorage.Repo_save:", ret)
             //$("#StorageRepo_save").prop("checked", false)
         })
@@ -2446,9 +2446,9 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     $("#toggle_Case").on("click", function () {
         function _camelize(str) {
             str = str.toLowerCase().replace(/[\s]+(.)/g, function (match, chr) {
-                return ' '+chr.toUpperCase();
+                return ' ' + chr.toUpperCase();
             });
-            str = str.replace(/^(.)/, function(match, chr){
+            str = str.replace(/^(.)/, function (match, chr) {
                 return chr.toUpperCase();
             })
             return str
@@ -2642,6 +2642,11 @@ OutputBibleTable.prototype.create_trs = function (odat) {
         return { trs: "", size: 0 };
     }
 
+    var stores = MyStorage.MostRecentAryInStore("#MemoryVerse")
+    //this.m_tbodies.MemoryVerse.init("#MemoryVerse")
+    var MemoryVersary = stores.get_ary()
+
+
     //console.log("result:", this.m_data.out.result)
     var idx = 0, trs = "", uuid = "";
     $.each(odat, function (vol, chpObj) {
@@ -2650,7 +2655,11 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                 //console.log("typeof val=", typeof val);
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
-                var BcvTag = `<a class='popupclicklabel bcvTag' title='${sbcv}'>${sbcv}</a>`
+                var MemoVersClass = ""
+                if(MemoryVersary.indexOf(sbcv)>=0){
+                    MemoVersClass="divPopupMenu_CaptionBCV_memo"
+                }
+                var BcvTag = `<a class='popupclicklabel bcvTag ${MemoVersClass}' title='${sbcv}'>${sbcv}</a>`
                 trs += `<tr><td>${BcvTag}`;
                 switch (typeof val) {
                     case "object"://trn
@@ -2970,13 +2979,13 @@ var Uti = {
         }
         var sta = ret.out.state
         if (sta) {
-            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
-            var msg2 = `bRepositable:${sta.bRepositable}`
-            var push_res = ret.out.git_push_res.desc
-            var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var colr1 = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+            var msg1 = `bRepositable:${sta.bRepositable}`
+            var siz = ret.out.save_res.saved_size
+            var colr2 = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             var msg2 = `bRepositable:${sta.bRepositable}`
 
-            $(eid).html(`<font color='${clr}'>${msg}</font>, <font color='${colr}'>${push_res}</font>`)
+            $(eid).html(`<font color='${colr1}'>${msg1}</font>, <font color='${colr2}'>${msg2}</font>, <a>${siz}</a>`)
         } else {
             $(eid).html(`<font color='red'>Failed: Invalid Repository</font>`)
         }
@@ -3721,10 +3730,8 @@ var BibleInputMenuContainer = `
                 <table id='' border="1" style="width:100%;">
                     <thead>
                         <tr>
-                    
                             <td>desc</td>
                             <td>Setting</td>
-                            
                         </tr>
                     </thead>
                     <tbody id="">
@@ -3737,10 +3744,8 @@ var BibleInputMenuContainer = `
                             <a id='fontsize'></a>
                             <button onclick="g_obt.incFontSize(2);" title='font-size plus'>+</button>
                             </td>
-                             
                         </tr>
                         <tr>
-                         
                             <td>Lang</td>
                             <td><select id="LanguageSel" default_val="English">
                                 <option value='English'>English</option>
@@ -3749,7 +3754,6 @@ var BibleInputMenuContainer = `
                             </select></td>
                         </tr>
                         <tr>
-                         
                             <td>Storage</td>
                             <td>
                             <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
@@ -3764,6 +3768,7 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                 </table>
+                <div id="StorageRepo_save_res"></div>
                 
             </div> 
 
