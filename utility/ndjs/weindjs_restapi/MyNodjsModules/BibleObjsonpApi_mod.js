@@ -440,9 +440,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (userProject.proj_parse(inp)) {
 
 
-            await this.git_add_commit_push("before delete", "")
+            await userProject.git_add_commit_push("before delete", "")
 
-            if (0 === this.m_inp.out.state.bRepositable) {
+            if (0 === userProject.m_inp.out.state.bRepositable) {
                 //case push failed. Don't delete
                 return inp
             }
