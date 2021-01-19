@@ -410,7 +410,7 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    $("#RevTag_Info").text(Jsonpster.inp.usr.repopath)
+    //$("#RevTag_Info").text(Jsonpster.inp.usr.repopath)
 
     this.m_ediDiv.setId_Txt(par.m_txuid, par.m_rev, par.m_outxtObj)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -2114,6 +2114,12 @@ AppInstancesManager.prototype.init = function () {
 
     popupMenu.init(function (bcv) {
         markHistory.addnew2table("MemoryVerse", bcv)
+
+        MyStorage.Repo_save(function (ret) {
+            Uti.show_save_results(ret, "#operation_res")
+            Uti.Msg("MyStorage.Repo_save:", ret)
+            //$("#StorageRepo_save").prop("checked", false)
+        })
     })
     g_obt.onclick_ob_table(function () {
         //$("#menuContainer").hide()
@@ -3541,7 +3547,7 @@ var BibleInputMenuContainer = `
         </tr>
         <tr>
             <td>
-                <a id="RevTag_Info">user</a>
+                <a id="RevTag_Info"></a>
             </td>
         </tr>
         
@@ -3668,8 +3674,8 @@ var BibleInputMenuContainer = `
                 Document: <a id="SearchInCaption" class="searchFile">CUVS</a>
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
                 
-                <button id="Btn_InSvr" title="search on servr">SearchSvr</button>
-                <button id="Btn_InPage" title="search on local table">Paging</button>
+                <button id="Btn_InSvr" title="search on servr">SvrSearch</button>
+                <button id="Btn_InPage" style='float:right;' title="search on local table">Paging</button>
                 <a id="searchNextresult" >...</a>
 
                 <button id="Btn_Prev"  title="hili prev in page">Prev</button>
