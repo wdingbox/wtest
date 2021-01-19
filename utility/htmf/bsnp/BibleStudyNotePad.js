@@ -2312,6 +2312,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Jsonpster.api = RestApi.ApiBibleObj_search_txt.str;
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
+        $("#searchNextresult").text("Serach str in server site..")
         Jsonpster.Run(function (ret) {
             _THIS.apiCallback_Gen_output_table(ret, function (size) {
                 $("#searchNextresult").text("0/" + size)
@@ -2390,7 +2391,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         onclick_inSvr_BibleObj_search_str()
     })
     $("#searchNextresult").on("click", function () {
-        $(this).text("In:")
+        $(this).text(".....")
         $("#sinput").val("").focus()
     })
     $("#RemoveSearchStrn").on("click", function () {
@@ -3666,9 +3667,11 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
                 Document: <a id="SearchInCaption" class="searchFile">CUVS</a>
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
-                <div id="searchNextresult" style="width:50px;float:left;">In:</div>
-                <button id="Btn_InSvr" title="search on servr">Svr</button>
-                <button id="Btn_InPage" title="search on local table">Page</button>
+                
+                <button id="Btn_InSvr" title="search on servr">SearchSvr</button>
+                <button id="Btn_InPage" title="search on local table">Paging</button>
+                <a id="searchNextresult" >...</a>
+
                 <button id="Btn_Prev"  title="hili prev in page">Prev</button>
                 <button id="Btn_Next"  title="hili next in page">Next</button>
                 <br>
