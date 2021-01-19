@@ -1677,7 +1677,7 @@ Tab_MostRecentBody.prototype.clearHistory = function (idtxtout) {
     })
     this.m_bcvHistory = _THIS.m_MostRecentInStore.get_ary()
 
-    this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
+    //this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
 
     var std_bcv_strn = this.m_bcvHistory.join(", ")
     Uti.Msg(std_bcv_strn)
@@ -1734,8 +1734,10 @@ Tab_MostRecent_BCV.prototype.init = function () {
     })
 }
 Tab_MostRecent_BCV.prototype.getCap = function () {
-    var cap = $(this.m_tableID).find("caption:eq(0)").find("button").text().trim()
-    return cap
+    var cap = $(this.m_tableID).find("caption:eq(0)").find(".ColorRecentMarks").text().trim()
+    var capmap = {"B":"RecentBooks", "T":"RecentMarks", "M":"MemoryVerse"}
+    var scap = capmap[cap]
+    return scap
 }
 
 Tab_MostRecent_BCV.prototype.onClickHistoryItem = function (onClickHistoryItm) {
