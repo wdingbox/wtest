@@ -456,7 +456,8 @@ body {
     .divPopupMenu_CaptionBCV_MemoVerse{
         color: cyan;
         text-decoration: overline;
-        background-color: navy;
+        margin:1px 0 0 0 0;
+        padding: 1px 0 0 0;
     }
 
 

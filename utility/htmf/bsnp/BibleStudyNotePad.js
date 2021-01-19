@@ -671,6 +671,7 @@ PopupMenu.prototype.init = function (cbf) {
             Uti.copy2clipboard(`(${bcv})`, this)
         }
         if (cbf) cbf(bcv)
+        $(`.bcvTag[title='${bcv}']`).addClass("divPopupMenu_CaptionBCV_MemoVerse")
         _THIS.hide()
     })
 
