@@ -89,7 +89,7 @@ body {
     #repopath, #repodesc{
         width:100%;
     }
-    #repository_assitance, #repository_description, #StorageRepo_Signout{
+    #repository_assitance, #repository_description, .StorageRepo_Signout{
         float:right;
     }
 
