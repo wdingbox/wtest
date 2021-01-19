@@ -2361,13 +2361,13 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     }
 
     $("#Btn_Prev, #Btn_Next").hide()
-    $("#Btn_Prev").bind("click", function () {
+    $("#Btn_Prev").on("click", function () {
         onclick_inpage_find_next(-1, this)
     })
-    $("#Btn_Next").bind("click", function () {
+    $("#Btn_Next").on("click", function () {
         onclick_inpage_find_next(+1, this)
     })
-    $("#Btn_InPage").bind("click", function () {
+    $("#Btn_InPage").on("click", function () {
         $("#Btn_Prev, #Btn_Next").hide()
         var s = $("#sinput").val();
         var err = g_obt.set_inpage_findstrn(s)
@@ -2386,14 +2386,14 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         }
         $("#searchNextresult").text("0/" + nFound)
     })
-    $("#Btn_InSvr").bind("click", function () {
+    $("#Btn_InSvr").on("click", function () {
         onclick_inSvr_BibleObj_search_str()
     })
-    $("#searchNextresult").bind("click", function () {
+    $("#searchNextresult").on("click", function () {
         $(this).text("In:")
         $("#sinput").val("").focus()
     })
-    $("#RemoveSearchStrn").bind("click", function () {
+    $("#RemoveSearchStrn").on("click", function () {
         var ar = []
         $("#Tab_regex_history_lst").find(".option").each(function () {
             var tx = $(this).text().trim()
@@ -2405,7 +2405,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         })
         MyStorage.setMostRecentSearchStrn(ar)
     })
-    $("#REGEXP_AND").bind("click", function () {
+    $("#REGEXP_AND").on("click", function () {
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty")
         MyStorage.addMostRecentSearchStrn(s)
@@ -2418,13 +2418,33 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         })
         $("#sinput").val(sss)
     })
-    $("#REGEXP_IgnoreCase").bind("click", function () {
+    $("#REGEXP_IgnoreCase").on("click", function () {
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty")
         MyStorage.addMostRecentSearchStrn(s)
 
         var sss = "/" + s + "/i"
         $("#sinput").val(sss)
+    })
+    $("#toggle_Case").on("click", function () {
+        function _camelize(str) {
+            str = str.toLowerCase().replace(/[\s]+(.)/g, function (match, chr) {
+                return ' '+chr.toUpperCase();
+            });
+            str = str.replace(/^(.)/, function(match, chr){
+                return chr.toUpperCase();
+            })
+            return str
+        }
+        var s = $("#sinput").val();
+        if (s === s.toLowerCase()) {
+            s = s.toUpperCase();
+        } else if (s === s.toUpperCase()) {
+            s = _camelize(s);
+        } else {
+            s = s.toLowerCase();
+        }
+        $("#sinput").val(s)
     })
 
     gen_search_strn_history()
@@ -3652,9 +3672,10 @@ var BibleInputMenuContainer = `
                 <button id="Btn_Prev"  title="hili prev in page">Prev</button>
                 <button id="Btn_Next"  title="hili next in page">Next</button>
                 <br>
-                <button id="REGEXP_AND">AND</button>
-                <button id="REGEXP_IgnoreCase">IgnoreCase</button>
-                <button id="RemoveSearchStrn">Delete selected</button>
+                <a id="REGEXP_AND">AND</a> | 
+                <a id="REGEXP_IgnoreCase">IgnoreCase</a> | 
+                <a id="toggle_Case">toggleCase</a>  <br>
+                <button id="RemoveSearchStrn">Delete Selected History</button>
                 <br>  
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
                 <caption>Search History</caption>
@@ -3786,7 +3807,7 @@ var BibleInputMenuContainer = `
 
                 <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+++</a>
                 <div id="DevTool" style='display:none;'>
-                <button onclick="$('#txtarea').val('');$('#operation_res').text('+++')" title='clearout txt'>x</button>
+                <button onclick="$('#txtarea').val('');$('#operation_res').text('+')" title='clearout txt'>x</button>
                 <button id="Check_bcv">Check(bcv)</button><a href='./myCmdline.htm'>.</a>
                 <textarea id="txtarea" style='width:100%;' rows='20'  value='search results...' title='log.'></textarea><br>
                 </div>
