@@ -322,7 +322,7 @@ var BibleUti = {
 
 
     load_BibleObj_by_fname: function (jsfnm) {
-        var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", };
+        var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", err: "" };
 
         if (!fs.existsSync(jsfnm)) {
             console.log("f not exit:", jsfnm)
@@ -336,7 +336,11 @@ var BibleUti = {
             if (i > 0) {
                 ret.header = t.substr(0, i);
                 var s = t.substr(i);
-                ret.obj = JSON.parse(s);
+                try {
+                    ret.obj = JSON.parse(s);
+                } catch (e) {
+                    ret.err = e;
+                }
 
             }
         }
@@ -417,8 +421,13 @@ var BibleUti = {
             req.on("end", async function () {
                 console.log("on post eend:", body)
 
-                var inpObj = JSON.parse(body)
-                inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+                var inpObj = null
+                try {
+                    inpObj = JSON.parse(body)
+                    inpObj.out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+                } catch (err) {
+                    inpObj.err = err
+                }
                 console.log("POST:3 inp=", JSON.stringify(inpObj, null, 4));
 
 
@@ -452,11 +461,19 @@ var BibleUti = {
             return null;
         }
         var sin = decodeURIComponent(req.query.inp);//must for client's encodeURIComponent
-        var inpObj = JSON.parse(sin);
-        inpObj.out = { data: null, desc: "", state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
-        console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
-        //cbf(inpObj, res)
-        return inpObj
+
+        var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+        try {
+            var inpObj = JSON.parse(sin);
+            inpObj.out = out
+            console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
+            //cbf(inpObj, res)
+            return inpObj
+        } catch (err) {
+            out.err = err
+            console.log(err)
+            return out
+        }
     },
     //// BibleUti /////
 }
@@ -762,19 +779,11 @@ BibleObjGituser.prototype.proj_setup = async function () {
 
     return inp
 }
-BibleObjGituser.prototype.proj_destroy = async function (bPushBeforeDelete) {
+BibleObjGituser.prototype.proj_destroy = async function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
         console.log("failed git setup", inp)
-        return inp
-    }
-
-    if(true === bPushBeforeDelete) {
-        await this.git_push()
-    }
-    if(0===this.m_inp.out.state.bRepositable){
-        //case push failed. Don't delete
         return inp
     }
 
@@ -784,7 +793,6 @@ BibleObjGituser.prototype.proj_destroy = async function (bPushBeforeDelete) {
     var proj_destroy = `
     echo ${password} | sudo -S rm -rf ${gitdir}
     `
-
 
     if (fs.existsSync(`${gitdir}`)) {
         inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(proj_destroy)
@@ -1054,7 +1062,7 @@ BibleObjGituser.prototype.git_status = async function (_sb) {
     var inp = this.m_inp
     if (!inp.out.state) return console.log("*** Fatal Error: inp.out.state = null")
 
-    if(undefined === _sb ) _sb=""
+    if (undefined === _sb) _sb = ""
     var gitdir = this.get_usr_git_dir("/.git/config")
     if (fs.existsSync(gitdir)) {
         /////// git status

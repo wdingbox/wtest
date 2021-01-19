@@ -348,9 +348,13 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var jsfname = userProject.get_pfxname(doc)
             var ret = BibleUti.load_BibleObj_by_fname(jsfname)
             if (!ret.obj) return
-            ret.obj = JSON.parse(inp.par.data, null, 4)
-            console.log("ret", ret)
-            ret.writeback()
+            try {
+                ret.obj = JSON.parse(inp.par.data, null, 4)
+                console.log("ret", ret)
+                ret.writeback()
+            } catch (err) {
+                inp.out.state.err = err
+            }
 
             //// 
             var save_res = {}
@@ -434,7 +438,16 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
-            await userProject.proj_destroy(res)
+
+
+            await this.git_add_commit_push("before delete", "")
+
+            if (0 === this.m_inp.out.state.bRepositable) {
+                //case push failed. Don't delete
+                return inp
+            }
+
+            await userProject.proj_destroy()
         }
 
         var sret = JSON.stringify(inp, null, 4)
@@ -528,7 +541,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     /////
-    ApiBibleObj_read_AllUsrs_BkcChpVrs_txt:function(req, res){
+    ApiBibleObj_read_AllUsrs_BkcChpVrs_txt: function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
@@ -540,9 +553,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         inp.out.data = {}
         //////----
-        function __load_bcv(jsfname){
+        function __load_bcv(jsfname) {
             var nary = jsfname.split("/")
-            var usr_repo = nary[6]+"/"+nary[7]
+            var usr_repo = nary[6] + "/" + nary[7]
             var bio = BibleUti.load_BibleObj_by_fname(jsfname);
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length < 3) {
@@ -552,7 +565,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 //await userProject.git_pull(function (bSuccess) {
                 //})
                 inp.out.desc = "load success"
-                var usr_repo = nary[6]+"/"+nary[7] +"@" + (new Date(bio.stat.mtime)).toISOString().substr(0,10)
+                var usr_repo = nary[6] + "/" + nary[7] + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
                 inp.out.data[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
                 inp.out.desc = "failed git pull and load"
@@ -560,16 +573,16 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var jsfname = userProject.get_pfxname(doc)
         __load_bcv(jsfname)
-        
+
         /////----
         var docfilname = userProject.get_DocCode_Fname(doc)
-        var docfilname2 = userProject.get_usr_myoj_dir("/"+docfilname)
+        var docfilname2 = userProject.get_usr_myoj_dir("/" + docfilname)
         var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
-        console.log("jsfn:",jsfname)
-        for(var i=0; i<outfil.m_olis.length;i++){
+        console.log("jsfn:", jsfname)
+        for (var i = 0; i < outfil.m_olis.length; i++) {
             var jsfn = outfil.m_olis[i]
-            if(docfilname2 === jsfn)continue;
-            console.log("jsfn=",jsfn)
+            if (docfilname2 === jsfn) continue;
+            console.log("jsfn=", jsfn)
             __load_bcv(jsfn)
         }
 
