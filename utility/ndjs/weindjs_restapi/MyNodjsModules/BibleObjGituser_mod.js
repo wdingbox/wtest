@@ -738,7 +738,7 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
                 }
             }
             break
-        case ".": //: ./Dat/localStorage
+        case ".": //-: ./dat/localStorage
             {
                 var pfnam = DocCode.substr(1)
                 if (inp.usr.proj) {
