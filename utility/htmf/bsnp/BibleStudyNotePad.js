@@ -733,12 +733,11 @@ PopupMenu.prototype.popup = function (par) {
     $("#divPopupMenu_CaptionBCV").text(par.m_bcv)
     if (par.m_bcv) {
         var stores = MyStorage.MostRecentAryInStore("#MemoryVerse")
-        //this.m_tbodies.MemoryVerse.init("#MemoryVerse")
         var ary = stores.get_ary()
         if (ary.indexOf(par.m_bcv) >= 0) {
-            $("#divPopupMenu_CaptionBCV").addClass("divPopupMenu_CaptionBCV_memo")
+            $("#divPopupMenu_CaptionBCV").addClass("divPopupMenu_CaptionBCV_MemoVerse")
         } else {
-            $("#divPopupMenu_CaptionBCV").removeClass("divPopupMenu_CaptionBCV_memo")
+            $("#divPopupMenu_CaptionBCV").removeClass("divPopupMenu_CaptionBCV_MemoVerse")
         }
     }
 
@@ -1735,7 +1734,7 @@ Tab_MostRecent_BCV.prototype.init = function () {
 }
 Tab_MostRecent_BCV.prototype.getCap = function () {
     var cap = $(this.m_tableID).find("caption:eq(0)").find(".ColorRecentMarks").text().trim()
-    var capmap = {"B":"RecentBooks", "T":"RecentMarks", "M":"MemoryVerse"}
+    var capmap = { "B": "RecentBooks", "T": "RecentMarks", "M": "MemoryVerse" }
     var scap = capmap[cap]
     return scap
 }
@@ -2658,8 +2657,8 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                 idx++;
                 var sbcv = `${vol}${chp}:${vrs}`;
                 var MemoVersClass = ""
-                if(MemoryVersary.indexOf(sbcv)>=0){
-                    MemoVersClass="divPopupMenu_CaptionBCV_memo"
+                if (MemoryVersary.indexOf(sbcv) >= 0) {
+                    MemoVersClass = "divPopupMenu_CaptionBCV_MemoVerse"
                 }
                 var BcvTag = `<a class='popupclicklabel bcvTag ${MemoVersClass}' title='${sbcv}'>${sbcv}</a>`
                 trs += `<tr><td>${BcvTag}`;
@@ -3585,7 +3584,7 @@ var BibleInputMenuContainer = `
             </td>
         </tr>
     </tbody>
-    <caption><div id='divPopupMenu_CaptionBCV'></div></caption>
+    <caption><div id='divPopupMenu_CaptionBCV' title='push to MemoryVerse; save to repository; copy to clickboard.'></div></caption>
     </table>
 </div>
 
