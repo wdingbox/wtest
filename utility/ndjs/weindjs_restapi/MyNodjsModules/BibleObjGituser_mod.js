@@ -721,6 +721,19 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
                 var fnam = this.get_DocCode_Fname(DocCode)
                 if (inp.usr.proj) {
                     dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
+                    if (!fs.existsSync(dest_pfname)) {
+                        var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
+                        if(fs.existsSync(src)){
+                            const { COPYFILE_EXCL } = fs.constants;
+                            fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
+                        }else{
+                            console.log("* * * [Fatal Err] src not exist:", src)
+                        }
+                    }
+                    if (!fs.existsSync(dest_pfname)) {
+                        console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
+                    }
+                    console.log("\n\n* * * dest_pfname:", dest_pfname)
                 }
             }
             break
