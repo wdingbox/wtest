@@ -1117,20 +1117,21 @@ BibleObjGituser.prototype.git_status = async function (_sb) {
     }
 }
 
-BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
-    var _THIS = this
-    var inp = this.m_inp
-    if (undefined == punPush || "#" !== punPush) punPush = ""
+//  BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
+//      var _THIS = this
+//      var inp = this.m_inp
+//      if (undefined == punPush || "#" !== punPush) punPush = ""
+//  
+//      var res = await this.exec_cmd_git("git add *")
+//      var res = await this.exec_cmd_git(`git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}`)
+//  
+//      if (punPush.length === 0) {
+//          var res = await this.git_push()
+//      }
+//      const erry = ["fatal", "Invalid"]
+//  
+//  }
 
-    var res = await this.exec_cmd_git("git add *")
-    var res = await this.exec_cmd_git(`git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}`)
-
-    if (punPush.length === 0) {
-        var res = await this.git_push()
-    }
-    const erry = ["fatal", "Invalid"]
-
-}
 BibleObjGituser.prototype.git_pull = async function (cbf) {
     this.git_config_allow_push(true)
     this.m_inp.out.git_pull_res = await this.exec_cmd_git("GIT_TERMINAL_PROMPT=0 git pull")

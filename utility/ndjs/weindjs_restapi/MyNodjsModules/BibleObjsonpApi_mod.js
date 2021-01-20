@@ -376,7 +376,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             inp.out.save_res = save_res
             var msg = jsfname + " saved."
 
-            await userProject.git_add_commit_push(msg, "#")
+            //await userProject.git_add_commit_push(msg, "#")
+            var res2 = await userProject.exec_cmd_git("git add *")
+            var res3 = await userProject.exec_cmd_git(`git commit -m "svr:${save_res.saved_size}. repodesc:${inp.usr.repodesc}"`)
+            var res4 = await userProject.git_push()
         })
     },
     ApiUsrDat_load: async function (req, res) {
@@ -386,6 +389,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
+        
         if (proj) {
 
             await userProject.proj_setup()
@@ -449,8 +453,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
 
-
-            await userProject.git_add_commit_push("before delete", "")
+            var res2 = await userProject.exec_cmd_git("git add *")
+            var res3 = await userProject.exec_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+            var res4 = await userProject.git_push()
+            var stat =  userProject.profile_state()
 
             if (0 === userProject.m_inp.out.state.bRepositable) {
                 //case push failed. Don't delete
@@ -501,7 +507,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
             await userProject.proj_setup()
-            await userProject.git_add_commit_push("push hard.", "");//real push hard.
+            //await userProject.git_add_commit_push("push hard.", "");//real push hard.
+
+            var res2 = await userProject.exec_cmd_git("git add *")
+            var res3 = await userProject.exec_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
+            var res4 = await userProject.git_push()
         }
 
         var sret = JSON.stringify(inp, null, 4)
