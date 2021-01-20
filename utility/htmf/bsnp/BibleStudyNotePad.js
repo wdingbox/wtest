@@ -2006,11 +2006,11 @@ AppInstancesManager.prototype.init = function () {
     showup.m_Bki.onclick_bkc(function () {
         _This.scrollToView_Vrs() //before clearup.
 
-        //store before clear
+        //store before clearup
         var ret = showup.get_selected_bcv_parm()
         if (ret && ret.m_bcv) markHistory.m_tbodies.RecentMarks.addnew2table(ret.m_bcv)
 
-        //clear
+        //clearup
         showup.m_Chp.set_showupVal("")
         showup.m_Vrs.set_showupVal("")
         digi.init_Chp_digiKeys_by_vol()
@@ -3687,7 +3687,7 @@ var BibleInputMenuContainer = `
                     <tbody id='MemoryVerse'>
                     </tbody>
                     <caption>
-                       <button id="clearUnse" title='clear unselected items'>x</button>
+                       <button id="clearUnse" title='clearup unselected items'>x</button>
                        <button id="toggleSel" title='toggle selected and unselected'>~</button>
                     </caption>
                 </table>
@@ -3762,12 +3762,12 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td>Storage</td>
                             <td>
-                            <input type="radio" onclick="MyStorage.clear(); $(this).prop("checked",false);" title='clear up storage'>Clear</input>
+                            <input type="radio" onclick="MyStorage.clear(); $(this).prop('checked',false);" title='clear up storage'>Clear</input>
 
                             <input type="radio" id="StorageRepo_save"/>
-                            <label for="StorageRepo_save" title='clear up storage'>SaveRepository</label> | 
+                            <label for="StorageRepo_save" title='save up storage'>SaveRepository</label> | 
                             
-                            <a type="radio" id="StorageRepo_load" title='clear up storage'></a> 
+                            <a type="radio" id="StorageRepo_load" title='load up storage'></a> 
                             
                             <a id="Storage_local_repos_exchange"></a>
                             </td>

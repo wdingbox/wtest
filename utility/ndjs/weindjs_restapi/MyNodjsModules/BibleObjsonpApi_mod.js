@@ -177,6 +177,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_pfxname(trn)
+                console.log("jsfname:", jsfname)
                 var bib = BibleUti.load_BibleObj_by_fname(jsfname);
                 var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
                 TbcvObj[trn] = bcObj;
