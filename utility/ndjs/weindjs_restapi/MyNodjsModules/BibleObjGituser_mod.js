@@ -923,7 +923,7 @@ BibleObjGituser.prototype.chmod_R_777_acct = async function () {
 
     inp.out.change_perm = await BibleUti.exec_Cmd(change_perm_cmd)
 
-    return ret
+    return inp.out.change_perm
 }
 BibleObjGituser.prototype.chmod_R_ = async function (mode, dir) {
     // mode : "777" 
@@ -943,7 +943,7 @@ BibleObjGituser.prototype.chmod_R_ = async function (mode, dir) {
 
     inp.out.change_perm = await BibleUti.exec_Cmd(change_perm_cmd)
 
-    return ret
+    return inp.out.change_perm
 }
 
 BibleObjGituser.prototype.load_git_config = function () {
