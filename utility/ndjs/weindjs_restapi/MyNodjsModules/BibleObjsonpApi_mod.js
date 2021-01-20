@@ -311,40 +311,41 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //res.write("Jsonpster.Response(" + ss + ");");
         //res.end();
     },
-    ApiBibleObj_read_Usr_BkcChpVrs_txt: async function (req, res) {
-        if (!req || !res) {
-            return inp_struct_base
-        }
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var proj = userProject.proj_parse(inp)
-        var res1 = await userProject.git_pull()
-        var res2 = await userProject.chmod_R_777_acct()
-
-        var doc = inp.par.fnames[0]
-        var docfilname = userProject.get_DocCode_Fname(doc)
-
-        //var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
-        //console.log(doc, outfil)
-
-        var jsfname = userProject.get_pfxname(doc)
-        var bio = BibleUti.load_BibleObj_by_fname(jsfname);
-        var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
-        if (karyObj.kary.length < 3) {
-            inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
-        }
-        if (proj && bio.obj && karyObj.kary.length >= 3) {
-            inp.out.desc = "load success"
-            inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
-        } else {
-            inp.out.desc = "failed git pull and load"
-        }
-
-        var ss = JSON.stringify(inp)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
-        res.end();
-    },
+    
+    ///ApiBibleObj_read_Usr_BkcChpVrs_txt: async function (req, res) {
+    ///    if (!req || !res) {
+    ///        return inp_struct_base
+    ///    }
+    ///    var inp = BibleUti.Parse_req_GET_to_inp(req)
+    ///    var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+    ///    var proj = userProject.proj_parse(inp)
+    ///    var res1 = await userProject.git_pull()
+    ///    var res2 = await userProject.chmod_R_777_acct()
+///
+    ///    var doc = inp.par.fnames[0]
+    ///    var docfilname = userProject.get_DocCode_Fname(doc)
+///
+    ///    //var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
+    ///    //console.log(doc, outfil)
+///
+    ///    var jsfname = userProject.get_pfxname(doc)
+    ///    var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+    ///    var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+    ///    if (karyObj.kary.length < 3) {
+    ///        inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+    ///    }
+    ///    if (proj && bio.obj && karyObj.kary.length >= 3) {
+    ///        inp.out.desc = "load success"
+    ///        inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+    ///    } else {
+    ///        inp.out.desc = "failed git pull and load"
+    ///    }
+///
+    ///    var ss = JSON.stringify(inp)
+    ///    res.writeHead(200, { 'Content-Type': 'text/javascript' });
+    ///    res.write("Jsonpster.Response(" + ss + ");");
+    ///    res.end();
+    ///},
 
     ///////////////////////////////////
     ApiUsrDat_save: async function (req, res) {
