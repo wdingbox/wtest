@@ -561,11 +561,13 @@ var g_BibleObjBackendService = new BibleObjBackendService()
 var BibleObjGituser = function (rootDir) {
     if (!rootDir.match(/\/$/)) rootDir += "/"
 
-    this.m_backendService = g_BibleObjBackendService
-
+    
     this.m_sRootNode = "bible_study_notes"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
     var pathrootdir = rootDir + this.m_sRootNode
+    
+    
+    this.m_backendService = g_BibleObjBackendService
     this.m_backendService.set_rootDir(pathrootdir)
 
     this.m_SvrUsrsBCV = new SvrUsrsBCV()
