@@ -163,44 +163,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
         //});
     },
-    ApiBibleObj_load_by_bibOj: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_base
-        }
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        var proj = userProject.proj_parse(inp)
-        var RbcObj = {};
-        if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
-            for (var i = 0; i < inp.par.fnames.length; i++) {
-                var trn = inp.par.fnames[i];
-                var jsfname = userProject.get_pfxname(trn)
-                console.log("load:", jsfname)
-                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
-                if (!bib.obj) {
-                    inp.out.desc += ":noexist:" + trn
-                    console.log("not exist..............", jsfname)
-                    continue
-                }
-                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
-                RbcObj[trn] = bcObj;
-                inp.out.desc += ":" + trn
-            }
-            inp.out.desc += ":success"
-        }
-        var bcvR = {}
-        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        inp.out.data = bcvR
-        console.log(inp.out)
-
-        var sret = JSON.stringify(inp);
-        //console.log("sert:", sret)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
-        res.end();
-    },
-
     ApiBibleObj_search_txt: function (req, res) {
         if (!req || !res) {
             return inp_struct_search
@@ -232,6 +194,47 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write("Jsonpster.Response(" + ss + ");");
         res.end();
     },
+
+    ApiBibleObj_load_by_bibOj: async function (req, res) {
+        if (!req || !res) {
+            return inp_struct_base
+        }
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
+        var proj = userProject.proj_parse(inp)
+        var res1 = await userProject.git_pull()
+        var RbcObj = {};
+        if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
+            for (var i = 0; i < inp.par.fnames.length; i++) {
+                var trn = inp.par.fnames[i];
+                var jsfname = userProject.get_pfxname(trn)
+                console.log("load:", jsfname)
+                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+                if (!bib.obj) {
+                    inp.out.desc += ":noexist:" + trn
+                    console.log("not exist..............", jsfname)
+                    continue
+                }
+                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
+                RbcObj[trn] = bcObj;
+                inp.out.desc += ":" + trn
+            }
+            inp.out.desc += ":success"
+        }
+        var bcvR = {}
+        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
+        inp.out.data = bcvR
+        console.log(inp.out)
+
+        var sret = JSON.stringify(inp);
+        //console.log("sert:", sret)
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write("Jsonpster.Response(" + sret + ");");
+        res.end();
+    },
+
+
 
     ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
         if (!req || !res) {
