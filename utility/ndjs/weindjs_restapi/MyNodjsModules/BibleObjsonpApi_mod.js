@@ -311,8 +311,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
-        var doc = inp.par.fnames[0]
+        await userProject.git_pull()
 
+        var doc = inp.par.fnames[0]
         var docfilname = userProject.get_DocCode_Fname(doc)
         var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
         console.log(doc, outfil)
@@ -324,8 +325,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
         }
         if (proj && bio.obj && karyObj.kary.length >= 3) {
-            await userProject.git_pull(function (bSuccess) {
-            })
             inp.out.desc = "load success"
             inp.out.data = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
         } else {
