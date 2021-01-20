@@ -1109,72 +1109,21 @@ BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
     var inp = this.m_inp
     if (undefined == punPush || "#" !== punPush) punPush = ""
 
-    password = "lll" //dev mac
-    var cmd_commit = `
-cd  ${this.get_usr_git_dir()}
-## echo ${password} | sudo -S git status
-## echo ${password} | sudo -S git pull
-## echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
-echo ${password} | sudo -S git add *
-echo ${password} | sudo -S git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}"
-${punPush}echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
-`
+    var res = await this.exec_cmd_git("git add *")
+    var res = await this.exec_cmd_git(`git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}`)
 
-    console.log("git_config_allow_push true first....")
-    if (punPush.length === 0) {
-        this.git_config_allow_push(true)
+    if(punPush.length===0){
+        var res = await this.git_push()
     }
+    const erry = ["fatal", "Invalid"]
 
-    inp.out.git_add_commit_push_res = {}
-    await BibleUti.exec_Cmd(cmd_commit).then(
-        function (ret) {
-            console.log("success:", ret)
-            _THIS.m_inp.out.git_add_commit_push_res.success = ret
-
-            const erry = ["fatal", "Invalid"]
-            erry.forEach(function (errs) {
-                if (ret.stderr.indexOf(errs) >= 0) {
-                    _THIS.m_inp.out.git_add_commit_push_res.desc = "push failed." + ret.stderr
-                }
-            })
-            _THIS.git_config_allow_push(false)
-        },
-        function (ret) {
-            console.log("failure:", ret)
-            inp.out.git_add_commit_push_res.failure = ret
-            _THIS.git_config_allow_push(false)
-        }
-    )
 }
 BibleObjGituser.prototype.git_pull = async function (cbf) {
-    password = "lll" //dev mac
-    var cmd_git_pull = `
-#!/bin/sh
-cd  ${this.get_usr_git_dir()}
-### echo ${password} | sudo -S git status
-echo ${password} | sudo -S git pull 
-cd -
-`
-    var _THIS = this
-    if (!_THIS.m_inp.out.git_pull_res) _THIS.m_inp.out.git_pull_res = { bSuccess: -1 }
     this.git_config_allow_push(true)
-    await BibleUti.exec_Cmd(cmd_git_pull).then(
-        function (val) {
-            console.log("success:", val)
-
-            var mat = val.stderr.match(/(fatal)|(fail)|(error)/g)
-            _THIS.m_inp.out.git_pull_res.bSuccess = !mat
-            _THIS.m_inp.out.git_pull_res.success = val
-            if (cbf) cbf(true)
-            _THIS.git_config_allow_push(false)
-        },
-        function (val) {
-            _THIS.m_inp.out.git_pull_res.failure = val
-            console.log("failure:", val)
-            if (cbf) cbf(false)
-            _THIS.git_config_allow_push(false)
-        }
-    )
+    this.m_inp.out.git_pull_res = await this.exec_cmd_git("GIT_TERMINAL_PROMPT=0 git pull")
+    this.git_config_allow_push(false)
+    //var mat = this.m_inp.out.git_pull_res.stderr.match(/(fatal)|(fail)|(error)/g)
+    return this.m_inp.out.git_pull_res
 }
 
 BibleObjGituser.prototype.git_push = async function () {
@@ -1207,16 +1156,16 @@ BibleObjGituser.prototype.exec_cmd_git = async function (gitcmd) {
     var _THIS = this
     var inp = this.m_inp
 
-    if (!inp.par) {
-        inp.out.desc = "no par"
-        return null
-    }
+    //if (!inp.par) {
+    //    inp.out.desc = "no par"
+    //    return null
+    //}
 
-    console.log("inp.par.cmdline: ", inp.par.cmdline)
-    if (!inp.par.cmdline) {
-        inp.out.desc = "no inp.par.cmdline"
-        return null
-    }
+    //console.log("inp.par.cmdline: ", inp.par.cmdline)
+    //if (!inp.par.cmdline) {
+    //    inp.out.desc = "no inp.par.cmdline"
+    //    return null
+    //}
 
     if (!fs.existsSync(this.get_usr_git_dir())) {
         inp.out.desc = "no git dir"
@@ -1232,10 +1181,7 @@ BibleObjGituser.prototype.exec_cmd_git = async function (gitcmd) {
     echo ${password} | sudo -S ${gitcmd}
     `
     console.log("\n----git_cmd start:>", scmd)
-
-
     var res = await BibleUti.exec_Cmd(scmd)
-
     console.log("\n----git_cmd end.")
 
     return res

@@ -249,7 +249,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var stat = userProject.profile_state()
             if (stat.bEditable !== 1) return
 
-            await userProject.git_pull()
+            var res1 = await userProject.git_pull()
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
@@ -288,7 +288,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
             inp.out.save_res = save_res
 
-            await userProject.git_add_commit_push(save_res.desc, "");////#:not push;slow/uninsure
+            //await userProject.git_add_commit_push(save_res.desc, "");////#:not push;slow/uninsure
+
+            var res2 = await userProject.exec_cmd_git("git add *")
+            var res3 = await userProject.exec_cmd_git(`git commit -m "svr:${save_res.desc}. repodesc:${inp.usr.repodesc}"`)
+            var res4 = await userProject.git_push()
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -533,7 +537,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (userProject.proj_parse(inp)) {
             var ret = userProject.profile_state()
             var rso = await userProject.cmd_exec()
-            console.log("\n\n*cmd-res",rso)
+            console.log("\n\n*cmd-res", rso)
         }
 
         var sret = JSON.stringify(inp, null, 4)
