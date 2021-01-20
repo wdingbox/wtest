@@ -101,30 +101,24 @@ var BibleUti = {
         }
         return { size: -1, mtime: 0 };
     },
-    exec_Cmd: async function (command) {
-        return new Promise(async (resolve, reject) => {
+    exec_Cmd: function (command) {
+        return new Promise((resolve, reject) => {
             try {
                 //command = "ls"
-                console.log('cmd:', command)
+                //console.log('exec_Cmd:', command)
                 exec(command, (err, stdout, stderr) => {
-                    console.log('exec_Cmd err ', err)
-                    console.log('exec_Cmd output ', stdout)
-                    console.log('exec_Cmd stderr ', stderr)
-                    if (err) {
-                        //some err occurred
-                        console.error(err);
-                        reject(err);
-                    } else {
-                        // the *entire* stdout and stderr (buffered)
+                    console.log('-exec_Cmd errorr:', err)
+                    console.log('-exec_Cmd stderr:', stderr)
+                    console.log('-exec_Cmd stdout:', stdout)
 
-                        //resolve(stdout);
-                        resolve(resolve({
-                            stdout: (stdout),
-                            stderr: stderr,
-                            err: err
-                            //stderr: stderr 
-                        }))
-                    }
+                    // the *entire* stdout and stderr (buffered)
+                    //resolve(stdout);
+                    resolve({
+                        stdout: stdout,
+                        stderr: stderr,
+                        err: err
+                    })
+
                 });
             } catch (err) {
                 console.log(err)
@@ -724,10 +718,10 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
                     ////---:
                     if (!fs.existsSync(dest_pfname)) {
                         var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-                        if(fs.existsSync(src)){
+                        if (fs.existsSync(src)) {
                             const { COPYFILE_EXCL } = fs.constants;
                             fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-                        }else{
+                        } else {
                             console.log("* * * [Fatal Err] src not exist:", src)
                         }
                     }
@@ -746,10 +740,10 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
                     ////---: 
                     if (!fs.existsSync(dest_pfname)) {
                         var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/dat/${fnam}`
-                        if(fs.existsSync(src)){
+                        if (fs.existsSync(src)) {
                             const { COPYFILE_EXCL } = fs.constants;
                             fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-                        }else{
+                        } else {
                             console.log("* * * [Fatal Err] src not exist:", src)
                         }
                     }
@@ -1184,36 +1178,10 @@ cd -
 }
 
 BibleObjGituser.prototype.git_push = async function () {
-    password = "lll" //dev mac
-    var cmd_git_pull = `
-#!/bin/sh
-cd  ${this.get_usr_git_dir()}
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
-`
-
-    var _THIS = this
-    if (!_THIS.m_inp.out.git_push_res) _THIS.m_inp.out.git_push_res = {}
-    //if (!_THIS.m_inp.out.state) _THIS.m_inp.out.state = { bRepositable: -1 }
     this.git_config_allow_push(true)
-    await BibleUti.exec_Cmd(cmd_git_pull).then(
-        function (ret) {
-            console.log("git_push.success:", ret)
-            _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.git_push_res.success = ret
-
-            _THIS.m_inp.out.state.bRepositable = 1
-            var mat = ret.stderr.match(/(fatal)|(Invalid)/g)
-            if (mat) {
-                _THIS.m_inp.out.state.bRepositable = 0
-            }
-        },
-        function (ret) {
-            console.log("git_push.failure:", ret)
-            _THIS.git_config_allow_push(false)
-            _THIS.m_inp.out.state.bRepositable = 0
-            _THIS.m_inp.out.git_push_res.failure = ret
-        }
-    )
+    this.m_inp.out.git_push_res = await this.exec_cmd_git("GIT_TERMINAL_PROMPT=0 git push")
+    this.git_config_allow_push(false)
+    return this.m_inp.out.git_push_res
 }
 
 BibleObjGituser.prototype.cmd_exec = async function () {
@@ -1231,26 +1199,46 @@ BibleObjGituser.prototype.cmd_exec = async function () {
         return
     }
 
+    var res = await this.exec_cmd_git(inp.par.cmdline)
+
+    return res
+}
+BibleObjGituser.prototype.exec_cmd_git = async function (gitcmd) {
+    var _THIS = this
+    var inp = this.m_inp
+
+    if (!inp.par) {
+        inp.out.desc = "no par"
+        return null
+    }
+
+    console.log("inp.par.cmdline: ", inp.par.cmdline)
+    if (!inp.par.cmdline) {
+        inp.out.desc = "no inp.par.cmdline"
+        return null
+    }
+
+    if (!fs.existsSync(this.get_usr_git_dir())) {
+        inp.out.desc = "no git dir"
+        return null
+    }
+
+
     //console.log("proj", proj)
     var password = "lll" //dev mac
     var scmd = `
-#!/bin/sh
-cd ${this.get_usr_git_dir()}
-echo ${password} | sudo ${inp.par.cmdline}
-#cd -`
-    console.log("git_clone_cmd", scmd)
+    #!/bin/sh
+    cd ${this.get_usr_git_dir()}
+    echo ${password} | sudo -S ${gitcmd}
+    `
+    console.log("\n----git_cmd start:>", scmd)
 
-    inp.out.cmd_exec_res = {}
-    await BibleUti.exec_Cmd(scmd).then(
-        function (val) {
-            console.log("cmd_exec success:", val)
-            inp.out.cmd_exec_res.success = val
-        },
-        function (val) {
-            console.log("cmd_exec failure:", val)
-            inp.out.cmd_exec_res.failure = val
-        })
-    return inp
+
+    var res = await BibleUti.exec_Cmd(scmd)
+
+    console.log("\n----git_cmd end.")
+
+    return res
 }
 
 
