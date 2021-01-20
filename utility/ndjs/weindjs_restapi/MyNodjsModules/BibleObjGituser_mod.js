@@ -794,7 +794,7 @@ BibleObjGituser.prototype.proj_setup = async function () {
     this.git_config_allow_push(false)
 
     var retp = this.profile_state()
-  
+
     return inp
 }
 BibleObjGituser.prototype.proj_destroy = async function () {
@@ -857,6 +857,19 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
         //if clone with password ok, it would ok for pull/push 
         stat.bRepositable = 1
     }
+
+    var accdir = this.get_usr_acct_dir()
+    var fstat = {}
+    BibleUti.GetFilesAryFromDir(accdir, true, function (fname) {
+        var ret = path.parse(fname);
+        var ext = ret.ext
+        //console.log("ret:",ret)
+        var sta = fs.statSync(fname)
+        fstat[fname] = sta.size
+
+    });
+
+    stat.fstat = fstat
 
     if (cbf) cbf()
     return stat
@@ -1114,7 +1127,7 @@ BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
     var _THIS = this
     var inp = this.m_inp
     var gitdir = this.get_usr_git_dir()
-    if(!fs.existsSync(gitdir)){
+    if (!fs.existsSync(gitdir)) {
         return console.log("gitdir not exists.");
     }
 
@@ -1148,7 +1161,7 @@ BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
         exec(command, (err, stdout, stderr) => {
             console.log('\n-exec_Cmd errorr:')
             console.log(err)
-            console.log('\n-exec_Cmd stderr:', )
+            console.log('\n-exec_Cmd stderr:',)
             console.log(stderr)
             console.log('\n-exec_Cmd stdout:')
             console.log(stdout)
@@ -1160,9 +1173,9 @@ BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
     }
 
     console.log('exec_command END.')
-    setTimeout(function(){
+    setTimeout(function () {
         console.log('exec_command ENDED Mark.', gitdir)
-    },10000)
+    }, 10000)
 }
 
 BibleObjGituser.prototype.git_pull = async function (cbf) {
