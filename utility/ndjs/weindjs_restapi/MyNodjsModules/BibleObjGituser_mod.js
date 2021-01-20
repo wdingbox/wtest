@@ -788,7 +788,7 @@ BibleObjGituser.prototype.proj_setup = async function () {
 
     if (stat.bMyojDir === 1) {
         var accdir = this.get_usr_acct_dir()
-        await this.change_dir_perm(accdir, 777)
+        await this.chmod_R_(777, accdir)
     }
 
     var retp = this.profile_state()
@@ -904,7 +904,28 @@ echo " cp_template_cmd end."
     }
     return inp
 }
-BibleObjGituser.prototype.change_dir_perm = async function (dir, mode) {
+BibleObjGituser.prototype.chmod_R_777_acct = async function () {
+    // mode : "777" 
+    var inp = this.m_inp
+    var proj = inp.usr.proj;
+    if (!proj) {
+        inp.out.desc += ", failed inp.usr parse"
+        console.log("failed git setup", inp.out.desc)
+        return inp
+    }
+    var dir = this.get_usr_acct_dir()
+    console.log("perm:", dir)
+    if (!fs.existsSync(dir)) {
+        return inp
+    }
+    var password = "lll"
+    var change_perm_cmd = `echo ${password} | sudo -S chmod -R ${mode} ${dir}`
+
+    inp.out.change_perm = await BibleUti.exec_Cmd(change_perm_cmd)
+
+    return ret
+}
+BibleObjGituser.prototype.chmod_R_ = async function (mode, dir) {
     // mode : "777" 
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -919,18 +940,10 @@ BibleObjGituser.prototype.change_dir_perm = async function (dir, mode) {
     }
     var password = "lll"
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R ${mode} ${dir}`
-    inp.out.change_perm = {}
 
-    await BibleUti.exec_Cmd(change_perm_cmd).then(
-        function (val) {
-            inp.out.change_perm.success = val
-        },
-        function (val) {
-            inp.out.change_perm.failure = val
-        }
-    )
+    inp.out.change_perm = await BibleUti.exec_Cmd(change_perm_cmd)
 
-    return inp
+    return ret
 }
 
 BibleObjGituser.prototype.load_git_config = function () {
@@ -1112,7 +1125,7 @@ BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
     var res = await this.exec_cmd_git("git add *")
     var res = await this.exec_cmd_git(`git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}`)
 
-    if(punPush.length===0){
+    if (punPush.length === 0) {
         var res = await this.git_push()
     }
     const erry = ["fatal", "Invalid"]

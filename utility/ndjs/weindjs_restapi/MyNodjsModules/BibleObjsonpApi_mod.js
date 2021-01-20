@@ -204,6 +204,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var proj = userProject.proj_parse(inp)
         var res1 = await userProject.git_pull()
+        await userProject.chmod_R_777_acct()
         var RbcObj = {};
         if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
@@ -254,7 +255,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (stat.bEditable !== 1) return
 
             var res1 = await userProject.git_pull()
-
+            await userProject.chmod_R_777_acct()
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
