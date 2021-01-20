@@ -3838,7 +3838,7 @@ var BibleInputMenuContainer = `
                 <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+++</a>
                 <div id="DevTool" style='display:none;'>
                 <button onclick="$('#txtarea').val('');$('#operation_res').text('+')" title='clearout txt'>x</button>
-                <button id="Check_bcv">Check(bcv)</button><a href='./myCmdline.htm'>.</a>
+                <button id="Check_bcv">Check(bcv)</button>
                 <textarea id="txtarea" style='width:100%;' rows='20'  value='search results...' title='log.'></textarea><br>
                 </div>
                 
