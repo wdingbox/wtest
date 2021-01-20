@@ -225,6 +225,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var bcvR = {}
         BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
         inp.out.data = bcvR
+        console.log("read inp.out:")
         console.log(inp.out)
 
         var sret = JSON.stringify(inp);
