@@ -134,20 +134,20 @@ var BibleUti = {
 
 
 
-    fetch_bcv: function (BibleObj, oj) {
-        //console.log("fetch_bcv oj", JSON.stringify(oj, null, 4))
+    copy_biobj: function (BibleObj, oj) {
+        //console.log("copy_biobj oj", JSON.stringify(oj, null, 4))
         if (!oj || Object.keys(oj).length === 0) return BibleObj
         var retOb = {}
         for (const [bkc, chpObj] of Object.entries(oj)) {
-            retOb[bkc] = {}
             if (!chpObj || Object.keys(chpObj).length === 0) {
-                retOb[bkc] = BibleObj[bkc]
+                retOb[bkc] = BibleObj[bkc] //copy whole book
                 continue
             }
+            retOb[bkc] = {}
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
                 //console.log("bc", bkc, chp)
                 if (!vrsObj || Object.keys(vrsObj).length === 0) {
-                    retOb[bkc][chp] = BibleObj[bkc][chp]
+                    retOb[bkc][chp] = BibleObj[bkc][chp]  //copyy whole chapter
                     continue
                 }
                 retOb[bkc][chp] = {}
@@ -159,7 +159,7 @@ var BibleUti = {
         }
         return retOb
     },
-    convert_rbcv_2_bcvR: function (rbcv, bcvRobj) {
+    convert_Tbcv_2_bcvT: function (rbcv, bcvRobj) {
         if (null === bcvRobj) bcvRobj = {}
         for (const [rev, revObj] of Object.entries(rbcv)) {
             for (const [vol, chpObj] of Object.entries(revObj)) {

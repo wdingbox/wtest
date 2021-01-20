@@ -172,20 +172,20 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!inp.usr.f_path) inp.usr.f_path = ""
         var proj = userProject.proj_parse(inp)
 
-        var RbcObj = {};
+        var TbcvObj = {};
         if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_pfxname(trn)
                 var bib = BibleUti.load_BibleObj_by_fname(jsfname);
-                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
-                RbcObj[trn] = bcObj;
+                var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
+                TbcvObj[trn] = bcObj;
                 inp.out.desc += ":" + trn
             }
         }
-        var bcvR = {}
-        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
-        inp.out.data = BibleUti.search_str_in_bcvR(bcvR, inp.par.Search.File, inp.par.Search.Strn);
+        var bcvT = {}
+        BibleUti.convert_Tbcv_2_bcvT(TbcvObj, bcvT)
+        inp.out.data = BibleUti.search_str_in_bcvR(bcvT, inp.par.Search.File, inp.par.Search.Strn);
 
         inp.out.desc += ":success."
         var ss = JSON.stringify(inp);
@@ -217,14 +217,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     console.log("not exist..............", jsfname)
                     continue
                 }
-                var bcObj = BibleUti.fetch_bcv(bib.obj, inp.par.bibOj);
+                var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
                 RbcObj[trn] = bcObj;
                 inp.out.desc += ":" + trn
             }
             inp.out.desc += ":success"
         }
         var bcvR = {}
-        BibleUti.convert_rbcv_2_bcvR(RbcObj, bcvR)
+        BibleUti.convert_Tbcv_2_bcvT(RbcObj, bcvR)
         inp.out.data = bcvR
         console.log("read inp.out:")
         console.log(inp.out)
