@@ -204,28 +204,38 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var proj = userProject.proj_parse(inp)
         var res1 = await userProject.git_pull()
         var res2 = await userProject.chmod_R_777_acct()
-
-        var TbcObj = {};
-        if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
-            for (var i = 0; i < inp.par.fnames.length; i++) {
-                var trn = inp.par.fnames[i];
-                var jsfname = userProject.get_pfxname(trn)
-                console.log("load:", jsfname)
-                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
-                if (!bib.obj) {
-                    inp.out.desc += ":noexist:" + trn
-                    console.log("not exist..............", jsfname)
-                    continue
+        var sta = userProject.profile_state()
+        if (!sta || sta.bMyojDir <= 0) {
+            console.log("-----:bMyojDir<=0. dir not exist")
+        } else {
+            console.log("-----:bMyojDir>0",inp.par.fnames, typeof inp.par.fnames)
+            console.log("-----:binp.par.bibOj",inp.par.bibOj)
+            var TbcObj = {};
+            if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
+                console.log("inp.par.fnames:", inp.par.fnames)
+                for (var i = 0; i < inp.par.fnames.length; i++) {
+                    var trn = inp.par.fnames[i];
+                    var jsfname = userProject.get_pfxname(trn)
+                    console.log("load:", jsfname)
+                    var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+                    if (!bib.obj) {
+                        inp.out.desc += ":noexist:" + trn
+                        console.log("not exist..............", jsfname)
+                        continue
+                    }
+                    var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
+                    TbcObj[trn] = bcObj;
+                    inp.out.desc += ":" + trn
                 }
-                var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
-                TbcObj[trn] = bcObj;
-                inp.out.desc += ":" + trn
+                inp.out.desc += ":success"
             }
-            inp.out.desc += ":success"
+            //console.log(TbcObj)
+            var bcvT = {}
+            BibleUti.convert_Tbcv_2_bcvT(TbcObj, bcvT)
+            inp.out.data = bcvT
+            //console.log(bcvT)
         }
-        var bcvT = {}
-        BibleUti.convert_Tbcv_2_bcvT(TbcObj, bcvT)
-        inp.out.data = bcvT
+
         console.log("read inp.out:")
         console.log(inp.out)
 
@@ -458,7 +468,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var res2 = await userProject.exec_cmd_git("git add *")
             var res3 = await userProject.exec_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
             var res4 = await userProject.git_push()
-            
+
             var res5 = await userProject.proj_destroy()
         }
 
@@ -480,7 +490,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (userProject.proj_parse(inp)) {
             var ret = userProject.profile_state()
             var res2 = await userProject.exec_cmd_git("git status -sb")
-            if(res2 && res2.stdout){
+            if (res2 && res2.stdout) {
                 inp.out.state.git_status_sb = res2.stdout
                 inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
             }
