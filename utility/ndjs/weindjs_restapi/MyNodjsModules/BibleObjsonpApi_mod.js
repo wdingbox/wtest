@@ -205,7 +205,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var res1 = await userProject.git_pull()
         var res2 = await userProject.chmod_R_777_acct()
 
-        var RbcObj = {};
+        var TbcObj = {};
         if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
                 var trn = inp.par.fnames[i];
@@ -218,14 +218,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     continue
                 }
                 var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
-                RbcObj[trn] = bcObj;
+                TbcObj[trn] = bcObj;
                 inp.out.desc += ":" + trn
             }
             inp.out.desc += ":success"
         }
-        var bcvR = {}
-        BibleUti.convert_Tbcv_2_bcvT(RbcObj, bcvR)
-        inp.out.data = bcvR
+        var bcvT = {}
+        BibleUti.convert_Tbcv_2_bcvT(TbcObj, bcvT)
+        inp.out.data = bcvT
         console.log("read inp.out:")
         console.log(inp.out)
 
@@ -313,8 +313,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var doc = inp.par.fnames[0]
         var docfilname = userProject.get_DocCode_Fname(doc)
-        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
-        console.log(doc, outfil)
+
+        //var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
+        //console.log(doc, outfil)
 
         var jsfname = userProject.get_pfxname(doc)
         var bio = BibleUti.load_BibleObj_by_fname(jsfname);
@@ -594,6 +595,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         /////----
         var docfilname = userProject.get_DocCode_Fname(doc)
         var docfilname2 = userProject.get_usr_myoj_dir("/" + docfilname)
+
         var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
         console.log("jsfn:", jsfname)
         for (var i = 0; i < outfil.m_olis.length; i++) {

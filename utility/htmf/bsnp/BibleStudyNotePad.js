@@ -599,7 +599,8 @@ PopupMenu_EdiTag.prototype.init = function () {
     $("#RevTag_Load").bind("click", function () {
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
-        Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str
+        Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
+        Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
         console.log("Jsonpster:", Jsonpster)
         Uti.Msg(Jsonpster)
 
