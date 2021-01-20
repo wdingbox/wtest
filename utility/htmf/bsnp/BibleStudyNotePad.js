@@ -2976,18 +2976,18 @@ var Uti = {
     show_save_results: function (ret, eid) {
         Uti.Msg("ret.out.save_res:", ret.out.save_res);//,null, 4))
         var msg = "failed to save.", clr = "red"
-        if (ret.out.save_res && ret.out.save_res.saved_size) {
-            clr = "lightgreen", msg = `wrote:${ret.out.save_res.saved_size}(B)`
+        if (ret.out.save_res && ret.out.save_res.desc) {
+            clr = "lightgreen", msg = `wrote:${ret.out.save_res.desc}(B)`
         }
         var sta = ret.out.state
         if (sta) {
             var colr1 = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             var msg1 = `bRepositable:${sta.bRepositable}`
-            var siz = ret.out.save_res.saved_size
             var colr2 = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             var msg2 = `bRepositable:${sta.bRepositable}`
+            var desc = ret.out.save_res.desc
 
-            $(eid).html(`<font color='${colr1}'>${msg1}</font>, <font color='${colr2}'>${msg2}</font>, <a>${siz}</a>`)
+            $(eid).html(`<font color='${colr1}'>${msg1}</font>, <font color='${colr2}'>${msg2}</font>, <br><a>${desc}</a>`)
         } else {
             $(eid).html(`<font color='red'>Failed: Invalid Repository</font>`)
         }

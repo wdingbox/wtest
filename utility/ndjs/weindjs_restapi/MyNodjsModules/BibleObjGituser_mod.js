@@ -791,14 +791,10 @@ BibleObjGituser.prototype.proj_setup = async function () {
         await this.chmod_R_(777, accdir)
     }
 
+    this.git_config_allow_push(false)
+
     var retp = this.profile_state()
-    if (0) {
-        //await this.git_push()
-    }
-
-    this.m_backendService.bind_folder_event(this.get_usr_acct_dir())
-
-
+  
     return inp
 }
 BibleObjGituser.prototype.proj_destroy = async function () {
@@ -1011,10 +1007,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
         return
     }
 
-    // fs.chmodSync(git_config_fname, 0o777, function (err) {
-    //     if (err) console.log(err);
-    //     console.log(`The permissions for file ${git_config_fname} have been changed!`)
-    // })
+
 
     if (!this.m_git_config_old || !this.m_git_config_new) {
         this.load_git_config()
@@ -1117,20 +1110,60 @@ BibleObjGituser.prototype.git_status = async function (_sb) {
     }
 }
 
-//  BibleObjGituser.prototype.git_add_commit_push = async function (msg, punPush) {
-//      var _THIS = this
-//      var inp = this.m_inp
-//      if (undefined == punPush || "#" !== punPush) punPush = ""
-//  
-//      var res = await this.exec_cmd_git("git add *")
-//      var res = await this.exec_cmd_git(`git commit -m "svr:${msg}. repodesc:${inp.usr.repodesc}`)
-//  
-//      if (punPush.length === 0) {
-//          var res = await this.git_push()
-//      }
-//      const erry = ["fatal", "Invalid"]
-//  
-//  }
+BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
+    var _THIS = this
+    var inp = this.m_inp
+    var gitdir = this.get_usr_git_dir()
+    if(!fs.existsSync(gitdir)){
+        return console.log("gitdir not exists.");
+    }
+
+    password = "lll" //dev mac
+    var command = `
+    #!/bin/bash
+    set -x #echo on
+    echo '=>cd ${gitdir}'
+    cd  ${gitdir}
+    echo '=>git status'
+    echo ${password} | sudo -S git status
+    echo '=>git diff'
+    echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
+    echo '=>git add *'
+    echo ${password} | sudo -S git add *
+    echo '=>git commit'
+    echo ${password} | sudo -S git commit -m "Sync:${msg}. repodesc:${inp.usr.repodesc}"
+    echo '=>git push'
+    echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
+    echo '=>git status'
+    echo ${password} | sudo -S git status
+    echo '=>git status -sb'
+    echo ${password} | sudo -S git status -sb
+    `
+    console.log('exec_command:', command)
+    console.log('exec_command start:')
+
+    try {
+        //e.g. command = "ls"
+        _THIS.git_config_allow_push(true)
+        exec(command, (err, stdout, stderr) => {
+            console.log('\n-exec_Cmd errorr:')
+            console.log(err)
+            console.log('\n-exec_Cmd stderr:', )
+            console.log(stderr)
+            console.log('\n-exec_Cmd stdout:')
+            console.log(stdout)
+            console.log('\n-exec_Cmd end.')
+            _THIS.git_config_allow_push(false)
+        });
+    } catch (err) {
+        console.log(err)
+    }
+
+    console.log('exec_command END.')
+    setTimeout(function(){
+        console.log('exec_command ENDED Mark.', gitdir)
+    },10000)
+}
 
 BibleObjGituser.prototype.git_pull = async function (cbf) {
     this.git_config_allow_push(true)

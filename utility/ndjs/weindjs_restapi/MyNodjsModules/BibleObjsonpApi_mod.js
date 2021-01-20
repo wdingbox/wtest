@@ -286,18 +286,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             }
 
             //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            var tagName = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs}`
             var save_res = {}
             save_res.saved_size = "" + karyObj.txt.length + ",dlt:" + dlt
             save_res.len = karyObj.txt.length
             save_res.dlt = dlt
-            save_res.desc = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs} save-ok.`
+            save_res.desc = `${tagName} saved.`
             inp.out.save_res = save_res
 
-            //await userProject.git_add_commit_push(save_res.desc, "");////#:not push;slow/uninsure
-
-            var res2 = await userProject.exec_cmd_git("git add *")
-            var res3 = await userProject.exec_cmd_git(`git commit -m "svr:${save_res.desc}. repodesc:${inp.usr.repodesc}"`)
-            var res4 = await userProject.git_push()
+            userProject.git_add_commit_push_Sync(save_res.desc);//after saved
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -330,8 +327,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         } else {
             inp.out.desc = "failed git pull and load"
         }
-
-        //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
@@ -368,7 +363,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             //// 
             var save_res = {}
-            save_res.saved_size = "len:" + inp.par.data.length + ",dlt:" + ret.dlt_size
+            save_res.desc = "len:" + inp.par.data.length + ",dlt:" + ret.dlt_size
             save_res.dlt = ret.dlt_size
             save_res.len = inp.par.data.length
             inp.par.data = ""
@@ -376,10 +371,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             inp.out.save_res = save_res
             var msg = jsfname + " saved."
 
-            //await userProject.git_add_commit_push(msg, "#")
-            var res2 = await userProject.exec_cmd_git("git add *")
-            var res3 = await userProject.exec_cmd_git(`git commit -m "svr:${save_res.saved_size}. repodesc:${inp.usr.repodesc}"`)
-            var res4 = await userProject.git_push()
+            //
+            userProject.git_add_commit_push_Sync(save_res.desc);//after saved
         })
     },
     ApiUsrDat_load: async function (req, res) {
@@ -389,7 +382,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
-        
+
         if (proj) {
 
             await userProject.proj_setup()
@@ -453,17 +446,18 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
 
-            var res2 = await userProject.exec_cmd_git("git add *")
-            var res3 = await userProject.exec_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
-            var res4 = await userProject.git_push()
-            var stat =  userProject.profile_state()
 
+            var stat = userProject.profile_state()
             if (0 === userProject.m_inp.out.state.bRepositable) {
                 //case push failed. Don't delete
                 return inp
             }
 
-            await userProject.proj_destroy()
+            var res2 = await userProject.exec_cmd_git("git add *")
+            var res3 = await userProject.exec_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+            var res4 = await userProject.git_push()
+            
+            var res5 = await userProject.proj_destroy()
         }
 
         var sret = JSON.stringify(inp, null, 4)
@@ -482,10 +476,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
-            var ret = userProject.profile_state(async function () {
-            })
-            if (0) {
-                await userProject.git_push()
+            var ret = userProject.profile_state()
+            var res2 = await userProject.exec_cmd_git("git status -sb")
+            if(res2 && res2.stdout){
+                inp.out.state.git_status_sb = res2.stdout
+                inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
             }
         }
 
