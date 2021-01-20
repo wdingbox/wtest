@@ -199,12 +199,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         if (!req || !res) {
             return inp_struct_base
         }
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-
         var inp = BibleUti.Parse_req_GET_to_inp(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
         var res1 = await userProject.git_pull()
-        await userProject.chmod_R_777_acct()
+        var res2 = await userProject.chmod_R_777_acct()
+
         var RbcObj = {};
         if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
             for (var i = 0; i < inp.par.fnames.length; i++) {
@@ -308,7 +308,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
-        await userProject.git_pull()
+        var res1 = await userProject.git_pull()
+        var res2 = await userProject.chmod_R_777_acct()
 
         var doc = inp.par.fnames[0]
         var docfilname = userProject.get_DocCode_Fname(doc)
