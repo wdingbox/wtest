@@ -919,7 +919,7 @@ BibleObjGituser.prototype.chmod_R_777_acct = async function () {
         return inp
     }
     var password = "lll"
-    var change_perm_cmd = `echo ${password} | sudo -S chmod -R ${mode} ${dir}`
+    var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
 
     inp.out.change_perm = await BibleUti.exec_Cmd(change_perm_cmd)
 
