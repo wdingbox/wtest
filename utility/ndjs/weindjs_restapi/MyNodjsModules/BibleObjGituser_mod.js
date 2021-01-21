@@ -584,11 +584,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         return null
     }
 
-    if ("object" !== typeof inp.usr) {
-        console.log("inp is not valid.")
-        inp.out.desc = "null=inp.usr "
-        return null
-    }
+
 
     function _parse_proj_url(proj_url) {
         //https://github.com/wdingbox/Bible_obj_weid.git
@@ -651,25 +647,29 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         console.log("parse: inp.usr.proj=", inp.usr.proj)
     }
 
+    if ("string" === typeof inp.usr) {
 
-    inp.usr.proj = _parse_proj_url(inp.usr.repopath)
-    if (!inp.usr.proj) {
-        inp.out.desc = "invalid repospath."
-        return null;
     }
+    if ("object" === typeof inp.usr) {
+        inp.usr.proj = _parse_proj_url(inp.usr.repopath)
+        if (!inp.usr.proj) {
+            inp.out.desc = "invalid repospath."
+            return null;
+        }
 
-    _decode_passcode(inp)
+        _decode_passcode(inp)
 
-    if (null === _check_pub_testing(inp)) {
-        inp.out.desc = "failed pub test."
-        return null
+        if (null === _check_pub_testing(inp)) {
+            inp.out.desc = "failed pub test."
+            return null
+        }
+
+        inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
+
+        _parse_proj_dir(inp, this.m_sBaseUsrs)
+
     }
-
-    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
-
-    _parse_proj_dir(inp, this.m_sBaseUsrs)
-
-
+    
 
     return inp.usr.proj
 }

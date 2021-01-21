@@ -74,16 +74,20 @@ Url: function (){
     this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp)) + "&sid=" + this.sid;
     return this.m_src;
 },
+Response : function(dat, sid){
+    this.inp.sid = sid
+    this.m_cbf(dat)
+},
 Run : function (cbf) {
     this.encrypt_usr()
     this.RunJsonP(cbf)
     this.api = this.inp.par = null;
 },
 RunJsonP : function (cbf) {
-    if (!cbf) alert('callback Response null');
+    if (!cbf) alert('callback m_cbf null');
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
-    this.Response = cbf;
+    this.m_cbf = cbf;
     var s = document.createElement('script');
     s.src = this.Url()
     document.body.appendChild(s);
@@ -190,10 +194,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         inp.out.data = BibleUti.search_str_in_bcvT(bcvT, inp.par.Search.File, inp.par.Search.Strn);
 
         inp.out.desc += ":success."
-        var ss = JSON.stringify(inp);
+        var sret = JSON.stringify(inp);
+        var sid = ""
 
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -244,9 +249,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         console.log(inp.out)
 
         var sret = JSON.stringify(inp);
+        var sid = ""
         //console.log("sert:", sret)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -310,7 +316,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         })
 
         //res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        //res.write("Jsonpster.Response(" + ss + ");");
+        //res.write(`Jsonpster.Response(${sret},${sid});`);
         //res.end();
     },
 
@@ -387,9 +393,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (!inp.out.state) inp.out.state.bEditable = 1
         }
 
-        var ss = JSON.stringify(inp)
+        var sret = JSON.stringify(inp)
+        var sid = ""
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -415,10 +422,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
 
         console.log("oup is ", inp.out)
+
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -445,10 +454,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
 
         console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -469,10 +479,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
 
         console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -494,10 +505,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
 
         console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -514,10 +526,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
 
         console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -534,9 +547,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
 
         var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
         console.log("oup is ", inp.out)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + sret + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
 
@@ -599,9 +613,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
 
 
-        var ss = JSON.stringify(inp)
+        var sret = JSON.stringify(inp)
+        var sid = ""
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write("Jsonpster.Response(" + ss + ");");
+        res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     }
 
