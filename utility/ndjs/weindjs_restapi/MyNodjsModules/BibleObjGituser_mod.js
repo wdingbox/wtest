@@ -686,11 +686,10 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         var sess = this.get_session(inp.sid)
         if (sess) {
             inp.usr = sess
+            console.log("\n-sess", sess)
             _parse_inp_usr(inp)
         }
-    }
-
-    if ("object" === typeof inp.usr) {
+    }else if ("object" === typeof inp.usr) {
         inp.sid = this.gen_session(inp.usr)
         _parse_inp_usr(inp)
     }
@@ -845,22 +844,8 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
-// BibleObjGituser.prototype.get_session_fname = async function () {
-//     var sessf = this.get_usr_dat_dir("/session.txt")
-//     return sessf
-// }
-// BibleObjGituser.prototype.proj_sess_write = async function () {
-//     var sessf = this.get_session_fname()
-//     fs.writeFile(sessf, atob(JSON.parse(inp.usr)), "utf8")
-// }
-// BibleObjGituser.prototype.proj_sess_read = async function () {
-//     var sessf = this.get_session_fname()
-//     var dat = fs.readFileSync(sessf, "utf8")
-//     var txt = btoa(dat)
-//     var obj = JSON.parse(txt)
-//     return obj
-// }
-BibleObjGituser.prototype.proj_setup =  function () {
+
+BibleObjGituser.prototype.proj_setup = function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -877,6 +862,7 @@ BibleObjGituser.prototype.proj_setup =  function () {
     }
     if (stat.bGitDir !== 1) {
         this.git_clone()
+        this.git_config_allow_push(false)
         stat = this.profile_state()
     }
 
@@ -887,15 +873,13 @@ BibleObjGituser.prototype.proj_setup =  function () {
 
     if (stat.bMyojDir === 1) {
         var accdir = this.get_usr_acct_dir()
-         this.chmod_R_(777, accdir)
+        this.chmod_R_(777, accdir)
     }
 
-    this.git_config_allow_push(false)
+    this.chmod_R_777_acct()
+   
 
     var retp = this.profile_state()
-     this.chmod_R_777_acct()
-
-
 
     return inp
 }
@@ -915,7 +899,7 @@ BibleObjGituser.prototype.proj_destroy = async function () {
     `
 
     if (fs.existsSync(`${gitdir}`)) {
-        inp.out.exec_git_cmd_result = await BibleUti.exec_Cmd(proj_destroy)
+        inp.out.exec_git_cmd_result =  BibleUti.execSync_Cmd(proj_destroy).toString()
         inp.out.desc += "destroyed git dir: " + gitdir
     }
     this.profile_state()
@@ -977,7 +961,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     return stat
 }
 
-BibleObjGituser.prototype.cp_template_to_git =  function () {
+BibleObjGituser.prototype.cp_template_to_git = function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
     if (!proj) {
@@ -1015,7 +999,7 @@ echo " cp_template_cmd end."
     }
     return inp
 }
-BibleObjGituser.prototype.chmod_R_777_acct =  function () {
+BibleObjGituser.prototype.chmod_R_777_acct = function () {
     // mode : "777" 
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -1032,11 +1016,11 @@ BibleObjGituser.prototype.chmod_R_777_acct =  function () {
     var password = "lll"
     var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
 
-    inp.out.change_perm =  BibleUti.execSync_Cmd(change_perm_cmd).toString()
+    inp.out.change_perm = BibleUti.execSync_Cmd(change_perm_cmd).toString()
 
     return inp.out.change_perm
 }
-BibleObjGituser.prototype.chmod_R_ =  function (mode, dir) {
+BibleObjGituser.prototype.chmod_R_ = function (mode, dir) {
     // mode : "777" 
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -1137,7 +1121,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     }
 }
 
-BibleObjGituser.prototype.git_clone =  function () {
+BibleObjGituser.prototype.git_clone = function () {
     var _THIS = this
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -1168,23 +1152,20 @@ BibleObjGituser.prototype.git_clone =  function () {
     //console.log("proj", proj)
     var password = "lll" //dev mac
     var git_clone_cmd = `
-#!/bin/sh
-cd ${this.m_rootDir}
-echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
-if [ -f "${proj.git_root}/.git/config" ]; then
-    echo "${proj.git_root}/.git/config exists."
-    echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
-else 
-    echo "${proj.git_root}/.git/config does not exist."
-fi
-#echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
-#cd -`
-    console.log("git_clone_cmd", git_clone_cmd)
-
-
+    #!/bin/sh
+    cd ${this.m_rootDir}
+    echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
+    if [ -f "${proj.git_root}/.git/config" ]; then
+        echo "${proj.git_root}/.git/config exists."
+        echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
+    else 
+        echo "${proj.git_root}/.git/config does not exist."
+    fi
+    `
+    console.log("git_clone_cmd...")
     inp.out.git_clone_res.git_clone_cmd = git_clone_cmd
     var ret = BibleUti.execSync_Cmd(git_clone_cmd).toString()
-    console.log("ret",ret)
+    console.log("ret", ret)
     return inp
 }
 BibleObjGituser.prototype.git_status = async function (_sb) {
@@ -1199,15 +1180,8 @@ BibleObjGituser.prototype.git_status = async function (_sb) {
         cd ${this.get_usr_git_dir()}
         git status ${_sb}
         #git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
-        inp.out.git_status_res = {}
-        await BibleUti.exec_Cmd(git_status_cmd).then(
-            function (val) {
-                inp.out.git_status_res.success = val
-            },
-            function (val) {
-                inp.out.git_status_res.failure = val
-            }
-        )
+       
+        inp.out.git_status_res = BibleUti.exec_Cmd(git_status_cmd).toString()
     }
 }
 
