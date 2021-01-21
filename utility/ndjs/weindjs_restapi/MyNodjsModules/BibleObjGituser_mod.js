@@ -713,12 +713,12 @@ BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
             //command = "ls"
             //console.log('exec_Cmd:', command)
             execSync(command, (err, stdout, stderr) => {
-                console.log('-exec_Cmd errorr:', err)
-                console.log('-exec_Cmd stderr:', stderr)
-                console.log('-exec_Cmd stdout:', stdout)
+                console.log('-execSync_Cmd errorr:', err)
+                console.log('-execSync_Cmd stderr:', stderr)
+                console.log('-execSync_Cmd stdout:', stdout)
             });
         } catch (err) {
-            console.log(err)
+            console.log("execSync err",err)
         }
     }
     if (!subpath) {
