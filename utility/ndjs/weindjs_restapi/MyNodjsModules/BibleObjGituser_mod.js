@@ -127,6 +127,20 @@ var BibleUti = {
             }
         })
     },
+    execSync_Cmd: function (command) {
+        try {
+            //command = "ls"
+            console.log('execSync Cmd:', command)
+            var ret = execSync(command).toString();
+            console.log(ret) 
+        } catch (error) {
+            console.log("error:",error.status);  // 0 : successful exit, but here in exception it has to be greater than 0
+            console.log("error:",error.message); // Holds the message you typically want.
+            console.log("error:",error.stderr);  // Holds the stderr output. Use `.toString()`.
+            console.log("error:",error.stdout);  // Holds the stdout output. Use `.toString()`.
+        }
+        return ret;
+    },
 
 
 
@@ -648,13 +662,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         console.log("parse: inp.usr.proj=", inp_usr.proj)
     }
 
-
-    if ("string" === typeof inp.sid && inp.sid.length > 0) {
-        var ret = this.get_session(inp.sid)
-    }
-    if ("object" === typeof inp.usr) {
-        inp.sid = this.gen_session(inp.usr)
-
+    function _parse_inp_usr(inp) {
         inp.usr.proj = _parse_proj_url(inp.usr.repopath)
         if (!inp.usr.proj) {
             inp.out.desc = "invalid repospath."
@@ -670,8 +678,21 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 
         inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 
-        _parse_proj_dir(inp.usr, this.m_sBaseUsrs)
+        _parse_proj_dir(inp.usr, _THIS.m_sBaseUsrs)
+    }
 
+
+    if ("string" === typeof inp.sid && inp.sid.length > 0) {
+        var sess = this.get_session(inp.sid)
+        if (sess) {
+            inp.usr = sess
+            _parse_inp_usr(inp)
+        }
+    }
+
+    if ("object" === typeof inp.usr) {
+        inp.sid = this.gen_session(inp.usr)
+        _parse_inp_usr(inp)
     }
 
 
@@ -679,7 +700,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 }
 BibleObjGituser.prototype.gen_session = function (inp_usr) {
     var tmp = "sid" + (new Date()).getTime()
-    var sess = this.get_proj_tmp_dir(tmp) 
+    var sess = this.get_proj_tmp_dir(tmp)
     var txt = JSON.stringify(inp_usr)
     var dat = Buffer.from(txt).toString("base64")
     console.log("_create_session dat", dat)
@@ -689,13 +710,14 @@ BibleObjGituser.prototype.gen_session = function (inp_usr) {
     return sess
 }
 BibleObjGituser.prototype.get_session = function (sid) {
-    var sess = this.get_proj_tmp_dir(sid) 
+    var sess = this.get_proj_tmp_dir(sid)
+    if (!fs.existsSync(sess)) return null
     var dat = fs.readFileSync(sess, "utf8")
     var txt = Buffer.from(dat, 'base64').toString()
     var obj = {}
-    try{
+    try {
         obj = JSON.parse(txt)
-    }catch(err){
+    } catch (err) {
         console.log("json parse err", err)
     }
     return obj
@@ -709,17 +731,19 @@ BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
             echo ${password} | sudo -S mkdir -p ${dir}
             echo ${password} | sudo -S chmod 777 ${dir}
             `
-        try {
-            //command = "ls"
-            //console.log('exec_Cmd:', command)
-            execSync(command, (err, stdout, stderr) => {
-                console.log('-execSync_Cmd errorr:', err)
-                console.log('-execSync_Cmd stderr:', stderr)
-                console.log('-execSync_Cmd stdout:', stdout)
-            });
-        } catch (err) {
-            console.log("execSync err",err)
-        }
+        var ret = BibleUti.execSync_Cmd(command)
+        console.log(ret)
+        //try {
+        //    //command = "ls"
+        //    //console.log('exec_Cmd:', command)
+        //    execSync(command, (err, stdout, stderr) => {
+        //        console.log('-execSync_Cmd errorr:', err)
+        //        console.log('-execSync_Cmd stderr:', stderr)
+        //        console.log('-execSync_Cmd stdout:', stdout)
+        //    });
+        //} catch (err) {
+        //    console.log("execSync err", err)
+        //}
     }
     if (!subpath) {
         subpath = ""
@@ -820,21 +844,21 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
-BibleObjGituser.prototype.get_session_fname = async function () {
-    var sessf = this.get_usr_dat_dir("/session.txt")
-    return sessf
-}
-BibleObjGituser.prototype.proj_sess_write = async function () {
-    var sessf = this.get_session_fname()
-    fs.writeFile(sessf, atob(JSON.parse(inp.usr)), "utf8")
-}
-BibleObjGituser.prototype.proj_sess_read = async function () {
-    var sessf = this.get_session_fname()
-    var dat = fs.readFileSync(sessf, "utf8")
-    var txt = btoa(dat)
-    var obj = JSON.parse(txt)
-    return obj
-}
+// BibleObjGituser.prototype.get_session_fname = async function () {
+//     var sessf = this.get_usr_dat_dir("/session.txt")
+//     return sessf
+// }
+// BibleObjGituser.prototype.proj_sess_write = async function () {
+//     var sessf = this.get_session_fname()
+//     fs.writeFile(sessf, atob(JSON.parse(inp.usr)), "utf8")
+// }
+// BibleObjGituser.prototype.proj_sess_read = async function () {
+//     var sessf = this.get_session_fname()
+//     var dat = fs.readFileSync(sessf, "utf8")
+//     var txt = btoa(dat)
+//     var obj = JSON.parse(txt)
+//     return obj
+// }
 BibleObjGituser.prototype.proj_setup = async function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
