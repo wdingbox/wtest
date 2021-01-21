@@ -315,7 +315,7 @@ var BibleUti = {
     },
 
 
-    load_BibleObj_by_fname: function (jsfnm) {
+    loadObj_by_fname: function (jsfnm) {
         var ret = { obj: null, fname: jsfnm, fsize: -1, header: "", err: "" };
 
         if (!fs.existsSync(jsfnm)) {
@@ -367,7 +367,7 @@ var BibleUti = {
 
     Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
         var out = {}
-        var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+        var bib = BibleUti.loadObj_by_fname(jsfname);
         out.m_fname = bib.fname
 
         if (bib.fsize > 0) {

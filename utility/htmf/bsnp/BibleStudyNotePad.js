@@ -8,13 +8,12 @@ var MyStorage = {
             console.log("Storage test: ", ar)
 
 
-            var selidsary = ["#SensitiveDegree", "#LanguageSel"]
+            var selidsary = ["#LanguageSel"]
             for (var i = 0; i < selidsary.length; i++) {
                 var eid = selidsary[i]
                 this.get_select_val(eid)
             }
-            //this.get_select_val("#SensitiveDegree")
-            //this.get_select_val("#LanguageSel")
+          
 
         } else {
             // Sorry! No Web Storage support..
@@ -3818,7 +3817,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
                     <br>
-                    <a>Description</a>: 
+                    <a>Species</a>: 
                     <span id="repository_description">
                     <a id="account_date">(optional)</a> 
                     </span>
@@ -3830,11 +3829,7 @@ var BibleInputMenuContainer = `
                     <a></a> 
                     </span><br>
                     <input id="passcode" type="password" value=''></input><br>
-                    <select id='SensitiveDegree' default_val='2' title='SensitiveDegree'>
-                        <option value='2'>private</option>
-                        <option value='1'>protected</option>
-                        <option value='0'>public</option>
-                    </select>
+                    
                     <button id="account_set">Dock</button>
                     <a id="account_set_info"></a>
                     </td>

@@ -63,16 +63,20 @@
         .txarea {
             width: 100%;
         }
-        textarea, input{
+
+        textarea,
+        input {
             font-size: large;
         }
 
         .hili {
             background-color: red;
         }
-        .deleted_repo{
+
+        .deleted_repo {
             text-decoration: line-through;
         }
+
         .help_label {
             float: right;
         }
@@ -85,15 +89,15 @@
 </head>
 
 <body>
-    <p style="text-align: center;margin-top: 50px;">Welcome to</p>
     <h2 style="text-align: center;margin-top: 50px;">Bible Study Note Pad</h2>
+    <p style="text-align: center;margin-top: 10px;margin-bottom:50px;">(for personal/group to make/share your study notes on any verse)</p>
 
 
 
 
 
     <form action="">
-        <h3 style="text-align: center;margin-top: 50px;">Sign In Page</h3>
+        <h3 style="text-align: center;margin-top: 50px;">Sign-in Page</h3>
         <div>
             <a id="">Repository:</a> (<font color='red'>required</font>)
             [ <a class="" id="Format_Check">Format-Check</a> ]
@@ -119,7 +123,7 @@
                             d="M5.75 1a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-3a.75.75 0 00-.75-.75h-4.5zm.75 3V2.5h3V4h-3zm-2.874-.467a.75.75 0 00-.752-1.298A1.75 1.75 0 002 3.75v9.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 13.25v-9.5a1.75 1.75 0 00-.874-1.515.75.75 0 10-.752 1.298.25.25 0 01.126.217v9.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-9.5a.25.25 0 01.126-.217z">
                         </path>
                     </svg> (copy https url). (see <a
-                        href="https://www.youtube.com/embed/X5e3xQBeqf8?start=120&end=134&autoplay=1">how @2:05</a>) 
+                        href="https://www.youtube.com/embed/X5e3xQBeqf8?start=120&end=134&autoplay=1">how @2:05</a>)
                 </li>
                 Now it's ready to paste it in our page.
             </ol>
@@ -157,8 +161,20 @@
 
         <br>
         <div>
-            Description: (optional)
+            Species: (optional)
+            <a class="help_label" onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
+            <div class="helpinfo Species">
+                <ol>
+                    <li>
+                        Only the notes with the same species can be shared.
+                    </li>
+                    <li>
+                        Species description accept any characters with case sensitive.
+                    </li>
+                </ol>
+            </div>
         </div>
+
         <div>
             <textarea id="repodesc" value="" placeholder="date, place, event, group, etc"></textarea>
         </div>
@@ -169,7 +185,7 @@
         <br>
 
         <div>
-            <a for="editor1" id="label_password">Password </a> : 
+            <a for="editor1" id="label_password">Password </a> :
             (<a style="color:red;" id="required_password_test">required</a>)
             <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">.</a>
         </div>
@@ -196,35 +212,36 @@
         <br>
     </form>
     <div class="centered_elem">
-        <button onclick="PageUti.repo_create(1);" title="sign-n to endorse">Sign-in (endorse)</button> 
+        <button onclick="PageUti.repo_create(1);" title="sign-n to endorse">Sign-in (endorse)</button>
         <div style="float:right;">
 
-            <a id='Forgot' >Forgot</a> | 
+            <a id='Forgot'>Forgot</a> |
             <a id='Test' onclick="$('#testPanel').toggle();">Test</a>
         </div>
     </div>
 
     <div class="test" id='testPanel' style="display:none;">
         <div class="centered_elem">
-        <button onclick="PageUti.repo_create();">Dock</button>
-        <button onclick="PageUti.repo_destroy();">Undock</button>
-        <button onclick="PageUti.repo_pushback();">push</button>
-        <button onclick="PageUti.repo_pulldown();">pull</button>
-        <button onclick="PageUti.repo_status();">Status</button>
-        <a onclick="PageUti.gen_cmdline_table('#account_history');">CmdLines</a> |
-        <a onclick="Okey_use_this();">SetParent</a> |
-        <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
-        
-        <a class="help_label" onclick="$('#DocBtnExplaination').toggle()">help?</a>
-        <div id="DocBtnExplaination" class="helpinfo">
-            <ol>
-                Thinking of your repository as a ship, BSNP server as riverbank.
-                <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
-                <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No one can view your data anymore.</li>
-                <li><b>Push</b>: to push data to your repository during docked.</li>
-                <li><b>Pull</b>: to pull data from your repository during docked.</li>
-            </ol>
-        </div>
+            <button onclick="PageUti.repo_create();">Dock</button>
+            <button onclick="PageUti.repo_destroy();">Undock</button>
+            <button onclick="PageUti.repo_pushback();">push</button>
+            <button onclick="PageUti.repo_pulldown();">pull</button>
+            <button onclick="PageUti.repo_status();">Status</button>
+            <a onclick="PageUti.gen_cmdline_table('#account_history');">CmdLines</a> |
+            <a onclick="Okey_use_this();">SetParent</a> |
+            <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
+
+            <a class="help_label" onclick="$('#DocBtnExplaination').toggle()">help?</a>
+            <div id="DocBtnExplaination" class="helpinfo">
+                <ol>
+                    Thinking of your repository as a ship, BSNP server as riverbank.
+                    <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
+                    <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No
+                        one can view your data anymore.</li>
+                    <li><b>Push</b>: to push data to your repository during docked.</li>
+                    <li><b>Pull</b>: to pull data from your repository during docked.</li>
+                </ol>
+            </div>
         </div>
     </div>
 
@@ -233,7 +250,7 @@
         <a onclick="LoadStorage();"></a>
     </p>
     <p>
-      
+
     </p>
 
 
@@ -259,9 +276,9 @@
 
             Uti.Msg("powindow.opener.postMessage:", Jsonpster.inp.usr)
             window.opener.postMessage(Jsonpster.inp.usr, '*');
-            
+
         }
-       
+
     </script>
 </body>
 
@@ -279,7 +296,7 @@
             $("#passcode").attr("type", typns)
         })
 
-        $("#required_password_test").on("click",function(){
+        $("#required_password_test").on("click", function () {
             var repopath = $("#repopath").val()
             var ret = Uti.validate_repository_url(repopath)
             $("#passcode").val(ret.repo)
@@ -287,7 +304,7 @@
 
         Uti.visual_check_repository("#Format_Check")
 
-        $("#Forgot").on("click",function(){
+        $("#Forgot").on("click", function () {
             PageUti.account_history("#account_history")
         })
 
@@ -296,7 +313,7 @@
 <script>
     var g_ip = Uti.Jsonpster_crossloader()
 
-   
+
     setTimeout(() => {
         if (undefined === Jsonpster) {
             alert("Jsonpster not exist.")

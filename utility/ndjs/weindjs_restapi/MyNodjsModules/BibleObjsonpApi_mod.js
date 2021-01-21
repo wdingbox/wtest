@@ -178,7 +178,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var trn = inp.par.fnames[i];
                 var jsfname = userProject.get_pfxname(trn)
                 console.log("jsfname:", jsfname)
-                var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+                var bib = BibleUti.loadObj_by_fname(jsfname);
                 var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
                 TbcvObj[trn] = bcObj;
                 inp.out.desc += ":" + trn
@@ -220,7 +220,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     var trn = inp.par.fnames[i];
                     var jsfname = userProject.get_pfxname(trn)
                     console.log("load:", jsfname)
-                    var bib = BibleUti.load_BibleObj_by_fname(jsfname);
+                    var bib = BibleUti.loadObj_by_fname(jsfname);
                     if (!bib.obj) {
                         inp.out.desc += ":noexist:" + trn
                         console.log("not exist..............", jsfname)
@@ -270,7 +270,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
-            var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+            var bio = BibleUti.loadObj_by_fname(jsfname);
             if (!bio.obj) {
                 save_res.desc = `load(${doc},${jsfname})=null`
                 return;
@@ -333,7 +333,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
             console.log("jsfname=", jsfname)
-            var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+            var ret = BibleUti.loadObj_by_fname(jsfname)
             if (!ret.obj) return console.log("failed:=", jsfname)
             try {
                 ret.obj = JSON.parse(inp.par.data, null, 4)
@@ -381,7 +381,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //inp = BibleUti.Write2vrs_txt(inp, false)
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
-            var ret = BibleUti.load_BibleObj_by_fname(jsfname)
+            var ret = BibleUti.loadObj_by_fname(jsfname)
             inp.out.data = ret.obj
             if (!inp.out.state) inp.out.state.bEditable = 1
         }
@@ -552,10 +552,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         inp.out.data = {}
         //////----
-        function __load_bcv(jsfname) {
+        function __load_bcv(jsfname, inp) {
+            //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
             var nary = jsfname.split("/")
             var usr_repo = nary[6] + "/" + nary[7]
-            var bio = BibleUti.load_BibleObj_by_fname(jsfname);
+            var bio = BibleUti.loadObj_by_fname(jsfname);
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length < 3) {
                 inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
@@ -570,8 +571,16 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 inp.out.desc = "failed git pull and load"
             }
         }
+        function __load_speciesinfo(jsfname) {
+            //"../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/dat/localStorage_json.js": 895,
+            var nary = jsfname.split("/")
+            nary[9] = "dat", nary[10] = "localStorage_json.js"
+            var specifile = nary.join("")
+        }
+
+
         var jsfname = userProject.get_pfxname(doc)
-        __load_bcv(jsfname)
+        __load_bcv(jsfname, inp)
 
         /////----
         var docfilname = userProject.get_DocCode_Fname(doc)
