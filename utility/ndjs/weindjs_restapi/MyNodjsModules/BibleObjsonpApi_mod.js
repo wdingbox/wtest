@@ -210,7 +210,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
 
-        var stat = await userProject.proj_setup()
+        var stat =  userProject.proj_setup()
         if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
@@ -269,7 +269,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 save_res.desc = "proj=null"
                 return
             }
-            var stat = await userProject.proj_setup()
+            var stat =  userProject.proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
@@ -332,7 +332,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var proj = userProject.proj_parse(inp)
             if (!proj) return console.log("proj_parse failed.")
 
-            var stat = await userProject.proj_setup()
+            var stat =  userProject.proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
@@ -375,7 +375,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         if (proj) {
 
-            await userProject.proj_setup()
+             userProject.proj_setup()
 
             var retp = userProject.profile_state()
             if (0) {
@@ -418,7 +418,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var ret = userProject.proj_parse(inp)
         if (ret) {
-            await userProject.proj_setup()
+             userProject.proj_setup()
         }
 
         var sret = JSON.stringify(inp, null, 4)
@@ -496,7 +496,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
-            await userProject.proj_setup()
+             userProject.proj_setup()
             //await userProject.git_add_commit_push("push hard.", "");//real push hard.
 
             var res2 = await userProject.exec_cmd_git("git add *")
@@ -521,7 +521,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
-            await userProject.proj_setup()
+             userProject.proj_setup()
             //await userProject.git_pull();
         }
 
