@@ -3817,7 +3817,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
                     <br>
-                    <a>Species</a>: 
+                    <a>Specification</a>: 
                     <span id="repository_description">
                     <a id="account_date">(optional)</a> 
                     </span>

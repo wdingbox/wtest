@@ -365,7 +365,7 @@ var BibleUti = {
         return keyObj;
     },
 
-    Write2vrs_txt_by_inpObj: function (jsfname, doc, inpObj, bWrite) {
+    ____________Write2vrs_txt_by_inpObj__________: function (jsfname, doc, inpObj, bWrite) {
         var out = {}
         var bib = BibleUti.loadObj_by_fname(jsfname);
         out.m_fname = bib.fname
