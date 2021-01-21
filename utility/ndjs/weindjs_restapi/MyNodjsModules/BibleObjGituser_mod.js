@@ -601,7 +601,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 
 
 
-    function _parse_proj_url(proj_url) {
+    function _interpret_repo_url(proj_url) {
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
 
@@ -623,62 +623,63 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
             console.log("password not encrypted.", inp_usr.passcode)
         }
     }
-    function _check_pub_testing(inp_usr) {
-        if (inp_usr.passcode.length === 0) {
+    function _check_pub_testing(inp) {
+        if (inp.usr.passcode.length === 0) {
             return inp_usr
         }
         ////SpecialTestRule: repopath must be same as password.
-        inp_usr.repopath = inp_usr.repopath.trim()
+        inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test"
-        if (inp_usr.proj.projname.indexOf(PUB_TEST) === 0) {
-            if (inp_usr.proj.projname !== inp_usr.passcode) {
+        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
+            if (inp.usr_proj.projname !== inp.usr.passcode) {
                 console.log("This is for pub_test only but discord to the rule.")
                 return null
             } else {
                 console.log("This is for pub_test only: sucessfully pass the rule.")
-                inp_usr.passcode = "3edcFDSA"
+                inp.usr.passcode = "3edcFDSA"
             }
         }
-        return inp_usr
+        return inp
     }
 
-    function _parse_proj_dir(inp_usr, base_Dir) {
+    function _deplore_usr_proj_dir(inp, base_Dir) {
         //const base_Dir = "bible_study_notes/usrs"
-        var gitDir = `${base_Dir}/${inp_usr.proj.username}/${inp_usr.proj.projname}`
+        var gitDir = `${base_Dir}/${inp.usr_proj.username}/${inp.usr_proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
         var datDir = `${rw_Dir}/dat`
 
-        inp_usr.proj.base_Dir = base_Dir
-        inp_usr.proj.git_root = `${gitDir}`
-        inp_usr.proj.acct_dir = `${rw_Dir}`
-        inp_usr.proj.dest_myo = `${tarDir}`
-        inp_usr.proj.dest_dat = `${datDir}`
+        inp.usr_proj.base_Dir = base_Dir
+        inp.usr_proj.git_root = `${gitDir}`
+        inp.usr_proj.acct_dir = `${rw_Dir}`
+        inp.usr_proj.dest_myo = `${tarDir}`
+        inp.usr_proj.dest_dat = `${datDir}`
 
-        inp_usr.proj.git_Usr_Pwd_Url = ""
-        if (inp_usr.passcode.trim().length > 0) {
-            inp_usr.proj.git_Usr_Pwd_Url = `https://${inp_usr.proj.username}:${inp_usr.passcode}@github.com/${inp_usr.proj.username}/${inp_usr.proj.projname}.git`
+        inp.usr_proj.git_Usr_Pwd_Url = ""
+        if (inp.usr.passcode.trim().length > 0) {
+            inp.usr_proj.git_Usr_Pwd_Url = `https://${inp.usr_proj.username}:${inp.usr.passcode}@github.com/${inp.usr_proj.username}/${inp.usr_proj.projname}.git`
         }
-        console.log("parse: inp.usr.proj=", inp_usr.proj)
+        console.log("parse: inp.usr_proj=", inp.usr_proj)
     }
 
     function _parse_inp_usr(inp) {
-        inp.usr.proj = _parse_proj_url(inp.usr.repopath)
-        if (!inp.usr.proj) {
+        inp.usr_proj = _interpret_repo_url(inp.usr.repopath)
+        if (!inp.usr_proj) {
             inp.out.desc = "invalid repospath."
             return null;
         }
 
         _decode_passcode(inp.usr)
 
-        if (null === _check_pub_testing(inp.usr)) {
+        if (null === _check_pub_testing(inp)) {
             inp.out.desc = "failed pub test."
             return null
         }
 
         inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 
-        _parse_proj_dir(inp.usr, _THIS.m_sBaseUsrs)
+        _deplore_usr_proj_dir(inp, _THIS.m_sBaseUsrs)
+        return inp
     }
 
 
@@ -695,7 +696,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
     }
 
 
-    return inp.usr.proj
+    return inp.usr_proj
 }
 BibleObjGituser.prototype.gen_session = function (inp_usr) {
     var tmp = "sid" + (new Date()).getTime()
@@ -752,34 +753,34 @@ BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
     return `${dir}${subpath}`
 }
 BibleObjGituser.prototype.get_usr_acct_dir = function (subpath) {
-    if (!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr_proj) return ""
     if (!subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}`
+        return `${this.m_rootDir}${this.m_inp.usr_proj.acct_dir}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.acct_dir}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr_proj.acct_dir}${subpath}`
 }
 BibleObjGituser.prototype.get_usr_myoj_dir = function (subpath) {
-    if (!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr_proj) return ""
     if (!subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}`
+        return `${this.m_rootDir}${this.m_inp.usr_proj.dest_myo}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_myo}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr_proj.dest_myo}${subpath}`
 }
 BibleObjGituser.prototype.get_usr_dat_dir = function (subpath) {
-    if (!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr_proj) return ""
     if (!subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.dest_dat}`
+        return `${this.m_rootDir}${this.m_inp.usr_proj.dest_dat}`
     }
-    return `${this.m_rootDir}${this.m_inp.usr.proj.dest_dat}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr_proj.dest_dat}${subpath}`
 }
 
 BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
-    if (!this.m_inp.usr.proj) return ""
+    if (!this.m_inp.usr_proj) return ""
     if (undefined === subpath || null === subpath) {
-        return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}`
+        return `${this.m_rootDir}${this.m_inp.usr_proj.git_root}`
     }
     if (subpath[0] !== "/") subpath = "/" + subpath
-    return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}${subpath}`
+    return `${this.m_rootDir}${this.m_inp.usr_proj.git_root}${subpath}`
 }
 
 BibleObjGituser.prototype.get_DocCode_Fname = function (DocCode) {
@@ -790,13 +791,13 @@ BibleObjGituser.prototype.get_DocCode_Fname = function (DocCode) {
 BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     var inp = this.m_inp
     //var DocCode = inp.par.fnames[0]
-    if (!DocCode || !inp.usr.proj) return ""
+    if (!DocCode || !inp.usr_proj) return ""
     var dest_pfname = ""
     switch (DocCode[0]) {
         case "_": //: _myNode, _myTakeaway,
             {
                 var fnam = this.get_DocCode_Fname(DocCode)
-                if (inp.usr.proj) {
+                if (inp.usr_proj) {
                     dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
                     ////---:
                     if (!fs.existsSync(dest_pfname)) {
@@ -818,7 +819,7 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
         case ".": //-: ./dat/localStorage
             {
                 var fnam = DocCode.substr(1)
-                if (inp.usr.proj) {
+                if (inp.usr_proj) {
                     dest_pfname = this.get_usr_acct_dir(`${fnam}_json.js`)
                     ////---: 
                     if (!fs.existsSync(dest_pfname)) {
@@ -847,7 +848,7 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
 
 BibleObjGituser.prototype.proj_setup = function () {
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
@@ -885,7 +886,7 @@ BibleObjGituser.prototype.proj_setup = function () {
 }
 BibleObjGituser.prototype.proj_destroy = async function () {
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         console.log("failed git setup", inp)
         return inp
@@ -963,7 +964,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
 
 BibleObjGituser.prototype.cp_template_to_git = function () {
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
@@ -1002,7 +1003,7 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
 BibleObjGituser.prototype.chmod_R_777_acct = function () {
     // mode : "777" 
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
@@ -1023,7 +1024,7 @@ BibleObjGituser.prototype.chmod_R_777_acct = function () {
 BibleObjGituser.prototype.chmod_R_ = function (mode, dir) {
     // mode : "777" 
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
@@ -1046,18 +1047,18 @@ BibleObjGituser.prototype.load_git_config = function () {
     //if (!this.m_git_config_old || !this.m_git_config_new) {
     var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
     var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
-    var ipos2 = txt.indexOf(this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    var ipos2 = txt.indexOf(this.m_inp.usr_proj.git_Usr_Pwd_Url)
 
     console.log("ipos1:", ipos1, this.m_inp.usr.repopath)
-    console.log("ipos2:", ipos2, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+    console.log("ipos2:", ipos2, this.m_inp.usr_proj.git_Usr_Pwd_Url)
 
     if (ipos1 > 0) {
         olds = txt
-        news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        news = txt.replace(this.m_inp.usr.repopath, this.m_inp.usr_proj.git_Usr_Pwd_Url)
     }
     if (ipos2 > 0) {
         news = txt
-        olds = txt.replace(this.m_inp.usr.proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
+        olds = txt.replace(this.m_inp.usr_proj.git_Usr_Pwd_Url, this.m_inp.usr.repopath)
 
         console.log("initial git_config_fname not normal:", txt)
     }
@@ -1097,8 +1098,8 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
     } /////////
 
     if (!this.m_inp.usr.repopath) return
-    if (!this.m_inp.usr.proj) return
-    if (!this.m_inp.usr.proj.git_Usr_Pwd_Url) return
+    if (!this.m_inp.usr_proj) return
+    if (!this.m_inp.usr_proj.git_Usr_Pwd_Url) return
 
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(git_config_fname)) {
@@ -1114,7 +1115,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 
     if (bAllowPush) {
         fs.writeFileSync(git_config_fname, this.m_git_config_new, "utf8")
-        console.log("bAllowPush=1:url =", this.m_inp.usr.proj.git_Usr_Pwd_Url)
+        console.log("bAllowPush=1:url =", this.m_inp.usr_proj.git_Usr_Pwd_Url)
     } else {
         fs.writeFileSync(git_config_fname, this.m_git_config_old, "utf8")
         console.log("bAllowPush=0:url =", this.m_inp.usr.repopath)
@@ -1124,7 +1125,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 BibleObjGituser.prototype.git_clone = function () {
     var _THIS = this
     var inp = this.m_inp
-    var proj = inp.usr.proj;
+    var proj = inp.usr_proj;
     if (!proj) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed-git-parse", inp.out.desc)
@@ -1139,7 +1140,7 @@ BibleObjGituser.prototype.git_clone = function () {
         return inp
     }
 
-    var clone_https = inp.usr.proj.git_Usr_Pwd_Url
+    var clone_https = inp.usr_proj.git_Usr_Pwd_Url
     if (clone_https.length === 0) {
         clone_https = inp.usr.repopath
     }
