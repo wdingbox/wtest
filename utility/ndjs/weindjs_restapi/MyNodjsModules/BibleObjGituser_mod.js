@@ -653,7 +653,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         var ret = this.get_session(inp.sid)
     }
     if ("object" === typeof inp.usr) {
-        inp.sid = thiis.gen_session(inp.usr)
+        inp.sid = this.gen_session(inp.usr)
 
         inp.usr.proj = _parse_proj_url(inp.usr.repopath)
         if (!inp.usr.proj) {
