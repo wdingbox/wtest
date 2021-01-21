@@ -296,7 +296,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 bio.writeback()
             }
 
-            //// inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, true)
+            ////
             var tagName = `${doc}~${karyObj.bkc}${karyObj.chp}:${karyObj.vrs}`
             var save_res = {}
             save_res.saved_size = "" + karyObj.txt.length + ",dlt:" + dlt
@@ -597,7 +597,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
 
 
-        //inp.out = BibleUti.Write2vrs_txt_by_inpObj(jsfname, doc, inp.par.inpObj, false)
 
         var ss = JSON.stringify(inp)
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
