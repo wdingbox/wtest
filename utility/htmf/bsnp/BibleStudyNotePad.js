@@ -1843,7 +1843,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#account_default").bind("click", function () {
-        $("#repopath").val("https://github.com/bsnp21/pub_test.git")
+        $("#repopath").val("https://github.com/bsnp21/pub_test01.git")
         $("#passcode").val("")
     })
     $("#account_date").bind("click", function () {
@@ -3816,7 +3816,7 @@ var BibleInputMenuContainer = `
                     <a id="account_helper">More</a>
                     </div>
                     <br>
-                    <textarea id="repopath" value='https://github.com/bsnp21/pub_test.git' placeholder='https://github.com/bsnp21/pub_test.git' ></textarea>
+                    <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
                     <br>
                     <a>Description</a>: 
                     <span id="repository_description">
