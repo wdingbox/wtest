@@ -178,7 +178,13 @@ var MyStorage = {
 
 
     clear: function () {
-        localStorage.clear();
+        var Ignory = ["repositories", "#MemoryVerse"]
+        Object.keys(localStorage).forEach(function (key) {
+            console.log(key)
+            if (Ignory.indexOf(key) < 0) {
+                delete localStorage[key]
+            }
+        })
     },
 
     setSelectedDocsList: function (arr) {
@@ -1894,6 +1900,14 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         if (tx === "password") tx = "text"
         else tx = "password"
         $("#passcode").attr("type", tx)
+    })
+
+    $("#Storage_clear").on("change", function () {
+        MyStorage.clear(); 
+        var _THIS = this
+        setTimeout(function(){
+            $(_THIS).prop('checked',false);
+        },3000)
     })
 
     $("#StorageRepo_save").on("change", function () {
@@ -3762,7 +3776,7 @@ var BibleInputMenuContainer = `
                         <tr>
                             <td>Storage</td>
                             <td>
-                            <input type="radio" onclick="MyStorage.clear(); $(this).prop('checked',false);" title='clear up storage'>Clear</input>
+                            <input type="radio" id="Storage_clear" title='clear up storage'>Clear</input>
 
                             <input type="radio" id="StorageRepo_save"/>
                             <label for="StorageRepo_save" title='save up storage'>SaveRepository</label> | 
