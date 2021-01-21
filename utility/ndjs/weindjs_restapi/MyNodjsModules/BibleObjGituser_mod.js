@@ -561,12 +561,12 @@ var g_BibleObjBackendService = new BibleObjBackendService()
 var BibleObjGituser = function (rootDir) {
     if (!rootDir.match(/\/$/)) rootDir += "/"
 
-    
+
     this.m_sRootNode = "bible_study_notes"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
     var pathrootdir = rootDir + this.m_sRootNode
-    
-    
+
+
     this.m_backendService = g_BibleObjBackendService
     this.m_backendService.set_rootDir(pathrootdir)
 
@@ -669,6 +669,8 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 
     _parse_proj_dir(inp, this.m_sBaseUsrs)
 
+
+
     return inp.usr.proj
 }
 BibleObjGituser.prototype.get_usr_acct_dir = function (subpath) {
@@ -698,6 +700,7 @@ BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     if (undefined === subpath || null === subpath) {
         return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}`
     }
+    if (subpath[0] !== "/") subpath = "/" + subpath
     return `${this.m_rootDir}${this.m_inp.usr.proj.git_root}${subpath}`
 }
 
@@ -763,6 +766,21 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
+BibleObjGituser.prototype.get_session_fname = async function () {
+    var sessf = this.get_usr_dat_dir("/session.txt")
+    return sessf
+}
+BibleObjGituser.prototype.proj_sess_write = async function () {
+    var sessf = this.get_session_fname()
+    fs.writeFile(sessf, atob(JSON.parse(inp.usr)), "utf8")
+}
+BibleObjGituser.prototype.proj_sess_read = async function () {
+    var sessf = this.get_session_fname()
+    var dat = fs.readFileSync(sessf, "utf8")
+    var txt = btoa(dat)
+    var obj = JSON.parse(txt)
+    return obj
+}
 BibleObjGituser.prototype.proj_setup = async function () {
     var inp = this.m_inp
     var proj = inp.usr.proj;
@@ -797,6 +815,8 @@ BibleObjGituser.prototype.proj_setup = async function () {
 
     var retp = this.profile_state()
     await this.chmod_R_777_acct()
+
+
 
     return inp
 }

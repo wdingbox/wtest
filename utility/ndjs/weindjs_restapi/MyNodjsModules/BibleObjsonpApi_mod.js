@@ -60,6 +60,7 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
+    sid: "",
 encrypt_usr: function(){
     if(!this.inp.usr.passcode_encrypted){
         //this.inp.usr.passcode_encrypted = 1;
@@ -70,12 +71,13 @@ encrypt_usr: function(){
     }
 },
 Url: function (){
-    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp));
+    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp)) + "&sid=" + this.sid;
     return this.m_src;
 },
 Run : function (cbf) {
     this.encrypt_usr()
     this.RunJsonP(cbf)
+    this.api = this.inp.par = null;
 },
 RunJsonP : function (cbf) {
     if (!cbf) alert('callback Response null');
@@ -86,7 +88,6 @@ RunJsonP : function (cbf) {
     s.src = this.Url()
     document.body.appendChild(s);
     console.log('Jsonpster:', Jsonpster);
-    this.api = this.inp.par = null;
 },
 xxRunPost : function (cbf) {
     if(!cbf) return alert("cbf null.")
@@ -150,8 +151,8 @@ RunAjax_Type_Post : function(cbf){
         })
         .fail( function(xhr, textStatus, errorThrown) {
             console.log("surl",surl)
-            alert("xhr.responseText="+xhr.responseText);
-            alert("textStatus="+textStatus);
+            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
+            //alert("textStatus="+textStatus);
         });
 }
 };
