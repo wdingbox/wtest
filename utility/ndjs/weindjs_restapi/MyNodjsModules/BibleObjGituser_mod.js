@@ -176,7 +176,7 @@ var BibleUti = {
         return bcvRobj;
     },
 
-    search_str_in_bcvR: function (bcvR, Fname, searchStrn) {
+    search_str_in_bcvT: function (bcvR, Fname, searchStrn) {
         function _parse_global_parm(searchPat) {
             var arsrmat = searchPat.match(/^\/(.*)\/([a-z]*)$/)
             var exparm = "g"
@@ -217,7 +217,7 @@ var BibleUti = {
                             var mat = txt.match(rep);
                             if (mat) {
                                 mat.forEach(function (s, i) {
-                                    if (s.length > 0) console.log(i, s)
+                                    //if (s.length > 0) console.log(i, s)
                                 })
                                 bFound = true
                                 var txtFound = txt
@@ -736,12 +736,12 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
             break
         case ".": //-: ./dat/localStorage
             {
-                var pfnam = DocCode.substr(1)
+                var fnam = DocCode.substr(1)
                 if (inp.usr.proj) {
-                    dest_pfname = this.get_usr_acct_dir(`${pfnam}_json.js`)
+                    dest_pfname = this.get_usr_acct_dir(`${fnam}_json.js`)
                     ////---: 
                     if (!fs.existsSync(dest_pfname)) {
-                        var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/dat/${fnam}`
+                        var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
                         if (fs.existsSync(src)) {
                             const { COPYFILE_EXCL } = fs.constants;
                             fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
@@ -796,6 +796,7 @@ BibleObjGituser.prototype.proj_setup = async function () {
     this.git_config_allow_push(false)
 
     var retp = this.profile_state()
+    await this.chmod_R_777_acct()
 
     return inp
 }

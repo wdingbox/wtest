@@ -186,7 +186,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var bcvT = {}
         BibleUti.convert_Tbcv_2_bcvT(TbcvObj, bcvT)
-        inp.out.data = BibleUti.search_str_in_bcvR(bcvT, inp.par.Search.File, inp.par.Search.Strn);
+        inp.out.data = BibleUti.search_str_in_bcvT(bcvT, inp.par.Search.File, inp.par.Search.Strn);
 
         inp.out.desc += ":success."
         var ss = JSON.stringify(inp);
@@ -203,14 +203,16 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse(inp)
-        var res1 = await userProject.git_pull()
-        var res2 = await userProject.chmod_R_777_acct()
-        var sta = userProject.profile_state()
-        if (!sta || sta.bMyojDir <= 0) {
+
+        var stat = await userProject.proj_setup()
+        if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
+
+
+        if (!stat.out.state || stat.out.state.bMyojDir <= 0) {
             console.log("-----:bMyojDir<=0. dir not exist")
         } else {
-            console.log("-----:bMyojDir>0",inp.par.fnames, typeof inp.par.fnames)
-            console.log("-----:binp.par.bibOj",inp.par.bibOj)
+            console.log("-----:bMyojDir>0", inp.par.fnames, typeof inp.par.fnames)
+            console.log("-----:binp.par.bibOj", inp.par.bibOj)
             var TbcObj = {};
             if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
                 console.log("inp.par.fnames:", inp.par.fnames)
@@ -260,11 +262,11 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 save_res.desc = "proj=null"
                 return
             }
-            var stat = userProject.profile_state()
-            if (stat.bEditable !== 1) return
+            var stat = await userProject.proj_setup()
+            if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
-            var res1 = await userProject.git_pull()
-            await userProject.chmod_R_777_acct()
+
+
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
@@ -310,7 +312,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //res.write("Jsonpster.Response(" + ss + ");");
         //res.end();
     },
-    
+
 
     ///////////////////////////////////
     ApiUsrDat_save: async function (req, res) {
@@ -321,21 +323,24 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //: unlimited write size. 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse(inp)
-            if (!proj) return
-            var stat = userProject.profile_state()
-            if (stat.bEditable !== 1) return
+            if (!proj) return console.log("proj_parse failed.")
+
+            var stat = await userProject.proj_setup()
+            if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
             //if ("object" === typeof inp.par.fnames) {//['NIV','ESV']
             var doc = inp.par.fnames[0]
             var jsfname = userProject.get_pfxname(doc)
+            console.log("jsfname=", jsfname)
             var ret = BibleUti.load_BibleObj_by_fname(jsfname)
-            if (!ret.obj) return
+            if (!ret.obj) return console.log("failed:=", jsfname)
             try {
                 ret.obj = JSON.parse(inp.par.data, null, 4)
                 console.log("ret", ret)
                 ret.writeback()
             } catch (err) {
+                console.log("err", err)
                 inp.out.state.err = err
             }
 
@@ -504,7 +509,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse(inp)) {
             await userProject.proj_setup()
-            await userProject.git_pull();
+            //await userProject.git_pull();
         }
 
         var sret = JSON.stringify(inp, null, 4)
