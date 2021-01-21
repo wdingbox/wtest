@@ -981,14 +981,14 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
     var password = "lll" //dev mac
     var acctDir = this.get_usr_acct_dir()
     var cp_template_cmd = `
-#!/bin/sh
-echo ${password} | sudo -S mkdir -p ${acctDir}
-echo ${password} | sudo -S chmod -R 777 ${acctDir}
-#echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
-echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
-echo ${password} | sudo -S chmod -R 777 ${acctDir}
-echo " cp_template_cmd end."
-#cd -`
+    #!/bin/sh
+    echo ${password} | sudo -S mkdir -p ${acctDir}
+    echo ${password} | sudo -S chmod -R 777 ${acctDir}
+    #echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
+    echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
+    echo ${password} | sudo -S chmod -R 777 ${acctDir}
+    echo " cp_template_cmd end."
+    #cd -`
 
     inp.out.cp_template_cmd = cp_template_cmd
     console.log("cp_template_cmd", cp_template_cmd)
