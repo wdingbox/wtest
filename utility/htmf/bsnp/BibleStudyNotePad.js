@@ -159,20 +159,6 @@ var MyStorage = {
         return new MostRecentAry(sid)
     },
     ////--------
-    ____addMostRecentSearchStrn: function (strn) {
-        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
-        ret.addonTop(strn)
-    },
-    ____setMostRecentSearchStrn: function (ar) {
-        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
-        ret.set_ary(ar)
-    },
-    ____getMostRecentSearchStrn: function () {
-        var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
-        return ret.get_ary()
-    },
-
-
 
 
     clear: function () {
@@ -220,14 +206,16 @@ var MyStorage = {
     ////-----
 
 
-    setFontSize: function (v) {
-        if (parseInt(v) < 6) v = 6
-        localStorage.setItem("FontSize", v)
-    },
-    getFontSize: function () {
-        var v = parseInt(localStorage.getItem("FontSize"));
-        if (!v || !Number.isInteger(v) || v.length === 0) return 16
-        return (v < 6) ? 6 : v
+   
+    FontSize: function (v) {
+        if (undefined === v) {
+            v = parseInt(localStorage.getItem("FontSize"));
+            if (!v || !Number.isInteger(v) || v.length === 0) return 16
+            return (v < 6) ? 6 : v
+        } else {
+            if (parseInt(v) < 6) v = 6
+            localStorage.setItem("FontSize", v)
+        }
     },
 
 
@@ -2523,12 +2511,12 @@ function OutputBibleTable() {
     this.m_tbid = "#oBible"
 }
 OutputBibleTable.prototype.incFontSize = function (n) {
-    var fsz = MyStorage.getFontSize()
+    var fsz = MyStorage.FontSize()
     fsz += n;
     $(this.m_tbid + " table .tx").css("font-size", fsz);
     $("#fontsize").text(fsz)
 
-    MyStorage.setFontSize(fsz)
+    MyStorage.FontSize(fsz)
     g_aim.scrollToView_Vrs()
 }
 OutputBibleTable.prototype.onclick_ob_table = function (cbf) {
