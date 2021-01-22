@@ -673,11 +673,11 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 
         if (null === _check_pub_testing(inp)) {
             inp.out.desc = "failed pub test."
+            inp.usr_proj = null
             return null
         }
 
         inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
-
         _deplore_usr_proj_dirs(inp, _THIS.m_sBaseUsrs)
         return inp
     }
@@ -689,22 +689,23 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
             inp.usr = sess
             console.log("\n-sess", sess)
         }
-    }else if ("object" === typeof inp.usr) {
-        inp.sid = this.gen_session(inp.usr)
+    } else if ("object" === typeof inp.usr) {
+        inp.out.state.sid = this.gen_session(inp.usr).sid
     }
 
-    return _parse_inp_usr(inp)
+    var ret = _parse_inp_usr(inp)
+    return ret
 }
 BibleObjGituser.prototype.gen_session = function (inp_usr) {
-    var tmp = "sid" + (new Date()).getTime()
-    var sess = this.get_proj_tmp_dir(tmp)
+    var sid = "sid" + (new Date()).getTime()
+    var sess = this.get_proj_tmp_dir(sid)
     var txt = JSON.stringify(inp_usr)
     var dat = Buffer.from(txt).toString("base64")
     console.log("_create_session dat", dat)
     fs.writeFile(sess, dat, "utf8", function (err) {
         console.log("save err", err)
     })
-    return sess
+    return { sess: sess, sid: sid }
 }
 BibleObjGituser.prototype.get_session = function (sid) {
     var sess = this.get_proj_tmp_dir(sid)
@@ -875,7 +876,7 @@ BibleObjGituser.prototype.proj_setup = function () {
     }
 
     this.chmod_R_777_acct()
-   
+
 
     var retp = this.profile_state()
 
@@ -897,7 +898,7 @@ BibleObjGituser.prototype.proj_destroy = async function () {
     `
 
     if (fs.existsSync(`${gitdir}`)) {
-        inp.out.exec_git_cmd_result =  BibleUti.execSync_Cmd(proj_destroy).toString()
+        inp.out.exec_git_cmd_result = BibleUti.execSync_Cmd(proj_destroy).toString()
         inp.out.desc += "destroyed git dir: " + gitdir
     }
     this.profile_state()
@@ -1178,7 +1179,7 @@ BibleObjGituser.prototype.git_status = async function (_sb) {
         cd ${this.get_usr_git_dir()}
         git status ${_sb}
         #git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.`
-       
+
         inp.out.git_status_res = BibleUti.exec_Cmd(git_status_cmd).toString()
     }
 }
