@@ -614,7 +614,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 
 
             var owner = `_${hostname}_${username}_${projname}`
-            return { hostname: hostname, username: username, projname: projname, ownername: owner }
+            return { hostname: hostname, username: username, projname: projname, ownerstr: owner }
         }
         return null
     }
@@ -710,7 +710,7 @@ BibleObjGituser.prototype.session_ssid_compose = function () {
     var sesid = "", owner = ""
     if (this.m_inp.usr && this.m_inp.usr_proj) {
         sesid = "SSID" + (new Date()).getTime()
-        owner = this.m_inp.usr_proj.ownername
+        owner = this.m_inp.usr_proj.ownerstr
     } else {
         var sid = this.m_inp.SSID
         var pos = ssid.indexOf("_")
