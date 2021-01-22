@@ -526,14 +526,14 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
         if (doc !== sfl) continue
-        console.log("sfl found:", sfl, doc)
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
         this.output.m_totSize += stats.size;
         this.output.m_olis.push(pathfile);
+        console.log("sfl found:", sfl, pathfile)
     }
 }
-SvrUsrsBCV.prototype.gen_all_files_of = function (doc) {
+SvrUsrsBCV.prototype.gen_crossnet_files_of = function (doc) {
     this.getFary(this.m_rootDir, doc)
     return this.output
 }
