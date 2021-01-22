@@ -2781,7 +2781,7 @@ var PageUti = {
                 if (sid && sid.length > 1) {
                     $("#otb").html("<font color='green'>Success</font>")
                     if (bSginIn) {
-                        localStorage.setItem("sid", ret.out.state.sid)
+                        localStorage.setItem("sid", sid)
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
