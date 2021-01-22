@@ -681,8 +681,8 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
 
 
-    if ("string" === typeof inp.sid && inp.sid.length > 0) {
-        var sess = this.get_session(inp.sid)
+    if ("string" === typeof inp.ssid && inp.ssid.length > 0) {
+        var sess = this.get_session(inp.ssid)
         if (sess) {
             inp.usr = sess
             console.log("\n-sess", sess)
@@ -697,7 +697,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     return ret
 }
 BibleObjGituser.prototype.gen_session = function (inp_usr) {
-    var ssid = "sid" + (new Date()).getTime()
+    var ssid = "SSID" + (new Date()).getTime()
     var sess = this.get_proj_tmp_dir(ssid)
     var txt = JSON.stringify(inp_usr)
     var dat = Buffer.from(txt).toString("base64")
