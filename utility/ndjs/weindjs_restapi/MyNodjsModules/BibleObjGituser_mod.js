@@ -682,8 +682,9 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
         return inp
     }
 
-    this.m_orig_usr = JSON.stringify(inp.usr)
+    this.m_orig_usr_sess = JSON.stringify(inp.usr)
 
+    inp.out.state.ssid_cur = inp.SSID
     if (inp.SSID && inp.SSID.length > 0) {
         var sess = this.get_session(inp.SSID)
         if (sess) {
@@ -699,8 +700,9 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     var ret = _parse_inp_usr(inp)
     return ret
 }
-BibleObjGituser.prototype.destroy_session = function () {
-    var sess = this.get_proj_tmp_dir(this.m_inp.SSID)
+BibleObjGituser.prototype.destroy_session = function (ssid) {
+    if(undefined === ssid) ssid = this.m_inp.SSID
+    var sess = this.get_proj_tmp_dir(ssid)
     if(!fs.existsSync(sess)) return console.log("ssid not exists:", sess)
     console.log("destroy_session:", sess)
     fs.unlink(sess, function (err) {
@@ -708,11 +710,12 @@ BibleObjGituser.prototype.destroy_session = function () {
     })
 }
 BibleObjGituser.prototype.gen_session = function () {
+
     var ssid = "SSID" + (new Date()).getTime()
     var sess = this.get_proj_tmp_dir(ssid)
-    var txt = this.m_orig_usr
+    var txt = this.m_orig_usr_sess
     var dat = Buffer.from(txt).toString("base64")
-    console.log("_create_session dat", dat)
+    console.log("_create new session dat",ssid, dat)
     fs.writeFile(sess, dat, "utf8", function (err) {
         console.log("save err", err)
     })
@@ -893,7 +896,7 @@ BibleObjGituser.prototype.proj_setup = function () {
 
     var retp = this.profile_state()
     if (retp.bEditable === 1) {
-        inp.out.state.SSID = this.gen_session().SSID
+        //inp.out.state.SSID = this.gen_session().SSID
     }
 
     return inp

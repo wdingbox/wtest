@@ -14,7 +14,7 @@ var MyStorage = {
                 this.get_select_val(eid)
             }
 
-
+            this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
         } else {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
@@ -159,19 +159,18 @@ var MyStorage = {
         return new MostRecentAry(sid)
     },
     ////--------
-    addMostRecentSearchStrn: function (strn) {
+    ____addMostRecentSearchStrn: function (strn) {
         var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
         ret.addonTop(strn)
     },
-    setMostRecentSearchStrn: function (ar) {
+    ____setMostRecentSearchStrn: function (ar) {
         var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
         ret.set_ary(ar)
     },
-    getMostRecentSearchStrn: function () {
+    ____getMostRecentSearchStrn: function () {
         var ret = MyStorage.MostRecentAryInStore("MostRecentSearchStrn")
         return ret.get_ary()
     },
-
 
 
 
@@ -2356,7 +2355,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty input")
 
-        MyStorage.addMostRecentSearchStrn(s)
+        MyStorage.MostRecentSearchStrn.addonTop(s)
         gen_search_strn_history()
         document.g_NextIndex = -1
 
@@ -2390,7 +2389,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         var s = document.m_SearchStrnInPage
 
         var trs = ""
-        var ar = MyStorage.getMostRecentSearchStrn()
+        var ar = MyStorage.MostRecentSearchStrn.get_ary()
         ar.forEach(function (strn) {
             var matcls = (s === strn.trim()) ? "SearchStrnInPage" : ""
             if (strn.trim().length > 0) {
@@ -2432,7 +2431,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         document.m_SearchStrnInPage = s
         gen_search_strn_history()
         if (s.length === 0) return alert("reset ok.")
-        MyStorage.addMostRecentSearchStrn(s)
+        MyStorage.MostRecentSearchStrn.addonTop(s)
         document.g_NextIndex = -1
 
         var nFound = $(".matInPage").length;
@@ -2458,12 +2457,12 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
                 ar.push(tx)
             }
         })
-        MyStorage.setMostRecentSearchStrn(ar)
+        MyStorage.MostRecentSearchStrn.set_ary(ar)
     })
     $("#REGEXP_AND").on("click", function () {
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty")
-        MyStorage.addMostRecentSearchStrn(s)
+        MyStorage.MostRecentSearchStrn.addonTop(s)
         var ar = s.split(" ")
         var sss = ""
         ar.forEach(function (str) {
@@ -2476,7 +2475,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
     $("#REGEXP_IgnoreCase").on("click", function () {
         var s = $("#sinput").val().trim();
         if (s.length === 0) return alert("empty")
-        MyStorage.addMostRecentSearchStrn(s)
+        MyStorage.MostRecentSearchStrn.addonTop(s)
 
         var sss = "/" + s + "/i"
         $("#sinput").val(sss)
