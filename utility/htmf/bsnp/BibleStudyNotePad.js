@@ -23,7 +23,7 @@ var MyStorage = {
     Repo_save: function (cbf) {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
         if (!Jsonpster.inp.usr) return alert("user is not set yet.")
 
 
@@ -35,7 +35,7 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
         if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
 
 
@@ -268,8 +268,8 @@ var MyStorage = {
     },
 
 
-    ssid: function (ssid) {
-        const sessId = "session_id"
+    SSID: function (ssid) {
+        const sessId = "SSID"
         if (undefined === ssid) {
             var ret = localStorage.getItem(sessId)
             if (!ret) return alert("SessionID not found.")
@@ -566,7 +566,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
-        pster.inp.usr = Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
@@ -1891,7 +1891,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("repository", Jsonpster)
@@ -1943,7 +1943,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $(".StorageRepo_Signout").bind("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
             $("body").attr("onbeforeunload", null)
@@ -2787,11 +2787,11 @@ var PageUti = {
         Jsonpster.Run(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
             if (ret.out.state) {
-                var ssid = ret.out.state.ssid
+                var ssid = ret.out.state.SSID
                 if (ssid && ssid.length > 1) {
                     $("#otb").html("<font color='green'>Success</font>")
                     if (bSginIn) {
-                        MyStorage.ssid(ssid)
+                        MyStorage.SSID(ssid)
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
@@ -2806,7 +2806,7 @@ var PageUti = {
     },
     repo_destroy: function () {
         if (!confirm("The Bible study notes you wrote in server-site will be erased.")) return
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
@@ -2816,7 +2816,7 @@ var PageUti = {
         })
     },
     repo_status: function () {
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -2844,7 +2844,7 @@ var PageUti = {
         if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
         if (!confirm("push data into repository")) return
 
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
@@ -2865,7 +2865,7 @@ var PageUti = {
         var passcode = $("#passcode").val()
         if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
         if (!confirm("pull down data")) return
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)
@@ -2913,7 +2913,7 @@ var PageUti = {
             var cmd = $(this).text()
             console.log(cmd)
 
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+            Jsonpster.inp.SSID = MyStorage.SSID()
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
@@ -2933,7 +2933,7 @@ var PageUti = {
         })
     },
     LoadStorageInRepos: function (eid) {
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        //Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
 
         MyStorage.Repo_load(function (ret) {
             console.log("data", ret)

@@ -681,8 +681,8 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
 
 
-    if ("string" === typeof inp.ssid && inp.ssid.length > 0) {
-        var sess = this.get_session(inp.ssid)
+    if ("string" === typeof inp.SSID && inp.SSID.length > 0) {
+        var sess = this.get_session(inp.SSID)
         if (sess) {
             inp.usr = sess
             console.log("\n-sess", sess)
@@ -705,7 +705,7 @@ BibleObjGituser.prototype.gen_session = function (inp_usr) {
     fs.writeFile(sess, dat, "utf8", function (err) {
         console.log("save err", err)
     })
-    return { sess: sess, ssid: ssid }
+    return { sess: sess, SSID: ssid }
 }
 BibleObjGituser.prototype.get_session = function (sid) {
     var sess = this.get_proj_tmp_dir(sid)
@@ -882,7 +882,7 @@ BibleObjGituser.prototype.proj_setup = function () {
 
     var retp = this.profile_state()
     if (retp.bEditable === 1) {
-        inp.out.state.ssid = this.gen_session(inp.usr).ssid
+        inp.out.state.SSID = this.gen_session(inp.usr).SSID
     }
 
     return inp
