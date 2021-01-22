@@ -598,18 +598,17 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname,  function(pname,fname){
             console.log("\n--inp.usr.repodesc",inp.usr.repodesc,)
-            if(fname.match(/^SSID/)){
-                console.log("ssid pname", pname)
-                console.log("ssid fname", fname)
-            }
-
         })
         console.log("jspfn:", jsfname)
         for (var i = 0; i < outfil.m_olis.length; i++) {
             var jspfn = outfil.m_olis[i]
             if (docpathfilname === jspfn) continue;
-            console.log("jspfn=", jspfn)
-            __load_bcv(jspfn, inp)
+            console.log("\n*jspfn=", jspfn)
+            var reposdes = userProject.session_git_repodesc_load(jspfn)
+            console.log("reposdes=", reposdes.repodesc, inp.usr.repodesc)
+            if(reposdes.repodesc === inp.usr.repodesc){
+                __load_bcv(jspfn, inp)
+            }
         }
 
 

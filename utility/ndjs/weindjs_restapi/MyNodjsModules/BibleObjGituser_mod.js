@@ -525,7 +525,7 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, cbf) {
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
-        console.log("path file :", srcPath, sfl)
+        //console.log("path file :", srcPath, sfl)
         //if (doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
@@ -536,11 +536,11 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, cbf) {
 }
 SvrUsrsBCV.prototype.decompose = function (docpathfilname) {
     var ret = path.parse(docpathfilname)
-    console.log(ret)
+    //console.log(ret)
     var ary = ret.dir.split("/")
     var owner = `_${ary[6]}_${ary[7]}_${ary[8]}`
     var compound = { owner: owner, base: ret.base }
-    console.log("compound", compound)
+    //console.log("compound", compound)
     return compound
 }
 SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
@@ -742,11 +742,28 @@ BibleObjGituser.prototype.session_ssid_compose = function () {
     }
     return { SSID: sesid + owner, sesid: sesid, owner: owner }
 }
+BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
+    var gitfname = this.session_git_repodesc_fname()
+    //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js
+    var pos = docfile.indexOf("/account/")
+    var gitpath = docfile.substr(0, pos)
+    var pathfile = gitpath + gitfname
+    console.log("pathfile", pathfile)
+    if (fs.existsSync(pathfile)) {
+        var txt = fs.readFileSync(pathfile, "utf-8")
+        return { repodesc: txt, pathfile: pathfile }
+    }
+    return { repodesc: "", pathfile: pathfile }
+}
 BibleObjGituser.prototype.session_git_repodesc_fname = function () {
-    return this.get_usr_git_dir(`/.git/tmp/repodesc`)
+    return "/.git/tmp/repodesc"
+}
+BibleObjGituser.prototype.session_git_repodesc_pathfile = function () {
+    var fname = this.session_git_repodesc_fname()
+    return this.get_usr_git_dir(fname)
 }
 BibleObjGituser.prototype.session_destroy = function () {
-    var git_old_ssid = this.session_git_repodesc_fname()
+    var git_old_ssid = this.session_git_repodesc_pathfile()
     BibleUti.execSync_Cmd(`rm -f ${git_old_ssid}`)
 
     var sidbuf = this.session_ssid_compose()
@@ -768,7 +785,7 @@ BibleObjGituser.prototype.session_name_gen = function () {
         })
     }
 
-    var ssfn = this.session_git_repodesc_fname()
+    var ssfn = this.session_git_repodesc_pathfile()
     if (ssfn) {
         var txt = this.m_inp.usr.repodesc
         console.log("git session_name_gen:", ssfn, txt)
