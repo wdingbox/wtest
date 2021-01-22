@@ -580,9 +580,9 @@ var BibleObjGituser = function (rootDir) {
 
     this.m_sRootNode = "bist"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
+    this.m_sBaseTemp = `${this.m_sRootNode}/temp`
+
     var pathrootdir = rootDir + this.m_sRootNode
-
-
     this.m_backendService = g_BibleObjBackendService
     this.m_backendService.set_rootDir(pathrootdir)
 
@@ -701,7 +701,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     var ret = _parse_inp_usr(inp)
     return ret
 }
-BibleObjGituser.prototype.session_ssid_parse = function () {
+BibleObjGituser.prototype.session_ssid_compose = function () {
     var sesid = "", owner = ""
     if (this.m_inp.usr && this.m_inp.usr_proj) {
         sesid = "SSID" + (new Date()).getTime()
@@ -718,14 +718,14 @@ BibleObjGituser.prototype.session_destroy = function () {
     var git_old_ssid = this.get_usr_git_dir(`/.git/tmp/SSID*`)
     BibleUti.execSync_Cmd(`rm -f ${git_old_ssid}`)
 
-    var sidbuf = this.session_ssid_parse()
+    var sidbuf = this.session_ssid_compose()
     var pub_old_ssid = this.get_proj_tmp_dir(`/SSID*${sidbuf.owner}`)
     BibleUti.execSync_Cmd(`rm -f ${pub_old_ssid}`)
 }
 BibleObjGituser.prototype.session_name_gen = function () {
     this.session_destroy()
 
-    var ssbuf = this.session_ssid_parse()
+    var ssbuf = this.session_ssid_compose()
     
     var ssfn = this.get_proj_tmp_dir(`/${ssbuf.SSID}`)
     if(ssfn){
@@ -786,7 +786,7 @@ BibleObjGituser.prototype.session_getfr_jspfname = function (ssid) {
     return { usr: obj, ssfn: ssfn, str: txt }
 }
 BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
-    var dir = `${this.m_rootDir}${this.m_sRootNode}/tmp`
+    var dir = `${this.m_rootDir}${this.m_sBaseTemp}`
     if (!fs.existsSync(dir)) {
         //fs.mkdirSync(dir, 0777, { recursive: true });
         var password = "lll"
