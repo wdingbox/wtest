@@ -578,7 +578,7 @@ var BibleObjGituser = function (rootDir) {
     this.m_rootDir = rootDir
 
 
-    this.m_sRootNode = "bible_study_notes"
+    this.m_sRootNode = "bist"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
     var pathrootdir = rootDir + this.m_sRootNode
 
@@ -609,7 +609,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
             //return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
             var username = mat[2]
             var projname = mat[3]
-            return { username: username, projname: projname }
+            return { hostname: "github.com", username: username, projname: projname }
         }
         return null
     }
@@ -642,7 +642,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 
     function _deplore_usr_proj_dirs(inp, base_Dir) {
         //const base_Dir = "bible_study_notes/usrs"
-        var gitDir = `${base_Dir}/${inp.usr_proj.username}/${inp.usr_proj.projname}`
+        var gitDir = `${base_Dir}/${inp.usr_proj.hostname}/${inp.usr_proj.username}/${inp.usr_proj.projname}`
         var rw_Dir = `${gitDir}/account`
         var tarDir = `${rw_Dir}/myoj`
         var datDir = `${rw_Dir}/dat`
@@ -655,7 +655,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 
         inp.usr_proj.git_Usr_Pwd_Url = ""
         if (inp.usr.passcode.trim().length > 0) {
-            inp.usr_proj.git_Usr_Pwd_Url = `https://${inp.usr_proj.username}:${inp.usr.passcode}@github.com/${inp.usr_proj.username}/${inp.usr_proj.projname}.git`
+            inp.usr_proj.git_Usr_Pwd_Url = `https://${inp.usr_proj.username}:${inp.usr.passcode}@${inp.usr_proj.hostname}/${inp.usr_proj.username}/${inp.usr_proj.projname}.git`
         }
         console.log("parse: inp.usr_proj=", inp.usr_proj)
     }
@@ -705,7 +705,7 @@ BibleObjGituser.prototype.session_ssid_parse = function () {
     var sesid = "", owner = ""
     if (this.m_inp.usr && this.m_inp.usr_proj) {
         sesid = "SSID" + (new Date()).getTime()
-        owner = `_${this.m_inp.usr_proj.username}_${this.m_inp.usr_proj.projname}`
+        owner = `_${this.m_inp.usr_proj.hostname}_${this.m_inp.usr_proj.username}_${this.m_inp.usr_proj.projname}`
     } else {
         var sid = this.m_inp.SSID
         var pos = ssid.indexOf("_")
@@ -956,7 +956,7 @@ BibleObjGituser.prototype.proj_destroy = function () {
     }
 
     this.session_destroy()
-    
+
     this.profile_state()
     return inp
 }
