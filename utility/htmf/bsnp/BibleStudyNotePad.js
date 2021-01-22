@@ -8,6 +8,7 @@ var MyStorage = {
             console.log("Storage test: ", ar)
 
 
+
             var selidsary = ["#LanguageSel"]
             for (var i = 0; i < selidsary.length; i++) {
                 var eid = selidsary[i]
@@ -162,7 +163,7 @@ var MyStorage = {
 
 
     clear: function () {
-        var Ignory = ["repositories", "#MemoryVerse"]
+        var Ignory = ["repositories", "#MemoryVerse", "SSID"]
         Object.keys(localStorage).forEach(function (key) {
             console.log(key)
             if (Ignory.indexOf(key) < 0) {
