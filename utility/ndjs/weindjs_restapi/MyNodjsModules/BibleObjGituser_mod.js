@@ -592,7 +592,7 @@ var BibleObjGituser = function (rootDir) {
 }
 
 
-BibleObjGituser.prototype.proj_parse = function (inp) {
+BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
         return null
@@ -642,7 +642,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         return inp
     }
 
-    function _deplore_usr_proj_dir(inp, base_Dir) {
+    function _deplore_usr_proj_dirs(inp, base_Dir) {
         //const base_Dir = "bible_study_notes/usrs"
         var gitDir = `${base_Dir}/${inp.usr_proj.username}/${inp.usr_proj.projname}`
         var rw_Dir = `${gitDir}/account`
@@ -678,7 +678,7 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
 
         inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 
-        _deplore_usr_proj_dir(inp, _THIS.m_sBaseUsrs)
+        _deplore_usr_proj_dirs(inp, _THIS.m_sBaseUsrs)
         return inp
     }
 
@@ -688,15 +688,12 @@ BibleObjGituser.prototype.proj_parse = function (inp) {
         if (sess) {
             inp.usr = sess
             console.log("\n-sess", sess)
-            _parse_inp_usr(inp)
         }
     }else if ("object" === typeof inp.usr) {
         inp.sid = this.gen_session(inp.usr)
-        _parse_inp_usr(inp)
     }
 
-
-    return inp.usr_proj
+    return _parse_inp_usr(inp)
 }
 BibleObjGituser.prototype.gen_session = function (inp_usr) {
     var tmp = "sid" + (new Date()).getTime()
