@@ -550,7 +550,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     /////
-    ApiBibleObj_read_AllUsrs_BkcChpVrs_txt: function (req, res) {
+    ApiBibleObj_read_crossnetwork_BkcChpVrs_txt: function (req, res) {
         if (!req || !res) {
             return inp_struct_base
         }
