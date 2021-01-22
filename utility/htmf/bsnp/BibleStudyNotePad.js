@@ -13,7 +13,7 @@ var MyStorage = {
                 var eid = selidsary[i]
                 this.get_select_val(eid)
             }
-          
+
 
         } else {
             // Sorry! No Web Storage support..
@@ -1902,11 +1902,11 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
     $("#Storage_clear").on("change", function () {
-        MyStorage.clear(); 
+        MyStorage.clear();
         var _THIS = this
-        setTimeout(function(){
-            $(_THIS).prop('checked',false);
-        },3000)
+        setTimeout(function () {
+            $(_THIS).prop('checked', false);
+        }, 3000)
     })
 
     $("#StorageRepo_save").on("change", function () {
@@ -2777,9 +2777,11 @@ var PageUti = {
         Jsonpster.Run(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
             if (ret.out.state) {
-                if (1 === ret.out.state.bEditable) {
+                var sid = ret.out.state.sid
+                if (sid && sid.length > 1) {
                     $("#otb").html("<font color='green'>Success</font>")
                     if (bSginIn) {
+                        localStorage.setItem("sid", ret.out.state.sid)
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
