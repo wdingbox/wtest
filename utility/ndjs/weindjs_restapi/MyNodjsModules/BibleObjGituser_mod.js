@@ -525,7 +525,7 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
-        console.log("sfl :", sfl, srcPath)
+        console.log("path file :", srcPath, sfl)
         if (doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
@@ -603,6 +603,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     function _interpret_repo_url(proj_url) {
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
+        const hostname = "github.com"
 
         var mat = proj_url.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/]([^\.]*))[\.]git$/)
         if (mat && mat.length === 4) {
@@ -610,7 +611,10 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
             //return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
             var username = mat[2]
             var projname = mat[3]
-            return { hostname: "github.com", username: username, projname: projname }
+
+
+            var owner = `_${hostname}_${username}_${projname}`
+            return { hostname: hostname, username: username, projname: projname, ownername: owner }
         }
         return null
     }
@@ -706,7 +710,7 @@ BibleObjGituser.prototype.session_ssid_compose = function () {
     var sesid = "", owner = ""
     if (this.m_inp.usr && this.m_inp.usr_proj) {
         sesid = "SSID" + (new Date()).getTime()
-        owner = `_${this.m_inp.usr_proj.hostname}_${this.m_inp.usr_proj.username}_${this.m_inp.usr_proj.projname}`
+        owner = this.m_inp.usr_proj.ownername
     } else {
         var sid = this.m_inp.SSID
         var pos = ssid.indexOf("_")
@@ -727,9 +731,9 @@ BibleObjGituser.prototype.session_name_gen = function () {
     this.session_destroy()
 
     var ssbuf = this.session_ssid_compose()
-    
+
     var ssfn = this.get_proj_tmp_dir(`/${ssbuf.SSID}`)
-    if(ssfn){
+    if (ssfn) {
         var txt = this.m_orig_usr_sess
         var dat = Buffer.from(txt).toString("base64")
         console.log("pub session_name_gen:", ssfn, dat)
@@ -739,7 +743,7 @@ BibleObjGituser.prototype.session_name_gen = function () {
     }
 
     var ssfn = this.get_usr_git_dir(`/.git/tmp/${ssbuf.SSID}`)
-    if(ssfn){
+    if (ssfn) {
         var txt = this.m_orig_usr_sess
         var dat = Buffer.from(txt).toString("base64")
         console.log("git session_name_gen:", ssfn, dat)
@@ -921,15 +925,15 @@ BibleObjGituser.prototype.proj_setup = function () {
             this.cp_template_to_git()
             stat = this.profile_state()
         }
-        if(stat.bDatDir !==1){
-            
+        if (stat.bDatDir !== 1) {
+
         }
 
         if (stat.bMyojDir === 1) {
             var accdir = this.get_usr_acct_dir()
             this.chmod_R_(777, accdir)
         }
-        
+
     }
 
     this.chmod_R_777_acct()
