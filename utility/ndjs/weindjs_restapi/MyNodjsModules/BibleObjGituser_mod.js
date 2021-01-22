@@ -920,11 +920,15 @@ BibleObjGituser.prototype.proj_setup = function () {
             this.cp_template_to_git()
             stat = this.profile_state()
         }
+        if(stat.bDatDir !==1){
+            
+        }
 
         if (stat.bMyojDir === 1) {
             var accdir = this.get_usr_acct_dir()
             this.chmod_R_(777, accdir)
         }
+        
     }
 
     this.chmod_R_777_acct()
