@@ -596,7 +596,14 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var docname = userProject.get_DocCode_Fname(doc)
         var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
-        var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docname)
+        var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname,  function(pname,fname){
+            console.log("\n--inp.usr.repodesc",inp.usr.repodesc,)
+            if(fname.match(/^SSID/)){
+                console.log("ssid pname", pname)
+                console.log("ssid fname", fname)
+            }
+
+        })
         console.log("jspfn:", jsfname)
         for (var i = 0; i < outfil.m_olis.length; i++) {
             var jspfn = outfil.m_olis[i]

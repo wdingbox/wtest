@@ -497,45 +497,68 @@ SvrUsrsBCV.prototype.set_rootDir = function (srcpath) {
         m_olis: [],
         m_totSize: 0,
         m_totFiles: 0,
-        m_totDirs: 0
+        m_totPaths: 0
     }
 }
-SvrUsrsBCV.prototype.getDirectories = function (srcpath) {
+SvrUsrsBCV.prototype.get_paths = function (srcpath) {
     return fs.readdirSync(srcpath).filter(function (file) {
         if ("." === file[0]) return false;
         return fs.statSync(path.join(srcpath, file)).isDirectory();
     });
 }
-SvrUsrsBCV.prototype.getPathfiles = function (srcpath) {
+SvrUsrsBCV.prototype.get_files = function (srcpath) {
     return fs.readdirSync(srcpath).filter(function (file) {
         if ("." === file[0]) return false;
         return fs.statSync(srcpath + '/' + file).isFile();
     });
 }
-SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
-    var fary = this.getPathfiles(srcPath);
-    var dary = this.getDirectories(srcPath);
-    this.output.m_totDirs += dary.length;
+SvrUsrsBCV.prototype.getFary = function (srcPath, cbf) {
+    var fary = this.get_files(srcPath);
+    var dary = this.get_paths(srcPath);
+    this.output.m_totPaths += dary.length;
     this.output.m_totFiles += fary.length;
 
     for (var i = 0; i < dary.length; i++) {
         var spath = dary[i];
         //console.log(spath)
-        this.getFary(path.join(srcPath, spath), doc);
+        this.getFary(path.join(srcPath, spath), cbf);
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
         console.log("path file :", srcPath, sfl)
-        if (doc !== sfl) continue
+        //if (doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
         this.output.m_totSize += stats.size;
-        this.output.m_olis.push(pathfile);
-        console.log("sfl found:", sfl, pathfile)
+
+        if (cbf) cbf(srcPath, sfl)
     }
 }
-SvrUsrsBCV.prototype.gen_crossnet_files_of = function (doc) {
-    this.getFary(this.m_rootDir, doc)
+SvrUsrsBCV.prototype.decompose = function (docpathfilname) {
+    var ret = path.parse(docpathfilname)
+    console.log(ret)
+    var ary = ret.dir.split("/")
+    var owner = `_${ary[6]}_${ary[7]}_${ary[8]}`
+    var compound = { owner: owner, base: ret.base }
+    console.log("compound", compound)
+    return compound
+}
+SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
+    //console.log("spec=", spec)
+    this.m_compound = this.decompose(docpathfilname)
+    var _This = this
+    this.getFary(this.m_rootDir, function (spath, sfile) {
+        var pathfile = path.join(spath, sfile);
+        var cmpd = _This.decompose(pathfile)
+        if (cmpd.base === _This.m_compound.base) {
+            _This.output.m_olis.push(pathfile);
+            console.log("fnd:", pathfile)
+            if (cbf) cbf(spath, sfile)
+        }
+        //var pathfile = path.join(spath, sfile);
+        //_This.output.m_olis.push(pathfile);
+        //console.log("fnd:", pathfile)
+    })
     return this.output
 }
 
