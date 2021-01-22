@@ -60,18 +60,10 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
-    sid: "",
 encrypt_usr: function(){
-    if(!this.inp.usr.passcode_encrypted){
-        //this.inp.usr.passcode_encrypted = 1;
-        //this.inp.usr.passcode_old = this.inp.usr.passcode
-        //this.inp.usr.passcode = atob(this.inp.usr.passcode)
-    }else{
-        alert("alredy encrypted???")
-    }
 },
 Url: function (){
-    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp)) + "&sid=" + this.sid;
+    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp)) ;
     return this.m_src;
 },
 Response : function(dat, sid){
@@ -81,7 +73,7 @@ Response : function(dat, sid){
 Run : function (cbf) {
     this.encrypt_usr()
     this.RunJsonP(cbf)
-    this.api = this.inp.par = null;
+    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
 },
 RunJsonP : function (cbf) {
     if (!cbf) alert('callback m_cbf null');
@@ -128,7 +120,7 @@ xxRun_Post : function (cbf) {
 RunAjaxPost : function(cbf){
     this.encrypt_usr()
     this.RunAjax_Type_Post (cbf)
-    this.api = this.inp.par = null;
+    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
 },
 RunAjax_Type_Post : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
@@ -607,7 +599,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var jsfn = outfil.m_olis[i]
             if (docfilname2 === jsfn) continue;
             console.log("jsfn=", jsfn)
-            __load_bcv(jsfn)
+            __load_bcv(jsfn, inp)
         }
 
 

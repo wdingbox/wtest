@@ -525,8 +525,8 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
-        console.log("sfl", sfl, doc)
         if (doc !== sfl) continue
+        console.log("sfl found:", sfl, doc)
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
         this.output.m_totSize += stats.size;
@@ -661,6 +661,8 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
 
     function _parse_inp_usr(inp) {
+        if(!inp.usr) return null
+
         inp.usr_proj = _interpret_repo_url(inp.usr.repopath)
         if (!inp.usr_proj) {
             inp.out.desc = "invalid repospath."
@@ -680,8 +682,9 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
         return inp
     }
 
+    this.m_orig_usr = JSON.stringify(inp.usr)
 
-    if ("string" === typeof inp.SSID && inp.SSID.length > 0) {
+    if (inp.SSID && inp.SSID.length > 0) {
         var sess = this.get_session(inp.SSID)
         if (sess) {
             inp.usr = sess
@@ -696,10 +699,18 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     var ret = _parse_inp_usr(inp)
     return ret
 }
-BibleObjGituser.prototype.gen_session = function (inp_usr) {
+BibleObjGituser.prototype.destroy_session = function () {
+    var sess = this.get_proj_tmp_dir(this.m_inp.SSID)
+    if(!fs.existsSync(sess)) return console.log("ssid not exists:", sess)
+    console.log("destroy_session:", sess)
+    fs.unlink(sess, function (err) {
+        console.log("unlink err", err)
+    })
+}
+BibleObjGituser.prototype.gen_session = function () {
     var ssid = "SSID" + (new Date()).getTime()
     var sess = this.get_proj_tmp_dir(ssid)
-    var txt = JSON.stringify(inp_usr)
+    var txt = this.m_orig_usr
     var dat = Buffer.from(txt).toString("base64")
     console.log("_create_session dat", dat)
     fs.writeFile(sess, dat, "utf8", function (err) {
@@ -857,21 +868,21 @@ BibleObjGituser.prototype.proj_setup = function () {
     if (stat.bEditable === 1) {
         inp.out.desc += "|already setup."
         this.git_pull()
-    }else{
+    } else {
         inp.out.state.bNewCloned = 1
         if (stat.bGitDir !== 1) {
             this.git_clone()
             this.git_config_allow_push(false)
             stat = this.profile_state()
-        }else{
+        } else {
             this.git_pull()
         }
-    
+
         if (stat.bMyojDir !== 1) {
             this.cp_template_to_git()
             stat = this.profile_state()
         }
-    
+
         if (stat.bMyojDir === 1) {
             var accdir = this.get_usr_acct_dir()
             this.chmod_R_(777, accdir)
@@ -882,7 +893,7 @@ BibleObjGituser.prototype.proj_setup = function () {
 
     var retp = this.profile_state()
     if (retp.bEditable === 1) {
-        inp.out.state.SSID = this.gen_session(inp.usr).SSID
+        inp.out.state.SSID = this.gen_session().SSID
     }
 
     return inp
@@ -907,6 +918,8 @@ BibleObjGituser.prototype.proj_destroy = async function () {
         inp.out.desc += "destroyed git dir: " + gitdir
     }
     this.profile_state()
+
+    this.destroy_session()
 
     return inp
 }

@@ -36,7 +36,7 @@ var MyStorage = {
     },
     Repo_load: function (cbf) {
         Jsonpster.inp.SSID = MyStorage.SSID()
-        if (!Jsonpster.inp.usr || !Jsonpster.inp.usr.repopath) return alert("inp.usr is not set yet.")
+        if (!Jsonpster.inp.SSID) return alert("inp.ssid is not set yet:" + Jsonpster.inp.SSID)
 
 
         var txt = JSON.stringify(localStorage, null, 4)
@@ -615,6 +615,8 @@ PopupMenu_EdiTag.prototype.init = function () {
         var psr = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
         //Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: psr.bcvObj } //old
         //Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
+
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
@@ -1898,6 +1900,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Jsonpster.Run(function (ret) {
             Uti.Msg(ret.out)
             $("#account_set_info").text("ok")
+            MyStorage.SSID("")
         })
     })
     $("#account_history").bind("click", function () {
@@ -1948,6 +1951,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Jsonpster.Run(function (ret) {
             $("body").attr("onbeforeunload", null)
             window.open("./index.htm", "_self")
+            MyStorage.SSID("")
         })
     })
 }
@@ -2263,6 +2267,8 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
         return alert("null oj")
     }
 
+    Jsonpster.inp.SSID = MyStorage.SSID()
+
 
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2291,6 +2297,8 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
         oj = res.oj_bc
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
+
+    Jsonpster.inp.SSID = MyStorage.SSID()
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2352,6 +2360,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         gen_search_strn_history()
         document.g_NextIndex = -1
 
+        Jsonpster.inp.SSID = MyStorage.SSID()
 
         Jsonpster.inp.par = g_aim.get_search_inp();
         Jsonpster.api = RestApi.ApiBibleObj_search_txt.str;
@@ -2790,8 +2799,8 @@ var PageUti = {
                 var ssid = ret.out.state.SSID
                 if (ssid && ssid.length > 1) {
                     $("#otb").html("<font color='green'>Success</font>")
+                    MyStorage.SSID(ssid)
                     if (bSginIn) {
-                        MyStorage.SSID(ssid)
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
@@ -2813,10 +2822,12 @@ var PageUti = {
         Jsonpster.Run(function (ret) {
             $("#otb").html("<font color='green'>Repos is undocked.</font>")
             Uti.Msg("ret", ret)
+            MyStorage.SSID("")
         })
     },
     repo_status: function () {
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.Run(function (ret) {

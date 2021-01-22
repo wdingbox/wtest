@@ -245,7 +245,8 @@ ${scmd}
             $("title").text("*" + scap)
 
             console.log("load_allusrs_bcv", pster)
-            Jsonpster.inp = pster.inp
+            Jsonpster.inp = JSON.parse(document.m_myNotes).inp
+            //Jsonpster.inp.SSID = MyStorage.SSID()
             Jsonpster.api = RestApi.ApiBibleObj_read_AllUsrs_BkcChpVrs_txt.str
             console.log("inp:", pster.inp)
             Jsonpster.Run(function (ret) {
