@@ -2803,7 +2803,8 @@ var PageUti = {
     },
     repo_destroy: function () {
         if (!confirm("The Bible study notes you wrote in server-site will be erased.")) return
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
 
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)

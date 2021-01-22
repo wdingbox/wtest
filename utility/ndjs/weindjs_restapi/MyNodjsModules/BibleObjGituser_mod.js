@@ -661,7 +661,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
 
     function _parse_inp_usr(inp) {
-        if(!inp.usr) return null
+        if (!inp.usr) return null
 
         inp.usr_proj = _interpret_repo_url(inp.usr.repopath)
         if (!inp.usr_proj) {
@@ -684,11 +684,12 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 
     this.m_orig_usr_sess = JSON.stringify(inp.usr)
 
+
     inp.out.state.ssid_cur = inp.SSID
     if (inp.SSID && inp.SSID.length > 0) {
-        var sess = this.get_session(inp.SSID)
+        var sess = this.session_getin_pub(inp.SSID)
         if (sess) {
-            inp.usr = sess
+            inp.usr = sess.usr
             console.log("\n-sess", sess)
         }
     }
@@ -700,31 +701,62 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     var ret = _parse_inp_usr(inp)
     return ret
 }
-BibleObjGituser.prototype.destroy_session = function (ssid) {
-    if(undefined === ssid) ssid = this.m_inp.SSID
-    var sess = this.get_proj_tmp_dir(ssid)
-    if(!fs.existsSync(sess)) return console.log("ssid not exists:", sess)
-    console.log("destroy_session:", sess)
-    fs.unlink(sess, function (err) {
-        console.log("unlink err", err)
-    })
+BibleObjGituser.prototype.session_ssid_parse = function () {
+    var sesid = "", owner = ""
+    if (this.m_inp.usr && this.m_inp.usr_proj) {
+        sesid = "SSID" + (new Date()).getTime()
+        owner = `_${this.m_inp.usr_proj.username}_${this.m_inp.usr_proj.projname}`
+    } else {
+        var sid = this.m_inp.SSID
+        var pos = ssid.indexOf("_")
+        sesid = sid.substr(0, pos)
+        owner = sid.substr(pos)
+    }
+    return { SSID: sesid + owner, sesid: sesid, owner: owner }
 }
-BibleObjGituser.prototype.gen_session = function () {
+BibleObjGituser.prototype.session_destroy = function () {
+    var git_old_ssid = this.get_usr_git_dir(`/.git/tmp/SSID*`)
+    BibleUti.execSync_Cmd(`rm -f ${git_old_ssid}`)
 
-    var ssid = "SSID" + (new Date()).getTime()
-    var sess = this.get_proj_tmp_dir(ssid)
-    var txt = this.m_orig_usr_sess
-    var dat = Buffer.from(txt).toString("base64")
-    console.log("_create new session dat",ssid, dat)
-    fs.writeFile(sess, dat, "utf8", function (err) {
-        console.log("save err", err)
-    })
-    return { sess: sess, SSID: ssid }
+    var sidbuf = this.session_ssid_parse()
+    var pub_old_ssid = this.get_proj_tmp_dir(`/SSID*${sidbuf.owner}`)
+    BibleUti.execSync_Cmd(`rm -f ${pub_old_ssid}`)
 }
-BibleObjGituser.prototype.get_session = function (sid) {
-    var sess = this.get_proj_tmp_dir(sid)
-    if (!fs.existsSync(sess)) return null
-    var dat = fs.readFileSync(sess, "utf8")
+BibleObjGituser.prototype.session_name_gen = function () {
+    this.session_destroy()
+
+    var ssbuf = this.session_ssid_parse()
+    
+    var ssfn = this.get_proj_tmp_dir(`/${ssbuf.SSID}`)
+    if(ssfn){
+        var txt = this.m_orig_usr_sess
+        var dat = Buffer.from(txt).toString("base64")
+        console.log("pub session_name_gen:", ssfn, dat)
+        fs.writeFile(ssfn, dat, "utf8", function (err) {
+            console.log("save err", err)
+        })
+    }
+
+    var ssfn = this.get_usr_git_dir(`/.git/tmp/${ssbuf.SSID}`)
+    if(ssfn){
+        var txt = this.m_orig_usr_sess
+        var dat = Buffer.from(txt).toString("base64")
+        console.log("git session_name_gen:", ssfn, dat)
+        fs.writeFile(ssfn, dat, "utf8", function (err) {
+            console.log("save err", err)
+        })
+    }
+
+    return ssbuf
+}
+BibleObjGituser.prototype.session_getin_pub = function (ssid) {
+
+    if (undefined === ssid) ssid = this.m_inp.SSID
+    console.log("ssid=", ssid)
+    var ssfn = this.get_proj_tmp_dir(`/${ssid}`)
+    console.log("ssfn=", ssfn)
+    if (!fs.existsSync(ssfn)) return console.log("not exist:", ssfn)
+    var dat = fs.readFileSync(ssfn, "utf8")
     var txt = Buffer.from(dat, 'base64').toString()
     var obj = {}
     try {
@@ -732,7 +764,26 @@ BibleObjGituser.prototype.get_session = function (sid) {
     } catch (err) {
         console.log("json parse err", err)
     }
-    return obj
+    console.log("ssfn.usr=", obj)
+    return { usr: obj, ssfn: ssfn, str: txt }
+}
+BibleObjGituser.prototype.session_getfr_jspfname = function (ssid) {
+
+    if (undefined === ssid) ssid = this.m_inp.SSID
+    console.log("ssid=", ssid)
+    var ssfn = this.get_usr_git_dir(`/.git/tmp/${ssid}.sid`)
+    console.log("get session=", ssfn)
+    if (!fs.existsSync(ssfn)) return console.log("not exist:", ssfn)
+    var dat = fs.readFileSync(ssfn, "utf8")
+    var txt = Buffer.from(dat, 'base64').toString()
+    var obj = {}
+    try {
+        obj = JSON.parse(txt)
+    } catch (err) {
+        console.log("json parse err", err)
+    }
+    console.log("ssfn.usr=", obj)
+    return { usr: obj, ssfn: ssfn, str: txt }
 }
 BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
     var dir = `${this.m_rootDir}${this.m_sRootNode}/tmp`
@@ -745,22 +796,6 @@ BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
             `
         var ret = BibleUti.execSync_Cmd(command)
         console.log(ret)
-        //try {
-        //    //command = "ls"
-        //    //console.log('exec_Cmd:', command)
-        //    execSync(command, (err, stdout, stderr) => {
-        //        console.log('-execSync_Cmd errorr:', err)
-        //        console.log('-execSync_Cmd stderr:', stderr)
-        //        console.log('-execSync_Cmd stdout:', stdout)
-        //    });
-        //} catch (err) {
-        //    console.log("execSync err", err)
-        //}
-    }
-    if (!subpath) {
-        subpath = ""
-    } else {
-        if (subpath[0] !== "/") subpath = "/" + subpath
     }
     return `${dir}${subpath}`
 }
@@ -791,7 +826,7 @@ BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     if (undefined === subpath || null === subpath) {
         return `${this.m_rootDir}${this.m_inp.usr_proj.git_root}`
     }
-    if (subpath[0] !== "/") subpath = "/" + subpath
+    //if (subpath[0] !== "/") subpath = "/" + subpath
     return `${this.m_rootDir}${this.m_inp.usr_proj.git_root}${subpath}`
 }
 
@@ -896,12 +931,11 @@ BibleObjGituser.prototype.proj_setup = function () {
 
     var retp = this.profile_state()
     if (retp.bEditable === 1) {
-        //inp.out.state.SSID = this.gen_session().SSID
     }
 
     return inp
 }
-BibleObjGituser.prototype.proj_destroy = async function () {
+BibleObjGituser.prototype.proj_destroy = function () {
     var inp = this.m_inp
     var proj = inp.usr_proj;
     if (!proj) {
@@ -922,7 +956,7 @@ BibleObjGituser.prototype.proj_destroy = async function () {
     }
     this.profile_state()
 
-    this.destroy_session()
+    //this.session_destroy()
 
     return inp
 }
@@ -1178,6 +1212,8 @@ BibleObjGituser.prototype.git_clone = function () {
     if [ -f "${proj.git_root}/.git/config" ]; then
         echo "${proj.git_root}/.git/config exists."
         echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
+        echo ${password} | sudo -S mkdir -p ${proj.git_root}/.git/tmp
+        echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/tmp
     else 
         echo "${proj.git_root}/.git/config does not exist."
     fi
@@ -1268,9 +1304,9 @@ BibleObjGituser.prototype.git_pull = function (cbf) {
     return this.m_inp.out.git_pull_res
 }
 
-BibleObjGituser.prototype.git_push = async function () {
+BibleObjGituser.prototype.git_push = function () {
     this.git_config_allow_push(true)
-    this.m_inp.out.git_push_res = await this.exec_cmd_git("GIT_TERMINAL_PROMPT=0 git push")
+    this.m_inp.out.git_push_res = this.execSync_cmd_git("GIT_TERMINAL_PROMPT=0 git push")
     this.git_config_allow_push(false)
     return this.m_inp.out.git_push_res
 }

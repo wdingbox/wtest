@@ -374,7 +374,6 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 await userProject.git_pull(function (bSuccess) {
 
                 })
-                await userProject.git_push()
             }
 
             //inp = BibleUti.Write2vrs_txt(inp, false)
@@ -413,10 +412,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             userProject.proj_setup()
 
             if (inp.out.state.bEditable === 1) {
-                if(inp.out.state.ssid_cur) {
-                    userProject.destroy_session(inp.out.state.ssid_cur)
-                }
-                inp.out.state.SSID = userProject.gen_session().SSID
+                inp.out.state.SSID = userProject.session_name_gen().SSID
             }
         }
 
@@ -437,20 +433,20 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_req_GET_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         if (userProject.proj_parse_usr(inp)) {
-
-
-            var stat = userProject.profile_state()
-            if (0 === userProject.m_inp.out.state.bRepositable) {
+            userProject.profile_state()
+            if (0 === inp.out.state.bRepositable) {
                 //case push failed. Don't delete
-                return inp
+                console.log("git dir not exit.")
+                
+            }else{
+                var res2 =  userProject.execSync_cmd_git("git add *")
+                var res3 =  userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+                var res4 = userProject.git_push()
+    
+                var res5 = userProject.proj_destroy()
             }
-
-            var res2 = await userProject.exec_cmd_git("git add *")
-            var res3 = await userProject.exec_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
-            var res4 = await userProject.git_push()
-
-            var res5 = await userProject.proj_destroy()
         }
+        userProject.profile_state()
 
         var sret = JSON.stringify(inp, null, 4)
         var sid = ""
@@ -500,7 +496,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var res2 = await userProject.exec_cmd_git("git add *")
             var res3 = await userProject.exec_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
-            var res4 = await userProject.git_push()
+            var res4 = userProject.git_push()
         }
 
         var sret = JSON.stringify(inp, null, 4)
