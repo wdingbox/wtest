@@ -565,7 +565,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         function __load_bcv(jsfname, inp) {
             //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
             var nary = jsfname.split("/")
-            var usr_repo = nary[6] + "/" + nary[7]
+            var usr_repo = nary[7] + "/" + nary[8]
             var bio = BibleUti.loadObj_by_fname(jsfname);
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length < 3) {
@@ -575,7 +575,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 //await userProject.git_pull(function (bSuccess) {
                 //})
                 inp.out.desc = "load success"
-                var usr_repo = nary[6] + "/" + nary[7] + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
+                var usr_repo = usr_repo + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
                 inp.out.data[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
                 inp.out.desc = "failed git pull and load"
@@ -593,16 +593,16 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         __load_bcv(jsfname, inp)
 
         /////----
-        var docfilname = userProject.get_DocCode_Fname(doc)
-        var docfilname2 = userProject.get_usr_myoj_dir("/" + docfilname)
+        var docname = userProject.get_DocCode_Fname(doc)
+        var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
-        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docfilname)
-        console.log("jsfn:", jsfname)
+        var outfil = userProject.m_SvrUsrsBCV.gen_all_files_of(docname)
+        console.log("jspfn:", jsfname)
         for (var i = 0; i < outfil.m_olis.length; i++) {
-            var jsfn = outfil.m_olis[i]
-            if (docfilname2 === jsfn) continue;
-            console.log("jsfn=", jsfn)
-            __load_bcv(jsfn, inp)
+            var jspfn = outfil.m_olis[i]
+            if (docpathfilname === jspfn) continue;
+            console.log("jspfn=", jspfn)
+            __load_bcv(jspfn, inp)
         }
 
 
