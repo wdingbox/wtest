@@ -268,6 +268,16 @@ var MyStorage = {
     },
 
 
+    ssid: function (ssid) {
+        const sessId = "session_id"
+        if (undefined === ssid) {
+            var ret = localStorage.getItem(sessId)
+            if (!ret) return alert("SessionID not found.")
+            return ret
+        } else {
+            localStorage.setItem(sessId, ssid)
+        }
+    }
 }
 
 
@@ -2777,11 +2787,11 @@ var PageUti = {
         Jsonpster.Run(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
             if (ret.out.state) {
-                var sid = ret.out.state.sid
-                if (sid && sid.length > 1) {
+                var ssid = ret.out.state.ssid
+                if (ssid && ssid.length > 1) {
                     $("#otb").html("<font color='green'>Success</font>")
                     if (bSginIn) {
-                        localStorage.setItem("sid", sid)
+                        MyStorage.ssid(ssid)
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
