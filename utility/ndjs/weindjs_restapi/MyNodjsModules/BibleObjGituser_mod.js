@@ -525,6 +525,7 @@ SvrUsrsBCV.prototype.getFary = function (srcPath, doc) {
     }
     for (var k = 0; k < fary.length; k++) {
         var sfl = fary[k];
+        console.log("sfl :", sfl, srcPath)
         if (doc !== sfl) continue
         var pathfile = path.join(srcPath, sfl);
         var stats = fs.statSync(pathfile);
