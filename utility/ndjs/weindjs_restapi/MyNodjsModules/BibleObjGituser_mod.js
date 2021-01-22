@@ -742,8 +742,11 @@ BibleObjGituser.prototype.session_ssid_compose = function () {
     }
     return { SSID: sesid + owner, sesid: sesid, owner: owner }
 }
+BibleObjGituser.prototype.session_git_repodesc_fname = function () {
+    return this.get_usr_git_dir(`/.git/tmp/repodesc`)
+}
 BibleObjGituser.prototype.session_destroy = function () {
-    var git_old_ssid = this.get_usr_git_dir(`/.git/tmp/repodesc`)
+    var git_old_ssid = this.session_git_repodesc_fname()
     BibleUti.execSync_Cmd(`rm -f ${git_old_ssid}`)
 
     var sidbuf = this.session_ssid_compose()
@@ -765,7 +768,7 @@ BibleObjGituser.prototype.session_name_gen = function () {
         })
     }
 
-    var ssfn = this.get_usr_git_dir(`/.git/tmp/repodesc`)
+    var ssfn = this.session_git_repodesc_fname()
     if (ssfn) {
         var txt = this.m_inp.usr.repodesc
         console.log("git session_name_gen:", ssfn, txt)
