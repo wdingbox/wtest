@@ -272,7 +272,7 @@ var MyStorage = {
         const sessId = "SSID"
         if (undefined === ssid) {
             var ret = localStorage.getItem(sessId)
-            if (!ret) return alert("SessionID not found.")
+            if (!ret) return alert("Invalid SessionID. \n- Please sign out/in again.")
             return ret
         } else {
             localStorage.setItem(sessId, ssid)
