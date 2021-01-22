@@ -437,12 +437,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (0 === inp.out.state.bRepositable) {
                 //case push failed. Don't delete
                 console.log("git dir not exit.")
-                
-            }else{
-                var res2 =  userProject.execSync_cmd_git("git add *")
-                var res3 =  userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+
+            } else {
+                var res2 = userProject.execSync_cmd_git("git add *")
+                var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
                 var res4 = userProject.git_push()
-    
+
                 var res5 = userProject.proj_destroy()
             }
         }
@@ -558,11 +558,15 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var proj = userProject.proj_parse_usr(inp)
         var doc = inp.par.fnames[0]
+        //var docname = userProject.get_DocCode_Fname(doc)
+        var docpathfilname = userProject.get_pfxname(doc)
+        var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname)
+        //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
 
-        inp.out.data = {}
+        
         //////----
-        function __load_bcv(jsfname, inp) {
+        function __load_to_obj(outObj, jsfname, inp) {
             //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
             var nary = jsfname.split("/")
             var usr_repo = nary[7] + "/" + nary[8]
@@ -572,48 +576,31 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
             }
             if (proj && bio.obj && karyObj.kary.length >= 3) {
-                //await userProject.git_pull(function (bSuccess) {
-                //})
-                inp.out.desc = "load success"
                 var usr_repo = usr_repo + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
-                inp.out.data[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+                outObj[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
-                inp.out.desc = "failed git pull and load"
             }
         }
-        function __load_speciesinfo(jsfname) {
-            //"../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/dat/localStorage_json.js": 895,
-            var nary = jsfname.split("/")
-            nary[9] = "dat", nary[10] = "localStorage_json.js"
-            var specifile = nary.join("")
-        }
 
-
-        var jsfname = userProject.get_pfxname(doc)
-        __load_bcv(jsfname, inp)
 
         /////----
-        var docname = userProject.get_DocCode_Fname(doc)
-        var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
-
-        var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname,  function(pname,fname){
-            console.log("\n--inp.usr.repodesc",inp.usr.repodesc,)
-        })
-        console.log("jspfn:", jsfname)
+        var retObj = {}
+        __load_to_obj(retObj, docpathfilname, inp)
+        //console.log("jspfn:", jsfname)
+        console.log("dcpfn:", docpathfilname)
         for (var i = 0; i < outfil.m_olis.length; i++) {
             var jspfn = outfil.m_olis[i]
             if (docpathfilname === jspfn) continue;
             console.log("\n*jspfn=", jspfn)
             var reposdes = userProject.session_git_repodesc_load(jspfn)
             console.log("reposdes=", reposdes.repodesc, inp.usr.repodesc)
-            if(reposdes.repodesc === inp.usr.repodesc){
-                __load_bcv(jspfn, inp)
+            if (reposdes.repodesc === inp.usr.repodesc) {
+                __load_to_obj(retObj, jspfn, inp)
             }
         }
 
 
-
-
+        inp.out.data = retObj
         var sret = JSON.stringify(inp)
         var sid = ""
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
