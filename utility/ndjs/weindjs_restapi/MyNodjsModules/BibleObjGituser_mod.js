@@ -954,10 +954,10 @@ BibleObjGituser.prototype.proj_destroy = function () {
         inp.out.exec_git_cmd_result = BibleUti.execSync_Cmd(proj_destroy).toString()
         inp.out.desc += "destroyed git dir: " + gitdir
     }
+
+    this.session_destroy()
+    
     this.profile_state()
-
-    //this.session_destroy()
-
     return inp
 }
 BibleObjGituser.prototype.profile_state = function (cbf) {
