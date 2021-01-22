@@ -22,11 +22,14 @@ var MyStorage = {
         }
     },
     Repo_save: function (cbf) {
-        var txt = JSON.stringify(localStorage, null, 4)
+        //localStorage.getItem("#MemoryVerse")
+        var stores = MyStorage.MostRecentAryInStore("#MemoryVerse")
+        var ary = stores.get_ary()
+
+        var txt = JSON.stringify({ "#MemoryVerse": ary }, null, 4)
         console.log(txt)
         Jsonpster.inp.SSID = MyStorage.SSID()
-        if (!Jsonpster.inp.usr) return alert("user is not set yet.")
-
+        //if (!Jsonpster.inp.usr) return alert("user is not set yet.")
 
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
@@ -207,7 +210,7 @@ var MyStorage = {
     ////-----
 
 
-   
+
     FontSize: function (v) {
         if (undefined === v) {
             v = parseInt(localStorage.getItem("FontSize"));
@@ -1676,14 +1679,17 @@ Tab_MostRecentBody.prototype.clearHistory = function (idtxtout) {
     var _THIS = this
 
     _THIS.m_MostRecentInStore.cleanup()
+    var n = 0;
     $(this.m_tbodyID).find("td").each(function () {
         var tx = $(this).text().trim()
         if ($(this)[0].classList.contains("hili")) {
             $(this).parent().hide()
+            n++
         } else {
             _THIS.m_MostRecentInStore.addonTop(tx)
         }
     })
+    if (n === 0) alert("nothing is selected.")
     this.m_bcvHistory = _THIS.m_MostRecentInStore.get_ary()
 
     //this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
@@ -1697,6 +1703,10 @@ Tab_MostRecentBody.prototype.clearHistory = function (idtxtout) {
 }
 Tab_MostRecentBody.prototype.toggleSelAll = function () {
     $(this.m_tbodyID).find("td").toggleClass("hili")
+}
+Tab_MostRecentBody.prototype.sortAllItems = function () {
+    this.m_bcvHistory.sort()
+    this.update_tab()
 }
 
 
@@ -1741,6 +1751,10 @@ Tab_MostRecent_BCV.prototype.init = function () {
         var cap = _THIS.getCap()
         _THIS.m_tbodies[cap].toggleSelAll()
     })
+    $("#sortTbIts").bind("click", function () {
+        var cap = _THIS.getCap()
+        _THIS.m_tbodies[cap].sortAllItems()
+    })
 }
 Tab_MostRecent_BCV.prototype.getCap = function () {
     var cap = $(this.m_tableID).find("caption:eq(0)").find(".ColorRecentMarks").text().trim()
@@ -1770,7 +1784,6 @@ Tab_MostRecent_BCV.prototype.show_all = function (bShow) {
 Tab_MostRecent_BCV.prototype.toggleSelAll = function () {
     var cap = this.getCap()
     this.m_tbodies[cap].toggleSelAll()
-    this.m_tbodies[cap]
 }
 
 
@@ -2216,7 +2229,7 @@ AppInstancesManager.prototype.init_load_storage = function () {
 
             var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
             if (memo) {
-                var ar = JSON.parse(ret.out.data["#MemoryVerse"])
+                var ar = (ret.out.data["#MemoryVerse"])
                 for (var i = 0; i < ar.length; i++) {
                     var bcv = ar[i]
                     markHistory.addnew2table("MemoryVerse", bcv)
@@ -3712,8 +3725,9 @@ var BibleInputMenuContainer = `
                     <tbody id='MemoryVerse'>
                     </tbody>
                     <caption>
-                       <button id="clearUnse" title='clearup unselected items'>x</button>
-                       <button id="toggleSel" title='toggle selected and unselected'>~</button>
+                       <a id="clearUnse" class="RecentBCVsBtn" title='clearup unselected items'>x</a> 
+                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'>~</a>
+                       <a id="sortTbIts" class="RecentBCVsBtn" title='toggle selected and unselected'>v</a>
                     </caption>
                 </table>
             </div>
