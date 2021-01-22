@@ -599,8 +599,6 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
     var _THIS = this
 
-
-
     function _interpret_repo_url(proj_url) {
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
@@ -689,8 +687,10 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
             inp.usr = sess
             console.log("\n-sess", sess)
         }
-    } else if ("object" === typeof inp.usr) {
-        inp.out.state.sid = this.gen_session(inp.usr).sid
+    }
+    if ("object" !== typeof inp.usr) {
+        inp.usr_proj = null
+        return null
     }
 
     var ret = _parse_inp_usr(inp)
@@ -854,31 +854,36 @@ BibleObjGituser.prototype.proj_setup = function () {
     }
     inp.out.desc = "setup start."
     var stat = this.profile_state()
-    if (stat.bEditable > 0) {
-        stat.bExist = 1
+    if (stat.bEditable === 1) {
         inp.out.desc += "|already setup."
         this.git_pull()
-    }
-    if (stat.bGitDir !== 1) {
-        this.git_clone()
-        this.git_config_allow_push(false)
-        stat = this.profile_state()
-    }
-
-    if (stat.bMyojDir !== 1) {
-        this.cp_template_to_git()
-        stat = this.profile_state()
-    }
-
-    if (stat.bMyojDir === 1) {
-        var accdir = this.get_usr_acct_dir()
-        this.chmod_R_(777, accdir)
+    }else{
+        inp.out.state.bNewCloned = 1
+        if (stat.bGitDir !== 1) {
+            this.git_clone()
+            this.git_config_allow_push(false)
+            stat = this.profile_state()
+        }else{
+            this.git_pull()
+        }
+    
+        if (stat.bMyojDir !== 1) {
+            this.cp_template_to_git()
+            stat = this.profile_state()
+        }
+    
+        if (stat.bMyojDir === 1) {
+            var accdir = this.get_usr_acct_dir()
+            this.chmod_R_(777, accdir)
+        }
     }
 
     this.chmod_R_777_acct()
 
-
     var retp = this.profile_state()
+    if (retp.bEditable === 1) {
+        inp.out.state.sid = this.gen_session(inp.usr).sid
+    }
 
     return inp
 }
