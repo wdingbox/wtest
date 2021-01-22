@@ -166,7 +166,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var inp = BibleUti.Parse_req_GET_to_inp(req)
-        if (!inp.usr.f_path) inp.usr.f_path = ""
+        //if (!inp.usr.f_path) inp.usr.f_path = ""
         var proj = userProject.proj_parse_usr(inp)
 
         var TbcvObj = {};
