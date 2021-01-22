@@ -1689,7 +1689,7 @@ Tab_MostRecentBody.prototype.clearHistory = function (idtxtout) {
             _THIS.m_MostRecentInStore.addonTop(tx)
         }
     })
-    if (n === 0) alert("nothing is selected.")
+    if (n === 0) alert("nothing is selected to delete.")
     this.m_bcvHistory = _THIS.m_MostRecentInStore.get_ary()
 
     //this.MyStorage_add2HistoryMostRecentBook(this.m_bcvHistory)
@@ -1737,10 +1737,12 @@ Tab_MostRecent_BCV.prototype.init = function () {
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
+        $("#save2Repo").hide()
         var cap = $(this).attr("title")
         _THIS.m_tbodies[cap].show(true)
         $(this).parent().find(".ColorRecentMarks").removeClass("ColorRecentMarks")
         $(this).addClass("ColorRecentMarks")
+        if (cap === "MemoryVerse") $("#save2Repo").show()
     });
 
     $("#clearUnse").bind("click", function () {
@@ -1754,6 +1756,16 @@ Tab_MostRecent_BCV.prototype.init = function () {
     $("#sortTbIts").bind("click", function () {
         var cap = _THIS.getCap()
         _THIS.m_tbodies[cap].sortAllItems()
+    })
+    $("#save2Repo").on("click", function () {
+        var This = this
+        $(this).text("...")
+        Uti.Msg("#save2Repo")
+        MyStorage.Repo_save(function (ret) {
+            $(This).text(" S ")
+            //Uti.show_save_results(ret, "#StorageRepo_save_res")
+            //$("#StorageRepo_save").prop("checked", false)
+        })
     })
 }
 Tab_MostRecent_BCV.prototype.getCap = function () {
@@ -1923,18 +1935,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         }, 3000)
     })
 
-    $("#StorageRepo_save").on("change", function () {
-        if ($("#passcode").val().trim().length === 0) return !!alert("passcode is required for saving.")
-        var val = $(this).val()
-        console.log(val)
-        if (val === "off") return alert("is running")
-        $("#StorageRepo_save_res").text(`${$(this).next().text()} ${val} ...`).show()
 
-        MyStorage.Repo_save(function (ret) {
-            Uti.show_save_results(ret, "#StorageRepo_save_res")
-            $("#StorageRepo_save").prop("checked", false)
-        })
-    })
     $("#StorageRepo_load").bind("click", function () {
         $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_load(function (ret) {
@@ -3725,9 +3726,10 @@ var BibleInputMenuContainer = `
                     <tbody id='MemoryVerse'>
                     </tbody>
                     <caption>
-                       <a id="clearUnse" class="RecentBCVsBtn" title='clearup unselected items'>x</a> 
-                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'>~</a>
-                       <a id="sortTbIts" class="RecentBCVsBtn" title='toggle selected and unselected'>v</a>
+                       <a id="clearUnse" class="RecentBCVsBtn" title='delete selected items'> x </a> 
+                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'> ~ </a>
+                       <a id="sortTbIts" class="RecentBCVsBtn" title='sort the list'> v </a>
+                       <a id="save2Repo" class="RecentBCVsBtn" style="display: none;" title='save to repo'> S </a>
                     </caption>
                 </table>
             </div>
@@ -3803,8 +3805,7 @@ var BibleInputMenuContainer = `
                             <td>
                             <input type="radio" id="Storage_clear" title='clear up storage'>Clear</input>
 
-                            <input type="radio" id="StorageRepo_save"/>
-                            <label for="StorageRepo_save" title='save up storage'>SaveRepository</label> | 
+                             
                             
                             <a type="radio" id="StorageRepo_load" title='load up storage'></a> 
                             
