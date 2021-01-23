@@ -81,6 +81,7 @@
 
 
 
+    <h>Spec: </h ><a id="repodesc"></a>
     <table border="1">
         <caption id="scap"></caption>
         <tbody id="allusrs">
@@ -247,6 +248,7 @@ ${scmd}
             Jsonpster.Run(function (ret) {
                 console.log("ret", ret)
                 var res = ret.out.data
+                $("#repodesc").text(ret.out.repodesc)
                 var trs = ""
                 if (res) {
                     Object.keys(res).forEach(function (key) {

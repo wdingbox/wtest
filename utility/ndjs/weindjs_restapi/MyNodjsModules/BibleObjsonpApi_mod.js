@@ -599,7 +599,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             }
         }
 
-
+        inp.out.repodesc = inp.usr.repodesc
         inp.out.data = retObj
         var sret = JSON.stringify(inp)
         var sid = ""
