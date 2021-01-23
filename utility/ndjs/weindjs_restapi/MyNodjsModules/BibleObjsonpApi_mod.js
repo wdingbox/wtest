@@ -566,36 +566,36 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         
         //////----
-        function __load_to_obj(outObj, jsfname, inp) {
+        function __load_to_obj(outObj, jsfname, owner, inp) {
             //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
-            var nary = jsfname.split("/")
-            var usr_repo = nary[7] + "/" + nary[8]
             var bio = BibleUti.loadObj_by_fname(jsfname);
             var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
             if (karyObj.kary.length < 3) {
                 inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
             }
             if (proj && bio.obj && karyObj.kary.length >= 3) {
-                var usr_repo = usr_repo + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
+                var usr_repo = owner + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
                 outObj[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
             } else {
             }
         }
 
 
-        /////----
+        /////--------------
         var retObj = {}
-        __load_to_obj(retObj, docpathfilname, inp)
+        var owner = userProject.session_get_github_owner(docpathfilname)
+        __load_to_obj(retObj, docpathfilname, owner, inp)
         //console.log("jspfn:", jsfname)
         console.log("dcpfn:", docpathfilname)
         for (var i = 0; i < outfil.m_olis.length; i++) {
             var jspfn = outfil.m_olis[i]
             if (docpathfilname === jspfn) continue;
-            console.log("\n*jspfn=", jspfn)
+            console.log("*docfname=", jspfn)
             var reposdes = userProject.session_git_repodesc_load(jspfn)
-            console.log("reposdes=", reposdes.repodesc, inp.usr.repodesc)
+            console.log("*repodesc=", reposdes.repodesc, inp.usr.repodesc)
             if (reposdes.repodesc === inp.usr.repodesc) {
-                __load_to_obj(retObj, jspfn, inp)
+                var owner = userProject.session_get_github_owner(jspfn)
+                __load_to_obj(retObj, jspfn, owner, inp)
             }
         }
 

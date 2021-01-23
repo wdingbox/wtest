@@ -742,6 +742,16 @@ BibleObjGituser.prototype.session_ssid_compose = function () {
     }
     return { SSID: sesid + owner, sesid: sesid, owner: owner }
 }
+BibleObjGituser.prototype.session_get_github_owner = function (docfile) {
+    //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js
+    var ary = docfile.split("/")
+    var idx = ary.indexOf("usrs")
+    var hostname = ary[idx+1]
+    var username = ary[idx+2]
+    var reponame = ary[idx+3]
+    var owner = username+"/"+reponame
+    return owner
+}
 BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
     var gitfname = this.session_git_repodesc_fname()
     //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js

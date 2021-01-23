@@ -457,6 +457,7 @@ ${scmd}
             console.log(window.location)
             var ret = get_pathname_fr_window_location()
             $("title").text(ret.pathname)
+            
             gen_git_cmd_batch()
             $("#gen_sh_cmd").append(`<option>open ${ret.name}</option>`)
             $("#gen_sh_cmd").append(`<option>open file://${ret.root}/___maverick.editor.html?fname=${ret.name}</option>`)
@@ -476,7 +477,7 @@ ${scmd}
             document.body.appendChild(e);
 
             setTimeout(() => {
-                load_allusrs_bcv()
+                //
                 for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                     for (const [chp, vrsObj] of Object.entries(chpObj)) {
                         for (const [vrs, txt] of Object.entries(vrsObj)) {
@@ -495,30 +496,7 @@ ${scmd}
             //});
             //return false;
         }
-        function load_allusrs_bcv(){
-            var pster = JSON.parse(document.m_myNotes)
-            console.log("load_allusrs_bcv", pster)
-            Jsonpster.inp = pster.inp
-            Jsonpster.api = RestApi.ApiBibleObj_read_AllUsrs_BkcChpVrs_txt.str
-            console.log("inp:", pster.inp)
-            Jsonpster.Run(function (ret) {
-                console.log("ret", ret)
-                var res = ret.out.data
-                var trs=""
-                if (res) {
-                    Object.keys(res).forEach(function(key){
-                        var txt = res[key]
-                        console.log("key", key)
-                        console.log("txt", txt)
-                        trs+=`<tr><td><div>${key}</div><div>${txt}</div></td></tr>`
-                    })
-                    
-                } else {
-                    alert("saving has issues.")
-                }
-                $("#allusrs").html(trs)
-            })
-        }
+        
     </script>
 </body>
 
