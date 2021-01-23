@@ -339,6 +339,9 @@ body {
         margin: 0px 1px 1px 78px;
     }
     
+    #Tab_NamesOfBibleDocuments_desc{
+        font-size: small;
+    }
     #Tab_OutputBooksList thead,
     #Tab_CatagryOfBooks thead,
     #Tab_NamesOfBibleDocuments thead {

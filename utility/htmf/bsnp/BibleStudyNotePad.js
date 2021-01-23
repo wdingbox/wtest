@@ -1434,15 +1434,8 @@ Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     var _THIS = this
     $(this.m_tbid + " caption").find(".docSwitch").on("click", function () {
         var val = $(this).attr("title")
-        $(this).parent().find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
-        $(this).parent().find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
-        $(this).addClass("HiliSelctedDoc")
-        switch (val) {
-            case "Documents": _THIS.Gen_table_for_Documents(); break;
-            case "Order_seq": _THIS.Gen_table_for_Sequencer(); break;
-            case "Search_In": _THIS.Gen_table_for_Searchin(); break;
-            default: alert("fatal error")
-        }
+
+        _THIS.Set_TabState(val)
     })
 }
 Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
@@ -1451,13 +1444,13 @@ Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
     $(this.m_tbid + " caption").find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
     $(this.m_tbid + " caption").find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
     $(this.m_tbid + " caption").find(`*[title=${val}]`).addClass("HiliSelctedDoc")
+    $("#Tab_NamesOfBibleDocuments_desc").text(val)
     switch (val) {
         case "Documents": _THIS.Gen_table_for_Documents(); break;
-        case "Order_seq": _THIS.Gen_table_for_Sequencer(); break;
-        case "Search_In": _THIS.Gen_table_for_Searchin(); break;
+        case "Sequences": _THIS.Gen_table_for_Sequencer(); break;
+        case "Searching": _THIS.Gen_table_for_Searchin(); break;
         default: alert("fatal error")
     }
-
 }
 
 Tab_DocumentsClusterList.prototype.Gen_table_for_bcvTag = function (par) {
@@ -1618,7 +1611,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
         update_Searchin(this)
-        _THIS.m_onClickItm2Select("Search_In")
+        _THIS.m_onClickItm2Select("Searching")
     });
 }
 
@@ -1775,7 +1768,7 @@ Tab_MostRecent_BCV.prototype.init = function () {
         $(this).text("...")
         Uti.Msg("#save2Repo")
         MyStorage.Repo_save(function (ret) {
-            $(This).text(" S ")
+            $(This).html("&#9635;")
             //Uti.show_save_results(ret, "#StorageRepo_save_res")
             //$("#StorageRepo_save").prop("checked", false)
         })
@@ -2149,7 +2142,7 @@ AppInstancesManager.prototype.init = function () {
                     if ("reloadtable" === par) {
                         _This.loadBible_chapter_by_bibOj();
                     }
-                    if ("Search_In" === par) {
+                    if ("Searching" === par) {
                         groupsMenuMgr.sel_default("Search")
                     }
                 } else if ("object" === typeof (par)) {
@@ -2440,7 +2433,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         $("#SearchInCaption").on("click", function () {
             //goto Cluster tab.
             groupsMenuMgr.sel_default("Cluster")
-            tab_documentsClusterList.Set_TabState("Search_In")
+            tab_documentsClusterList.Set_TabState("Searching")
         })
     }
 
@@ -3754,9 +3747,10 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
-                    <button class='docSwitch' title='Documents'>D</button>
-                    <button class='docSwitch' title='Order_seq'>O</button>
-                    <button class='docSwitch' title='Search_In'>S</button>
+                    <div id='Tab_NamesOfBibleDocuments_desc'></div>
+                    <button class='docSwitch' title='Documents' note='doclist'>D</button>
+                    <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
+                    <button class='docSwitch' title='Searching' note='searchi'>&#8635;</button>
                     </caption>
                     <thead id=""></thead>
                     <tbody>
@@ -3795,9 +3789,9 @@ var BibleInputMenuContainer = `
                     </tbody>
                     <caption>
                        <a id="clearUnse" class="RecentBCVsBtn" title='delete selected items'> x </a> 
-                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'> ~ </a>
-                       <a id="sortTbIts" class="RecentBCVsBtn" title='sort the list'> v </a>
-                       <a id="save2Repo" class="RecentBCVsBtn" style="display: none;" title='save to repo'> S </a>
+                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'> &#8767; </a>
+                       <a id="sortTbIts" class="RecentBCVsBtn" title='sort the list'> &#8710; </a>
+                       <a id="save2Repo" class="RecentBCVsBtn" style="display: none;" title='save to repo'>&#9635;</a>
                     </caption>
                 </table>
             </div>
