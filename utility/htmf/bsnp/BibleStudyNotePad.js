@@ -3858,7 +3858,8 @@ var BibleInputMenuContainer = `
                 
                 <a href='https://bsnp21.github.io/home/' owner='williamwding' email='yahoo.com' xxxhref='https://wdingbox.github.io/ham12/'>Home</a> |
                 <a id='NewPage' target='_blank'>New</a> | 
-                <a target='_blank' href='../index.htm'>ref</a> | 
+                <a id="account_helper">More</a> | 
+                <a target='_blank' href='../index.htm'>.</a>  
 
                 
                 <button class="StorageRepo_Signout">Sign Out</button>
@@ -3869,7 +3870,7 @@ var BibleInputMenuContainer = `
                     <a id="account_history">Repository</a>: 
                     <div id="repository_assitance">
                     <a id="Format_Check" xxid="account_default">Format</a> | 
-                    <a id="account_helper">More</a>
+                    
                     </div>
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
@@ -3885,7 +3886,7 @@ var BibleInputMenuContainer = `
                     <span id="repository_description">
                     <a></a> 
                     </span><br>
-                    <input id="passcode" type="password" value=''></input><br>
+                    <input id="passcode" type="password" value=''></input><a onclick="$('#passcode').val('')">[x]</a><br>
                     
                     <button id="account_set">Dock</button>
                     <a id="account_set_info"></a>
