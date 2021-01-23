@@ -90,7 +90,8 @@
 
 <body>
     <h2 style="text-align: center;margin-top: 50px;">Bible Study Note Pad</h2>
-    <p style="text-align: center;margin-top: 10px;margin-bottom:50px;">(for personal/group to make/share your study notes on any verse)</p>
+    <p style="text-align: center;margin-top: 10px;margin-bottom:50px;">(for personal/group to make/share your study
+        notes on any verse)</p>
 
 
 
@@ -153,7 +154,8 @@
                         <td>3</td>
                         <td>*(todo)</td>
                         <td>
-                            <a href="https://git-scm.com/docs/git-clone">http[s]://host.xz[:port]/path/to/repo.git/</a></td>
+                            <a href="https://git-scm.com/docs/git-clone">http[s]://host.xz[:port]/path/to/repo.git/</a>
+                        </td>
                     </tr>
                 </tbody>
 
@@ -168,7 +170,7 @@
 
         <br>
         <div>
-            Specification: (optional)
+            <a id="respdesc_history">Specification:</a> (optional)
             <a class="help_label" onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
             <div class="helpinfo Species">
                 <ol>
@@ -313,6 +315,10 @@
 
         $("#Forgot").on("click", function () {
             PageUti.account_history("#account_history")
+        })
+
+        $("#respdesc_history").on("click", function () {
+            PageUti.account_respdesc_history("#account_history")
         })
 
     })

@@ -1919,6 +1919,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_history").bind("click", function () {
         PageUti.account_history("#outConfig")
     })
+    $("#respdesc_history").bind("click", function () {
+        PageUti.account_respdesc_history("#outConfig")
+    })
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
         console.log(tx, btoa(tx), atob(btoa(tx)))
@@ -2743,6 +2746,26 @@ var g_obt = new OutputBibleTable()
 
 
 var PageUti = {
+    account_respdesc_history: function (eid) {
+        var ar = MyStorage.Repositories().repos_app_init()
+        var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
+        for (var i = 0; i < ar.length; i++) {
+            var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
+            stb += `<tr><td class='repo_delete'>${i}</td>`
+            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${ar[i].repodesc}</td></td>`
+            stb += "</tr>"
+        }
+        stb += "</tbody></table>"
+
+        $(eid).html(stb).find(".repohistory").bind("click", function () {
+            $(eid).find(".hili").removeClass('hili')
+            $(this).addClass("hili")
+            var repopath = $(this).attr("repopath")
+            var repodesc = $(this).attr("repodesc")
+            var passcode = $(this).attr("passcode")
+            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+        });
+    },
     account_history: function (eid) {
         var ar = MyStorage.Repositories().repos_app_init()
         var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
@@ -3844,7 +3867,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
                     <br>
-                    <a>Specification</a>: 
+                    <a id="respdesc_history">Specification</a>: 
                     <span id="repository_description">
                     <a id="account_date">(optional)</a> 
                     </span>
