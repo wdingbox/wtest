@@ -2284,7 +2284,6 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
 
     Jsonpster.inp.SSID = MyStorage.SSID()
 
-
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
@@ -2855,10 +2854,13 @@ var PageUti = {
             }
         })
     },
-    repo_destroy: function () {
+    repo_destroy: function (bForce) {
         if (!confirm("The Bible study notes you wrote in server-site will be erased.")) return
-        //Jsonpster.inp.SSID = MyStorage.SSID()
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+        if (bForce) {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+        } else {
+            Jsonpster.inp.SSID = MyStorage.SSID()
+        }
 
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
@@ -2868,9 +2870,13 @@ var PageUti = {
             MyStorage.SSID("")
         })
     },
-    repo_status: function () {
-        //Jsonpster.inp.SSID = MyStorage.SSID()
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+    repo_status: function (bForce) {
+        if (bForce) {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+        } else {
+            Jsonpster.inp.SSID = MyStorage.SSID()
+        }
+        
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -2893,12 +2899,16 @@ var PageUti = {
 
         $(eid).html(msg).show()
     },
-    repo_pushback: function () {
+    repo_pushback: function (bForce) {
         var passcode = $("#passcode").val()
         if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
         if (!confirm("push data into repository")) return
 
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        if (bForce) {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+        } else {
+            Jsonpster.inp.SSID = MyStorage.SSID()
+        }
 
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
@@ -2915,11 +2925,16 @@ var PageUti = {
             }
         })
     },
-    repo_pulldown: function () {
+    repo_pulldown: function (bForce) {
         var passcode = $("#passcode").val()
         if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
         if (!confirm("pull down data")) return
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        
+        if (bForce) {
+            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+        } else {
+            Jsonpster.inp.SSID = MyStorage.SSID()
+        }
 
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)

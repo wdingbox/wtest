@@ -235,12 +235,17 @@
     
 
     <div class="test" id='testPanel' style="display:none;">
-        <div class="center">
+        <div class="center"> 
             <button onclick="PageUti.repo_create();">Dock</button>
-            <button onclick="PageUti.repo_destroy();">Undock</button>
-            <button onclick="PageUti.repo_pushback();">push</button>
-            <button onclick="PageUti.repo_pulldown();">pull</button>
-            <button onclick="PageUti.repo_status();">Status</button>
+            <button onclick="PageUti.repo_destroy(1);">Undock(force)</button>
+            <button onclick="PageUti.repo_destroy(0);">Undock(safe)</button>
+            <button onclick="PageUti.repo_pushback(1);">push(force)</button>
+            <button onclick="PageUti.repo_pushback(0);">push(safe)</button>
+            <button onclick="PageUti.repo_pulldown(1);">pull(force)</button>
+            <button onclick="PageUti.repo_pulldown(0);">pull(safe)</button>
+            <button onclick="PageUti.repo_status(1);">Status(force)</button>
+            <button onclick="PageUti.repo_status(0);">Status(safe)</button>
+            <br>
             <a onclick="PageUti.gen_cmdline_table('#account_history');">CmdLines</a> |
             <a onclick="Okey_use_this();">SetParent</a> |
             <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
