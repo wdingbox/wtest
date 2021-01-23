@@ -313,6 +313,8 @@ body {
       
       
         color:black;
+        width: 22px;
+        height: 22px;
     }
 
     .hili_digi_key {
@@ -355,12 +357,17 @@ body {
         width: 100px;
     }
     
-    #Tab_CatagryOfBooks tbody,
-    #Tab_NamesOfBibleDocuments tbody {
+    #Tab_CatagryOfBooks tbody,{
         height: 266px;
         overflow-y: scroll;
         display: block;
     }
+    #Tab_NamesOfBibleDocuments tbody {
+        height: 240px;
+        overflow-y: scroll;
+        display: block;
+    }
+
     #Tab_OutputBooksList tbody{
         height: 340px;
         overflow-y: scroll;
@@ -376,6 +383,20 @@ body {
     }
 
 
+    #Tab_regex_history_lst thead,
+    #Tab_MostRecent_BCV thead {
+        display: block;
+    }
+
+    #Tab_regex_history_lst tbody,
+    #Tab_MostRecent_BCV tbody {
+        height: 225px;
+        overflow-y: scroll;
+        display: block;
+    }
+
+
+
     #Tab_regex_history_lst td {
         
         overflow: hidden;
@@ -384,18 +405,6 @@ body {
         width: 100%;
     }
    
-
-    #Tab_regex_history_lst thead,
-    #Tab_MostRecent_BCV thead {
-        display: block;
-    }
-
-    #Tab_regex_history_lst tbody,
-    #Tab_MostRecent_BCV tbody {
-        height: 210px;
-        overflow-y: scroll;
-        display: block;
-    }
 
   
     #tmpsel2ref thead,
