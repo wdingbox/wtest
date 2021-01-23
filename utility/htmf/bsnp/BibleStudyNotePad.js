@@ -1429,7 +1429,7 @@ function Tab_DocumentsClusterList(tid) {
 }
 Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
-    this.Set_TabState("Documents")
+    this.Set_TabState("Selection")
 
     var _THIS = this
     $(this.m_tbid + " caption").find(".docSwitch").on("click", function () {
@@ -1446,7 +1446,7 @@ Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
     $(this.m_tbid + " caption").find(`*[title=${val}]`).addClass("HiliSelctedDoc")
     $("#Tab_NamesOfBibleDocuments_desc").text(val)
     switch (val) {
-        case "Documents": _THIS.Gen_table_for_Documents(); break;
+        case "Selection": _THIS.Gen_table_for_Documents(); break;
         case "Sequences": _THIS.Gen_table_for_Sequencer(); break;
         case "Searching": _THIS.Gen_table_for_Searchin(); break;
         default: alert("fatal error")
@@ -3748,7 +3748,7 @@ var BibleInputMenuContainer = `
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
                     <div id='Tab_NamesOfBibleDocuments_desc'></div>
-                    <button class='docSwitch' title='Documents' note='doclist'>D</button>
+                    <button class='docSwitch' title='Selection' note='doclist'>D</button>
                     <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
                     <button class='docSwitch' title='Searching' note='searchi'>&#8635;</button>
                     </caption>
