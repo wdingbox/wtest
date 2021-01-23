@@ -1444,7 +1444,7 @@ Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
     $(this.m_tbid + " caption").find(".HiliSelctedDoc").removeClass("HiliSelctedDoc")
     $(this.m_tbid + " caption").find(".HiliSelctedDocFromTag").removeClass("HiliSelctedDocFromTag")
     $(this.m_tbid + " caption").find(`*[title=${val}]`).addClass("HiliSelctedDoc")
-    $("#Tab_NamesOfBibleDocuments_desc").text(val)
+    $("#Tab_NamesOfBibleDocuments_caps").text(val)
     switch (val) {
         case "Selection": _THIS.Gen_table_for_Documents(); break;
         case "Sequences": _THIS.Gen_table_for_Sequencer(); break;
@@ -1728,23 +1728,24 @@ Tab_MostRecent_BCV.prototype.init = function () {
     this.m_tbodies = {
         MemoryVerse: new Tab_MostRecentBody(false),
         RecentBooks: new Tab_MostRecentBody(true),
-        RecentMarks: new Tab_MostRecentBody(false),
+        RecentTouch: new Tab_MostRecentBody(false),
     }
     //this.m_Tab_HistoryMostRecentBodyMarks = new Tab_MostRecentBody()
-    this.m_tbodies.RecentMarks.init("#RecentMarks")
+    this.m_tbodies.RecentTouch.init("#RecentTouch")
     this.m_tbodies.RecentBooks.init("#RecentBooks")
     this.m_tbodies.MemoryVerse.init("#MemoryVerse")
 
     //var cap = _THIS.getCap()
     _THIS.show_all(false)
     _THIS.m_tbodies["RecentBooks"].show(true)
-
+    $("#Tab_MostRecent_BCV_caps").text("RecentBooks")
 
 
     $(this.m_tableID).find("caption:eq(0)").find("button").bind("click", function () {
         _THIS.show_all(false)
         $("#save2Repo").hide()
         var cap = $(this).attr("title")
+        $("#Tab_MostRecent_BCV_caps").text(cap)
         _THIS.m_tbodies[cap].show(true)
         $(this).parent().find(".ColorRecentMarks").removeClass("ColorRecentMarks")
         $(this).addClass("ColorRecentMarks")
@@ -1776,13 +1777,14 @@ Tab_MostRecent_BCV.prototype.init = function () {
 }
 Tab_MostRecent_BCV.prototype.getCap = function () {
     var cap = $(this.m_tableID).find("caption:eq(0)").find(".ColorRecentMarks").text().trim()
-    var capmap = { "B": "RecentBooks", "T": "RecentMarks", "M": "MemoryVerse" }
+    var capmap = { "B": "RecentBooks", "T": "RecentTouch", "M": "MemoryVerse" }
     var scap = capmap[cap]
+    $("#Tab_MostRecent_BCV_caps").text(scap)
     return scap
 }
 
 Tab_MostRecent_BCV.prototype.onClickHistoryItem = function (onClickHistoryItm) {
-    this.m_tbodies.RecentMarks.onClickHistoryItem(onClickHistoryItm)
+    this.m_tbodies.RecentTouch.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.RecentBooks.onClickHistoryItem(onClickHistoryItm)
     this.m_tbodies.MemoryVerse.onClickHistoryItem(onClickHistoryItm)
 }
@@ -1850,7 +1852,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //const ip = urlParams.get('ip');
         var htm = ""
         ret.biblical_order_splitted_ary.forEach(function (v, i) {
-            hist.m_tbodies.RecentMarks.addnew2table(v)
+            hist.m_tbodies.RecentTouch.addnew2table(v)
             var sln = `<a href='#${v}'>${v}</a>`
             htm += `${sln} | `
         })
@@ -2056,7 +2058,7 @@ AppInstancesManager.prototype.init = function () {
 
         //store before clearup
         var ret = showup.get_selected_bcv_parm()
-        if (ret && ret.m_bcv) markHistory.m_tbodies.RecentMarks.addnew2table(ret.m_bcv)
+        if (ret && ret.m_bcv) markHistory.m_tbodies.RecentTouch.addnew2table(ret.m_bcv)
 
         //clearup
         showup.m_Chp.set_showupVal("")
@@ -2202,7 +2204,7 @@ AppInstancesManager.prototype.init = function () {
         par.m_tab_documentsClusterList = tab_documentsClusterList
         par.m_groupsMenuMgr = groupsMenuMgr
         popupMenu.popup(par)
-        markHistory.m_tbodies.RecentMarks.addnew2table(par.m_bcv)
+        markHistory.m_tbodies.RecentTouch.addnew2table(par.m_bcv)
         $("title").text(par.m_bcv)
 
         showup.update_showup(par.m_bcv)
@@ -3747,7 +3749,7 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
-                    <div id='Tab_NamesOfBibleDocuments_desc'></div>
+                    <div id='Tab_NamesOfBibleDocuments_caps'></div>
                     <button class='docSwitch' title='Selection' note='doclist'>D</button>
                     <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
                     <button class='docSwitch' title='Searching' note='searchi'>&#8635;</button>
@@ -3762,8 +3764,9 @@ var BibleInputMenuContainer = `
 
                 <table id="Tab_MostRecent_BCV" border="1" style="float:left;">
                     <caption>
+                       <div id='Tab_MostRecent_BCV_caps'></div>
                        <button class='docSwitch ColorRecentMarks' title="RecentBooks">B</button>
-                       <button class='docSwitch' title="RecentMarks">T</button>
+                       <button class='docSwitch' title="RecentTouch">T</button>
                        <button class='docSwitch' title="MemoryVerse">M</button>
                     </caption>
                     <thead></thead>
@@ -3776,7 +3779,7 @@ var BibleInputMenuContainer = `
                             </td>
                         </tr>
                     </tbody>
-                    <tbody id='RecentMarks'>
+                    <tbody id='RecentTouch'>
                         <tr>
                             <td>
                                 Pleas click H button <br>for History.<br>

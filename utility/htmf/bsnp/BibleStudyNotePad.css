@@ -339,7 +339,7 @@ body {
         margin: 0px 1px 1px 78px;
     }
     
-    #Tab_NamesOfBibleDocuments_desc{
+    #Tab_NamesOfBibleDocuments_caps, #Tab_MostRecent_BCV_caps{
         font-size: small;
     }
     #Tab_OutputBooksList thead,
