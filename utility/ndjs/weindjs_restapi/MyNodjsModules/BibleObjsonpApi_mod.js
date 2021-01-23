@@ -194,49 +194,56 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.end();
     },
 
-    ApiBibleObj_load_by_bibOj: async function (req, res) {
-        if (!req || !res) {
-            return inp_struct_base
-        }
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var proj = userProject.proj_parse_usr(inp)
-
-        var stat = userProject.proj_setup()
-        if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
-
-
-        if (!stat.out.state || stat.out.state.bMyojDir <= 0) {
-            console.log("-----:bMyojDir<=0. dir not exist")
-        } else {
-            console.log("-----:bMyojDir>0", inp.par.fnames, typeof inp.par.fnames)
-            console.log("-----:binp.par.bibOj", inp.par.bibOj)
-            var TbcObj = {};
-            if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
-                console.log("inp.par.fnames:", inp.par.fnames)
-                for (var i = 0; i < inp.par.fnames.length; i++) {
-                    var trn = inp.par.fnames[i];
-                    var jsfname = userProject.get_pfxname(trn)
-                    console.log("load:", jsfname)
-                    var bib = BibleUti.loadObj_by_fname(jsfname);
-                    if (!bib.obj) {
-                        inp.out.desc += ":noexist:" + trn
-                        console.log("not exist..............", jsfname)
-                        continue
-                    }
-                    var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
-                    TbcObj[trn] = bcObj;
-                    inp.out.desc += ":" + trn
-                }
-                inp.out.desc += ":success"
+    ApiBibleObj_load_by_bibOj: function (req, res) {
+        function _run(req, res) {
+            if (!req || !res) {
+                return { state: { desc: "req|res null" } }
             }
-            //console.log(TbcObj)
-            var bcvT = {}
-            BibleUti.convert_Tbcv_2_bcvT(TbcObj, bcvT)
-            inp.out.data = bcvT
-            //console.log(bcvT)
+            var inp = BibleUti.Parse_req_GET_to_inp(req)
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            var proj = userProject.proj_parse_usr(inp)
+
+            var stat = userProject.proj_setup()
+            if (!stat || stat.out.state.bEditable !== 1) {
+                console.log("proj_setup failed.", stat)
+                return inp;
+            }
+
+
+            if (!stat.out.state || stat.out.state.bMyojDir <= 0) {
+                console.log("-----:bMyojDir<=0. dir not exist")
+            } else {
+                console.log("-----:bMyojDir>0", inp.par.fnames, typeof inp.par.fnames)
+                console.log("-----:binp.par.bibOj", inp.par.bibOj)
+                var TbcObj = {};
+                if (proj && "object" === typeof inp.par.fnames && inp.par.bibOj) {//['NIV','ESV']
+                    console.log("inp.par.fnames:", inp.par.fnames)
+                    for (var i = 0; i < inp.par.fnames.length; i++) {
+                        var trn = inp.par.fnames[i];
+                        var jsfname = userProject.get_pfxname(trn)
+                        console.log("load:", jsfname)
+                        var bib = BibleUti.loadObj_by_fname(jsfname);
+                        if (!bib.obj) {
+                            inp.out.desc += ":noexist:" + trn
+                            console.log("not exist..............", jsfname)
+                            continue
+                        }
+                        var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
+                        TbcObj[trn] = bcObj;
+                        inp.out.desc += ":" + trn
+                    }
+                    inp.out.desc += ":success"
+                }
+                //console.log(TbcObj)
+                var bcvT = {}
+                BibleUti.convert_Tbcv_2_bcvT(TbcObj, bcvT)
+                inp.out.data = bcvT
+                //console.log(bcvT)
+            }
+            return inp
         }
 
+        var inp = _run(req, res)
         console.log("read inp.out:")
         console.log(inp.out)
 
@@ -564,7 +571,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
 
-        
+
         //////----
         function __load_to_obj(outObj, jsfname, owner, inp) {
             //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,

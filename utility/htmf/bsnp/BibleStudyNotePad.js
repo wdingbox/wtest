@@ -1890,7 +1890,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
-            
+
             var sta = ret.out.state
             var msg = "<font color='red'>Invalid Repository</font>"
             if (sta) {
@@ -2290,6 +2290,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
+        if (!ret.out.data) return alert("no out.data")
         _THIS.loadBible_verse_by_bibOj_output(ret, par)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
@@ -2320,6 +2321,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
     Jsonpster.Run(function (ret) {
+        if (!ret.out.data) return alert("no out.data")
         _THIS.apiCallback_Gen_output_table(ret)
         setTimeout(function () {
             _THIS.scrollToView_Vrs()
