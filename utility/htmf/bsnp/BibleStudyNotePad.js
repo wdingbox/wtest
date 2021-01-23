@@ -175,46 +175,34 @@ var MyStorage = {
         })
     },
 
-    setSelectedDocsList: function (arr) {
-        localStorage.setItem("SelectedDocsList", arr)
-    },
-    getSelectedDocsList: function () {
-        var ar = localStorage.getItem("SelectedDocsList");
-        if (!ar || ar.length === 0) {
-            ar = ["NIV", "_myNote"]
-        } else {
-            ar = ar.split(",")
-        }
-        return ar
-    },
-
-
-
-
-
-    setMostRecentSearchFile: function (str) {
-        if (!str) {
-            localStorage.setItem("MostRecentSearchFile", "")
-        } else {
-            localStorage.setItem("MostRecentSearchFile", str)
-            $("#SearchInCaption").text(str)
-        }
-    },
-    getMostRecentSearchFile: function () {
-        var ar = localStorage.getItem("MostRecentSearchFile")
-        if (!ar || ar.length === 0) {
-            ar = "NIV"
-        }
-        return ar
-    },
-    LastSearchInDocument: function (v) {
+    LastSelectedDocsList: function (v) {
+        const uid ="SelectedDocsList"
         if (undefined === v) {
-            v = localStorage.getItem("MostRecentSearchFile");
-            if (!v || v.length === 0) return "NIV"
+            var ar = localStorage.getItem(uid);
+            if (!ar || ar.length === 0) {
+                ar = ["NIV", "_myNote"]
+            } else {
+                ar = ar.split(",")
+            }
+            return ar
+        }else{
+            if("string" === v){
+                return alert("SelectedDocsList must be an array",v)
+            }
+            localStorage.setItem(uid, v)
+        }
+    },
+
+    LastSearchInDocument: function (v) {
+        const uid ="MostRecentSearchFile"
+        if (undefined === v) {
+            v = localStorage.getItem(uid);
+            if (!v || v.length === 0) v = "NIV"
+            return v
         } else {
             if (v.length === 0) return "NIV"
             $("#SearchInCaption").text(v)
-            localStorage.setItem("MostRecentSearchFile", v)
+            localStorage.setItem(uid, v)
         }
     },
     ////-----
@@ -1437,7 +1425,7 @@ Tab_Category.prototype.Gen_Cat_Table = function (par) {
 function Tab_DocumentsClusterList(tid) {
     this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
     this.m_onClickItm2Select = null
-    this.m_selectedItems_ary = MyStorage.getSelectedDocsList();//["CUVS"] //default
+    this.m_selectedItems_ary = MyStorage.LastSelectedDocsList();//["CUVS"] //default
 }
 Tab_DocumentsClusterList.prototype.Init_Docs_Table = function (parm) {
     this.m_onClickItm2Select = parm.onClickItm
@@ -1512,12 +1500,11 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
     const sFile = MyStorage.LastSearchInDocument()
+    if (sFile.length === 0) alert(0)
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
-        if(sFile === v) {
-            //hil = "hili searchFile";
-        }
+        if (sFile === v) hil += " searchFile"
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
@@ -1527,15 +1514,15 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         var hisearchFile = $(_this)[0].classList.contains('searchFile')
         var name = $(_this).text();
 
-        if (alreadyHili) {//will be removed
+        if (alreadyHili) {//will be deselected and removed
             var idx = _THIS.m_selectedItems_ary.indexOf(name)
             if (_THIS.m_selectedItems_ary.length > 1) {
                 _THIS.m_selectedItems_ary.splice(idx, 1) //remove size 1 @idx.
             }
-        } else {//will be added back
+        } else {//will be selected and added back
             _THIS.m_selectedItems_ary.push(name)
         }
-        MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
+        MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
     }
     function update_hili(_this) {
@@ -1547,7 +1534,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         }
         //cannot deselect searchFile
         var hisearchFile = $(_this)[0].classList.contains('searchFile')
-        if(hisearchFile){
+        if (hisearchFile) {
             //$(_this).addClass("hili")
         }
     }
@@ -1564,9 +1551,14 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
     var sFile = MyStorage.LastSearchInDocument()
+    if (_THIS.m_selectedItems_ary.indexOf(sFile) < 0) { //searchFile Must be among the selected.
+        sFile = _THIS.m_selectedItems_ary[0]
+        MyStorage.LastSearchInDocument(sFile)
+    }
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
+        if (sFile === v) hil = "hili searchFile"
         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
@@ -1593,7 +1585,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
                 _THIS.m_selectedItems_ary.splice(idx, 1) //rm prev
             }
         }
-        MyStorage.setSelectedDocsList(_THIS.m_selectedItems_ary)
+        MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
     }
 
     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
@@ -2897,7 +2889,7 @@ var PageUti = {
         } else {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
-        
+
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.Run(function (ret) {
