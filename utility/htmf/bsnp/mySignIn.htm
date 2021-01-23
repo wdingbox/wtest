@@ -215,7 +215,7 @@
                 you left.
             </a>
         </div>
-        <input id="passcode" type="password" value=""></input>
+        <input id="passcode" type="password" value=""></input><a onclick="$('#passcode').val('')">[X]</a>
         <br>
         <hr />
         <br>
@@ -334,6 +334,7 @@
         else {
             $("title").text("signin")
             Uti.Msg("Sign-In")
+            $("#txtarea").hide()
             var ar = MyStorage.Repositories().repos_app_init()
 
             //$("#histroy").trigger("click")
