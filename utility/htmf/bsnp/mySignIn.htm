@@ -69,8 +69,8 @@
             font-size: large;
         }
 
-        .hili {
-            background-color: red;
+        .HiliFocused {
+            background-color: #e7f1ad;
         }
 
         .deleted_repo {
@@ -163,7 +163,7 @@
 
         </div>
         <div>
-            <textarea id="repopath" value="https://github.com/bsnp21/pub_test.git"
+            <textarea id="repopath" class="inputxt" value="https://github.com/bsnp21/pub_test.git"
                 placeholder="https://github.com/username/reposname.git">https://github.com/bsnp21/pub_test.git</textarea>
         </div>
 
@@ -185,7 +185,7 @@
         </div>
 
         <div>
-            <textarea id="repodesc" value="" placeholder="date, place, event, group, etc"></textarea>
+            <textarea id="repodesc" class="inputxt"  value="" placeholder="date, place, event, group, etc"></textarea>
         </div>
 
 
@@ -215,7 +215,7 @@
                 you left.
             </a>
         </div>
-        <input id="passcode" type="password" value=""></input><a onclick="$('#passcode').val('')">[X]</a>
+        <input id="passcode" type="password" class="inputxt" value=""></input><a onclick="$('#passcode').val('')">[X]</a>
         <br>
         <hr />
         <br>
@@ -224,7 +224,7 @@
         <button onclick="PageUti.repo_create(1);" title="sign-n to endorse">Sign-in (endorse)</button>
         <div style="float:right;">
 
-            <a id='Forgot'>Forgot</a> |
+           
             <a id='Test' onclick="$('#testPanel').toggle();">Test</a>
         </div>
     </div>
@@ -313,12 +313,29 @@
 
         Uti.visual_check_repository("#Format_Check")
 
-        $("#Forgot").on("click", function () {
-            PageUti.account_history("#account_history")
+        $(".inputxt").on("focus",function(){
+            $(".HiliFocused").removeClass('HiliFocused')
+            $(this).addClass("HiliFocused")
+        }).on("blur",function(){
+            //$(this).removeClass("HiliFocused")
+            $(".HiliFocused").removeClass('HiliFocused')
         })
 
+        $("#repopath").on("focus",function(){
+            PageUti.Repositories_History( "#account_history", 1)
+        })
+
+        $("#repodesc").on("focus",function(){
+            PageUti.Repositories_History( "#account_history", 2)
+        })
+        $("#passcode").on("focus",function(){
+            PageUti.Repositories_History( "#account_history", -1)
+        })
+
+       
+
         $("#respdesc_history").on("click", function () {
-            PageUti.account_respdesc_history("#account_history")
+            PageUti.Repositories_History("#account_history", 2)
         })
 
     })

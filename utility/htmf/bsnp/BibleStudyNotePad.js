@@ -1917,10 +1917,10 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $("#account_history").bind("click", function () {
-        PageUti.account_history("#outConfig")
+        PageUti.Repositories_History("#outConfig", 1)
     })
     $("#respdesc_history").bind("click", function () {
-        PageUti.account_respdesc_history("#outConfig")
+        PageUti.Repositories_History("#outConfig", 2)
     })
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
@@ -2746,48 +2746,53 @@ var g_obt = new OutputBibleTable()
 
 
 var PageUti = {
-    account_respdesc_history: function (eid) {
+    Repositories_History: function (showid, cid) {
+        if(-1===cid || undefined === cid){
+            $(showid).slideUp("slow")
+            return
+        }
+        var capary = ["","Recent-Repositories","Recent-Specifications"]
         var ar = MyStorage.Repositories().repos_app_init()
-        var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
+        var uniqTmp = {}
+        var stb = `<table id='account_history_table' border='1'><caption>${capary[cid]}</caption><tbody>`
         for (var i = 0; i < ar.length; i++) {
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
+            var clsname = ["", "repo_history", "desc_history"]
+            var showval = ["", str, ar[i].repodesc]
+            if (uniqTmp[showval[cid]]) continue
+            uniqTmp[showval[cid]] = 1;
+
             stb += `<tr><td class='repo_delete'>${i}</td>`
-            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${ar[i].repodesc}</td></td>`
+            stb += `<td class='${clsname[cid]}' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${showval[cid]}</td></td>`
             stb += "</tr>"
         }
         stb += "</tbody></table>"
 
-        $(eid).html(stb).find(".repohistory").bind("click", function () {
-            $(eid).find(".hili").removeClass('hili')
-            $(this).addClass("hili")
+        $(showid).html(stb);
+        $(showid).find(".repo_history").bind("click", function () {
+            $(".HiliFocused").removeClass('HiliFocused')
+            $(this).addClass("HiliFocused")
             var repopath = $(this).attr("repopath")
             var repodesc = $(this).attr("repodesc")
             var passcode = $(this).attr("passcode")
             MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+            //$("#repopath").focus()'
+            $("#repopath").addClass("HiliFocused")
         });
-    },
-    account_history: function (eid) {
-        var ar = MyStorage.Repositories().repos_app_init()
-        var stb = "<table id='account_history_table' border='1'><caption>RecentRepos</caption><tbody>"
-        for (var i = 0; i < ar.length; i++) {
-            var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
-            stb += `<tr><td class='repo_delete'>${i}</td>`
-            stb += `<td class='repohistory' repopath='${ar[i].repopath}' repodesc='${ar[i].repodesc}' passcode='${ar[i].passcode}'>${str}</td></td>`
-            stb += "</tr>"
-        }
-        stb += "</tbody></table>"
 
-        $(eid).html(stb).find(".repohistory").bind("click", function () {
-            $(eid).find(".hili").removeClass('hili')
-            $(this).addClass("hili")
+        $(showid).find(".desc_history").bind("click", function () {
+            $(".HiliFocused").removeClass('HiliFocused')
+            $(this).addClass("HiliFocused")
             var repopath = $(this).attr("repopath")
             var repodesc = $(this).attr("repodesc")
             var passcode = $(this).attr("passcode")
-            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+            $("#repodesc").val(repodesc).addClass("HiliFocused")
+        
+            //MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
         });
 
 
-        $(eid).find(".repo_delete").bind("click", function () {
+        $(showid).find(".repo_delete").bind("click", function () {
             var rep = $(this).next().attr("repopath")
             var pws = $(this).next().attr("passcode")
 
@@ -2801,7 +2806,8 @@ var PageUti = {
             }
         })
 
-        $(eid).slideToggle()
+        $(showid).slideUp("fast")
+        $(showid).slideDown("slow")
     },
     repo_create: function (bSginIn) {
         $("#otb").html("<font color='black'>Start to sign in ... </font>")
