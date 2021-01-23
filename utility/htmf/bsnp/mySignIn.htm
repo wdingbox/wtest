@@ -48,8 +48,14 @@
             padding: 0px 10px 10px 10px;
         }
 
+        .center {
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
 
-        table {
+
+        xtable {
             padding: 10px 10px 10px 10px;
             margin: 10px 10px 10px 10px;
             /*font-size:xx-large;*/
@@ -185,7 +191,7 @@
         </div>
 
         <div>
-            <textarea id="repodesc" class="inputxt"  value="" placeholder="date, place, event, group, etc"></textarea>
+            <textarea id="repodesc" class="inputxt" value="" placeholder="date, place, event, group, etc"></textarea>
         </div>
 
 
@@ -199,9 +205,6 @@
             <a class="help_label" onclick="$('.helpinfo.Password').toggle('slow');">.</a>
         </div>
         <div class="helpinfo Password">
-            <a>
-                The passwod is required for
-            </a>
             <ol>
                 <li>
                     push data into repository (public or private), or
@@ -210,27 +213,29 @@
                     pull data from private repository.
                 </li>
             </ol>
-            <a>
-                For security, the password can be used right before you manually push data into the repository before
-                you left.
-            </a>
+            
         </div>
-        <input id="passcode" type="password" class="inputxt" value=""></input><a onclick="$('#passcode').val('')">[X]</a>
+        <input id="passcode" type="password" class="inputxt" value=""></input><a
+            onclick="$('#passcode').val('')">[X]</a>
         <br>
         <hr />
         <br>
     </form>
     <div class="centered_elem">
+
         <button onclick="PageUti.repo_create(1);" title="sign-n to endorse">Sign-in (endorse)</button>
         <div style="float:right;">
 
-           
-            <a id='Test' onclick="$('#testPanel').toggle();">Test</a>
+
+            <a id='Test' onclick="$('#testPanel').toggle();">.</a>
         </div>
     </div>
+    
+    <div id="account_history" class="center" style="display: none;">.</div>
+    
 
     <div class="test" id='testPanel' style="display:none;">
-        <div class="centered_elem">
+        <div class="center">
             <button onclick="PageUti.repo_create();">Dock</button>
             <button onclick="PageUti.repo_destroy();">Undock</button>
             <button onclick="PageUti.repo_pushback();">push</button>
@@ -241,16 +246,17 @@
             <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
 
             <a class="help_label" onclick="$('#DocBtnExplaination').toggle()">help?</a>
-            <div id="DocBtnExplaination" class="helpinfo">
-                <ol>
-                    Thinking of your repository as a ship, BSNP server as riverbank.
-                    <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
-                    <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No
-                        one can view your data anymore.</li>
-                    <li><b>Push</b>: to push data to your repository during docked.</li>
-                    <li><b>Pull</b>: to pull data from your repository during docked.</li>
-                </ol>
-            </div>
+            
+        </div>
+        <div id="DocBtnExplaination" class="helpinfo">
+            <ul>
+                Thinking of your repository as a ship, BSNP server as riverbank.
+                <li><b>Dock</b>: Your repository ties/clone at BSNP server. You can read/write.</li>
+                <li><b>Undock</b>: Your repository leaves BSNP server. Your data at BSNP server will be erased. No
+                    one can view your data anymore.</li>
+                <li><b>Push</b>: to push data to your repository during docked.</li>
+                <li><b>Pull</b>: to pull data from your repository during docked.</li>
+            </ul>
         </div>
     </div>
 
@@ -266,7 +272,7 @@
 
     <div style="text-align: center;margin-top: 50px;" onclick="$('#txtarea').val('');" id="otb">...</div>
     <hr id="toggle_txtarea">
-    <div id="account_history" style="display: none;">.</div>
+
     <div id="footer" style="text-align: center;margin-top: 50px;">
         <textarea id="txtarea" rows="25"></textarea>
     </div>
@@ -313,26 +319,26 @@
 
         Uti.visual_check_repository("#Format_Check")
 
-        $(".inputxt").on("focus",function(){
+        $(".inputxt").on("focus", function () {
             $(".HiliFocused").removeClass('HiliFocused')
             $(this).addClass("HiliFocused")
-        }).on("blur",function(){
+        }).on("blur", function () {
             //$(this).removeClass("HiliFocused")
             $(".HiliFocused").removeClass('HiliFocused')
         })
 
-        $("#repopath").on("focus",function(){
-            PageUti.Repositories_History( "#account_history", 1)
+        $("#repopath").on("focus", function () {
+            PageUti.Repositories_History("#account_history", 1)
         })
 
-        $("#repodesc").on("focus",function(){
-            PageUti.Repositories_History( "#account_history", 2)
+        $("#repodesc").on("focus", function () {
+            PageUti.Repositories_History("#account_history", 2)
         })
-        $("#passcode").on("focus",function(){
-            PageUti.Repositories_History( "#account_history", -1)
+        $("#passcode").on("focus", function () {
+            PageUti.Repositories_History("#account_history", -1)
         })
 
-       
+
 
         $("#respdesc_history").on("click", function () {
             PageUti.Repositories_History("#account_history", 2)

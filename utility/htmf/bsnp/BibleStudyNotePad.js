@@ -2747,14 +2747,14 @@ var g_obt = new OutputBibleTable()
 
 var PageUti = {
     Repositories_History: function (showid, cid) {
-        if(-1===cid || undefined === cid){
+        if (-1 === cid || undefined === cid) {
             $(showid).slideUp("slow")
             return
         }
-        var capary = ["","Recent-Repositories","Recent-Specifications"]
+        var capary = ["", "Recent-Repositories", "Recent-Specifications"]
         var ar = MyStorage.Repositories().repos_app_init()
         var uniqTmp = {}
-        var stb = `<table id='account_history_table' border='1'><caption>${capary[cid]}</caption><tbody>`
+        var stb = `<table id='account_history_table' class='center' border='1'><caption>${capary[cid]}</caption><tbody>`
         for (var i = 0; i < ar.length; i++) {
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
             var clsname = ["", "repo_history", "desc_history"]
@@ -2783,12 +2783,13 @@ var PageUti = {
         $(showid).find(".desc_history").bind("click", function () {
             $(".HiliFocused").removeClass('HiliFocused')
             $(this).addClass("HiliFocused")
-            var repopath = $(this).attr("repopath")
             var repodesc = $(this).attr("repodesc")
-            var passcode = $(this).attr("passcode")
             $("#repodesc").val(repodesc).addClass("HiliFocused")
-        
-            //MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: !repodesc ? "" : repodesc, passcode: passcode })
+
+            var repopath = $("#repopath").val()
+            var repodesc = $("#repodesc").val()
+            var passcode = $("#passcode").val()
+            MyStorage.Repositories().repos_app_set({ repopath: repopath, repodesc: repodesc, passcode: passcode })
         });
 
 
