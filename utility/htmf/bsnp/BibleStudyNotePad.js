@@ -207,6 +207,16 @@ var MyStorage = {
         }
         return ar
     },
+    LastSearchInDocument: function (v) {
+        if (undefined === v) {
+            v = localStorage.getItem("MostRecentSearchFile");
+            if (!v || v.length === 0) return "NIV"
+        } else {
+            if (v.length === 0) return "NIV"
+            $("#SearchInCaption").text(v)
+            localStorage.setItem("MostRecentSearchFile", v)
+        }
+    },
     ////-----
 
 
@@ -1501,21 +1511,26 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    var sFile = MyStorage.getMostRecentSearchFile()
+    const sFile = MyStorage.LastSearchInDocument()
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
+        if(sFile === v) {
+            //hil = "hili searchFile";
+        }
         str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
     });
 
 
     function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
+        var hisearchFile = $(_this)[0].classList.contains('searchFile')
         var name = $(_this).text();
+
         if (alreadyHili) {//will be removed
             var idx = _THIS.m_selectedItems_ary.indexOf(name)
             if (_THIS.m_selectedItems_ary.length > 1) {
-                _THIS.m_selectedItems_ary.splice(idx, 1) //remove 1.
+                _THIS.m_selectedItems_ary.splice(idx, 1) //remove size 1 @idx.
             }
         } else {//will be added back
             _THIS.m_selectedItems_ary.push(name)
@@ -1528,6 +1543,12 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         var nsel = $(".cbkn.hili").size()
         if (nsel === 0) {//keep at least one.
             $(_this).addClass("hili")
+            alert("Minimun 1 must be selected.")
+        }
+        //cannot deselect searchFile
+        var hisearchFile = $(_this)[0].classList.contains('searchFile')
+        if(hisearchFile){
+            //$(_this).addClass("hili")
         }
     }
 
@@ -1542,7 +1563,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    var sFile = MyStorage.getMostRecentSearchFile()
+    var sFile = MyStorage.LastSearchInDocument()
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
@@ -1588,7 +1609,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    var sFile = MyStorage.getMostRecentSearchFile()
+    var sFile = MyStorage.LastSearchInDocument()
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
         if (v === sFile) hil += " searchFile"
@@ -1599,7 +1620,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
         $(".searchFile").removeClass("searchFile");
         $(_this).addClass("searchFile");
         var txt = $(_this).text().trim()
-        MyStorage.setMostRecentSearchFile(txt)
+        MyStorage.LastSearchInDocument(txt)
     }
 
 
@@ -2332,7 +2353,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
 AppInstancesManager.prototype.get_search_inp = function () {
     //
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
-    var searchFileName = MyStorage.getMostRecentSearchFile();// nambib.get_search_fname();
+    var searchFileName = MyStorage.LastSearchInDocument();// nambib.get_search_fname();
     var searchStrn = $("#sinput").val();
     if (searchStrn.length === 0) {
         return alert("no search str.")
@@ -2422,7 +2443,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
             $("#sinput").val(s);
         });
 
-        var str = MyStorage.getMostRecentSearchFile()
+        var str = MyStorage.LastSearchInDocument()
         $("#SearchInCaption").text(str)
         $("#SearchInCaption").on("click", function () {
             //goto Cluster tab.
@@ -2929,7 +2950,7 @@ var PageUti = {
         var passcode = $("#passcode").val()
         if (passcode.trim().length === 0) return alert("passcode is required to push data into your repository.")
         if (!confirm("pull down data")) return
-        
+
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
