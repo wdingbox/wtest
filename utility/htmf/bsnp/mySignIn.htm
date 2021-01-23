@@ -91,13 +91,38 @@
             display: none;
             margin-left: 1px;
         }
+
+        .centeredtxt {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            width: 70%;
+        }
     </style>
 </head>
 
 <body>
-    <h2 style="text-align: center;margin-top: 50px;">Bible Study Note Pad</h2>
-    <p style="text-align: center;margin-top: 10px;margin-bottom:50px;">(for personal/group to make/share your study
-        notes on any verse)</p>
+    <h2 style="text-align: center;margin-top: 50px;"><a href="https://bsnp21.github.io/home/">Bible Study Note Pad</a></h2>
+    <p class='centeredtxt' onclick="$('#quotezone').toggle('slow')">(to make your study notes on any verse)</p>
+    <div id="quotezone" style="display: none;">
+        <blockquote class='centeredtxt'>
+            <q>Researching, or studying, the Bible is another practical way to abide in the Word. The difference between
+            reading and studying the Bible involves two additional activities: asking questions of the text and writing down
+            your insight. You haven't really studied the Bible unless you've written your thoughts down on paper or
+            comupter.</q> --Rick Warren (<cite>The Purpose Driven Life</cite>, day24, p187)
+        </blockquote>
+        
+        <blockquote class='centeredtxt'>
+            <q>The best way to become a 'doer of the Word' is to always write out an action step as a result of your reading or
+            studying or reflecting on God's Word. Develop the habit of writing down exactly what you intend to do.</q> --Rick
+            Warren (<cite>The Purpose Driven Life</cite>, day24, p190)
+        </blockquote>
+    
+        <blockquote class='centeredtxt'>
+            <q>The Bible was not given to increase our knowledge but to change our lives.</q> -- D.L. Moody
+        </blockquote>
+    </div>
+  
 
 
 
@@ -213,7 +238,7 @@
                     pull data from private repository.
                 </li>
             </ol>
-            
+
         </div>
         <input id="passcode" type="password" class="inputxt" value=""></input><a
             onclick="$('#passcode').val('')">[X]</a>
@@ -230,12 +255,12 @@
             <a id='Test' onclick="$('#testPanel').toggle();">.</a>
         </div>
     </div>
-    
+
     <div id="account_history" class="center" style="display: none;">.</div>
-    
+
 
     <div class="test" id='testPanel' style="display:none;">
-        <div class="center"> 
+        <div class="center">
             <button onclick="PageUti.repo_create();">Dock</button>
             <button onclick="PageUti.repo_destroy(1);">Undock(force)</button>
             <button onclick="PageUti.repo_destroy(0);">Undock(safe)</button>
@@ -251,7 +276,7 @@
             <a onclick="PageUti.LoadStorageInRepos('#account_history');">LoadStorage</a>
 
             <a class="help_label" onclick="$('#DocBtnExplaination').toggle()">help?</a>
-            
+
         </div>
         <div id="DocBtnExplaination" class="helpinfo">
             <ul>
