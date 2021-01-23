@@ -1884,21 +1884,27 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
     $("#account_set").bind("click", function () {
         $("#account_set_info").text($(this).text() + "...").show()
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
 
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
-            Uti.set_menuContainer_color(ret)
-            Uti.Msg(ret.out)
+            Uti.Msg("ret.out.state", ret.out.state)
+            
             var sta = ret.out.state
             var msg = "<font color='red'>Invalid Repository</font>"
             if (sta) {
-                var colr = (sta && 1 === sta.bEditable) ? "lightgreen" : "red"
+                var ssid = ret.out.state.SSID
+                if (ssid && ssid.length > 1) {
+                    MyStorage.SSID(ssid)
+                    Uti.set_menuContainer_color(ret)
+                }
+                var colr = (1 === sta.bEditable) ? "lightgreen" : "red"
                 var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
 
-                var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
+                var colr = (1 === sta.bRepositable) ? "lightgreen" : "yellow"
                 msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+
             }
 
             $("#account_set_info").html(msg).show()
@@ -1916,12 +1922,16 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.SSID("")
         })
     })
-    $("#account_history").bind("click", function () {
+    $("#repopath").bind("focus", function () {
         PageUti.Repositories_History("#outConfig", 1)
     })
-    $("#respdesc_history").bind("click", function () {
+    $("#repodesc").bind("focus", function () {
         PageUti.Repositories_History("#outConfig", 2)
     })
+    $("#passcode").bind("focus", function () {
+        PageUti.Repositories_History("#outConfig", -1)
+    })
+
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
         console.log(tx, btoa(tx), atob(btoa(tx)))
@@ -2821,17 +2831,15 @@ var PageUti = {
         }
 
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
-
-        Uti.Msg("start", Jsonpster)
+        Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.Run(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
             if (ret.out.state) {
                 var ssid = ret.out.state.SSID
                 if (ssid && ssid.length > 1) {
-                    $("#otb").html("<font color='green'>Success</font>")
                     MyStorage.SSID(ssid)
+                    $("#otb").html("<font color='green'>Success</font>")
                     if (bSginIn) {
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
