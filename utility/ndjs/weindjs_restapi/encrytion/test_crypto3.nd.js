@@ -1,5 +1,5 @@
 const { generateKeyPairSync, publicEncrypt, privateDecrypt } = require('crypto');
-
+const crypto = require('crypto')
 //generate a key pair RSA type encryption with a .pem format
 const { publicKey1, privateKey1 } = generateKeyPairSync('rsa', {
     modulusLength: 4096,
@@ -108,6 +108,7 @@ console.log(encrypted.toString());
 console.log("cipherText64:");
 var cipherTxt64 = encrypted.toString("base64")
 console.log(cipherTxt64);
+console.log("len=", cipherTxt64.length);
 
 //decrypt the cyphertext using the private key
 var decryptBuffer = Buffer.from(cipherTxt64, "base64");
@@ -123,11 +124,62 @@ console.log("\n\n\n\n========to decrypt my encrypted txt from html.")
 
 //cpy from html
 //cipherTxt64 = `Qaa2BX5QHrwcK5rWoQPGG/i5scDajth5jdUOaGp0oxzKfkfsHdkWb/ZdcN7w17KJfIG36OtA66aBa/PtOFUf+mX9YviqCjxZudB3GTXgZP2dTyXs3jZ2mOTCXNq+1cYgjJkGGVy6kL0vHeFEIWy2mWAdkyQDkZpRsSWWSsf2+I3u+51pUGgq5zHB9bvKx1VzYdXuvd4HH7OYrMBeLqOGZ0NdSDJslhl7MvitvsSqBpzcvaC7o+eYwEWOCBesoGxt+rMbAx8XyGfYL0KYf860uBmckmCsDq8JBaqqz4iq2QVxXAneRwiSuZLRCzVJfN5AqPstsAQTpOm4gEp0xQ/esbN6F/OxtjmWEIW0Gc+aSjVfMUAsbjVuBR+3Y1uH7j2ABH1VaeepZvZfbWMGFqkPZGD3L70B0V1wsvZ+T7tkjk7wTKaO6q9Rwp/R0oUQCQWtkStM8/uoevglyJDIliOhlISFrHIrf2CKjHDtOB/6HJoAjOSK0HdFn9DV0Sz5N7UNF83DLbyAjAODWZ/tPELUFdwLVh+LY2/FiRcHAVrD0bFgHrCRL/mJCSOeWubay4Tuy84z9IDg0hFwWRla9wglfKuKX+J3+bzlzyQaaT8xTiZvnMQtHOGyHLKgkCya/sGWLeQbX+V5xzbQ3WhRErK+gQVn5sKcwPlFSCiVnWrXrIQ=`
-//cipherTxt64 = `mnuwpfjZFeeoxNrGWkRoGHRP7BtzsDNJ8jQZEdXgx4N5SoapNAC3WyGZr6ZzFxUyFwxsyrVHKihzOYF0WkYlElDI6Wzhwog6E7BHyuKDBlI0Chj3Z/0GrVI/qs+PMJuqNiiT7L/91Cb45k0KB4xjK6AsVKZF3veRXRRmaiuHpFXxM21HJEEeVLf2SZuh2LTBPLVoJsAEdbecq2FCgV5WITWVcxs9y5Hg0N8MfqjyNDVNNr4TPNbHZ4x7JMXrjo4OoE+CucQxLBPcVVkKc/9LCpX2JwMwPmPplVMTGQhTZs2JYr7QWx0Om9kebLdhW2SpopkfgdY5ydFaDd0VQLFbP4cFE+VDIAtPk++CPmLrLJV731azL0BStXJfpSBg7GI4XacibdRQa6ZKxYutbrVj4FpLyY7H4RZw7JNzCfuswzcX5/RvwDv71AzrXhSKTQHrT6jNqvEFLJvn9U2xw7ZVKN00Ks/huJILgCo5iDme6A8ghto0AmmlT4O6pXTz1oA9+nidusFVA12jmCJEjEKhvbp1Rtt7a9SqN9+wCcj4Gu9Na1KaEwGsoUD37ksmtb4fLqiM6aMml1GsKOYtaYWyhUDspA9J/3rkjZVgTId+vfj3n4eUGL2OiAOXe+OLdv6bT/zfHMHwLAFdHC+3FHEf9CCFLZ2HRqwe8pDeifjFrh0=`
+cipherTxt64 = `mnuwpfjZFeeoxNrGWkRoGHRP7BtzsDNJ8jQZEdXgx4N5SoapNAC3WyGZr6ZzFxUyFwxsyrVHKihzOYF0WkYlElDI6Wzhwog6E7BHyuKDBlI0Chj3Z/0GrVI/qs+PMJuqNiiT7L/91Cb45k0KB4xjK6AsVKZF3veRXRRmaiuHpFXxM21HJEEeVLf2SZuh2LTBPLVoJsAEdbecq2FCgV5WITWVcxs9y5Hg0N8MfqjyNDVNNr4TPNbHZ4x7JMXrjo4OoE+CucQxLBPcVVkKc/9LCpX2JwMwPmPplVMTGQhTZs2JYr7QWx0Om9kebLdhW2SpopkfgdY5ydFaDd0VQLFbP4cFE+VDIAtPk++CPmLrLJV731azL0BStXJfpSBg7GI4XacibdRQa6ZKxYutbrVj4FpLyY7H4RZw7JNzCfuswzcX5/RvwDv71AzrXhSKTQHrT6jNqvEFLJvn9U2xw7ZVKN00Ks/huJILgCo5iDme6A8ghto0AmmlT4O6pXTz1oA9+nidusFVA12jmCJEjEKhvbp1Rtt7a9SqN9+wCcj4Gu9Na1KaEwGsoUD37ksmtb4fLqiM6aMml1GsKOYtaYWyhUDspA9J/3rkjZVgTId+vfj3n4eUGL2OiAOXe+OLdv6bT/zfHMHwLAFdHC+3FHEf9CCFLZ2HRqwe8pDeifjFrh0=`
 
-
+cipherTxt64=`Qaa2BX5QHrwcK5rWoQPGG/i5scDajth5jdUOaGp0oxzKfkfsHdkWb/ZdcN7w17KJfIG36OtA66aBa/PtOFUf+mX9YviqCjxZudB3GTXgZP2dTyXs3jZ2mOTCXNq+1cYgjJkGGVy6kL0vHeFEIWy2mWAdkyQDkZpRsSWWSsf2+I3u+51pUGgq5zHB9bvKx1VzYdXuvd4HH7OYrMBeLqOGZ0NdSDJslhl7MvitvsSqBpzcvaC7o+eYwEWOCBesoGxt+rMbAx8XyGfYL0KYf860uBmckmCsDq8JBaqqz4iq2QVxXAneRwiSuZLRCzVJfN5AqPstsAQTpOm4gEp0xQ/esbN6F/OxtjmWEIW0Gc+aSjVfMUAsbjVuBR+3Y1uH7j2ABH1VaeepZvZfbWMGFqkPZGD3L70B0V1wsvZ+T7tkjk7wTKaO6q9Rwp/R0oUQCQWtkStM8/uoevglyJDIliOhlISFrHIrf2CKjHDtOB/6HJoAjOSK0HdFn9DV0Sz5N7UNF83DLbyAjAODWZ/tPELUFdwLVh+LY2/FiRcHAVrD0bFgHrCRL/mJCSOeWubay4Tuy84z9IDg0hFwWRla9wglfKuKX+J3+bzlzyQaaT8xTiZvnMQtHOGyHLKgkCya/sGWLeQbX+V5xzbQ3WhRErK+gQVn5sKcwPlFSCiVnWrXrIQ=`
 console.log("html encoded:");
 console.log(cipherTxt64);
+console.log("len=", cipherTxt64.length);
+
+//decrypt the cyphertext using the private key
+var decryptBuffer = Buffer.from(cipherTxt64, "base64");
+var decrypted = privateDecrypt({
+            key: privateKey.toString(),
+            passphrase: '',
+            padding: crypto.constants.RSA_PKCS1_PADDING
+        }, decryptBuffer);
+
+//print out the decrypted text
+console.log("decripted Text:");
+console.log(decrypted.toString());
+
+
+function decrypt(toDecrypt, relativeOrAbsolutePathtoPrivateKey) {
+    const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey)
+    const privateKey = fs.readFileSync(absolutePath, 'utf8')
+    const buffer = Buffer.from(toDecrypt, 'base64')
+    const decrypted = crypto.privateDecrypt(
+        {
+            key: privateKey.toString(),
+            passphrase: '',
+            padding: crypto.constants.RSA_PKCS1_PADDING
+        },
+        buffer,
+    )
+    return decrypted.toString('utf8')
+}
+
+
+
+function decrypt_tst(toDecrypt, privateKey) {
+    //const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey)
+    //const privateKey = fs.readFileSync(absolutePath, 'utf8')
+    const buffer = Buffer.from(toDecrypt, 'base64')
+    const decrypted = crypto.privateDecrypt(
+        {
+            key: privateKey.toString(),
+            passphrase: '',
+            padding: crypto.constants.RSA_PKCS1_PADDING
+        },
+        buffer,
+    )
+    return decrypted.toString('utf8')
+}
+
+
+var ret = decrypt_tst(cipherTxt64, privateKey)
+console.log(ret)
+
 
 
 
