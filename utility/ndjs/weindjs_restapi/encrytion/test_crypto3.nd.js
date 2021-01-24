@@ -15,8 +15,8 @@ const { publicKey, privateKey } = generateKeyPairSync('rsa', {
 });
 
 // print out the generated keys
-console.log(`PublicKey: ${publicKey}`);
-console.log(`PrivateKey: ${privateKey}`);
+console.log(`var PublicKey= \n${publicKey}`);
+console.log(`var PrivateKey= \n${privateKey}`);
 
 //message to be encrypted
 var toEncrypt = "my secret text to be encrypted";
