@@ -10,7 +10,7 @@ const fsPromises = require("fs").promises;
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 
-var btoa = require('btoa');
+//var btoa = require('btoa');
 
 
 
@@ -455,21 +455,23 @@ var BibleUti = {
         }
     },
     Parse_req_GET_to_inp: function (req) {
-        console.log("\n\n\n-req.method (GET?)", req.method)
+        console.log("\n\n\n\n\n\n\n\n-----req.method (GET?)", req.method)
         console.log("-GET: req.url=", req.url);
         console.log("-req.query", req.query)
 
         if (req.method !== "GET") {
             return null
         }
-        //console.log("GET: req.url=", req.url);
+        //console.log("\n\n\n\n---->GET: req.query=", req.query);
         //var q = url.parse(req.url, true).query;
         //console.log("q=", q);
         if (req.query.inp === undefined) {
             console.log("q.inp undefined. Maybe unload or api err");
             return null;
         }
-        var sin = decodeURIComponent(req.query.inp);//must for client's encodeURIComponent
+        var d64 = Buffer.from(req.query.inp, 'base64').toString()
+        d64 = Buffer.from(d64, 'base64').toString()
+        var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
 
         var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
         try {
@@ -644,7 +646,7 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     function _decode_passcode(inp_usr) {
         ////decode: password.
         if (1 === inp_usr.passcode_encrypted) {
-            inp_usr.passcode = btoa(inp_usr.passcode);//.trim()
+            //inp_usr.passcode = btoa(inp_usr.passcode);//.trim()
         } else {
             console.log("password not encrypted.", inp_usr.passcode)
         }

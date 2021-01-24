@@ -63,7 +63,7 @@ var Jsonpster = {
 encrypt_usr: function(){
 },
 Url: function (){
-    this.m_src = this.url + this.api + '?inp=' + encodeURIComponent(JSON.stringify(this.inp)) ;
+    this.m_src = this.url + this.api + '?inp=' + btoa(btoa(encodeURIComponent(JSON.stringify(this.inp)))) ;
     return this.m_src;
 },
 Response : function(dat, sid){
