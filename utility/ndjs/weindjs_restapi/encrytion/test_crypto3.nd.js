@@ -2,18 +2,18 @@ const { generateKeyPairSync, publicEncrypt, privateDecrypt } = require('crypto')
 
 //generate a key pair RSA type encryption with a .pem format
 const { publicKey1, privateKey1 } = generateKeyPairSync('rsa', {
-  modulusLength: 4096,
-  publicKeyEncoding: {
-    type: 'spki',
-    format: 'pem'
-  },
-  privateKeyEncoding: {
-    type: 'pkcs8',
-    format: 'pem',
+    modulusLength: 4096,
+    publicKeyEncoding: {
+        type: 'spki',
+        format: 'pem'
+    },
+    privateKeyEncoding: {
+        type: 'pkcs8',
+        format: 'pem',
 
-  }
+    }
 });
-var publicKey= `
+var publicKey = `
 -----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxYXi56foxwDb9WbcUSqy
 pp/sr4j48inNVb/3bfz7WPrsale9k4v7iOh5sD1r8nF+IsYNTSeqqbZGHguTONCt
@@ -30,7 +30,7 @@ YwFizyF9m0qXtXFRck3Fi4MCAwEAAQ==
 -----END PUBLIC KEY-----
 `
 
-var privateKey= `
+var privateKey = `
 -----BEGIN PRIVATE KEY-----
 MIIJQQIBADANBgkqhkiG9w0BAQEFAASCCSswggknAgEAAoICAQDFheLnp+jHANv1
 ZtxRKrKmn+yviPjyKc1Vv/dt/PtY+uxqV72Ti/uI6HmwPWvycX4ixg1NJ6qptkYe
@@ -98,7 +98,7 @@ var toEncrypt = "my secret text to be encrypted";
 var encryptBuffer = Buffer.from(toEncrypt);
 
 //encrypt using public key
-var encrypted = publicEncrypt(publicKey,encryptBuffer);
+var encrypted = publicEncrypt(publicKey, encryptBuffer);
 
 //print out the text and cyphertext
 console.log("Text to be encrypted:");
@@ -106,13 +106,16 @@ console.log(toEncrypt);
 console.log("cipherText:");
 console.log(encrypted.toString());
 console.log("cipherText64:");
-var cipherTxt64=encrypted.toString("base64")
-console.log(encrypted.toString("base64"));
+var cipherTxt64 = encrypted.toString("base64")
 
+
+
+cipherTxt64 = `omtbImHH+yMqHsz/J725mCUF4lan6XaI9ByTmy4o8iAuzda4Vf3Hb9S0xoKJ937tpipXqBixuBFCB9F/ZTFUuQCZljZygEBAOTMsFzjeXdqNFaCs6HXhqkSyKawfECFp7n+RI+xeS9jd/Aunkx/8yCHrKWoSDUwbmECycaKjgXIqDC6tDsu6N+w9txn14i9pGrW5T5NtqeR9c9n/dX+8sjo/2wNdiAgtr+Esgq679RQWXG14MoThsLweAqtoMoBYUD+sJup/chjSbbzufDH1tJ00aOyWqQUAuEDVZwOPVc+BEniSjI2aepl+cLt1t0/dBjrfoXTKu0LhheNzd3s2Njd0EShb7N0h1bADb7oAo0/6lN0ko7jQUil4ed6mKPtOMjZ/ThJYgHSzAJUqj8k3B3n5fJXGgt5jEqKHj37El5cRK9Hu1Rb/XjyGgiR+pMLYsVChnhtRO9M5A9OWEJNfg5q1wkWSUTZ9RfF5wQZXmI0FQDeRdI00HfaKlcs36zVB5MjYSlN1JzrWbYckpWH+RejDYnFvSX6bDq2MKeDho5/uHMMu+AQViJUhRjzBWbQwFnll2+Z1YitZfQSJdw9pmB+COfZmoxUqxAbNaxPQFuDkxycTQfpgfjiNgvC2pLxdL6MS2IAf/8bHl5mlDGsBiolZuootIz3sheQv50JoVbs`
+console.log(cipherTxt64);
 
 //decrypt the cyphertext using the private key
 var decryptBuffer = Buffer.from(cipherTxt64, "base64");
-var decrypted = privateDecrypt(privateKey,decryptBuffer);
+var decrypted = privateDecrypt(privateKey, decryptBuffer);
 
 //print out the decrypted text
 console.log("decripted Text:");
