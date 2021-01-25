@@ -163,6 +163,7 @@ var Jsonpster = {
     api: "",
     inp: ${structall},
 encrypt_usr: function(){
+
 },
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + btoa(btoa(encodeURIComponent(JSON.stringify(this.inp)))) ;
@@ -186,6 +187,41 @@ RunJsonP : function (cbf) {
     s.src = this.Url()
     document.body.appendChild(s);
     console.log('Jsonpster:', Jsonpster);
+},
+RunAjaxPost : function(cbf){
+    this.encrypt_usr()
+    this.RunAjax_Type_Post (cbf)
+    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
+},
+RunAjax_Type_Post : function(cbf){
+    var surl = "http://${res.req.headers.host}/" + this.api
+    var inpd = JSON.stringify(this.inp)
+    $.ajax({
+        type: "POST",
+        dataType: 'text',
+        contentType: "application/json; charset=utf-8",
+        url: surl,
+        data: inpd,
+        username: 'user',
+        password: 'pass',
+        crossDomain : true,
+        xhrFields: {
+            withCredentials: false
+        }
+    })
+        .success(function( data ) {
+            //console.log("success",data);
+            //cbf(JSON.parse(data))
+        })
+        .done(function( data ) {
+            //console.log("done",data);
+            cbf(JSON.parse(data))
+        })
+        .fail( function(xhr, textStatus, errorThrown) {
+            console.log("surl",surl)
+            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
+            //alert("textStatus="+textStatus);
+        });
 },
 xxRunPost : function (cbf) {
     if(!cbf) return alert("cbf null.")
@@ -218,40 +254,6 @@ xxRun_Post : function (cbf) {
     ).done(function(ret){
         if(cbf) cbf(data, status)
     })
-},
-RunAjaxPost : function(cbf){
-    this.encrypt_usr()
-    this.RunAjax_Type_Post (cbf)
-    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
-},
-RunAjax_Type_Post : function(cbf){
-    var surl = "http://${res.req.headers.host}/" + this.api
-    $.ajax({
-        type: "POST",
-        dataType: 'text',
-        contentType: "application/json; charset=utf-8",
-        url: surl,
-        data: JSON.stringify(this.inp),
-        username: 'user',
-        password: 'pass',
-        crossDomain : true,
-        xhrFields: {
-            withCredentials: false
-        }
-    })
-        .success(function( data ) {
-            //console.log("success",data);
-            //cbf(JSON.parse(data))
-        })
-        .done(function( data ) {
-            //console.log("done",data);
-            cbf(JSON.parse(data))
-        })
-        .fail( function(xhr, textStatus, errorThrown) {
-            console.log("surl",surl)
-            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
-            //alert("textStatus="+textStatus);
-        });
 }
 };
 const RestApi = JSON.parse('${jstr_RestApi}');
