@@ -176,7 +176,7 @@ var MyStorage = {
     },
 
     LastSelectedDocsList: function (v) {
-        const uid ="SelectedDocsList"
+        const uid = "SelectedDocsList"
         if (undefined === v) {
             var ar = localStorage.getItem(uid);
             if (!ar || ar.length === 0) {
@@ -185,16 +185,16 @@ var MyStorage = {
                 ar = ar.split(",")
             }
             return ar
-        }else{
-            if("string" === v){
-                return alert("SelectedDocsList must be an array",v)
+        } else {
+            if ("string" === v) {
+                return alert("SelectedDocsList must be an array", v)
             }
             localStorage.setItem(uid, v)
         }
     },
 
     LastSearchInDocument: function (v) {
-        const uid ="MostRecentSearchFile"
+        const uid = "MostRecentSearchFile"
         if (undefined === v) {
             v = localStorage.getItem(uid);
             if (!v || v.length === 0) v = "NIV"
@@ -3439,7 +3439,16 @@ var Uti = {
             if (cbf) cbf(data)
         }, false);
     },
-
+    GenTUID: function () {
+        const sTUID = "TUID" //timebased user id.
+        var uid = localStorage.getItem(sTUID)
+        if (!uid) {
+            uid = (new Date()).getTime()
+            uid += Math.random()
+            localStorage.setItem(sTUID, uid)
+        } 
+        return uid
+    },
     Jsonpster_crossloader: function (ip) {
         if (!ip) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -3467,10 +3476,11 @@ var Uti = {
             console.log("Jsonpster is already loaded. Ignore", ip)
             return ip
         }
+        var tuid = this.GenTUID()
 
         var e = document.createElement("script");
         if (ip.indexOf(":") < 0) ip += ":7778"
-        e.src = `http://${ip}/Jsonpster/`;
+        e.src = `http://${ip}/Jsonpster/?inp=TUID${tuid}`;
         document.body.appendChild(e);
         console.log("crossload:", e.src)
         return ip
