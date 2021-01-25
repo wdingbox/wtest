@@ -412,9 +412,45 @@ var BibleUti = {
         return out
     },
 
+
+
+    decrypt_txt: function (toDecrypt, privateKey) {
+        //const absolutePath = path.resolve(relativeOrAbsolutePathtoPrivateKey)
+        //const privateKey = fs.readFileSync(absolutePath, 'utf8')
+        const buffer = Buffer.from(toDecrypt, 'base64')
+        const decrypted = crypto.privateDecrypt(
+            {
+                key: privateKey.toString(),
+                passphrase: '',
+                padding: crypto.constants.RSA_PKCS1_PADDING
+            },
+            buffer,
+        )
+        return decrypted.toString('utf8')
+    },
+
+
+    _check_pub_testing: function (inp) {
+        if (inp.usr.passcode.length === 0) {
+            return inp_usr
+        }
+        ////SpecialTestRule: repopath must be same as password.
+        inp.usr.repopath = inp.usr.repopath.trim()
+        const PUB_TEST = "pub_test"
+        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
+            if (inp.usr_proj.projname !== inp.usr.passcode) {
+                console.log("This is for pub_test only but discord to the rule.")
+                return null
+            } else {
+                console.log("This is for pub_test only: sucessfully pass the rule.")
+                inp.usr.passcode = "3edcFDSA"
+            }
+        }
+        return inp
+    },
     _deplore_usr_proj_dirs: function (usr_proj, base_Dir) {
         //const base_Dir = "bible_study_notes/usrs"
-    
+
 
         usr_proj.base_Dir = base_Dir
         usr_proj.git_root = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}`
@@ -422,7 +458,7 @@ var BibleUti = {
         usr_proj.dest_myo = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}/account/myoj`
         usr_proj.dest_dat = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}/account/dat`
 
-        
+
         console.log("deplore: usr_proj=", usr_proj)
     },
 
@@ -510,8 +546,9 @@ var BibleUti = {
         }
 
         var inpObj = {}
-        if (req.query.inp.match(/^LandingTUID\d+\.\d+$/)) { //SignPageLoaded
-            inpObj.TUID = req.query.inp
+        console.log("req.query.inp=",req.query.inp)
+        if (req.query.inp.match(/^CUID\d+\.\d+$/)) { //SignPageLoaded
+            inpObj.CUID = req.query.inp
             return inpObj
         } else {
             var d64 = Buffer.from(req.query.inp, 'base64').toString()
@@ -664,7 +701,7 @@ var BibleObjGituser = function (rootDir) {
 
 }
 BibleObjGituser.prototype.genKeyPair = function () {
-    if (!this.m_inp || !this.m_inp.TUID) return
+    if (!this.m_inp || !this.m_inp.CUID) return
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
         modulusLength: 4096, // Note:can encrypt txt len max 501 bytes. 
         publicKeyEncoding: {
@@ -680,10 +717,16 @@ BibleObjGituser.prototype.genKeyPair = function () {
     console.log("privateKey\n", privateKey)
 
 
-    var tuid = this.m_inp.TUID
-    this.m_prvkeyfname = this.get_proj_tmp_dir(`/${tuid}.otk`)
-    fs.writeFileSync(this.m_prvkeyfname, privateKey, "utf8")
-    return { publicKey: publicKey, privateKey: privateKey, TUID: tuid }
+    var tuid = this.m_inp.CUID
+    var fname = this.tuid_prvkey_fname_tmp()
+    fs.writeFileSync(fname, privateKey, "utf8")
+    return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
+}
+BibleObjGituser.prototype.tuid_prvkey_fname_tmp = function () {
+    var tuid = this.m_inp.CUID
+    var fname = this.get_proj_tmp_dir(`/${tuid}.otk`)
+    console.log("-----------------tuid tmp file:",fname)
+    return fname
 }
 BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
     var inp = this.m_inp;
@@ -701,48 +744,6 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
     var _THIS = this
 
-    function _check_pub_testing(inp) {
-        if (inp.usr.passcode.length === 0) {
-            return inp_usr
-        }
-        ////SpecialTestRule: repopath must be same as password.
-        inp.usr.repopath = inp.usr.repopath.trim()
-        const PUB_TEST = "pub_test"
-        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
-            if (inp.usr_proj.projname !== inp.usr.passcode) {
-                console.log("This is for pub_test only but discord to the rule.")
-                return null
-            } else {
-                console.log("This is for pub_test only: sucessfully pass the rule.")
-                inp.usr.passcode = "3edcFDSA"
-            }
-        }
-        return inp
-    }
-
-
-    function _parse_inp_usr(inp) {
-        if (!inp.usr) return null
-
-        inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
-        if (!inp.usr_proj) {
-            inp.out.desc = "invalid repospath."
-            return null;
-        }
-        BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
-
-
-        if (null === _check_pub_testing(inp)) {
-            inp.out.desc = "failed pub test."
-            inp.usr_proj = null
-            return null
-        }
-
-
-        
-        return inp
-    }
-
     this.m_orig_usr_sess = JSON.stringify(inp.usr)
 
 
@@ -759,80 +760,77 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
         return null
     }
 
-    var ret = _parse_inp_usr(inp)
+
+    inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
+    if (!inp.usr_proj) {
+        inp.out.desc = "invalid repospath."
+        return null;
+    }
+    BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
+
+
+    if (null === BibleUti._check_pub_testing(inp)) {
+        inp.out.desc = "failed pub test."
+        inp.usr_proj = null
+        return null
+    }
     this.proj_parse_usr_final_check()
-    return ret
+    return inp
 }
-BibleObjGituser.prototype.proj_parse_____________ = function (inp) {
+BibleObjGituser.prototype.session_decipher_usrs = function () {
+    var inp = this.m_inp
+    if (!inp || !inp.CUID) {
+        return null
+    }
+    var fname = this.tuid_prvkey_fname_tmp()
+    var prvKey = fs.readFileSync(fname, "utf8")
+    console.log(prvKey)
+    console.log(inp.cipherusrs)
+    console.log(inp)
+    var str = BibleUti.decrypt_txt(inp.cipherusrs, prvKey)
+    var usrObj = JSON.parse(str)
+    console.log("usrObj=")
+    console.log(usrObj)
+    inp.usr = usrObj
 }
 BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
+        console.log("!inp || !inp.out" )
         return null
     }
     var _THIS = this
 
-    function _check_pub_testing(inp) {
-        if (inp.usr.passcode.length === 0) {
-            return inp_usr
-        }
-        ////SpecialTestRule: repopath must be same as password.
-        inp.usr.repopath = inp.usr.repopath.trim()
-        const PUB_TEST = "pub_test"
-        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
-            if (inp.usr_proj.projname !== inp.usr.passcode) {
-                console.log("This is for pub_test only but discord to the rule.")
-                return null
-            } else {
-                console.log("This is for pub_test only: sucessfully pass the rule.")
-                inp.usr.passcode = "3edcFDSA"
-            }
-        }
-        return inp
-    }
-
-
-    function _parse_inp_usr(inp) {
-        if (!inp.usr) return null
-
-        inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
-        if (!inp.usr_proj) {
-            inp.out.desc = "invalid repospath."
-            return null;
-        }
-        BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
-
-
-        if (null === _check_pub_testing(inp)) {
-            inp.out.desc = "failed pub test."
-            inp.usr_proj = null
-            return null
-        }
-
-
-        
-        return inp
-    }
-
     this.m_orig_usr_sess = JSON.stringify(inp.usr)
 
-
     inp.out.state.ssid_cur = inp.SSID
-    if (inp.SSID && inp.SSID.length > 0) {
-        var sess = this.session_getin_pub(inp.SSID)
-        if (sess) {
-            inp.usr = sess.usr
-            console.log("\n-sess", sess)
-        }
+    console.log("inp.SSID",inp.SSID )
+    if (inp.CUID && inp.CUID.length > 0) {
+        this.session_decipher_usrs()
     }
     if ("object" !== typeof inp.usr) {
         inp.usr_proj = null
+        console.log("inp.usr is null" )
         return null
     }
 
-    var ret = _parse_inp_usr(inp)
+    inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
+    if (!inp.usr_proj) {
+        inp.out.desc = "invalid repospath."
+        console.log(inp.out.desc )
+        return null;
+    }
+    BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
+
+
+    if (null === BibleUti._check_pub_testing(inp)) {
+        inp.out.desc = "failed pub test."
+        inp.usr_proj = null
+        console.log(inp.out.desc )
+        return null
+    }
     this.proj_parse_usr_final_check()
-    return ret
+    return inp
 }
 BibleObjGituser.prototype.session_ssid_compose = function () {
     var sesid = "", owner = ""

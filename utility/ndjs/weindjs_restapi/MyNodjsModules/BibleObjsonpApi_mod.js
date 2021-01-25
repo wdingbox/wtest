@@ -77,7 +77,7 @@ encrypt_usr: function(){
             alert("max 4096-bit key up to 501 bytes")
         }
         var encrypted = encrypt.encrypt(txt);
-        alert(encrypted.length)
+        //alert(encrypted.length)
         return encrypted
         alert(txt)
         alert(txt.length)
@@ -139,6 +139,55 @@ RunAjax_Type_Post : function(cbf){
         .done(function( data ) {
             //console.log("done",data);
             cbf(JSON.parse(data))
+        })
+        .fail( function(xhr, textStatus, errorThrown) {
+            console.log("surl",surl)
+            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
+            //alert("textStatus="+textStatus);
+        });
+},
+RunJsonP_Signin : function (cbf) {
+    this.RunAjax_Type_Post_Signin (cbf)
+    
+},
+RunAjax_Type_Post_Signin : function(cbf){
+    var surl = "http://${res.req.headers.host}/" + this.api
+    var usrs = JSON.stringify(this.inp.usr)
+    //alert(this.inp.usr)
+    var encrypt = new JSEncrypt();
+    encrypt.setPublicKey(atob(this.pkbs));
+    if(usrs.length > 500){
+        alert("max 4096-bit key up to 501 bytes.len="+usrs.length)
+    }
+    var encrypted = encrypt.encrypt(usrs);
+    //alert(encrypted.length)
+    this.inp.cipherusrs = encrypted
+    console.log(this.inp)
+    this.inp.api = this.api
+    if(!this.inp.CUID) alert("missing CUID.")
+    console.log("Jsonpster")
+    console.log(Jsonpster)
+    $.ajax({
+        type: "POST",
+        dataType: 'text',
+        contentType: "application/json; charset=utf-8",
+        url: surl,
+        data: JSON.stringify(this.inp),
+        username: 'user',
+        password: 'pass',
+        crossDomain : true,
+        xhrFields: {
+            withCredentials: false
+        }
+    })
+        .success(function( data ) {
+            //console.log("success",data);
+            //cbf(JSON.parse(data))
+        })
+        .done(function( data ) {
+            //console.log("done",data);
+            cbf(JSON.parse(data))
+            Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = Jsonpster.inp.SSID = null;
         })
         .fail( function(xhr, textStatus, errorThrown) {
             console.log("surl",surl)
@@ -459,30 +508,22 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
-    ApiUsrReposData_create_Post: async function (req, res) {
+    ApiUsrReposData_Signin_Post: async function (req, res) {
         console.log("ApiUsrReposData_create")
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var ret = userProject.proj_parse_usr(inp)
-        if (ret) {
-            userProject.proj_setup()
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
+            //: unlimited write size. 
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            var proj = userProject.proj_parse_usr_signin(inp)
+            if (!proj) return console.log("proj_parse_usr_signin failed.")
 
+            var stat = userProject.proj_setup()
             if (inp.out.state.bEditable === 1) {
                 inp.out.state.SSID = userProject.session_name_gen().SSID
             }
-        }
-
-        var sret = JSON.stringify(inp, null, 4)
-        var sid = ""
-
-        console.log("oup is ", inp.out)
-
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`Jsonpster.Response(${sret},${sid});`);
-        res.end();
+        })
     },
 
     ApiUsrReposData_destroy: async function (req, res) {
