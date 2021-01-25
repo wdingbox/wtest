@@ -54,7 +54,7 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = JSON.stringify(RestApi);
         var structall = JSON.stringify(inp_struct_all)
-        var pkb = Buffer.from(kpf.publicKey).toString("base64")
+        var pkbs = Buffer.from(kpf.publicKey).toString("base64")
 
         var s = `
 var Jsonpster = {
@@ -62,10 +62,10 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
-    pkb:"${pkb}",
+    pkbs:"${pkbs}",
 encrypt_usr: function(){
     var encrypt = new JSEncrypt();
-    encrypt.setPublicKey(atob(this.pkb));
+    encrypt.setPublicKey(atob(this.pkbs));
     var msg = btoa(encodeURIComponent(JSON.stringify(this.inp)))
     var encrypted = encrypt.encrypt(msg);
 },

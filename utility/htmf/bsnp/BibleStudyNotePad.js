@@ -51,6 +51,16 @@ var MyStorage = {
             if (cbf) cbf(ret)
         })
     },
+    GenTUID: function () {
+        const sTUID = "TUID" //timebased user id.
+        var uid = localStorage.getItem(sTUID)
+        if (!uid) {
+            uid = (new Date()).getTime()
+            uid += Math.random()
+            localStorage.setItem(sTUID, uid)
+        } 
+        return uid
+    },
 
     Repositories: function () {
         function StoreRepositorie() {
@@ -3439,16 +3449,7 @@ var Uti = {
             if (cbf) cbf(data)
         }, false);
     },
-    GenTUID: function () {
-        const sTUID = "TUID" //timebased user id.
-        var uid = localStorage.getItem(sTUID)
-        if (!uid) {
-            uid = (new Date()).getTime()
-            uid += Math.random()
-            localStorage.setItem(sTUID, uid)
-        } 
-        return uid
-    },
+  
     Jsonpster_crossloader: function (ip) {
         if (!ip) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -3476,7 +3477,7 @@ var Uti = {
             console.log("Jsonpster is already loaded. Ignore", ip)
             return ip
         }
-        var tuid = this.GenTUID()
+        var tuid = MyStorage.GenTUID()
 
         var e = document.createElement("script");
         if (ip.indexOf(":") < 0) ip += ":7778"
