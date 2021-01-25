@@ -352,7 +352,7 @@
             $("#passcode").val(ret.repo)
         })
 
-        Uti.visual_check_repository("#Format_Check")
+        
 
         $(".inputxt").on("focus", function () {
             $(".HiliFocused").removeClass('HiliFocused')
@@ -379,10 +379,12 @@
             PageUti.Repositories_History("#account_history", 2)
         })
 
+        Uti.visual_check_repository("#Format_Check")
+
     })
 </script>
 <script>
-    var g_ip = Uti.Jsonpster_crossloader()
+    var g_ip = Uti.Jsonpster_crossloader({bSigninPage:true})
 
 
     function test_Jsonpster_exist() {

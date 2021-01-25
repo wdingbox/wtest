@@ -1904,6 +1904,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("#account_set_info").text($(this).text() + "...").show()
 
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.usr.TUID = MyStorage.GenTUID()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("repository", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -2851,6 +2852,40 @@ var PageUti = {
         $(showid).slideUp("fast")
         $(showid).slideDown("slow")
     },
+    repo_create____: function (bSginIn) {
+        $("#otb").html("<font color='black'>Start to sign in ... </font>")
+
+        var repopath = $("#repopath").val()
+        var reo = Uti.validate_repository_url(repopath)
+        if (!reo) {
+            $("#otb").html("<font color='red'>Error format: Repository</font>")
+            return;
+        }
+
+        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.TUID = MyStorage.GenTUID()
+        Jsonpster.api = RestApi.ApiUsrReposData_create.str
+        Uti.Msg("Jsonpster", Jsonpster)
+        Jsonpster.Run(function (ret) {
+            Uti.Msg("ret.out.state", ret.out.state)
+            if (ret.out.state) {
+                var ssid = ret.out.state.SSID
+                if (ssid && ssid.length > 1) {
+                    MyStorage.SSID(ssid)
+                    $("#otb").html("<font color='green'>Success</font>")
+                    if (bSginIn) {
+                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                    } else {
+                        $("#txtarea").show()
+                    }
+                } else {
+                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
+                }
+            } else {
+                $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
+            }
+        })
+    },
     repo_create: function (bSginIn) {
         $("#otb").html("<font color='black'>Start to sign in ... </font>")
 
@@ -2862,6 +2897,7 @@ var PageUti = {
         }
 
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.TUID = MyStorage.GenTUID()
         Jsonpster.api = RestApi.ApiUsrReposData_create.str
         Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.Run(function (ret) {
@@ -3462,10 +3498,16 @@ var Uti = {
         }, false);
     },
 
-    Jsonpster_crossloader: function (ip) {
+    Jsonpster_crossloader: function (par) {
+        var ip = null, bSigninPage=null
+        if (par) {
+            ip = par.ip
+            bSigninPage = par.bSigninPage
+        }
+
         if (!ip) {
             const urlParams = new URLSearchParams(window.location.search);
-            ip = urlParams.get('ip');
+            var ip = urlParams.get('ip');
             if (!ip) {
                 ip = window.location.host
             }
@@ -3489,11 +3531,15 @@ var Uti = {
             console.log("Jsonpster is already loaded. Ignore", ip)
             return ip
         }
-        var tuid = MyStorage.GenTUID()
+
 
         var e = document.createElement("script");
         if (ip.indexOf(":") < 0) ip += ":7778"
-        e.src = `http://${ip}/Jsonpster/?inp=TUID${tuid}`;
+        e.src = `http://${ip}/Jsonpster/`;
+        if (bSigninPage) {
+            var tuid = MyStorage.GenTUID()
+            e.src += `?inp=LandingTUID${tuid}`;
+        }
         document.body.appendChild(e);
         console.log("crossload:", e.src)
         return ip

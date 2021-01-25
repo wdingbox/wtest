@@ -46,6 +46,10 @@ var ApiJsonp_BibleObj = {
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         userProject.proj_parse_usr(inp)
         var kpf = userProject.genKeyPair()
+        var pkbs = ""
+        if (kpf) {
+            pkbs = Buffer.from(kpf.publicKey).toString("base64")
+        }
 
         //////////////
         var RestApi = {}
@@ -54,7 +58,8 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = JSON.stringify(RestApi);
         var structall = JSON.stringify(inp_struct_all)
-        var pkbs = Buffer.from(kpf.publicKey).toString("base64")
+
+
 
         var s = `
 var Jsonpster = {
@@ -64,10 +69,24 @@ var Jsonpster = {
     inp: ${structall},
     pkbs:"${pkbs}",
 encrypt_usr: function(){
-    var encrypt = new JSEncrypt();
-    encrypt.setPublicKey(atob(this.pkbs));
-    var msg = btoa(encodeURIComponent(JSON.stringify(this.inp)))
-    var encrypted = encrypt.encrypt(msg);
+    if(this.pkbs.length > 0){
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(atob(this.pkbs));
+        var txt = JSON.stringify(this.inp)
+        if(txt.length>500){
+            alert("max 4096-bit key up to 501 bytes")
+        }
+        var encrypted = encrypt.encrypt(txt);
+        alert(encrypted.length)
+        return encrypted
+        alert(txt)
+        alert(txt.length)
+        var txt2 = encodeURIComponent(txt)
+        alert(txt2)
+        alert(txt2.length)
+        var msg = btoa(txt2)
+        alert(msg.length)
+    }
 },
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + btoa(encodeURIComponent(JSON.stringify(this.inp))) ;
@@ -416,6 +435,31 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
 
     ApiUsrReposData_create: async function (req, res) {
+        console.log("ApiUsrReposData_create")
+        if (!req || !res) {
+            return inp_struct_account_setup
+        }
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+        var ret = userProject.proj_parse_usr_signin(inp)
+        if (ret) {
+            userProject.proj_setup()
+
+            if (inp.out.state.bEditable === 1) {
+                inp.out.state.SSID = userProject.session_name_gen().SSID
+            }
+        }
+
+        var sret = JSON.stringify(inp, null, 4)
+        var sid = ""
+
+        console.log("oup is ", inp.out)
+
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write(`Jsonpster.Response(${sret},${sid});`);
+        res.end();
+    },
+    ApiUsrReposData_create_Post: async function (req, res) {
         console.log("ApiUsrReposData_create")
         if (!req || !res) {
             return inp_struct_account_setup
