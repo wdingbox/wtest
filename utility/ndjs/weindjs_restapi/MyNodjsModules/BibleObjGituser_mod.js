@@ -458,6 +458,12 @@ var BibleUti = {
         console.log("\n\n\n\n\n\n\n\n-----req.method (GET?)", req.method)
         console.log("-GET: req.url=", req.url);
         console.log("-req.query", req.query)
+        var remoteAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        (req.connection.socket ? req.connection.socket.remoteAddress : null);
+        console.log("-remoteAddr", remoteAddr)
+        console.log("-req.headers", req.headers)
 
         if (req.method !== "GET") {
             return null

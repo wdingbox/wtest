@@ -37,12 +37,14 @@ inp_struct_all.par.Search = inp_struct_search.par.Search
 
 var ApiJsonp_BibleObj = {
     Jsonpster: function (req, res) {
-        if (!req || !res) {
-            return {}
-        }
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
         ////////////////////////////////////////////
         //app.get("/Jsonpster", (req, res) => {
-        console.log();
+        var ip = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            (req.connection.socket ? req.connection.socket.remoteAddress : null);
+        console.log(req.connection.remoteAddress);
         console.log("res.req.headers.host=", res.req.headers.host);
 
         //////////////
@@ -52,6 +54,106 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = JSON.stringify(RestApi);
         var structall = JSON.stringify(inp_struct_all)
+
+
+
+        var Jsonpster = {
+            host: `${res.req.headers.host}`,
+            url: `http://${res.req.headers.host}/`,
+            api: "",
+            inp: "",
+            encrypt_usr: function () {
+            },
+            Url: function () {
+                this.m_src = this.url + this.api + '?inp=' + btoa(btoa(encodeURIComponent(JSON.stringify(this.inp))));
+                return this.m_src;
+            },
+            Response: function (dat, sid) {
+                this.inp.sid = sid
+                this.m_cbf(dat)
+            },
+            Run: function (cbf) {
+                this.encrypt_usr()
+                this.RunJsonP(cbf)
+                this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
+            },
+            RunJsonP: function (cbf) {
+                if (!cbf) alert('callback m_cbf null');
+                if (!this.api) alert('api=null');
+                if (!this.inp) alert('inp=null');
+                this.m_cbf = cbf;
+                var s = document.createElement('script');
+                s.src = this.Url()
+                document.body.appendChild(s);
+                console.log('Jsonpster:', Jsonpster);
+            },
+            RunAjaxPost: function (cbf) {
+                this.encrypt_usr()
+                this.RunAjax_Type_Post(cbf)
+                this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
+            },
+            RunAjax_Type_Post: function (cbf) {
+                var surl = "http://${res.req.headers.host}/" + this.api
+                $.ajax({
+                    type: "POST",
+                    dataType: 'text',
+                    contentType: "application/json; charset=utf-8",
+                    url: surl,
+                    data: JSON.stringify(this.inp),
+                    username: 'user',
+                    password: 'pass',
+                    crossDomain: true,
+                    xhrFields: {
+                        withCredentials: false
+                    }
+                })
+                    .success(function (data) {
+                        //console.log("success",data);
+                        //cbf(JSON.parse(data))
+                    })
+                    .done(function (data) {
+                        //console.log("done",data);
+                        cbf(JSON.parse(data))
+                    })
+                    .fail(function (xhr, textStatus, errorThrown) {
+                        console.log("surl", surl)
+                        alert("xhr.responseText=" + xhr.responseText + ",textStatus=" + textStatus);
+                        //alert("textStatus="+textStatus);
+                    });
+            },
+            xxRunPost: function (cbf) {
+                if (!cbf) return alert("cbf null.")
+                var surl = "http://${res.req.headers.host}/" + this.api
+                $.post(surl,
+                    this.inp,
+                    function (data, status) {
+                        if (cbf) cbf(data, status)
+                        console.log("Data: " + data + ",Status: " + status);
+                    }
+                )
+            },
+            xxRunPosts: function (cbf) {
+                if (!cbf) return alert("cbf null.")
+                var surl = "https://${res.req.headers.host}/"
+                surl = surl.replace("7778", "7775") + this.api
+                $.post(surl,
+                    this.inp,
+                    function (data, status) {
+                        if (cbf) cbf(data, status)
+                        console.log("Data: " + data + ",Status: " + status);
+                    }
+                )
+            },
+            xxRun_Post: function (cbf) {
+                if (!cbf) return alert("cbf null.")
+                var surl = "http://${res.req.headers.host}/" + this.api
+                $.post(surl,
+                    this.inp
+                ).done(function (ret) {
+                    if (cbf) cbf(data, status)
+                })
+            },
+        };
 
 
         var s = `
