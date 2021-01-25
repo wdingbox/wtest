@@ -5,6 +5,7 @@ const path = require('path');
 const { nextTick } = require('process');
 var url = require('url');
 const fsPromises = require("fs").promises;
+const crypto = require('crypto')
 
 //var Uti = require("./Uti.module").Uti;
 //var SvcUti = require("./SvcUti.module").SvcUti;
@@ -37,15 +38,13 @@ inp_struct_all.par.Search = inp_struct_search.par.Search
 
 var ApiJsonp_BibleObj = {
     Jsonpster: function (req, res) {
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
         ////////////////////////////////////////////
         //app.get("/Jsonpster", (req, res) => {
-        var ip = req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            (req.connection.socket ? req.connection.socket.remoteAddress : null);
-        console.log(req.connection.remoteAddress);
         console.log("res.req.headers.host=", res.req.headers.host);
+
+        var inp = BibleUti.Parse_req_GET_to_inp(req)
+        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+        userProject.genKeyPair()
 
         //////////////
         var RestApi = {}
@@ -54,6 +53,10 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = JSON.stringify(RestApi);
         var structall = JSON.stringify(inp_struct_all)
+
+        
+
+        
 
 
 

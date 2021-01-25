@@ -11,6 +11,7 @@ const exec = require('child_process').exec;
 const execSync = require('child_process').execSync;
 
 //var btoa = require('btoa');
+const crypto = require('crypto')
 
 
 
@@ -412,7 +413,6 @@ var BibleUti = {
     },
 
 
-
     Parse_post_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
         console.log("req.url", req.url)
@@ -459,11 +459,13 @@ var BibleUti = {
         console.log("-GET: req.url=", req.url);
         console.log("-req.query", req.query)
         var remoteAddr = req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        (req.connection.socket ? req.connection.socket.remoteAddress : null);
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            (req.connection.socket ? req.connection.socket.remoteAddress : null);
         console.log("-remoteAddr", remoteAddr)
         console.log("-req.headers", req.headers)
+        console.log(req.connection.remoteAddress);
+
 
         if (req.method !== "GET") {
             return null
@@ -622,7 +624,26 @@ var BibleObjGituser = function (rootDir) {
     this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
 
 }
+BibleObjGituser.prototype.genKeyPair = function () {
+    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem'
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+        }
+    });
+    console.log("publicKey\n", publicKey)
+    console.log("privateKey\n", privateKey)
 
+
+    this.m_prvkeyfname = this.get_proj_tmp_dir("/test.pvk")
+    fs.writeFileSync(this.m_prvkeyfname, privateKey, "utf8")
+    return { publicKey: publicKey, privateKey: privateKey }
+}
 
 BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     this.m_inp = inp
@@ -754,10 +775,10 @@ BibleObjGituser.prototype.session_get_github_owner = function (docfile) {
     //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js
     var ary = docfile.split("/")
     var idx = ary.indexOf("usrs")
-    var hostname = ary[idx+1]
-    var username = ary[idx+2]
-    var reponame = ary[idx+3]
-    var owner = username+"/"+reponame
+    var hostname = ary[idx + 1]
+    var username = ary[idx + 2]
+    var reponame = ary[idx + 3]
+    var owner = username + "/" + reponame
     return owner
 }
 BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
