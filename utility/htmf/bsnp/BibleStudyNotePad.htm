@@ -6,7 +6,7 @@
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
 
-    
+
     <link rel="stylesheet" href="./BibleStudyNotePad.css?v=2021-01-04bb">
     </link>
 
@@ -55,28 +55,47 @@
     <style>
     </style>
 
-  
-    <script language="javascript">
-        console.log(window.location);
 
-        $(document).ready(function () {
-
-            g_aim.init();
-
-            //table_sort();
-            //table_col_index();
-
-        });/////////////
-
-    </script>
 
 </HEAD>
+
 <BODY onbeforeunload="return 'leave?';">
 
     <script>
-        Uti.Jsonpster_crossloader()
+        //Uti.Jsonpster_crossloader()
         console.log("end_time:", (new Date()).toISOString())
     </script>
 </BODY>
 
 </HTML>
+
+<script language="javascript">
+    console.log(window.location);
+    var g_ip = Uti.Jsonpster_crossloader()
+
+    function test_Jsonpster_exist() {
+        if ("undefined" === typeof Jsonpster) {
+            console.log("Jsonpster not exist yet")
+        }
+        else {
+            $("title").text("signin")
+            Uti.Msg("Sign-In")
+            $("#txtarea").hide()
+            var ar = MyStorage.Repositories().repos_app_init()
+
+            console.log(Jsonpster)
+            //$("#histroy").trigger("click")
+            clearInterval(iid)
+        }
+    }
+    var iid = setInterval(test_Jsonpster_exist, 500)
+
+    $(document).ready(function () {
+
+        g_aim.init();
+
+        //table_sort();
+        //table_col_index();
+
+    });/////////////
+</script>
