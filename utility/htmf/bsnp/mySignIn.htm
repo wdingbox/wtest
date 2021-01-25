@@ -5,6 +5,7 @@
     <base target="xxx_blank" />
     <META http-equiv="Content-Type" content="text/html;" charset="UTF-8">
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script>
 
 
     <link rel="stylesheet" xxhref="./BibleStudyNotePad.css?v=2020dec21b">
@@ -390,6 +391,7 @@
             $("#txtarea").hide()
             var ar = MyStorage.Repositories().repos_app_init()
 
+            console.log(Jsonpster)
             //$("#histroy").trigger("click")
         }
         //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length

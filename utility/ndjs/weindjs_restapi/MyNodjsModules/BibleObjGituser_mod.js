@@ -480,7 +480,7 @@ var BibleUti = {
             return { TUID: req.query.inp }
         } else {
             var d64 = Buffer.from(req.query.inp, 'base64').toString()
-            d64 = Buffer.from(d64, 'base64').toString()
+            //d64 = Buffer.from(d64, 'base64').toString()
             var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
 
             var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
@@ -643,9 +643,10 @@ BibleObjGituser.prototype.genKeyPair = function () {
     console.log("privateKey\n", privateKey)
 
 
-    this.m_prvkeyfname = this.get_proj_tmp_dir("/test.pvk")
+    var tuid = this.m_inp.TUID
+    this.m_prvkeyfname = this.get_proj_tmp_dir(`/${tuid}.otk`)
     fs.writeFileSync(this.m_prvkeyfname, privateKey, "utf8")
-    return { publicKey: publicKey, privateKey: privateKey }
+    return { publicKey: publicKey, privateKey: privateKey, TUID:tuid }
 }
 
 BibleObjGituser.prototype.proj_parse_usr = function (inp) {
