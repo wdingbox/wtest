@@ -476,22 +476,25 @@ var BibleUti = {
         if (req.query.inp === undefined) {
             console.log("q.inp undefined. Maybe unload or api err");
             return null;
-        }
-        var d64 = Buffer.from(req.query.inp, 'base64').toString()
-        d64 = Buffer.from(d64, 'base64').toString()
-        var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
+        } else if (req.query.inp.indexOf("TUID") === 0) {
+            return { TUID: req.query.inp }
+        } else {
+            var d64 = Buffer.from(req.query.inp, 'base64').toString()
+            d64 = Buffer.from(d64, 'base64').toString()
+            var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
 
-        var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
-        try {
-            var inpObj = JSON.parse(sin);
-            inpObj.out = out
-            console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
-            //cbf(inpObj, res)
-            return inpObj
-        } catch (err) {
-            out.err = err
-            console.log(err)
-            return out
+            var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+            try {
+                var inpObj = JSON.parse(sin);
+                inpObj.out = out
+                console.log("GET: inp =", JSON.stringify(inpObj, null, 4));
+                //cbf(inpObj, res)
+                return inpObj
+            } catch (err) {
+                out.err = err
+                console.log(err)
+                return out
+            }
         }
     },
     //// BibleUti /////
