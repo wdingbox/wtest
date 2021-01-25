@@ -71,27 +71,10 @@
 
 <script language="javascript">
     console.log(window.location);
-    var g_ip = Uti.Jsonpster_crossloader()
-
-    function test_Jsonpster_exist() {
-        if ("undefined" === typeof Jsonpster) {
-            console.log("Jsonpster not exist yet")
-        }
-        else {
-            $("title").text("signin")
-            Uti.Msg("Sign-In")
-            $("#txtarea").hide()
-            var ar = MyStorage.Repositories().repos_app_init()
-
-            console.log(Jsonpster)
-            //$("#histroy").trigger("click")
-            clearInterval(iid)
-        }
-    }
-    var iid = setInterval(test_Jsonpster_exist, 500)
-
+    
     $(document).ready(function () {
-
+        
+        var g_ip = Uti.Jsonpster_crossloader()
         g_aim.init();
 
         //table_sort();

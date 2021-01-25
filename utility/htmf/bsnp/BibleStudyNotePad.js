@@ -58,7 +58,7 @@ var MyStorage = {
             uid = (new Date()).getTime()
             uid += Math.random()
             localStorage.setItem(sTUID, uid)
-        } 
+        }
         return uid
     },
 
@@ -2025,7 +2025,7 @@ var popupMenu = new PopupMenu()
 
 var AppInstancesManager = function () {
 }
-AppInstancesManager.prototype.init = function () {
+AppInstancesManager.prototype.init = function (cbf) {
     var _This = this
 
 
@@ -2243,33 +2243,45 @@ AppInstancesManager.prototype.init_load_storage = function () {
             }
         }
     }
+    var _init_load_repo_i = 0
+    function _init_load_repo() {
+        if ("undefined" === typeof Jsonpster) {
+            _init_load_repo_i++
+            if (_init_load_repo_i > 10) {
+                clearInterval(iid)
+            }
+        }
+        else {
+            clearInterval(iid)
+            Uti.Msg("start ...", "" + window.location.href);
+            if ("undefined" === typeof Jsonpster) {
+                alert("Jsonpster server down.");
+            }
+            Uti.Msg("RestApi=", RestApi);
+            Uti.Msg(Jsonpster.Url());
+            MyStorage.Repositories().repos_app_init()
+            MyStorage.Repo_load(function (ret) {
+                //if (cbf) cbf(ret)
+                Uti.set_menuContainer_color(ret)
+                Uti.Msg("Ready ret.out", ret.out)
+
+                var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
+                if (memo) {
+                    var ar = (ret.out.data["#MemoryVerse"])
+                    for (var i = 0; i < ar.length; i++) {
+                        var bcv = ar[i]
+                        markHistory.addnew2table("MemoryVerse", bcv)
+                    }
+                }
+                _load_bcv_from_url_param()
+            })
+
+        }
+    }
 
     ////////////////////////////////
     //
-    setTimeout(() => {
-        Uti.Msg("start ...", "" + window.location.href);
-        if ("undefined" === typeof Jsonpster) {
-            alert("Jsonpster server down.");
-        }
-        Uti.Msg("RestApi=", RestApi);
-        Uti.Msg(Jsonpster.Url());
-        MyStorage.Repositories().repos_app_init()
-        MyStorage.Repo_load(function (ret) {
-            //if (cbf) cbf(ret)
-            Uti.set_menuContainer_color(ret)
-            Uti.Msg("Ready ret.out", ret.out)
-
-            var memo = (ret.out.data) ? ret.out.data["#MemoryVerse"] : ""
-            if (memo) {
-                var ar = (ret.out.data["#MemoryVerse"])
-                for (var i = 0; i < ar.length; i++) {
-                    var bcv = ar[i]
-                    markHistory.addnew2table("MemoryVerse", bcv)
-                }
-            }
-            _load_bcv_from_url_param()
-        })
-    }, 1000)
+    var iid = setInterval(_init_load_repo, 1000)
 }
 AppInstancesManager.prototype.scrollToView_Vrs = function () {
     var ret = showup.get_selected_bcv_parm()
@@ -3449,7 +3461,7 @@ var Uti = {
             if (cbf) cbf(data)
         }, false);
     },
-  
+
     Jsonpster_crossloader: function (ip) {
         if (!ip) {
             const urlParams = new URLSearchParams(window.location.search);
