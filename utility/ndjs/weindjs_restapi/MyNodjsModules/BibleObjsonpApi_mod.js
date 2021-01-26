@@ -279,7 +279,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //var inp = _run(req, res)
         //console.log("read inp.out:")
         //console.log(inp.out)
-//
+        //
         //var sret = JSON.stringify(inp);
         //var sid = ""
         ////console.log("sert:", sret)
@@ -398,37 +398,36 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         })
     },
     ApiUsrDat_load: async function (req, res) {
-        if (!req || !res) {
-            return inp_struct_base
-        }
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var proj = userProject.proj_parse_usr(inp)
+        //var inp = BibleUti.Parse_req_GET_to_inp(req)
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            var proj = userProject.proj_parse_usr(inp)
 
-        if (proj) {
+            if (proj) {
 
-            userProject.proj_setup()
+                userProject.proj_setup()
 
-            var retp = userProject.profile_state()
-            if (0) {
-                await userProject.git_pull(function (bSuccess) {
+                var retp = userProject.profile_state()
+                if (0) {
+                    await userProject.git_pull(function (bSuccess) {
 
-                })
+                    })
+                }
+
+                //inp = BibleUti.Write2vrs_txt(inp, false)
+                var doc = inp.par.fnames[0]
+                var jsfname = userProject.get_pfxname(doc)
+                var ret = BibleUti.loadObj_by_fname(jsfname)
+                inp.out.data = ret.obj
+                if (!inp.out.state) inp.out.state.bEditable = 1
             }
+        })
 
-            //inp = BibleUti.Write2vrs_txt(inp, false)
-            var doc = inp.par.fnames[0]
-            var jsfname = userProject.get_pfxname(doc)
-            var ret = BibleUti.loadObj_by_fname(jsfname)
-            inp.out.data = ret.obj
-            if (!inp.out.state) inp.out.state.bEditable = 1
-        }
-
-        var sret = JSON.stringify(inp)
-        var sid = ""
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`Jsonpster.Response(${sret},${sid});`);
-        res.end();
+        //var sret = JSON.stringify(inp)
+        //var sid = ""
+        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        //res.write(`Jsonpster.Response(${sret},${sid});`);
+        //res.end();
     },
 
 
@@ -649,7 +648,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (docpathfilname === jspfn) continue;
             console.log("*docfname=", jspfn)
             var reposdes = userProject.session_git_repodesc_load(jspfn)
-            if(!reposdes) continue
+            if (!reposdes) continue
             console.log("*repodesc=", reposdes.repodesc, inp.usr.repodesc)
             if (reposdes.repodesc === inp.usr.repodesc) {
                 var owner = userProject.session_get_github_owner(jspfn)

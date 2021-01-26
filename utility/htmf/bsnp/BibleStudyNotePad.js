@@ -40,8 +40,9 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        if (!Jsonpster.inp.SSID) {//only need load once for all.
+        if (!Jsonpster.inp.SSID) {//: initial load once for all.
             Jsonpster.inp.SSID = MyStorage.SSID()
+            Jsonpster.inp.usr = null
         }
         if (!Jsonpster.inp.SSID) return alert("inp.ssid is not set yet:" + Jsonpster.inp.SSID)
 
@@ -51,7 +52,7 @@ var MyStorage = {
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrDat_load.str
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             if (cbf) cbf(ret)
         })
     },
@@ -628,7 +629,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         console.log("Jsonpster:", Jsonpster)
         Uti.Msg(Jsonpster)
 
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             console.log("ret", ret.out.data)
             Uti.Msg(ret.out)
             if (ret.out.data) {
@@ -2327,7 +2328,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
-    Jsonpster.Run(function (ret) {
+    Jsonpster.RunAjaxPost(function (ret) {
         if (!ret.out.data) return alert("no out.data")
         _THIS.loadBible_verse_by_bibOj_output(ret, par)
         setTimeout(function () {
@@ -2359,7 +2360,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
-    Jsonpster.Run(function (ret) {
+    Jsonpster.RunAjaxPost(function (ret) {
         if (!ret.out.data) return alert("no out.data")
         _THIS.apiCallback_Gen_output_table(ret)
         setTimeout(function () {
