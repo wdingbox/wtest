@@ -93,7 +93,7 @@ RunJsonP : function (cbf) {
 },
 RunAjaxPost : function(cbf){
     if(this.inp.SSID === null) return alert("lost inp.SSID")
-    if(!this.inp.usr) return alert("miissing inp.usr")
+    if(!this.inp.par) return alert("miissing inp.par")
     this.RunAjax_PostTxt (cbf)
 },
 RunAjaxPost_Signin : function (cbf) {
@@ -225,11 +225,13 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ApiBibleObj_load_by_bibOj: function (req, res) {
-        function _run(req, res) {
-            if (!req || !res) {
-                return { state: { desc: "req|res null" } }
-            }
-            var inp = BibleUti.Parse_req_GET_to_inp(req)
+        //function _run(req, res) {
+        //    if (!req || !res) {
+        //        return { state: { desc: "req|res null" } }
+        //    }
+        //    var inp = BibleUti.Parse_req_GET_to_inp(req)
+
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr(inp)
 
@@ -270,19 +272,19 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 inp.out.data = bcvT
                 //console.log(bcvT)
             }
-            return inp
-        }
+            //return inp
+        })
 
-        var inp = _run(req, res)
-        console.log("read inp.out:")
-        console.log(inp.out)
-
-        var sret = JSON.stringify(inp);
-        var sid = ""
-        //console.log("sert:", sret)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`Jsonpster.Response(${sret},${sid});`);
-        res.end();
+        //var inp = _run(req, res)
+        //console.log("read inp.out:")
+        //console.log(inp.out)
+//
+        //var sret = JSON.stringify(inp);
+        //var sid = ""
+        ////console.log("sert:", sret)
+        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        //res.write(`Jsonpster.Response(${sret},${sid});`);
+        //res.end();
     },
 
     ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
