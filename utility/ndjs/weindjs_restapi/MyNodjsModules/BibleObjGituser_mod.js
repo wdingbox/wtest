@@ -826,19 +826,19 @@ BibleObjGituser.prototype.parse_inp = function (inp) {
     this.proj_parse_usr_final_check()
     return inp
 }
-BibleObjGituser.prototype.session_ssid_compose = function () {
-    var sesid = "", owner = ""
-    if (this.m_inp.usr && this.m_inp.usr_proj) {
-        sesid = "SSID" + (new Date()).getTime()
-        owner = this.m_inp.usr_proj.ownerstr
-    } else {
-        var sid = this.m_inp.SSID
-        var pos = ssid.indexOf("_")
-        sesid = sid.substr(0, pos)
-        owner = sid.substr(pos)
-    }
-    return { SSID: sesid + owner, sesid: sesid, owner: owner }
-}
+//BibleObjGituser.prototype.session_ssid_compose = function () {
+//    var sesid = "", owner = ""
+//    if (this.m_inp.usr && this.m_inp.usr_proj) {
+//        sesid = "SSID" + (new Date()).getTime()
+//        owner = this.m_inp.usr_proj.ownerstr
+//    } else {
+//        var sid = this.m_inp.SSID
+//        var pos = ssid.indexOf("_")
+//        sesid = sid.substr(0, pos)
+//        owner = sid.substr(pos)
+//    }
+//    return { SSID: sesid + owner, sesid: sesid, owner: owner }
+//}
 BibleObjGituser.prototype.session_get_github_owner = function (docfile) {
     //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js
     var ary = docfile.split("/")
