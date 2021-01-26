@@ -146,7 +146,7 @@ RunAjax_Type_Post : function(cbf){
             //alert("textStatus="+textStatus);
         });
 },
-RunJsonP_Signin : function (cbf) {
+RunAjaxPost_Signin : function (cbf) {
     this.RunAjax_Type_Post_Signin (cbf)
     
 },
@@ -508,8 +508,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
-    ApiUsrReposData_Signin_Post: async function (req, res) {
-        console.log("ApiUsrReposData_create")
+    UsrReposPost_Signin: async function (req, res) {
+        console.log("UsrReposPost_Signin")
         if (!req || !res) {
             return inp_struct_account_setup
         }

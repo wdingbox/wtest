@@ -2859,41 +2859,11 @@ var PageUti = {
         $(showid).slideUp("fast")
         $(showid).slideDown("slow")
     },
-    repo_create____: function (bSginIn) {
-        $("#otb").html("<font color='black'>Start to sign in ... </font>")
-
-        var repopath = $("#repopath").val()
-        var reo = Uti.validate_repository_url(repopath)
-        if (!reo) {
-            $("#otb").html("<font color='red'>Error format: Repository</font>")
-            return;
-        }
-
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.ApiUsrReposData_create.str
-        Uti.Msg("Jsonpster", Jsonpster)
-        Jsonpster.Run(function (ret) {
-            Uti.Msg("ret.out.state", ret.out.state)
-            if (ret.out.state) {
-                var ssid = ret.out.state.SSID
-                if (ssid && ssid.length > 1) {
-                    MyStorage.SSID(ssid)
-                    $("#otb").html("<font color='green'>Success</font>")
-                    if (bSginIn) {
-                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-                    } else {
-                        $("#txtarea").show()
-                    }
-                } else {
-                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
-                }
-            } else {
-                $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
-            }
-        })
+    
+    repo_create: function (bNewWin) {
+       
     },
-    repo_create: function (bSginIn) {
+    repo_Signin: function (bNewWin) {
         $("#otb").html("<font color='black'>Start to sign in ... </font>")
 
         var repopath = $("#repopath").val()
@@ -2905,50 +2875,16 @@ var PageUti = {
 
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
         Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.ApiUsrReposData_create.str
+        Jsonpster.api = RestApi.UsrReposPost_Signin.str
         Uti.Msg("Jsonpster", Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost_Signin(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
             if (ret.out.state) {
                 var ssid = ret.out.state.SSID
                 if (ssid && ssid.length > 1) {
                     MyStorage.SSID(ssid)
                     $("#otb").html("<font color='green'>Success</font>")
-                    if (bSginIn) {
-                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-                    } else {
-                        $("#txtarea").show()
-                    }
-                } else {
-                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
-                }
-            } else {
-                $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
-            }
-        })
-    },
-    repo_Signin: function (bSginIn) {
-        $("#otb").html("<font color='black'>Start to sign in ... </font>")
-
-        var repopath = $("#repopath").val()
-        var reo = Uti.validate_repository_url(repopath)
-        if (!reo) {
-            $("#otb").html("<font color='red'>Error format: Repository</font>")
-            return;
-        }
-
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.ApiUsrReposData_Signin_Post.str
-        Uti.Msg("Jsonpster", Jsonpster)
-        Jsonpster.RunJsonP_Signin(function (ret) {
-            Uti.Msg("ret.out.state", ret.out.state)
-            if (ret.out.state) {
-                var ssid = ret.out.state.SSID
-                if (ssid && ssid.length > 1) {
-                    MyStorage.SSID(ssid)
-                    $("#otb").html("<font color='green'>Success</font>")
-                    if (bSginIn) {
+                    if (bNewWin) {
                         window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
                     } else {
                         $("#txtarea").show()
