@@ -1908,33 +1908,48 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     Uti.visual_check_repository("#Format_Check")
 
     $("#account_set").bind("click", function () {
-        $("#account_set_info").text($(this).text() + "...").show()
 
-        Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.ApiUsrReposData_create.str
-        Uti.Msg("repository", Jsonpster)
-        Jsonpster.Run(function (ret) {
-            Uti.Msg("ret.out.state", ret.out.state)
+        // PageUti.repo_Signin("#account_set_info", function (ret) {
+        //     if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length>1) {
+        //         Uti.set_menuContainer_color(ret)
+        //     } else {
+        //         $("#txtarea").show()
+        //     }
+        // })
 
-            var sta = ret.out.state
-            var msg = "<font color='red'>Invalid Repository</font>"
-            if (sta) {
-                var ssid = ret.out.state.SSID
-                if (ssid && ssid.length > 1) {
-                    MyStorage.SSID(ssid)
-                    Uti.set_menuContainer_color(ret)
-                }
-                var colr = (1 === sta.bEditable) ? "lightgreen" : "red"
-                var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
+        //$("#account_set_info").text($(this).text() + "...").show()
+//
+        //var repopath = $("#repopath").val()
+        //var reo = Uti.validate_repository_url(repopath)
+        //if (!reo) {
+        //    $("#account_set_info").html("<font color='red'>Error format: Repository</font>")
+        //    return;
+        //}
+        //Jsonpster.inp.usr = null;//MyStorage.Repositories().repos_app_update()
+        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        // Jsonpster.api = RestApi.ApiUsrReposData_status.str
+        // Uti.Msg("repository", Jsonpster)
+        // Jsonpster.Run(function (ret) {
+        //     Uti.Msg("ret.out.state", ret.out.state)
+        //     var sta = ret.out.state
+        //     var msg = "<font color='red'>Invalid Repository</font>"
+        //     if (ret.out.state) {
+        //         var ssid = ret.out.state.SSID_cur
+        //         if (ssid && ssid.length > 1) {
+        //             //MyStorage.SSID(ssid)
+        //             /////
+        //             ///Uti.set_menuContainer_color(ret)
+        //         }
+        //         var colr = (1 === sta.bEditable) ? "lightgreen" : "red"
+        //         var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
+        //         var colr = (1 === sta.bRepositable) ? "lightgreen" : "yellow"
+        //         msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+        //     }
+        //     $("#account_set_info").html(msg).show()
+        // })
 
-                var colr = (1 === sta.bRepositable) ? "lightgreen" : "yellow"
-                msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+        PageUti.repo_status("#account_set_info")
 
-            }
-
-            $("#account_set_info").html(msg).show()
-        })
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
@@ -1948,15 +1963,16 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.SSID("")
         })
     })
-    $("#repopath").bind("focus", function () {
-        PageUti.Repositories_History("#outConfig", 1)
-    })
-    $("#repodesc").bind("focus", function () {
-        PageUti.Repositories_History("#outConfig", 2)
-    })
-    $("#passcode").bind("focus", function () {
-        PageUti.Repositories_History("#outConfig", -1)
-    })
+    //  Readonly now.
+    //  $("#repopath").bind("focus", function () {
+    //      PageUti.Repositories_History("#outConfig", 1)
+    //  })
+    //  $("#repodesc").bind("focus", function () {
+    //      PageUti.Repositories_History("#outConfig", 2)
+    //  })
+    //  $("#passcode").bind("focus", function () {
+    //      PageUti.Repositories_History("#outConfig", -1)
+    //  })
 
     $("#passcode_toggler").bind("click", function () {
         var tx = $("#passcode").attr("type")
@@ -2866,13 +2882,13 @@ var PageUti = {
     repo_create: function (bNewWin) {
 
     },
-    repo_Signin: function (bNewWin) {
-        $("#otb").html("<font color='black'>Start to sign in ... </font>")
+    repo_Signin: function (showid, cbf) {
+        $(showid).html("<font color='black'>Start to sign in ... </font>")
 
         var repopath = $("#repopath").val()
         var reo = Uti.validate_repository_url(repopath)
         if (!reo) {
-            $("#otb").html("<font color='red'>Error format: Repository</font>")
+            $(showid).html("<font color='red'>Error format: Repository</font>")
             return;
         }
 
@@ -2882,22 +2898,21 @@ var PageUti = {
         Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.RunAjaxPost_Signin(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
+
             if (ret.out.state) {
                 var ssid = ret.out.state.SSID
                 if (ssid && ssid.length > 1) {
                     MyStorage.SSID(ssid)
-                    $("#otb").html("<font color='green'>Success</font>")
-                    if (bNewWin) {
-                        window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
-                    } else {
-                        $("#txtarea").show()
-                    }
+
+                    $(showid).html("<font color='green'>Success</font>")
+
                 } else {
-                    $("#otb").html("<font color='red'>Error: Wrong Repository or Password</font>")
+                    $(showid).html("<font color='red'>Error: Wrong Repository or Password</font>")
                 }
             } else {
-                $("#otb").html("<font color='red'>Error: Wrong Repository</font>")
+                $(showid).html("<font color='red'>Error: Wrong Repository</font>")
             }
+            if (cbf) cbf(ret)
         })
     },
     repo_destroy: function (bForce) {
@@ -2917,31 +2932,30 @@ var PageUti = {
             MyStorage.SSID("")
         })
     },
-    repo_status: function (bForce) {
-        if (bForce) {
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
-        } else {
-            //Jsonpster.inp.SSID = MyStorage.SSID()
-        }
-
+    repo_status: function (showid) {
+        $(showid).html("<font>start checking...</font>")
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.Run(function (ret) {
+            Uti.Msg("ret.out.state", ret.out.state)
 
-            $("#otb").html("<font color='green'>ok.</font>")
-            PageUti.repos_status_display(ret, "#otb")
-            Uti.Msg("Status inp.ret.out=", ret.out)
+            $(showid).html("<font color='green'>ok.</font>")
+            PageUti.repos_status_display(ret, showid)
         })
     },
     repos_status_display: function (ret, eid) {
         var sta = ret.out.state
         var msg = "<font color='red'>Invalid Repository</font>"
         if (sta) {
+            
             var colr = (sta && 1 === sta.bEditable) ? "lightgreen" : "red"
             var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
 
             var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
+            if(1 === sta.bEditable * sta.bRepositable){
+                msg = "<font color='lightgreen'> Repository works normally</font>"
+            }
         }
 
         $(eid).html(msg).show()
@@ -3958,22 +3972,22 @@ var BibleInputMenuContainer = `
                     
                     </div>
                     <br>
-                    <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' ></textarea>
+                    <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' readonly></textarea>
                     <br>
                     <a id="respdesc_history">Specification</a>: 
                     <span id="repository_description">
                     <a id="account_date">(optional)</a> 
                     </span>
                     <br>
-                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
+                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' readonly>JourneyGroup</textarea>
                     <br>
                     <a id="passcode_toggler">Password:</a> 
                     <span id="repository_description">
                     <a></a> 
                     </span><br>
-                    <input id="passcode" type="password" value=''></input><a onclick="$('#passcode').val('')">[x]</a><br>
+                    <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a><br>
                     
-                    <button id="account_set">Dock</button>
+                    <button id="account_set">CheckStatus</button>
                     <a id="account_set_info"></a>
                     </td>
                     

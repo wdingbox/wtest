@@ -677,3 +677,7 @@ input[title='NIV']:checked:after {
     padding: 1px 1px 1px 1px;
     margin: 1px 1px 1px 1px;
 }
+
+input[readonly], textarea[readonly]{
+    background-color: lightgray;
+}

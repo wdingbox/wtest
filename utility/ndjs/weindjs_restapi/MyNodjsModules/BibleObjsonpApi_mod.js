@@ -439,7 +439,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     ///////////////////////////////////
 
 
-    ApiUsrReposData_create: async function (req, res) {
+    ApiUsrReposData_create___test_only: async function (req, res) {
         console.log("ApiUsrReposData_create")
         if (!req || !res) {
             return inp_struct_account_setup
