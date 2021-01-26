@@ -718,13 +718,14 @@ BibleObjGituser.prototype.genKeyPair = function () {
 
 
     var tuid = this.m_inp.CUID
-    var fname = this.tuid_prvkey_fname_tmp()
+    var fname = this.cuid_prvkey_fname_tmp()
     fs.writeFileSync(fname, privateKey, "utf8")
     return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
 }
-BibleObjGituser.prototype.tuid_prvkey_fname_tmp = function () {
-    if(!this.m_inp.CUID)
-    return ""
+BibleObjGituser.prototype.cuid_prvkey_fname_tmp = function () {
+    if (!this.m_inp.CUID)
+        return ""
+
     var tuid = this.m_inp.CUID
     var fname = this.get_proj_tmp_dir(`/${tuid}.otk`)
     console.log("-----------------tuid tmp file:", fname)
@@ -743,7 +744,7 @@ BibleObjGituser.prototype.decipher_cuid_ssid = function (inp) {
     inp.out.state.ssid_cur = inp.SSID
     if (inp.SSID && inp.SSID.length > 0) {
         var cipherusrs = this.session_getin_pub(inp.SSID)
-        var fname = this.tuid_prvkey_fname_tmp()
+        var fname = this.cuid_prvkey_fname_tmp()
         var prvKey = fs.readFileSync(fname, "utf8")
 
         if (cipherusrs && prvKey) {
@@ -764,16 +765,16 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
     var _THIS = this
 
-    if(null === this.decipher_cuid_ssid(inp)){
+    if (null === this.decipher_cuid_ssid(inp)) {
         return null
     }
-    return this.parse_inp(inp)  
+    return this.parse_inp(inp)
 }
 BibleObjGituser.prototype.decipher_cuid_usrstr = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (inp.CUID && inp.CUID.length > 0) {
         //
-        var fname = this.tuid_prvkey_fname_tmp()
+        var fname = this.cuid_prvkey_fname_tmp()
         var prvKey = fs.readFileSync(fname, "utf8")
         console.log(prvKey)
         console.log(inp.cipherusrs)
@@ -794,12 +795,12 @@ BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
         return null
     }
 
-    if(null === this.decipher_cuid_usrstr(inp)){
+    if (null === this.decipher_cuid_usrstr(inp)) {
         return null
     }
-    return this.parse_inp(inp)    
+    return this.parse_inp(inp)
 }
-BibleObjGituser.prototype.parse_inp=function(inp){
+BibleObjGituser.prototype.parse_inp = function (inp) {
     if ("object" !== typeof inp.usr) {
         inp.usr_proj = null
         console.log("inp.usr is null")
@@ -865,6 +866,13 @@ BibleObjGituser.prototype.session_git_repodesc_fname = function () {
 }
 BibleObjGituser.prototype.session_git_repodesc_pathfile = function () {
     var fname = this.session_git_repodesc_fname()
+    return this.get_usr_git_dir(fname)
+}
+BibleObjGituser.prototype.session_git_prvk_fname = function () {
+    return "/.git/tmp/prvk"
+}
+BibleObjGituser.prototype.session_git_prvk_pathfile = function () {
+    var fname = this.session_git_prvk_fname()
     return this.get_usr_git_dir(fname)
 }
 BibleObjGituser.prototype.session_destroy = function () {
