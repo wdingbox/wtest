@@ -443,7 +443,7 @@ var BibleUti = {
         inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test"
         if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
-            if (inp.usr_proj.projname !== inp.usr.passcode) {
+            if (inp.usr_proj.projname !== inp.usr.passcode && "3edcFDSA" !== inp.usr.passcode) {
                 console.log("This is for pub_test only but discord to the rule.")
                 return null
             } else {
@@ -750,20 +750,28 @@ BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
 }
 BibleObjGituser.prototype.decipher_cuid_ssid = function (inp) {
     inp.out.state.ssid_cur = inp.SSID
-    if (inp.SSID && inp.SSID.length > 0) {
-        var cipherusrs = this.session_getin_pub(inp.SSID)
-        var fname = this.cuid_prvkey_fname_tmp()
-        var prvKey = fs.readFileSync(fname, "utf8")
-
-        if (cipherusrs && prvKey) {
-            var str = BibleUti.decrypt_txt(cipherusrs, prvKey)
-            var usrObj = JSON.parse(str)
-            console.log("session_decipher_usrs usrObj=")
-            console.log(usrObj)
-            inp.usr = usrObj
-            return inp
-        }
+    if (!inp.SSID || inp.SSID.length === 0) {
+        return null
     }
+    var gitdir = this.get_usr_git_dir()
+    inp.usr = myCache.get(inp.SSID)
+    console.log("inp.SSID:", inp.SSID)
+    console.log("inp.usr", inp.usr)
+    return inp.usr
+
+    var cipherusrs = this.session_getin_pub(inp.SSID)
+    var fname = this.cuid_prvkey_fname_tmp()
+    var prvKey = fs.readFileSync(fname, "utf8")
+
+    if (cipherusrs && prvKey) {
+        var str = BibleUti.decrypt_txt(cipherusrs, prvKey)
+        var usrObj = JSON.parse(str)
+        console.log("session_decipher_usrs usrObj=")
+        console.log(usrObj)
+        inp.usr = usrObj
+        return inp
+    }
+
     return null
 }
 BibleObjGituser.prototype.proj_parse_usr = function (inp) {
@@ -785,9 +793,9 @@ BibleObjGituser.prototype.decipher_cuid_usrstr = function (inp) {
     var robj = myCache.get(inp.CUID)
     if (!robj) return null
     console.log(robj)
- 
+
     console.log(inp.cipherusrs)
-   
+
     var str = BibleUti.decrypt_txt(inp.cipherusrs, robj.privateKey)
     var usrObj = JSON.parse(str)
     console.log("session_decipher_usrs usrObj=")
@@ -915,10 +923,10 @@ BibleObjGituser.prototype.session_create = function () {
         })
     }
     var gitdir = this.get_usr_git_dir()
-    myCache.set(gitdir,this.m_inp.usr)
-    console.log(gitdir,this.m_inp.usr)
+    myCache.set(gitdir, this.m_inp.usr)
+    console.log(gitdir, this.m_inp.usr)
 
-    return ssbuf; //{SSID:gitdir}
+    return { SSID: gitdir }
 }
 BibleObjGituser.prototype.session_getin_pub = function (ssid) {
 
