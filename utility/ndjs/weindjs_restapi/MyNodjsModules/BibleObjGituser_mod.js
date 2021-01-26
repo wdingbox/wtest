@@ -13,10 +13,12 @@ const execSync = require('child_process').execSync;
 //var btoa = require('btoa');
 const crypto = require('crypto')
 
-const NodeCache = require( "node-cache" );
+const NodeCache = require("node-cache");
 const myCache = new NodeCache();
 
-
+myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 })
+var obj = myCache.get("tuid")
+console.log(obj)
 
 var BibleUti = {
     GetFilesAryFromDir: function (startPath, deep, cb) {//startPath, filter
@@ -778,21 +780,21 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
 }
 BibleObjGituser.prototype.decipher_cuid_usrstr = function (inp) {
     console.log("inp.CUID", inp.CUID)
-    if (inp.CUID && inp.CUID.length > 0) {
-        //
-        var fname = this.cuid_prvkey_fname_tmp()
-        var prvKey = fs.readFileSync(fname, "utf8")
-        console.log(prvKey)
-        console.log(inp.cipherusrs)
-        console.log(inp)
-        var str = BibleUti.decrypt_txt(inp.cipherusrs, prvKey)
-        var usrObj = JSON.parse(str)
-        console.log("session_decipher_usrs usrObj=")
-        console.log(usrObj)
-        inp.usr = usrObj
-        return inp
-    }
-    return null
+    if (!inp.CUID || inp.CUID.length === 0) return null
+    console.log("inp.CUID", inp.CUID)
+    var robj = myCache.get(inp.CUID)
+    if (!robj) return null
+    console.log(robj)
+ 
+    console.log(inp.cipherusrs)
+   
+    var str = BibleUti.decrypt_txt(inp.cipherusrs, robj.privateKey)
+    var usrObj = JSON.parse(str)
+    console.log("session_decipher_usrs usrObj=")
+    console.log(usrObj)
+    inp.usr = usrObj
+    return inp
+
 }
 BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
     this.m_inp = inp
