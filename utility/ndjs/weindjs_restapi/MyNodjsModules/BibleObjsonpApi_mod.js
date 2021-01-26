@@ -147,15 +147,11 @@ RunAjax_Type_Post : function(cbf){
         });
 },
 RunAjaxPost_Signin : function (cbf) {
-    this.RunAjax_Type_Post_Signin (cbf)
-    
-},
-RunAjax_Type_Post_Signin : function(cbf){
+
     this.inp.SSID = null
     if (!this.inp.CUID) return alert("missing CUID.")
     if (this.pkbs.length === 0)return alert("no pubkey.")
-
-    var surl = "http://${res.req.headers.host}/" + this.api
+    
     var usrs = JSON.stringify(this.inp.usr)
     if (usrs.length > 500){return alert("max 4096-bit key up to 501 bytes.len="+usrs.length)}
 
@@ -171,6 +167,10 @@ RunAjax_Type_Post_Signin : function(cbf){
     console.log("Jsonpster")
     console.log(Jsonpster)
 
+    this.RunAjax_Type_Post_Signin (cbf)
+},
+RunAjax_Type_Post_Signin : function(cbf){
+    var surl = "http://${res.req.headers.host}/" + this.api
     this.inp.api = this.api
     $.ajax({
         type: "POST",
