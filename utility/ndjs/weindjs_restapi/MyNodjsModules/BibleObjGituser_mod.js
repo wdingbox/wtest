@@ -13,6 +13,9 @@ const execSync = require('child_process').execSync;
 //var btoa = require('btoa');
 const crypto = require('crypto')
 
+const NodeCache = require( "node-cache" );
+const myCache = new NodeCache();
+
 
 
 var BibleUti = {
@@ -699,6 +702,7 @@ var BibleObjGituser = function (rootDir) {
     this.m_SvrUsrsBCV = new SvrUsrsBCV()
     this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
 
+    this.m_Cache = myCache;
 }
 BibleObjGituser.prototype.genKeyPair = function () {
     if (!this.m_inp || !this.m_inp.CUID) return
