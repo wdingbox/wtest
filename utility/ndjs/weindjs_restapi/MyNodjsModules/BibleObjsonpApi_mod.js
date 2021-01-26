@@ -68,26 +68,7 @@ var Jsonpster = {
     api: "",
     inp: ${structall},
     pkbs:"${pkbs}",
-encrypt_usr: function(){
-    if(this.pkbs.length > 0){
-        var encrypt = new JSEncrypt();
-        encrypt.setPublicKey(atob(this.pkbs));
-        var txt = JSON.stringify(this.inp)
-        if(txt.length>500){
-            alert("max 4096-bit key up to 501 bytes")
-        }
-        var encrypted = encrypt.encrypt(txt);
-        //alert(encrypted.length)
-        return encrypted
-        alert(txt)
-        alert(txt.length)
-        var txt2 = encodeURIComponent(txt)
-        alert(txt2)
-        alert(txt2.length)
-        var msg = btoa(txt2)
-        alert(msg.length)
-    }
-},
+
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + btoa(encodeURIComponent(JSON.stringify(this.inp))) ;
     return this.m_src;
@@ -97,9 +78,8 @@ Response : function(dat, sid){
     this.m_cbf(dat)
 },
 Run : function (cbf) {
-    this.encrypt_usr()
     this.RunJsonP(cbf)
-    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
+    this.api = this.inp.par = this.inp.usr = null;
 },
 RunJsonP : function (cbf) {
     if (!cbf) alert('callback m_cbf null');
@@ -112,47 +92,16 @@ RunJsonP : function (cbf) {
     console.log('Jsonpster:', Jsonpster);
 },
 RunAjaxPost : function(cbf){
-    this.encrypt_usr()
-    this.RunAjax_Type_Post (cbf)
-    this.api = this.inp.par = this.inp.usr = this.inp.SSID = null;
-},
-RunAjax_Type_Post : function(cbf){
-    var surl = "http://${res.req.headers.host}/" + this.api
-    var inpd = JSON.stringify(this.inp)
-    $.ajax({
-        type: "POST",
-        dataType: 'text',
-        contentType: "application/json; charset=utf-8",
-        url: surl,
-        data: inpd,
-        username: 'user',
-        password: 'pass',
-        crossDomain : true,
-        xhrFields: {
-            withCredentials: false
-        }
-    })
-        .success(function( data ) {
-            //console.log("success",data);
-            //cbf(JSON.parse(data))
-        })
-        .done(function( data ) {
-            //console.log("done",data);
-            cbf(JSON.parse(data))
-        })
-        .fail( function(xhr, textStatus, errorThrown) {
-            console.log("surl",surl)
-            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
-            //alert("textStatus="+textStatus);
-        });
+    this.RunAjax_PostTxt (cbf)
 },
 RunAjaxPost_Signin : function (cbf) {
     this.inp.SSID = null
     if (!this.inp.CUID) return alert("missing CUID.")
-    if (this.pkbs.length === 0)return alert("no pubkey.")
+    if ('object' != typeof this.inp.usr)return alert("missing usr.")
+    if (this.pkbs.length === 0)return alert("no pubkey. Please load page again.")
     
     var usrs = JSON.stringify(this.inp.usr)
-    if (usrs.length > 500){return alert("max 4096-bit key up to 501 bytes.len="+usrs.length)}
+    if (usrs.length > 500){return alert("max 4096-bit rsa: 501B. len="+usrs.length)}
 
     //alert(this.inp.usr)
     var encrypt = new JSEncrypt();
@@ -165,9 +114,9 @@ RunAjaxPost_Signin : function (cbf) {
     console.log("Jsonpster")
     console.log(Jsonpster)
 
-    this.RunAjax_Type_Post_Signin (cbf)
+    this.RunAjax_PostTxt (cbf)
 },
-RunAjax_Type_Post_Signin : function(cbf){
+RunAjax_PostTxt : function(cbf){
     var surl = "http://${res.req.headers.host}/" + this.api
     this.inp.api = this.api
     $.ajax({
