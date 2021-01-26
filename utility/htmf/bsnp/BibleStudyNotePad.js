@@ -2706,7 +2706,6 @@ OutputBibleTable.prototype.get_matched_txt = function (txt) {
         })
     }
     return txt
-
 }
 OutputBibleTable.prototype.create_htm_table_str = function () {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
