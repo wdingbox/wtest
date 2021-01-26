@@ -892,7 +892,7 @@ BibleObjGituser.prototype.session_destroy = function () {
     BibleUti.execSync_Cmd(`rm -f ${pub_old_ssid}`)
 }
 BibleObjGituser.prototype.session_create = function () {
-    this.session_destroy()
+    //this.session_destroy()
 
     var ssbuf = this.session_ssid_compose()
 
@@ -914,8 +914,11 @@ BibleObjGituser.prototype.session_create = function () {
             console.log("\n\n***save err", err)
         })
     }
+    var gitdir = this.get_usr_git_dir()
+    myCache.set(gitdir,this.m_inp.usr)
+    console.log(gitdir,this.m_inp.usr)
 
-    return ssbuf
+    return ssbuf; //{SSID:gitdir}
 }
 BibleObjGituser.prototype.session_getin_pub = function (ssid) {
 
