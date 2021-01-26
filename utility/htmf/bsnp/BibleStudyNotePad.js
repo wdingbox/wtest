@@ -28,7 +28,7 @@ var MyStorage = {
 
         var txt = JSON.stringify({ "#MemoryVerse": ary }, null, 4)
         console.log(txt)
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //if (!Jsonpster.inp.usr) return alert("user is not set yet.")
 
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
@@ -40,7 +40,9 @@ var MyStorage = {
         })
     },
     Repo_load: function (cbf) {
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        if (!Jsonpster.inp.SSID) {//only need load once for all.
+            Jsonpster.inp.SSID = MyStorage.SSID()
+        }
         if (!Jsonpster.inp.SSID) return alert("inp.ssid is not set yet:" + Jsonpster.inp.SSID)
 
 
@@ -567,7 +569,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
-        pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
+        //pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
@@ -599,7 +601,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             Uti.Msg("No save")
             return
         }
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         Jsonpster.inp.par = par
@@ -619,7 +621,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         //Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: psr.bcvObj } //old
         //Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
 
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
@@ -1935,7 +1937,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $("#account_destroy").bind("click", function () {
         $("#account_set_info").text($(this).text())
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("repository", Jsonpster)
@@ -1984,7 +1986,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $(".StorageRepo_Signout").bind("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.Run(function (ret) {
@@ -2318,7 +2320,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
         return alert("null oj")
     }
 
-    Jsonpster.inp.SSID = MyStorage.SSID()
+    //Jsonpster.inp.SSID = MyStorage.SSID()
     //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
@@ -2350,7 +2352,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
-    Jsonpster.inp.SSID = MyStorage.SSID()
+    //Jsonpster.inp.SSID = MyStorage.SSID()
     //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
@@ -2414,7 +2416,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         gen_search_strn_history()
         document.g_NextIndex = -1
 
-        Jsonpster.inp.SSID = MyStorage.SSID()
+        //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
         Jsonpster.inp.par = g_aim.get_search_inp();
@@ -2859,9 +2861,9 @@ var PageUti = {
         $(showid).slideUp("fast")
         $(showid).slideDown("slow")
     },
-    
+
     repo_create: function (bNewWin) {
-       
+
     },
     repo_Signin: function (bNewWin) {
         $("#otb").html("<font color='black'>Start to sign in ... </font>")
@@ -2902,7 +2904,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            Jsonpster.inp.SSID = MyStorage.SSID()
+            //Jsonpster.inp.SSID = MyStorage.SSID()
         }
 
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
@@ -2918,7 +2920,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            Jsonpster.inp.SSID = MyStorage.SSID()
+            //Jsonpster.inp.SSID = MyStorage.SSID()
         }
 
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
@@ -2951,7 +2953,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            Jsonpster.inp.SSID = MyStorage.SSID()
+            //Jsonpster.inp.SSID = MyStorage.SSID()
         }
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
@@ -2977,7 +2979,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            Jsonpster.inp.SSID = MyStorage.SSID()
+            //Jsonpster.inp.SSID = MyStorage.SSID()
         }
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
@@ -3026,7 +3028,7 @@ var PageUti = {
             var cmd = $(this).text()
             console.log(cmd)
 
-            Jsonpster.inp.SSID = MyStorage.SSID()
+            //Jsonpster.inp.SSID = MyStorage.SSID()
             //Jsonpster.inp.CUID = MyStorage.GenCUID()
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str

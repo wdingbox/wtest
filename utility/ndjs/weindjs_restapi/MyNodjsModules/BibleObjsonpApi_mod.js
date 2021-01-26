@@ -92,6 +92,8 @@ RunJsonP : function (cbf) {
     console.log('Jsonpster:', Jsonpster);
 },
 RunAjaxPost : function(cbf){
+    if(this.inp.SSID === null) return alert("lost inp.SSID")
+    if(!this.inp.usr) return alert("miissing inp.usr")
     this.RunAjax_PostTxt (cbf)
 },
 RunAjaxPost_Signin : function (cbf) {
