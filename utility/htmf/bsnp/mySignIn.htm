@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script>
 
     <script src="https://bsnp21.github.io/home/js/quotestr.js"></script>
-    <script src="https://bsnp21.github.io/home/css/index.css"></script>
+    <link rel="stylesheet" href="https://bsnp21.github.io/home/css/index.css"></link>
 
 
     <link rel="stylesheet" xxhref="./BibleStudyNotePad.css?v=2020dec21b">
@@ -106,6 +106,7 @@
 </head>
 
 <body>
+
     <h2 style="text-align: center;margin-top: 50px;"><a href="https://bsnp21.github.io/home/">Bible Study Note Pad</a>
     </h2>
     <p class='centeredtxt' onclick="$('#QuotesContainer').toggle('slow')">(to make your study notes on any verse)</p>
@@ -324,7 +325,7 @@
     $(function () {
         $("#QuotesContainer").html(quotestr)
 
-        
+
         $("#txtarea").hide()
         $("#toggle_txtarea").on("click", function () {
             $("#txtarea").toggle()
