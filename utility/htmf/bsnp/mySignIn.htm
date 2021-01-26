@@ -7,6 +7,9 @@
     <META name="viewport" content="width=device-witdh, initial-scale=1, maximum-scale=1, user-scale=0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js"></script>
 
+    <script src="https://bsnp21.github.io/home/js/quotestr.js"></script>
+    <script src="https://bsnp21.github.io/home/css/index.css"></script>
+
 
     <link rel="stylesheet" xxhref="./BibleStudyNotePad.css?v=2020dec21b">
     </link>
@@ -105,28 +108,12 @@
 <body>
     <h2 style="text-align: center;margin-top: 50px;"><a href="https://bsnp21.github.io/home/">Bible Study Note Pad</a>
     </h2>
-    <p class='centeredtxt' onclick="$('#quotezone').toggle('slow')">(to make your study notes on any verse)</p>
-    <div id="quotezone" style="display: none;">
-        <blockquote class='centeredtxt'>
-            <q>Researching, or studying, the Bible is another practical way to abide in the Word. The difference between
-                reading and studying the Bible involves two additional activities: asking questions of the text and
-                writing down
-                your insight. You haven't really studied the Bible unless you've written your thoughts down on paper or
-                comupter.</q> --Rick Warren (<cite>The Purpose Driven Life</cite>, day24, p187)
-        </blockquote>
+    <p class='centeredtxt' onclick="$('#QuotesContainer').toggle('slow')">(to make your study notes on any verse)</p>
+  
+    <div id="QuotesContainer" style="display: none;"></div>
 
-        <blockquote class='centeredtxt'>
-            <q>The best way to become a 'doer of the Word' is to always write out an action step as a result of your
-                reading or
-                studying or reflecting on God's Word. Develop the habit of writing down exactly what you intend to
-                do.</q> --Rick
-            Warren (<cite>The Purpose Driven Life</cite>, day24, p190)
-        </blockquote>
+        
 
-        <blockquote class='centeredtxt'>
-            <q>The Bible was not given to increase our knowledge but to change our lives.</q> -- D.L. Moody
-        </blockquote>
-    </div>
 
 
 
@@ -335,6 +322,9 @@
 </html>
 <script>
     $(function () {
+        $("#QuotesContainer").html(quotestr)
+
+        
         $("#txtarea").hide()
         $("#toggle_txtarea").on("click", function () {
             $("#txtarea").toggle()
