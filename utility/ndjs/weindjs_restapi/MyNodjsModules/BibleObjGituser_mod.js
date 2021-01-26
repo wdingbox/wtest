@@ -724,6 +724,8 @@ BibleObjGituser.prototype.genKeyPair = function () {
     var tuid = this.m_inp.CUID
     var fname = this.cuid_prvkey_fname_tmp()
     fs.writeFileSync(fname, privateKey, "utf8")
+
+    myCache.set(tuid, { publicKey: publicKey, privateKey: privateKey, CUID: tuid })
     return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
 }
 BibleObjGituser.prototype.cuid_prvkey_fname_tmp = function () {
