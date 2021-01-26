@@ -495,7 +495,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             userProject.proj_setup()
 
             if (inp.out.state.bEditable === 1) {
-                inp.out.state.SSID = userProject.session_name_gen().SSID
+                inp.out.state.SSID = userProject.session_create().SSID
             }
         }
 
@@ -521,7 +521,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var stat = userProject.proj_setup()
             if (inp.out.state.bEditable === 1) {
-                inp.out.state.SSID = userProject.session_name_gen().SSID
+                inp.out.state.SSID = userProject.session_create().SSID
             }
         })
     },

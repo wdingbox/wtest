@@ -546,7 +546,7 @@ var BibleUti = {
         }
 
         var inpObj = {}
-        console.log("req.query.inp=",req.query.inp)
+        console.log("req.query.inp=", req.query.inp)
         if (req.query.inp.match(/^CUID\d+\.\d+$/)) { //SignPageLoaded
             inpObj.CUID = req.query.inp
             return inpObj
@@ -723,9 +723,11 @@ BibleObjGituser.prototype.genKeyPair = function () {
     return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
 }
 BibleObjGituser.prototype.tuid_prvkey_fname_tmp = function () {
+    if(!this.m_inp.CUID)
+    return ""
     var tuid = this.m_inp.CUID
     var fname = this.get_proj_tmp_dir(`/${tuid}.otk`)
-    console.log("-----------------tuid tmp file:",fname)
+    console.log("-----------------tuid tmp file:", fname)
     return fname
 }
 BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
@@ -737,6 +739,24 @@ BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
 
     inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 }
+BibleObjGituser.prototype.decipher_cuid_ssid = function (inp) {
+    inp.out.state.ssid_cur = inp.SSID
+    if (inp.SSID && inp.SSID.length > 0) {
+        var cipherusrs = this.session_getin_pub(inp.SSID)
+        var fname = this.tuid_prvkey_fname_tmp()
+        var prvKey = fs.readFileSync(fname, "utf8")
+
+        if (cipherusrs && prvKey) {
+            var str = BibleUti.decrypt_txt(cipherusrs, prvKey)
+            var usrObj = JSON.parse(str)
+            console.log("session_decipher_usrs usrObj=")
+            console.log(usrObj)
+            inp.usr = usrObj
+            return inp
+        }
+    }
+    return null
+}
 BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
@@ -744,89 +764,61 @@ BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     }
     var _THIS = this
 
-    this.m_orig_usr_sess = JSON.stringify(inp.usr)
-
-
-    inp.out.state.ssid_cur = inp.SSID
-    if (inp.SSID && inp.SSID.length > 0) {
-        var sess = this.session_getin_pub(inp.SSID)
-        if (sess) {
-            inp.usr = sess.usr
-            console.log("\n-sess", sess)
-        }
-    }
-    if ("object" !== typeof inp.usr) {
-        inp.usr_proj = null
+    if(null === this.decipher_cuid_ssid(inp)){
         return null
     }
-
-
-    inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
-    if (!inp.usr_proj) {
-        inp.out.desc = "invalid repospath."
-        return null;
-    }
-    BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
-
-
-    if (null === BibleUti._check_pub_testing(inp)) {
-        inp.out.desc = "failed pub test."
-        inp.usr_proj = null
-        return null
-    }
-    this.proj_parse_usr_final_check()
-    return inp
+    return this.parse_inp(inp)  
 }
-BibleObjGituser.prototype.session_decipher_usrs = function () {
-    var inp = this.m_inp
-    if (!inp || !inp.CUID) {
-        return null
+BibleObjGituser.prototype.decipher_cuid_usrstr = function (inp) {
+    console.log("inp.CUID", inp.CUID)
+    if (inp.CUID && inp.CUID.length > 0) {
+        //
+        var fname = this.tuid_prvkey_fname_tmp()
+        var prvKey = fs.readFileSync(fname, "utf8")
+        console.log(prvKey)
+        console.log(inp.cipherusrs)
+        console.log(inp)
+        var str = BibleUti.decrypt_txt(inp.cipherusrs, prvKey)
+        var usrObj = JSON.parse(str)
+        console.log("session_decipher_usrs usrObj=")
+        console.log(usrObj)
+        inp.usr = usrObj
+        return inp
     }
-    var fname = this.tuid_prvkey_fname_tmp()
-    var prvKey = fs.readFileSync(fname, "utf8")
-    console.log(prvKey)
-    console.log(inp.cipherusrs)
-    console.log(inp)
-    var str = BibleUti.decrypt_txt(inp.cipherusrs, prvKey)
-    var usrObj = JSON.parse(str)
-    console.log("usrObj=")
-    console.log(usrObj)
-    inp.usr = usrObj
+    return null
 }
 BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
-        console.log("!inp || !inp.out" )
+        console.log("!inp || !inp.out")
         return null
     }
-    var _THIS = this
 
-    this.m_orig_usr_sess = JSON.stringify(inp.usr)
-
-    inp.out.state.ssid_cur = inp.SSID
-    console.log("inp.SSID",inp.SSID )
-    if (inp.CUID && inp.CUID.length > 0) {
-        this.session_decipher_usrs()
+    if(null === this.decipher_cuid_usrstr(inp)){
+        return null
     }
+    return this.parse_inp(inp)    
+}
+BibleObjGituser.prototype.parse_inp=function(inp){
     if ("object" !== typeof inp.usr) {
         inp.usr_proj = null
-        console.log("inp.usr is null" )
+        console.log("inp.usr is null")
         return null
     }
 
     inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
     if (!inp.usr_proj) {
         inp.out.desc = "invalid repospath."
-        console.log(inp.out.desc )
+        console.log(inp.out.desc)
         return null;
     }
-    BibleUti._deplore_usr_proj_dirs(inp.usr_proj, _THIS.m_sBaseUsrs)
+    BibleUti._deplore_usr_proj_dirs(inp.usr_proj, this.m_sBaseUsrs)
 
 
     if (null === BibleUti._check_pub_testing(inp)) {
         inp.out.desc = "failed pub test."
         inp.usr_proj = null
-        console.log(inp.out.desc )
+        console.log(inp.out.desc)
         return null
     }
     this.proj_parse_usr_final_check()
@@ -883,17 +875,17 @@ BibleObjGituser.prototype.session_destroy = function () {
     var pub_old_ssid = this.get_proj_tmp_dir(`/SSID*${sidbuf.owner}`)
     BibleUti.execSync_Cmd(`rm -f ${pub_old_ssid}`)
 }
-BibleObjGituser.prototype.session_name_gen = function () {
+BibleObjGituser.prototype.session_create = function () {
     this.session_destroy()
 
     var ssbuf = this.session_ssid_compose()
 
     var ssfn = this.get_proj_tmp_dir(`/${ssbuf.SSID}`)
     if (ssfn) {
-        var txt = this.m_orig_usr_sess
-        var dat = Buffer.from(txt).toString("base64")
-        console.log("pub session_name_gen:", ssfn, dat)
-        fs.writeFile(ssfn, dat, "utf8", function (err) {
+        var txt = this.m_inp.cipherusrs
+        //var dat = Buffer.from(txt).toString("base64")
+        console.log("pub session_name_gen:", ssfn, txt)
+        fs.writeFile(ssfn, txt, "utf8", function (err) {
             console.log("save err", err)
         })
     }
@@ -917,15 +909,7 @@ BibleObjGituser.prototype.session_getin_pub = function (ssid) {
     console.log("ssfn=", ssfn)
     if (!fs.existsSync(ssfn)) return console.log("not exist:", ssfn)
     var dat = fs.readFileSync(ssfn, "utf8")
-    var txt = Buffer.from(dat, 'base64').toString()
-    var obj = {}
-    try {
-        obj = JSON.parse(txt)
-    } catch (err) {
-        console.log("json parse err", err)
-    }
-    console.log("ssfn.usr=", obj)
-    return { usr: obj, ssfn: ssfn, str: txt }
+    return dat
 }
 BibleObjGituser.prototype.session_getfr_jspfname = function (ssid) {
 
