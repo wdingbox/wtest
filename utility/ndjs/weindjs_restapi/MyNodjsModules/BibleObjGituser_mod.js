@@ -850,17 +850,14 @@ BibleObjGituser.prototype.session_get_github_owner = function (docfile) {
     return owner
 }
 BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
-    var gitfname = this.session_git_repodesc_fname()
     //jspfn: ../../../../bist/usrs/github.com/bsnp21/pub_test01/account/myoj/myNote_json.js
     var pos = docfile.indexOf("/account/")
     var gitpath = docfile.substr(0, pos)
-    var pathfile = gitpath + gitfname
-    console.log("pathfile", pathfile)
-    if (fs.existsSync(pathfile)) {
-        var txt = fs.readFileSync(pathfile, "utf-8")
-        return { repodesc: txt, pathfile: pathfile }
-    }
-    return { repodesc: "", pathfile: pathfile }
+    console.log("gitpath", gitpath)
+    var usrObj = myCache.get(gitpath)
+    if (!usrObj) return null
+    console.log("usrObj", usrObj)
+    return { repodesc: usrObj.repodesc, pathfile: gitpath }
 }
 BibleObjGituser.prototype.session_git_repodesc_fname = function () {
     return "/.git/tmp/repodesc"

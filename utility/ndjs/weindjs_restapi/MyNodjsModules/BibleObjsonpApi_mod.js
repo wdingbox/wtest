@@ -692,6 +692,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             if (docpathfilname === jspfn) continue;
             console.log("*docfname=", jspfn)
             var reposdes = userProject.session_git_repodesc_load(jspfn)
+            if(!reposdes) continue
             console.log("*repodesc=", reposdes.repodesc, inp.usr.repodesc)
             if (reposdes.repodesc === inp.usr.repodesc) {
                 var owner = userProject.session_get_github_owner(jspfn)
