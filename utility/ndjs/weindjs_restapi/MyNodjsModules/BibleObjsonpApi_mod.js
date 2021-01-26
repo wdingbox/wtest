@@ -151,22 +151,27 @@ RunAjaxPost_Signin : function (cbf) {
     
 },
 RunAjax_Type_Post_Signin : function(cbf){
+    this.inp.SSID = null
+    if (!this.inp.CUID) return alert("missing CUID.")
+    if (this.pkbs.length === 0)return alert("no pubkey.")
+
     var surl = "http://${res.req.headers.host}/" + this.api
     var usrs = JSON.stringify(this.inp.usr)
+    if (usrs.length > 500){return alert("max 4096-bit key up to 501 bytes.len="+usrs.length)}
+
     //alert(this.inp.usr)
     var encrypt = new JSEncrypt();
     encrypt.setPublicKey(atob(this.pkbs));
-    if(usrs.length > 500){
-        alert("max 4096-bit key up to 501 bytes.len="+usrs.length)
-    }
-    var encrypted = encrypt.encrypt(usrs);
-    //alert(encrypted.length)
-    this.inp.cipherusrs = encrypted
+    this.inp.cipherusrs = encrypt.encrypt(usrs);
+    this.inp.usr = null
+    
+
+    console.log(this.inp.cipherusrs.length)
     console.log(this.inp)
-    this.inp.api = this.api
-    if(!this.inp.CUID) alert("missing CUID.")
     console.log("Jsonpster")
     console.log(Jsonpster)
+
+    this.inp.api = this.api
     $.ajax({
         type: "POST",
         dataType: 'text',
@@ -187,7 +192,7 @@ RunAjax_Type_Post_Signin : function(cbf){
         .done(function( data ) {
             //console.log("done",data);
             cbf(JSON.parse(data))
-            Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = Jsonpster.inp.SSID = null;
+            Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = null;
         })
         .fail( function(xhr, textStatus, errorThrown) {
             console.log("surl",surl)
