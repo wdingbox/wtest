@@ -758,21 +758,6 @@ BibleObjGituser.prototype.decipher_cuid_ssid = function (inp) {
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
     return inp.usr
-
-    var cipherusrs = this.session_getin_pub(inp.SSID)
-    var fname = this.cuid_prvkey_fname_tmp()
-    var prvKey = fs.readFileSync(fname, "utf8")
-
-    if (cipherusrs && prvKey) {
-        var str = BibleUti.decrypt_txt(cipherusrs, prvKey)
-        var usrObj = JSON.parse(str)
-        console.log("session_decipher_usrs usrObj=")
-        console.log(usrObj)
-        inp.usr = usrObj
-        return inp
-    }
-
-    return null
 }
 BibleObjGituser.prototype.proj_parse_usr = function (inp) {
     this.m_inp = inp
