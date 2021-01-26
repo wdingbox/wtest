@@ -147,7 +147,6 @@ RunAjax_Type_Post : function(cbf){
         });
 },
 RunAjaxPost_Signin : function (cbf) {
-
     this.inp.SSID = null
     if (!this.inp.CUID) return alert("missing CUID.")
     if (this.pkbs.length === 0)return alert("no pubkey.")
@@ -160,7 +159,6 @@ RunAjaxPost_Signin : function (cbf) {
     encrypt.setPublicKey(atob(this.pkbs));
     this.inp.cipherusrs = encrypt.encrypt(usrs);
     this.inp.usr = null
-    
 
     console.log(this.inp.cipherusrs.length)
     console.log(this.inp)
