@@ -485,7 +485,7 @@ var BibleUti = {
         }
         return null
     },
-    Parse_post_req_to_inp: function (req, res, cbf) {
+    Parse_POST_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
         console.log("req.url", req.url)
 
@@ -526,7 +526,7 @@ var BibleUti = {
             console.log("end of req")
         }
     },
-    Parse_req_GET_to_inp: function (req) {
+    Parse_GET_req_to_inp: function (req) {
         console.log("\n\n\n\n\n\n\n\n-----req.method (GET?)", req.method)
         console.log("-GET: req.url=", req.url);
         console.log("-req.query", req.query)
