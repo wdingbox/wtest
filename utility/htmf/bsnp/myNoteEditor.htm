@@ -144,7 +144,7 @@ For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
     </div>
     <table border="1">
-        <tbody  id="allusrs">
+        <tbody id="allusrs">
 
         </tbody>
     </table>
@@ -445,7 +445,7 @@ ${scmd}
             })
             return
         }
-       
+
         function get_pathname_fr_window_location() {
             var regex = new RegExp("/___maverick.editor.html$")
             var root = window.location.pathname.replace(regex, "")
@@ -457,7 +457,7 @@ ${scmd}
             console.log(window.location)
             var ret = get_pathname_fr_window_location()
             $("title").text(ret.pathname)
-            
+
             gen_git_cmd_batch()
             $("#gen_sh_cmd").append(`<option>open ${ret.name}</option>`)
             $("#gen_sh_cmd").append(`<option>open file://${ret.root}/___maverick.editor.html?fname=${ret.name}</option>`)
@@ -465,38 +465,38 @@ ${scmd}
             console.log(ret.name)
         }
         function load_page_by_parent_storage() {
-            console.log(window.location)
-            document.m_myNotes = localStorage.getItem("myNote")
-            if (!document.m_myNotes) return alert("No parent storage for myNote.")
-
-            var pster = JSON.parse(document.m_myNotes)
-            //localStorage.setItem("myNote", "")
-            console.log("Storage myNode", pster)
-            var e = document.createElement("script");
-            e.src = `${pster.url}Jsonpster/`;
-            document.body.appendChild(e);
-
-            setTimeout(() => {
-                //
-                for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
-                    for (const [chp, vrsObj] of Object.entries(chpObj)) {
-                        for (const [vrs, txt] of Object.entries(vrsObj)) {
-                            CKEDITOR.instances.editor1.setData(txt)
-                            var theData = ckEditor.getData();
-                            document.m_iEdiDataLen = theData.length;
-                            var bcv = `${bkn}${chp}:${vrs}`
-                            g_msg.pop(`<br>${bcv}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
-                            ckEditor.resetDirty()
-                            $("title").text("_" + bcv)
-                        }
+            // console.log(window.location)
+            var myNotes = localStorage.getItem("myNote")
+            // if (!document.m_myNotes) return alert("No parent storage for myNote.")
+            // 
+            var pster = JSON.parse(myNotes)
+            // //localStorage.setItem("myNote", "")
+            // console.log("Storage myNode", pster)
+            // var e = document.createElement("script");
+            // e.src = `${pster.url}Jsonpster/`;
+            // document.body.appendChild(e);
+            // 
+            // setTimeout(() => {
+            //
+            for (const [bkn, chpObj] of Object.entries(pster.inp.par.inpObj)) {
+                for (const [chp, vrsObj] of Object.entries(chpObj)) {
+                    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                        CKEDITOR.instances.editor1.setData(txt)
+                        var theData = ckEditor.getData();
+                        document.m_iEdiDataLen = theData.length;
+                        var bcv = `${bkn}${chp}:${vrs}`
+                        g_msg.pop(`<br>${bcv}<br>- Init txtlen= ${txt.length}, dataLen=${theData.length}`);
+                        ckEditor.resetDirty()
+                        $("title").text("_" + bcv)
                     }
                 }
-                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-            }, 1000)
+            }
+            //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+            //}, 1000)
             //});
             //return false;
         }
-        
+
     </script>
 </body>
 
@@ -510,8 +510,11 @@ ${scmd}
     $(function () {
         init_CKEditor()
         init_ui_cmd()
-        load_page_by_parent_storage()
-        
+        //load_page_by_parent_storage()
+        Uti.Jsonpster_page_transit_by_parent_storage(function () {
+            load_page_by_parent_storage()
+        })
+
 
 
     })

@@ -3497,7 +3497,6 @@ var Uti = {
         var myNotes = localStorage.getItem("myNote")
 
         Jsonpster.inp = JSON.parse(myNotes).inp
-        Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page to load AjxPOST
         Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
         console.log("Jsonpster:", Jsonpster.inp)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -3536,9 +3535,8 @@ var Uti = {
         document.body.appendChild(e);
 
         setTimeout(() => {
-            //load_allusrs_bcv()
+            Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
             if (cbf) cbf()
-            //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
         }, 1000)
         //});
         //return false;
