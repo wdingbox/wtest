@@ -195,15 +195,24 @@
 
         <br>
         <div>
-            <a id="respdesc_history">Specification:</a> (optional)
-            <a class="help_label" onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
+            <a id="respdesc_history">ShareID:</a>
+            <span class="help_label" >
+                <a onclick="$('#repodesc').val('');">private</a> | 
+                <a onclick="$('#repodesc').val('*');">public</a> | 
+                <a onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
+            </span>
+            
             <div class="helpinfo Species">
                 <ol>
+                    Equal Access Right (EAR) Principle.  
                     <li>
-                        Only the notes with the same specification can be shared.
+                        Users with same ShareID can view/communicate each others equally.
                     </li>
                     <li>
-                        Specification accepts any character with case sensitive.
+                        Star(*) is for public without proctection. You can veiew everyone, and everyone can view you.
+                    </li>
+                    <li>
+                        Blank is for private only. You cannot see others, and others cannot see you.
                     </li>
                 </ol>
             </div>
@@ -211,7 +220,7 @@
 
         <div>
             <textarea id="repodesc" class="inputxt" maxlength="200" value=""
-                placeholder="date, place, event, group, etc"></textarea>
+                placeholder="Blank is for private only."></textarea>
         </div>
 
 

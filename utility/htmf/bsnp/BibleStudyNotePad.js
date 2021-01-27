@@ -572,6 +572,11 @@ PopupMenu_EdiTag.prototype.init = function () {
         var pster = JSON.parse(JSON.stringify(Jsonpster))
         pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
+
+
+        var rsr = MyStorage.Repositories().repos_app_update()
+        pster.inp.par.aux = { Update_repodesc: rsr.repodesc }
+
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
         return pster.inp.par
@@ -1885,29 +1890,30 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
 
 
 
-    $("#Storage_local_repos_exchange").bind("click", function () {
+    $("#Storage_local_repos_exchange").on("click", function () {
         Uti.open_child_window("./myStorageRepos.htm", function (data) {
             Uti.Msg("fr child win:", data)
         })
     })
 
-    $("#account_default").bind("click", function () {
+    $("#account_default").on("click", function () {
         $("#repopath").val("https://github.com/bsnp21/pub_test01.git")
         $("#passcode").val("")
     })
-    $("#account_date").bind("click", function () {
+    $("#account_date").on("click", function () {
         var tx = $("#repodesc").val()
         var d = new Date()
         $("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
-    $("#account_helper").bind("click", function () {
+    $("#account_helper").on("click", function () {
         Uti.open_child_window("./mySignIn.htm", function (data) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
     Uti.visual_check_repository("#Format_Check")
 
-    $("#account_set").bind("click", function () {
+    $("#account_set").on("click", function () {
+        MyStorage.Repositories().repos_app_update()
         PageUti.repo_status("#account_set_info")
     })
 
@@ -1915,14 +1921,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     //  $("#repopath").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", 1)
     //  })
-    $("#repodesc").bind("focus", function () {
+    $("#repodesc").on("focus", function () {
         PageUti.Repositories_History("#outConfig", 2)
+        MyStorage.Repositories().repos_app_update()
     })
     //  $("#passcode").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", -1)
     //  })
 
-    $("#passcode_toggler").bind("click", function () {
+    $("#passcode_toggler").on("click", function () {
         var tx = $("#passcode").attr("type")
         console.log(tx, btoa(tx), atob(btoa(tx)))
         if (tx === "password") tx = "text"
@@ -1939,7 +1946,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
 
 
-    $("#StorageRepo_load").bind("click", function () {
+    $("#StorageRepo_load").on("click", function () {
         $("#outConfig").text($(this).text() + " ...").show()
         MyStorage.Repo_load(function (ret) {
             if (ret.out.state.bEditable) {
@@ -1949,7 +1956,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             }
         })
     })
-    $(".StorageRepo_Signout").bind("click", function () {
+    $(".StorageRepo_Signout").on("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
@@ -2906,6 +2913,9 @@ var PageUti = {
     },
     repo_status: function (showid) {
         $(showid).html("<font>start checking...</font>")
+
+        var rsr = MyStorage.Repositories().repos_app_update()
+        Jsonpster.inp.par = { aux: { Update_repodesc: rsr.repodesc } }
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -4002,12 +4012,12 @@ var BibleInputMenuContainer = `
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' readonly></textarea>
                     <br>
-                    <a id="respdesc_history">Specification</a>: 
+                    <a id="respdesc_history">ShareID</a>: 
                     <span id="repository_description">
-                    <a id="account_date">(optional)</a> 
+                    <a id="share_public">public</a> | <a id="account_date">private</a> 
                     </span>
                     <br>
-                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
+                    <input id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</input>
                     <br>
                     <a id="passcode_toggler">Password:</a> 
                     <span id="repository_description">

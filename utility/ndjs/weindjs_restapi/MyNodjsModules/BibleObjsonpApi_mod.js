@@ -44,7 +44,7 @@ var ApiJsonp_BibleObj = {
 
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.proj_parse_usr(inp)
+        userProject.proj_parse_usr_signed(inp)
         var kpf = userProject.genKeyPair()
         var pkbs = ""
         if (kpf) {
@@ -199,7 +199,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             //if (!inp.usr.f_path) inp.usr.f_path = ""
-            var proj = userProject.proj_parse_usr(inp)
+            var proj = userProject.proj_parse_usr_signed(inp)
 
             var TbcvObj = {};
             if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -236,7 +236,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr(inp)
+            var proj = userProject.proj_parse_usr_signed(inp)
 
             var stat = userProject.proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) {
@@ -298,7 +298,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             //: unlimited write size. 
             var save_res = { desc: "to save" }
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr(inp)
+            var proj = userProject.proj_parse_usr_signed(inp)
             if (!proj) {
                 save_res.desc = "proj=null"
                 return
@@ -363,8 +363,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             //: unlimited write size. 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr(inp)
-            if (!proj) return console.log("proj_parse_usr failed.")
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
 
             var stat = userProject.proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
@@ -403,7 +403,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr(inp)
+            var proj = userProject.proj_parse_usr_signed(inp)
 
             if (proj) {
 
@@ -491,7 +491,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr(inp)) {
+            if (userProject.proj_parse_usr_signed(inp)) {
                 userProject.profile_state()
                 if (0 === inp.out.state.bRepositable) {
                     //case push failed. Don't delete
@@ -525,7 +525,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr(inp)) {
+            if (userProject.proj_parse_usr_signed(inp)) {
                 var ret = userProject.profile_state()
                 var res2 = await userProject.exec_cmd_git("git status -sb")
                 if (res2 && res2.stdout) {
@@ -552,7 +552,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_GET_req_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        if (userProject.proj_parse_usr(inp)) {
+        if (userProject.proj_parse_usr_signed(inp)) {
             userProject.proj_setup()
             //await userProject.git_add_commit_push("push hard.", "");//real push hard.
 
@@ -577,7 +577,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var inp = BibleUti.Parse_GET_req_to_inp(req)
 
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        if (userProject.proj_parse_usr(inp)) {
+        if (userProject.proj_parse_usr_signed(inp)) {
             userProject.proj_setup()
             //await userProject.git_pull();
         }
@@ -597,7 +597,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         }
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        if (userProject.proj_parse_usr(inp)) {
+        if (userProject.proj_parse_usr_signed(inp)) {
             var ret = userProject.profile_state()
             var rso = await userProject.cmd_exec()
             console.log("\n\n*cmd-res", rso)
@@ -620,7 +620,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr(inp)
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if(proj){
+                if( "string"===typeof inp.par.aux.Update_repodesc){
+                    var reposdesc = inp.par.aux.ShareID.trim()
+                }
+            }
             var doc = inp.par.fnames[0]
             //var docname = userProject.get_DocCode_Fname(doc)
             var docpathfilname = userProject.get_pfxname(doc)
@@ -655,10 +660,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 var jspfn = outfil.m_olis[i]
                 if (docpathfilname === jspfn) continue;
                 console.log("*docfname=", jspfn)
-                var reposdes = userProject.session_git_repodesc_load(jspfn)
-                if (!reposdes) continue
-                console.log("*repodesc=", reposdes.repodesc, inp.usr.repodesc)
-                if (reposdes.repodesc === inp.usr.repodesc) {
+                var others = userProject.session_git_repodesc_load(jspfn)
+                if (!others) continue
+                console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
+                if (others.repodesc === inp.usr.repodesc) {
                     var owner = userProject.session_get_github_owner(jspfn)
                     __load_to_obj(retObj, jspfn, owner, inp)
                 }

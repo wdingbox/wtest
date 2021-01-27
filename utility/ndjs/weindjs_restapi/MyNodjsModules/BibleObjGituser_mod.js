@@ -715,7 +715,7 @@ var BibleObjGituser = function (rootDir) {
         inp.usr = val
         inp.SSID = key
         var userProject = new BibleObjGituser(rootDir)
-        if (userProject.proj_parse_usr(inp)) {
+        if (userProject.proj_parse_usr_signed(inp)) {
             userProject.profile_state()
             if (0 === inp.out.state.bRepositable) {
                 //case push failed. Don't delete
@@ -773,30 +773,44 @@ BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
 
     inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 }
-BibleObjGituser.prototype.decipher_cuid_ssid = function (inp) {
+BibleObjGituser.prototype.proj_parse_usr_signed_decipher_by_ssid = function (inp) {
     inp.out.state.ssid_cur = inp.SSID
     if (!inp.SSID || inp.SSID.length === 0) {
         return null
     }
     var gitdir = this.get_usr_git_dir()
+    var b =  (gitdir === inp.SSID) ? "" : console.log(`ERRRoRR************* ${inp.SSID} != ${gitdir}`)
+
+
     inp.usr = myCache.get(inp.SSID)
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
+
+
+    //extra work: update repodesc
+    if (inp.par && inp.par.aux) {
+        if ("string" === typeof inp.par.aux.Update_repodesc) {
+            inp.usr.repodesc = inp.par.aux.Update_repodesc
+            myCache.set(inp.SSID, inp.usr)
+            console.log(`Update_repodesc ************* = ${inp.usr.repodesc}`)
+        }
+    }
+
     return inp.usr
 }
-BibleObjGituser.prototype.proj_parse_usr = function (inp) {
+BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
     this.m_inp = inp
     if (!inp || !inp.out) {
         return null
     }
     var _THIS = this
 
-    if (null === this.decipher_cuid_ssid(inp)) {
+    if (null === this.proj_parse_usr_signed_decipher_by_ssid(inp)) {
         return null
     }
     return this.parse_inp(inp)
 }
-BibleObjGituser.prototype.decipher_cuid_usrstr = function (inp) {
+BibleObjGituser.prototype.proj_parse_usr_signin_decipher_cuid_usrstr = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return null
     console.log("inp.CUID", inp.CUID)
@@ -821,7 +835,7 @@ BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
         return null
     }
 
-    if (null === this.decipher_cuid_usrstr(inp)) {
+    if (null === this.proj_parse_usr_signin_decipher_cuid_usrstr(inp)) {
         return null
     }
     return this.parse_inp(inp)
@@ -1197,12 +1211,12 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
             var str = ret.base + ":" + fMB + "/100(MB)"
             warnsAry.push(str)
             iAlertLevel = 1
-            str+="*"
+            str += "*"
         }
         if (fMB >= 90.0) { ////** Github: 100 MB per file, 1 GB per repo, svr:10GB
             stat.bMyojDir = 0
             iAlertLevel = 2
-            str+="*"
+            str += "*"
         }
         fstat[ret.base] = str
     });
