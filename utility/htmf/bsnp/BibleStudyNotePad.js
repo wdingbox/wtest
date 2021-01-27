@@ -1918,7 +1918,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         // })
 
         //$("#account_set_info").text($(this).text() + "...").show()
-//
+        //
         //var repopath = $("#repopath").val()
         //var reo = Uti.validate_repository_url(repopath)
         //if (!reo) {
@@ -2947,14 +2947,23 @@ var PageUti = {
         var sta = ret.out.state
         var msg = "<font color='red'>Invalid Repository</font>"
         if (sta) {
-            
+            if(sta.fstat){
+                var filename
+                Object.keys(sta.fstat).forEach(function(fname){
+                    var size = sta.fstat[fname]
+                })
+            }
+
             var colr = (sta && 1 === sta.bEditable) ? "lightgreen" : "red"
             var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
 
             var colr = (sta && 1 === sta.bRepositable) ? "lightgreen" : "yellow"
             msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
-            if(1 === sta.bEditable * sta.bRepositable){
+            if (1 === sta.bEditable && 1 === sta.bRepositable) {
                 msg = "<font color='lightgreen'> Repository works normally</font>"
+            }
+            if (sta.bEditable < 1 && sta.bRepositable < 1) {
+                msg = "<font color='red'>Session timeout. Sign-in again.</font>"
             }
         }
 
