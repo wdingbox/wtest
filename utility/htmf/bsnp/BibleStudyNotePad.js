@@ -1915,9 +1915,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     //  $("#repopath").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", 1)
     //  })
-    //  $("#repodesc").bind("focus", function () {
-    //      PageUti.Repositories_History("#outConfig", 2)
-    //  })
+      $("#repodesc").bind("focus", function () {
+          PageUti.Repositories_History("#outConfig", 2)
+      })
     //  $("#passcode").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", -1)
     //  })
@@ -4027,7 +4027,7 @@ var BibleInputMenuContainer = `
                     <a id="account_date">(optional)</a> 
                     </span>
                     <br>
-                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' readonly>JourneyGroup</textarea>
+                    <textarea id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</textarea>
                     <br>
                     <a id="passcode_toggler">Password:</a> 
                     <span id="repository_description">
