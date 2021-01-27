@@ -1951,18 +1951,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         PageUti.repo_status("#account_set_info")
 
     })
-    $("#account_destroy").bind("click", function () {
-        $("#account_set_info").text($(this).text())
-        //Jsonpster.inp.SSID = MyStorage.SSID()
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
-        Uti.Msg("repository", Jsonpster)
-        Jsonpster.Run(function (ret) {
-            Uti.Msg(ret.out)
-            $("#account_set_info").text("ok")
-            MyStorage.SSID("")
-        })
-    })
+
     //  Readonly now.
     //  $("#repopath").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", 1)
@@ -2006,7 +1995,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             $("body").attr("onbeforeunload", null)
             window.open("./index.htm", "_self")
             MyStorage.SSID("")
@@ -2948,7 +2937,7 @@ var PageUti = {
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             $("#otb").html("<font color='green'>Repos is undocked.</font>")
             Uti.Msg("ret", ret)
             MyStorage.SSID("")
