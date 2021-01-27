@@ -4017,7 +4017,7 @@ var BibleInputMenuContainer = `
                     <a id="share_public">public</a> | <a id="account_date">private</a> 
                     </span>
                     <br>
-                    <input id="repodesc" value='JourneyGroup' placeholder='2020-12-31, JourneyGroup' >JourneyGroup</input>
+                    <input id="repodesc" value='' placeholder='' ></input>
                     <br>
                     <a id="passcode_toggler">Password:</a> 
                     <span id="repository_description">
@@ -4025,7 +4025,7 @@ var BibleInputMenuContainer = `
                     </span><br>
                     <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a><br>
                     
-                    <button id="account_set">CheckStatus</button>
+                    <button id="account_set">UpdateStatus</button>
                     <a id="account_set_info"></a>
                     </td>
                     
