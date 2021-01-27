@@ -706,10 +706,10 @@ var BibleObjGituser = function (rootDir) {
 
     this.m_Cache = myCache;
 
-    myCache.on( "expired", function( key, val ){
+    myCache.on("expired", function (key, val) {
         // ... do something ...
-        console.log("on expired key:",key)
-        console.log("on expired val:",val)
+        console.log("on expired key:", key)
+        console.log("on expired val:", val)
 
         var inp = {}
         inp.usr = val
@@ -1184,27 +1184,33 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     var accdir = this.get_usr_acct_dir()
     var fstat = {}
     var totalsize = 0
-    var warnsAry = []
+    var iAlertLevel = 0
     BibleUti.GetFilesAryFromDir(accdir, true, function (fname) {
         var ret = path.parse(fname);
         var ext = ret.ext
         //console.log("ret:",ret)
         var sta = fs.statSync(fname)
-        var mbs = (sta.size / 1000000).toFixed(2)
+        var fMB = (sta.size / 1000000).toFixed(2)
         totalsize += sta.size
-        fstat[ret.base] = mbs + "MB"
-
-        if (mbs >= 80){
-            var str = ret.base+":"+mbs + "/100MB"
+        var str = "" + fMB + "/100(MB)"
+        if (fMB >= 80.0) { ////** Github: 100 MB per file, 1 GB per repo, svr:10GB
+            var str = ret.base + ":" + fMB + "/100(MB)"
             warnsAry.push(str)
+            iAlertLevel = 1
+            str+="*"
         }
-
+        if (fMB >= 90.0) { ////** Github: 100 MB per file, 1 GB per repo, svr:10GB
+            stat.bMyojDir = 0
+            iAlertLevel = 2
+            str+="*"
+        }
+        fstat[ret.base] = str
     });
 
     stat.fstat = fstat
+    stat.repo_usage = (totalsize / 1000000).toFixed(2) + "/1000(MB)"
+    stat.repo_alertLevel = iAlertLevel
 
-    stat.fstatReport = (totalsize / 1000000).toFixed(2) + "/100MB"
-    //Github: 100 MB per file, 1 GB per repo
 
     if (cbf) cbf()
     return stat

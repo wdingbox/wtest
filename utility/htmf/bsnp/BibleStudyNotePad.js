@@ -2814,6 +2814,27 @@ var g_obt = new OutputBibleTable()
 
 
 var PageUti = {
+    Repo_fstat_table:function(ret){
+        var tbs="<table border='1'>"
+        if(ret.out.state && ret.out.state.fstat){
+            Object.keys(ret.out.state.fstat).forEach(function(key){
+                var str = ret.out.state.fstat[key]
+                
+                var nam = key.split("_")[0]
+                if(nam==="localStorage") return
+                var clsn = ""
+                if(str.indexOf("*")>0){
+                    clsn = "repo_warn"
+                }
+                if(str.indexOf("**")>0){
+                    clsn = "repo_alert"
+                }
+                tbs+=`<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
+            })
+            tbs+="</table>"
+        }
+        return tbs
+    },
     Repositories_History: function (showid, cid) {
         if (-1 === cid || undefined === cid) {
             $(showid).slideUp("slow")
@@ -2824,6 +2845,7 @@ var PageUti = {
         var uniqTmp = {}
         var stb = `<table id='account_history_table' class='center' border='1'><caption>${capary[cid]}</caption><tbody>`
         for (var i = 0; i < ar.length; i++) {
+            if(!ar[i].repopath) continue
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
             var clsname = ["", "repo_history", "desc_history"]
             var showval = ["", str, ar[i].repodesc]
@@ -2918,7 +2940,7 @@ var PageUti = {
     repo_destroy: function (bForce) {
         if (!confirm("The Bible study notes you wrote in server-site will be erased.")) return
         if (bForce) {
-            Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
+            //Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
             //Jsonpster.inp.SSID = MyStorage.SSID()
         }
@@ -2940,7 +2962,9 @@ var PageUti = {
             Uti.Msg("ret.out.state", ret.out.state)
 
             $(showid).html("<font color='green'>ok.</font>")
-            PageUti.repos_status_display(ret, showid)
+            //PageUti.repos_status_display(ret, showid)
+            var stb = PageUti.Repo_fstat_table(ret)
+            $(showid).html(stb)
         })
     },
     repos_status_display: function (ret, eid) {
