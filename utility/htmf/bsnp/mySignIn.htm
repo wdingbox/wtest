@@ -377,7 +377,8 @@
         $("#signin").on("click", function () {
             PageUti.repo_Signin("#otb", function (ret) {
                 if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length>1) {
-                    window.open("BibleStudyNotePad.htm?ip=" + g_ip, '_self');
+                    var svrip = Uti.Jsonpster_crossloader_get_ip()
+                    window.open("BibleStudyNotePad.htm?ip=" + svrip, '_self');
                 } else {
                     $("#txtarea").show()
                 }
@@ -386,7 +387,7 @@
     })
 </script>
 <script>
-    var g_ip = Uti.Jsonpster_crossloader(0)
+    Uti.Jsonpster_crossloader(0)
 
 
     function test_Jsonpster_exist() {
