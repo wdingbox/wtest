@@ -778,8 +778,6 @@ BibleObjGituser.prototype.proj_parse_usr_signed_decipher_by_ssid = function (inp
     if (!inp.SSID || inp.SSID.length === 0) {
         return null
     }
-    var gitdir = this.get_usr_git_dir()
-    var b =  (gitdir === inp.SSID) ? "" : console.log(`ERRRoRR************* ${inp.SSID} != ${gitdir}`)
 
 
     inp.usr = myCache.get(inp.SSID)

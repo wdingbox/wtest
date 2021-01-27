@@ -621,9 +621,9 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
-            if(proj){
-                if( "string"===typeof inp.par.aux.Update_repodesc){
-                    var reposdesc = inp.par.aux.ShareID.trim()
+            if (proj) {
+                if ("string" === typeof inp.par.aux.Update_repodesc) {
+                    
                 }
             }
             var doc = inp.par.fnames[0]
@@ -656,17 +656,26 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             __load_to_obj(retObj, docpathfilname, owner, inp)
             //console.log("jspfn:", jsfname)
             console.log("dcpfn:", docpathfilname)
-            for (var i = 0; i < outfil.m_olis.length; i++) {
-                var jspfn = outfil.m_olis[i]
-                if (docpathfilname === jspfn) continue;
-                console.log("*docfname=", jspfn)
-                var others = userProject.session_git_repodesc_load(jspfn)
-                if (!others) continue
-                console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
-                if (others.repodesc === inp.usr.repodesc) {
-                    var owner = userProject.session_get_github_owner(jspfn)
-                    __load_to_obj(retObj, jspfn, owner, inp)
+            if (inp.usr.repodesc.trim().length > 0) {
+                for (var i = 0; i < outfil.m_olis.length; i++) {
+                    var jspfn = outfil.m_olis[i]
+                    if (docpathfilname === jspfn) continue;
+                    console.log("*docfname=", jspfn)
+                    var others = userProject.session_git_repodesc_load(jspfn)
+                    if (!others) continue
+                    if ("*" === inp.usr.repodesc) {//no restriction
+                        var owner = userProject.session_get_github_owner(jspfn)
+                        __load_to_obj(retObj, jspfn, owner, inp)
+                        continue
+                    }
+                    console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
+                    if (others.repodesc === inp.usr.repodesc) {
+                        var owner = userProject.session_get_github_owner(jspfn)
+                        __load_to_obj(retObj, jspfn, owner, inp)
+                    }
                 }
+            }else{
+                console.log("Private Only.")
             }
 
             inp.out.repodesc = inp.usr.repodesc
