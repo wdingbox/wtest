@@ -546,7 +546,7 @@ var BibleUti = {
         //var q = url.parse(req.url, true).query;
         //console.log("q=", q);
         if ("undefined" === typeof req.query.inp) {
-            console.log("q.inp undefined. Maybe unload or api err");
+            console.log("req.query.inp: undefined. Maybe initial loading or page transition");
             return null;
         }
 

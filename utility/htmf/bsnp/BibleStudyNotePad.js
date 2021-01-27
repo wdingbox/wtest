@@ -2763,24 +2763,24 @@ var g_obt = new OutputBibleTable()
 
 
 var PageUti = {
-    Repo_fstat_table:function(ret){
-        var tbs="<table border='1'>"
-        if(ret.out.state && ret.out.state.fstat){
-            Object.keys(ret.out.state.fstat).forEach(function(key){
+    Repo_fstat_table: function (ret) {
+        var tbs = "<table border='1'>"
+        if (ret.out.state && ret.out.state.fstat) {
+            Object.keys(ret.out.state.fstat).forEach(function (key) {
                 var str = ret.out.state.fstat[key]
-                
+
                 var nam = key.split("_")[0]
-                if(nam==="localStorage") return
+                if (nam === "localStorage") return
                 var clsn = ""
-                if(str.indexOf("*")>0){
+                if (str.indexOf("*") > 0) {
                     clsn = "repo_warn"
                 }
-                if(str.indexOf("**")>0){
+                if (str.indexOf("**") > 0) {
                     clsn = "repo_alert"
                 }
-                tbs+=`<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
+                tbs += `<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
             })
-            tbs+="</table>"
+            tbs += "</table>"
         }
         return tbs
     },
@@ -2794,7 +2794,7 @@ var PageUti = {
         var uniqTmp = {}
         var stb = `<table id='account_history_table' class='center' border='1'><caption>${capary[cid]}</caption><tbody>`
         for (var i = 0; i < ar.length; i++) {
-            if(!ar[i].repopath) continue
+            if (!ar[i].repopath) continue
             var str = ar[i].repopath.replace(/[\.]git$/, "").replace("https://github.com/", "")
             var clsname = ["", "repo_history", "desc_history"]
             var showval = ["", str, ar[i].repodesc]
@@ -2921,9 +2921,9 @@ var PageUti = {
         var sta = ret.out.state
         var msg = "<font color='red'>Invalid Repository</font>"
         if (sta) {
-            if(sta.fstat){
+            if (sta.fstat) {
                 var filename
-                Object.keys(sta.fstat).forEach(function(fname){
+                Object.keys(sta.fstat).forEach(function (fname) {
                     var size = sta.fstat[fname]
                 })
             }
@@ -3475,6 +3475,73 @@ var Uti = {
             //MyStorage.Repositories().add(data)
             if (cbf) cbf(data)
         }, false);
+    },
+
+
+    after_page_transit_load_allusrs_bcv: function (cbf) {
+
+        // var good = `<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z" class="style-scope yt-icon"></path></g></svg></div>`
+        // var bad = `<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v1.91l.01.01L1 14c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z" class="style-scope yt-icon"></path></g></svg></div>`
+        // var goodnum = `<div class='scorenum'>0</div>`
+        // var badnum = `<div class='scorenum'>0</div>`
+// 
+// 
+        // var pster = JSON.parse(document.m_myNotes)
+        // var inpOj = pster.inp.par.inpObj
+        // var scap = Uti.parse_bcv(inpOj)
+        // $("#scap").text(scap)
+        // $("title").text("*" + scap)
+// 
+        // console.log("load_allusrs_bcv", pster)
+
+        var myNotes = localStorage.getItem("myNote")
+
+        Jsonpster.inp = JSON.parse(myNotes).inp
+        Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page to load AjxPOST
+        Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
+        console.log("Jsonpster:", Jsonpster.inp)
+        Jsonpster.RunAjaxPost(function (ret) {
+            console.log("ret", ret)
+            if(cbf) cbf(ret)
+
+            //var res = ret.out.data
+            //$("#repodesc").text(ret.out.repodesc)
+            //var trs = ""
+            //if (res) {
+            //    Object.keys(res).forEach(function (key) {
+            //        var txt = res[key]
+            //        console.log("key", key)
+            //        console.log("txt", txt)
+            //        var usrname = `<div class='minitxt'>${key}</div>`
+            //        trs += `<tr><td><div class='editorinfo'>${usrname}${badnum}${bad}${goodnum}${good}</div><div>${txt}</div></td></tr>`
+            //    })
+//
+            //} else {
+            //    alert("saving has issues.")
+            //}
+            //$("#allusrs").html(trs)
+        })
+    },
+
+    Jsonpster_page_transit_by_parent_storage: function (cbf) {
+        console.log(window.location)
+        document.m_myNotes = localStorage.getItem("myNote")
+        if (!document.m_myNotes) return alert("No parent storage for myNote.")
+
+        var pster = JSON.parse(document.m_myNotes)
+        //localStorage.setItem("myNote", "")
+        console.log("Storage myNode", pster)
+        var e = document.createElement("script");
+        e.src = `${pster.url}Jsonpster/`; //noop;gen Jsonpster only.
+        document.body.appendChild(e);
+
+        setTimeout(() => {
+            //load_allusrs_bcv()
+            if (cbf) cbf()
+            //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+        }, 1000)
+        //});
+        //return false;
     },
 
     Jsonpster_crossloader: function (par) {

@@ -1,5 +1,5 @@
-
 <html>
+
 <head>
     <meta charset="utf-8">
     <base target="_blank" />
@@ -51,23 +51,25 @@
             white-space: nowrap;
         }
 
-        .editorinfo{
+        .editorinfo {
             background-color: lightblue;
             display: inline-block;
             white-space: nowrap;
             width: 100%;
         }
-    
-        .minitxt{
+
+        .minitxt {
             float: left;
             white-space: nowrap;
         }
-        .minicon{
+
+        .minicon {
             float: right;
-            
+
             white-space: nowrap;
         }
-        .scorenum{
+
+        .scorenum {
             float: right;
             white-space: nowrap;
         }
@@ -81,7 +83,7 @@
 
 
 
-    <h>Spec: </h ><a id="repodesc"></a>
+    <h>Spec: </h><a id="repodesc"></a>
     <table border="1">
         <caption id="scap"></caption>
         <tbody id="allusrs">
@@ -209,31 +211,31 @@ ${scmd}
             $("#gen_sh_cmd").append(`<option>open ./${ret.name}___wordfreq.htm</option>`)
             console.log(ret.name)
         }
-        function load_page_by_parent_storage() {
-            console.log(window.location)
-            document.m_myNotes = localStorage.getItem("myNote")
-            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+        // function load_page_by_parent_storage() {
+        //     console.log(window.location)
+        //     document.m_myNotes = localStorage.getItem("myNote")
+        //     if (!document.m_myNotes) return alert("No parent storage for myNote.")
+        // 
+        //     var pster = JSON.parse(document.m_myNotes)
+        //     //localStorage.setItem("myNote", "")
+        //     console.log("Storage myNode", pster)
+        //     var e = document.createElement("script");
+        //     e.src = `${pster.url}Jsonpster/`;
+        //     document.body.appendChild(e);
+        // 
+        //     setTimeout(() => {
+        //         load_allusrs_bcv()
+        //         //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
+        //     }, 1000)
+        //     //});
+        //     //return false;
+        // }
+        function load_allusrs_bcv(ret) {
 
-            var pster = JSON.parse(document.m_myNotes)
-            //localStorage.setItem("myNote", "")
-            console.log("Storage myNode", pster)
-            var e = document.createElement("script");
-            e.src = `${pster.url}Jsonpster/`;
-            document.body.appendChild(e);
-
-            setTimeout(() => {
-                load_allusrs_bcv()
-                //g_msg.pop(`initial load file: ${ret.name}, size:${data.length}(B)`).m_len = data.length
-            }, 1000)
-            //});
-            //return false;
-        }
-        function load_allusrs_bcv() {
-
-            var good=`<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z" class="style-scope yt-icon"></path></g></svg></div>`
-            var bad=`<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v1.91l.01.01L1 14c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z" class="style-scope yt-icon"></path></g></svg></div>`
-            var goodnum=`<div class='scorenum'>0</div>`
-            var badnum=`<div class='scorenum'>0</div>`
+            var good = `<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z" class="style-scope yt-icon"></path></g></svg></div>`
+            var bad = `<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v1.91l.01.01L1 14c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z" class="style-scope yt-icon"></path></g></svg></div>`
+            var goodnum = `<div class='scorenum'>0</div>`
+            var badnum = `<div class='scorenum'>0</div>`
             var pster = JSON.parse(document.m_myNotes)
             var inpOj = pster.inp.par.inpObj
             var scap = Uti.parse_bcv(inpOj)
@@ -241,29 +243,29 @@ ${scmd}
             $("title").text("*" + scap)
 
             console.log("load_allusrs_bcv", pster)
-            Jsonpster.inp = JSON.parse(document.m_myNotes).inp
-            Jsonpster.inp.SSID = MyStorage.SSID() //first time to load AjxPOST
-            Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
-            console.log("inp:", pster.inp)
-            Jsonpster.RunAjaxPost(function (ret) {
-                console.log("ret", ret)
-                var res = ret.out.data
-                $("#repodesc").text(ret.out.repodesc)
-                var trs = ""
-                if (res) {
-                    Object.keys(res).forEach(function (key) {
-                        var txt = res[key]
-                        console.log("key", key)
-                        console.log("txt", txt)
-                        var usrname=`<div class='minitxt'>${key}</div>`
-                        trs += `<tr><td><div class='editorinfo'>${usrname}${badnum}${bad}${goodnum}${good}</div><div>${txt}</div></td></tr>`
-                    })
+            // Jsonpster.inp = JSON.parse(document.m_myNotes).inp
+            // Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page to load AjxPOST
+            // Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
+            // console.log("inp:", pster.inp)
+            // Jsonpster.RunAjaxPost(function (ret) {
+            console.log("ret", ret)
+            var res = ret.out.data
+            $("#repodesc").text(ret.out.repodesc)
+            var trs = ""
+            if (res) {
+                Object.keys(res).forEach(function (key) {
+                    var txt = res[key]
+                    console.log("key", key)
+                    console.log("txt", txt)
+                    var usrname = `<div class='minitxt'>${key}</div>`
+                    trs += `<tr><td><div class='editorinfo'>${usrname}${badnum}${bad}${goodnum}${good}</div><div>${txt}</div></td></tr>`
+                })
 
-                } else {
-                    alert("saving has issues.")
-                }
-                $("#allusrs").html(trs)
-            })
+            } else {
+                alert("saving has issues.")
+            }
+            $("#allusrs").html(trs)
+            //})
         }
     </script>
 </body>
@@ -278,7 +280,11 @@ ${scmd}
     $(function () {
         //init_CKEditor()
         init_ui_cmd()
-        load_page_by_parent_storage()
+        Uti.Jsonpster_page_transit_by_parent_storage(function () {
+            Uti.after_page_transit_load_allusrs_bcv(function (ret) {
+                load_allusrs_bcv(ret)
+            })
+        })
 
 
 
