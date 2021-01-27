@@ -705,6 +705,31 @@ var BibleObjGituser = function (rootDir) {
     this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
 
     this.m_Cache = myCache;
+
+    myCache.on( "expired", function( key, val ){
+        // ... do something ...
+        console.log("on expired key:",key)
+        console.log("on expired val:",val)
+
+        var inp = {}
+        inp.usr = val
+        inp.SSID = key
+        var userProject = new BibleObjGituser(rootDir)
+        if (userProject.proj_parse_usr(inp)) {
+            userProject.profile_state()
+            if (0 === inp.out.state.bRepositable) {
+                //case push failed. Don't delete
+                console.log("git dir not exit.")
+
+            } else {
+                var res2 = userProject.execSync_cmd_git("git add *")
+                var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+                var res4 = userProject.git_push()
+
+                var res5 = userProject.proj_destroy()
+            }
+        }
+    });
 }
 BibleObjGituser.prototype.genKeyPair = function () {
     if (!this.m_inp || !this.m_inp.CUID) return
@@ -885,7 +910,7 @@ BibleObjGituser.prototype.session_create = function () {
     //this.session_destroy()
 
     //var ssbuf = this.session_ssid_compose()
-//
+    //
     //var ssfn = this.get_proj_tmp_dir(`/${ssbuf.SSID}`)
     //if (ssfn) {
     //    var txt = this.m_inp.cipherusrs
@@ -895,7 +920,7 @@ BibleObjGituser.prototype.session_create = function () {
     //        console.log("save err", err)
     //    })
     //}
-//
+    //
     //var ssfn = this.session_git_repodesc_pathfile()
     //if (ssfn) {
     //    var txt = this.m_inp.usr.repodesc
@@ -1158,16 +1183,28 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
 
     var accdir = this.get_usr_acct_dir()
     var fstat = {}
+    var totalsize = 0
+    var warnsAry = []
     BibleUti.GetFilesAryFromDir(accdir, true, function (fname) {
         var ret = path.parse(fname);
         var ext = ret.ext
         //console.log("ret:",ret)
         var sta = fs.statSync(fname)
-        fstat[fname] = sta.size
+        var mbs = (sta.size / 1000000).toFixed(2)
+        totalsize += sta.size
+        fstat[ret.base] = mbs + "MB"
+
+        if (mbs >= 80){
+            var str = ret.base+":"+mbs + "/100MB"
+            warnsAry.push(str)
+        }
 
     });
 
     stat.fstat = fstat
+
+    stat.fstatReport = (totalsize / 1000000).toFixed(2) + "/100MB"
+    //Github: 100 MB per file, 1 GB per repo
 
     if (cbf) cbf()
     return stat
