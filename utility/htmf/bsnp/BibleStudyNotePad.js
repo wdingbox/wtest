@@ -2441,7 +2441,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
         $("#searchNextresult").text("Serach str in server site..")
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             _THIS.apiCallback_Gen_output_table(ret, function (size) {
                 $("#searchNextresult").text("0/" + size)
             });

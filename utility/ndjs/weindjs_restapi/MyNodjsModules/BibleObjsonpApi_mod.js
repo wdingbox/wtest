@@ -192,37 +192,39 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         //});
     },
     ApiBibleObj_search_txt: function (req, res) {
-        if (!req || !res) {
-            return inp_struct_search
-        }
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
-        //if (!inp.usr.f_path) inp.usr.f_path = ""
-        var proj = userProject.proj_parse_usr(inp)
+        //if (!req || !res) {
+        //    return inp_struct_search
+        //}
+        //var inp = BibleUti.Parse_req_GET_to_inp(req)
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            //if (!inp.usr.f_path) inp.usr.f_path = ""
+            var proj = userProject.proj_parse_usr(inp)
 
-        var TbcvObj = {};
-        if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
-            for (var i = 0; i < inp.par.fnames.length; i++) {
-                var trn = inp.par.fnames[i];
-                var jsfname = userProject.get_pfxname(trn)
-                console.log("jsfname:", jsfname)
-                var bib = BibleUti.loadObj_by_fname(jsfname);
-                var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
-                TbcvObj[trn] = bcObj;
-                inp.out.desc += ":" + trn
+            var TbcvObj = {};
+            if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
+                for (var i = 0; i < inp.par.fnames.length; i++) {
+                    var trn = inp.par.fnames[i];
+                    var jsfname = userProject.get_pfxname(trn)
+                    console.log("jsfname:", jsfname)
+                    var bib = BibleUti.loadObj_by_fname(jsfname);
+                    var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
+                    TbcvObj[trn] = bcObj;
+                    inp.out.desc += ":" + trn
+                }
             }
-        }
-        var bcvT = {}
-        BibleUti.convert_Tbcv_2_bcvT(TbcvObj, bcvT)
-        inp.out.data = BibleUti.search_str_in_bcvT(bcvT, inp.par.Search.File, inp.par.Search.Strn);
+            var bcvT = {}
+            BibleUti.convert_Tbcv_2_bcvT(TbcvObj, bcvT)
+            inp.out.data = BibleUti.search_str_in_bcvT(bcvT, inp.par.Search.File, inp.par.Search.Strn);
 
-        inp.out.desc += ":success."
-        var sret = JSON.stringify(inp);
-        var sid = ""
-
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`Jsonpster.Response(${sret},${sid});`);
-        res.end();
+            inp.out.desc += ":success."
+        })
+        // var sret = JSON.stringify(inp);
+        // var sid = ""
+        // 
+        // res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        // res.write(`Jsonpster.Response(${sret},${sid});`);
+        // res.end();
     },
 
     ApiBibleObj_load_by_bibOj: function (req, res) {
