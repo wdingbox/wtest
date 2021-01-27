@@ -74,8 +74,9 @@
     
     $(document).ready(function () {
         
-        var g_ip = Uti.Jsonpster_crossloader()
-        g_aim.init();
+        Uti.Jsonpster_crossloader(1, function(){
+            g_aim.init();
+        })
 
         //table_sort();
         //table_col_index();

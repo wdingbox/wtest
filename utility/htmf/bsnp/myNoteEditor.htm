@@ -388,7 +388,8 @@ ${scmd}
                 });
         }
         function __save() {
-            if (!document.m_myNotes) return alert("No parent storage for myNote.")
+            var myNotes = localStorage.getItem("myNote")
+            if (!myNotes) return alert("No parent storage for myNote.")
 
             var theData = ckEditor.getData();
             var sbody = "<body>"
@@ -406,7 +407,7 @@ ${scmd}
             var txt2save = Uti.htmlDecode(html.trim())
             txt2save = txt2save.replace(/[\n\r\t]/g, '')
 
-            var pster = JSON.parse(document.m_myNotes)
+            var pster = JSON.parse(myNotes)
             var bcv = ""
             for (const [bkc, chpObj] of Object.entries(pster.inp.par.inpObj)) {
                 for (const [chp, vrsObj] of Object.entries(chpObj)) {
@@ -511,7 +512,10 @@ ${scmd}
         init_CKEditor()
         init_ui_cmd()
         //load_page_by_parent_storage()
-        Uti.Jsonpster_page_transit_by_parent_storage(function () {
+        // Uti.Jsonpster_page_transit_by_parent_storage(function () {
+        //     load_page_by_parent_storage()
+        // })
+        Uti.Jsonpster_crossloader(2, function () {
             load_page_by_parent_storage()
         })
 

@@ -1915,9 +1915,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     //  $("#repopath").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", 1)
     //  })
-      $("#repodesc").bind("focus", function () {
-          PageUti.Repositories_History("#outConfig", 2)
-      })
+    $("#repodesc").bind("focus", function () {
+        PageUti.Repositories_History("#outConfig", 2)
+    })
     //  $("#passcode").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", -1)
     //  })
@@ -3484,14 +3484,14 @@ var Uti = {
         // var bad = `<div class='minicon'><svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon" style="pointer-events: none; display: block; width: 12px; height: 12px;"><g class="style-scope yt-icon"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v1.91l.01.01L1 14c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z" class="style-scope yt-icon"></path></g></svg></div>`
         // var goodnum = `<div class='scorenum'>0</div>`
         // var badnum = `<div class='scorenum'>0</div>`
-// 
-// 
+        // 
+        // 
         // var pster = JSON.parse(document.m_myNotes)
         // var inpOj = pster.inp.par.inpObj
         // var scap = Uti.parse_bcv(inpOj)
         // $("#scap").text(scap)
         // $("title").text("*" + scap)
-// 
+        // 
         // console.log("load_allusrs_bcv", pster)
 
         var myNotes = localStorage.getItem("myNote")
@@ -3501,7 +3501,7 @@ var Uti = {
         console.log("Jsonpster:", Jsonpster.inp)
         Jsonpster.RunAjaxPost(function (ret) {
             console.log("ret", ret)
-            if(cbf) cbf(ret)
+            if (cbf) cbf(ret)
 
             //var res = ret.out.data
             //$("#repodesc").text(ret.out.repodesc)
@@ -3514,7 +3514,7 @@ var Uti = {
             //        var usrname = `<div class='minitxt'>${key}</div>`
             //        trs += `<tr><td><div class='editorinfo'>${usrname}${badnum}${bad}${goodnum}${good}</div><div>${txt}</div></td></tr>`
             //    })
-//
+            //
             //} else {
             //    alert("saving has issues.")
             //}
@@ -3522,45 +3522,85 @@ var Uti = {
         })
     },
 
-    Jsonpster_page_transit_by_parent_storage: function (cbf) {
-        console.log(window.location)
-        document.m_myNotes = localStorage.getItem("myNote")
-        if (!document.m_myNotes) return alert("No parent storage for myNote.")
+    //    Jsonpster_page_transit_by_parent_storage: function (cbf) {
+    //        console.log(window.location)
+    //        document.m_myNotes = localStorage.getItem("myNote")
+    //        if (!document.m_myNotes) return alert("No parent storage for myNote.")
+//    
+    //        var pster = JSON.parse(document.m_myNotes)
+    //        //localStorage.setItem("myNote", "")
+    //        console.log("Storage myNode", pster)
+//    
+    //        var e = document.createElement("script");
+    //        e.src = `${pster.url}Jsonpster/`; //noop;gen Jsonpster only.
+    //        document.body.appendChild(e);
+//    
+    //        setTimeout(() => {
+    //            Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
+    //            if (cbf) cbf()
+    //        }, 1000)
+    //        //});
+    //        //return false;
+    //    },
 
-        var pster = JSON.parse(document.m_myNotes)
-        //localStorage.setItem("myNote", "")
-        console.log("Storage myNode", pster)
-        var e = document.createElement("script");
-        e.src = `${pster.url}Jsonpster/`; //noop;gen Jsonpster only.
-        document.body.appendChild(e);
+    Jsonpster_crossloader: function (idx, cbf) {
+        var svrip = this.Jsonpster_crossloader_get_ip()
+        if (svrip.indexOf(":") < 0) return aler(svrip += ":7778 ---missed port")
 
-        setTimeout(() => {
-            Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
-            if (cbf) cbf()
-        }, 1000)
-        //});
-        //return false;
-    },
+        var svrurl = `http://${svrip}/Jsonpster/`;
 
-    Jsonpster_crossloader: function (par) {
-        var ip = null, bSigninPage = null
-        if (par) {
-            ip = par.ip
-            bSigninPage = par.bSigninPage
+        if (0 === idx) {//initial-sign-in-page-loading
+            var tuid = MyStorage.GenCUID()
+            svrurl += `?inp=${tuid}`;
+            //SSID will be ready after sign-in success.
+        }
+        if (1 === idx) {//first-main-page-loading-after-sign-in
+            //localStorage.setItem("svrurl", svrurl) //alway stick on this url for all pages.
+            console.log("crossload-1:svrurl=", svrurl)
+            console.log("crossload-1:CUID=", MyStorage.GenCUID())
+            console.log("crossload-1:SSID=", MyStorage.SSID())
+        }
+        if (2 === idx) {//transit-page-loading-from-main-page.
+            //svrurl = localStorage.getItem("svrurl")
+            console.log("crossload-2:svrurl=", svrurl)
+            console.log("crossload-2:CUID=", MyStorage.GenCUID())
+            console.log("crossload-2:SSID=", MyStorage.SSID())
         }
 
+        var e = document.createElement("script");
+        e.src = svrurl
+        document.body.appendChild(e);
+
+
+        setTimeout(() => {
+            if (idx > 0) {//post-loading after transit-page-loading-from-main-page.
+                console.log("crossload-2:SSID=", MyStorage.SSID())
+                Jsonpster.inp.usr = null
+                Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
+            }
+            if (cbf) cbf()
+        }, 1000)
+    },
+    Jsonpster_crossloader_get_ip: function (ip) {
         if (!ip) {
+            //get ip from url param. ?ip=0.0.0.0:7778
             const urlParams = new URLSearchParams(window.location.search);
             var ip = urlParams.get('ip');
             if (!ip) {
+                //use self ip.
                 ip = window.location.host
             }
             if (!ip) {
+                //use self ip.
                 ip = window.location.hostname
             }
             if (!ip) {
                 return alert("not localhost or missed in url with ?ip=x.x.x.x")
             }
+
+            if (ip.indexOf(":") < 0) ip += ":7778"
+
+            //other param form url param ?inp=0.0.0.0:778&#Gen2:7
             var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
             var bcv = ""
             if (idx >= 0) {
@@ -3573,19 +3613,8 @@ var Uti = {
 
         if ("undefined" != typeof RestApi) {
             console.log("Jsonpster is already loaded. Ignore", ip)
-            return ip
         }
 
-
-        var e = document.createElement("script");
-        if (ip.indexOf(":") < 0) ip += ":7778"
-        e.src = `http://${ip}/Jsonpster/`;
-        if (bSigninPage) {
-            var tuid = MyStorage.GenCUID()
-            e.src += `?inp=${tuid}`;
-        }
-        document.body.appendChild(e);
-        console.log("crossload:", e.src)
         return ip
     },
 
