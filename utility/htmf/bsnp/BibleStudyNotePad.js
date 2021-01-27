@@ -1953,6 +1953,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         //Jsonpster.inp.SSID = MyStorage.SSID()
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.RunAjaxPost(function (ret) {
             $("body").attr("onbeforeunload", null)
@@ -2894,6 +2895,7 @@ var PageUti = {
         }
 
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
