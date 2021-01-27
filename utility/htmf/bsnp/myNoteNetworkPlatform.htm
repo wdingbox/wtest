@@ -242,10 +242,10 @@ ${scmd}
 
             console.log("load_allusrs_bcv", pster)
             Jsonpster.inp = JSON.parse(document.m_myNotes).inp
-            //Jsonpster.inp.SSID = MyStorage.SSID()
+            Jsonpster.inp.SSID = MyStorage.SSID() //first time to load AjxPOST
             Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
             console.log("inp:", pster.inp)
-            Jsonpster.Run(function (ret) {
+            Jsonpster.RunAjaxPost(function (ret) {
                 console.log("ret", ret)
                 var res = ret.out.data
                 $("#repodesc").text(ret.out.repodesc)

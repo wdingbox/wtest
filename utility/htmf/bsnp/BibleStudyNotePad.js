@@ -570,7 +570,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         var ret = Uti.parse_bcv(_THIS.m_par.m_bcv, htmEdit)
 
         var pster = JSON.parse(JSON.stringify(Jsonpster))
-        //pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
+        pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
