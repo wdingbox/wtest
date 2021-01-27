@@ -518,28 +518,30 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ApiUsrReposData_status: async function (req, res) {
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
-        var inp = BibleUti.Parse_req_GET_to_inp(req)
+        //if (!req || !res) {
+        //    return inp_struct_account_setup
+        //}
+        //var inp = BibleUti.Parse_req_GET_to_inp(req)
+        BibleUti.Parse_post_req_to_inp(req, res, async function (inp) {
 
-        var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        if (userProject.proj_parse_usr(inp)) {
-            var ret = userProject.profile_state()
-            var res2 = await userProject.exec_cmd_git("git status -sb")
-            if (res2 && res2.stdout) {
-                inp.out.state.git_status_sb = res2.stdout
-                inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            if (userProject.proj_parse_usr(inp)) {
+                var ret = userProject.profile_state()
+                var res2 = await userProject.exec_cmd_git("git status -sb")
+                if (res2 && res2.stdout) {
+                    inp.out.state.git_status_sb = res2.stdout
+                    inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
+                }
             }
-        }
+        })
 
-        var sret = JSON.stringify(inp, null, 4)
-        var sid = ""
-
-        console.log("oup is ", inp.out)
-        res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`Jsonpster.Response(${sret},${sid});`);
-        res.end();
+        // var sret = JSON.stringify(inp, null, 4)
+        // var sid = ""
+        // 
+        // console.log("oup is ", inp.out)
+        // res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        // res.write(`Jsonpster.Response(${sret},${sid});`);
+        // res.end();
     },
 
 

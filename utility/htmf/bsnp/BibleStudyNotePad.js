@@ -1908,48 +1908,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     Uti.visual_check_repository("#Format_Check")
 
     $("#account_set").bind("click", function () {
-
-        // PageUti.repo_Signin("#account_set_info", function (ret) {
-        //     if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length>1) {
-        //         Uti.set_menuContainer_color(ret)
-        //     } else {
-        //         $("#txtarea").show()
-        //     }
-        // })
-
-        //$("#account_set_info").text($(this).text() + "...").show()
-        //
-        //var repopath = $("#repopath").val()
-        //var reo = Uti.validate_repository_url(repopath)
-        //if (!reo) {
-        //    $("#account_set_info").html("<font color='red'>Error format: Repository</font>")
-        //    return;
-        //}
-        //Jsonpster.inp.usr = null;//MyStorage.Repositories().repos_app_update()
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
-        // Jsonpster.api = RestApi.ApiUsrReposData_status.str
-        // Uti.Msg("repository", Jsonpster)
-        // Jsonpster.Run(function (ret) {
-        //     Uti.Msg("ret.out.state", ret.out.state)
-        //     var sta = ret.out.state
-        //     var msg = "<font color='red'>Invalid Repository</font>"
-        //     if (ret.out.state) {
-        //         var ssid = ret.out.state.SSID_cur
-        //         if (ssid && ssid.length > 1) {
-        //             //MyStorage.SSID(ssid)
-        //             /////
-        //             ///Uti.set_menuContainer_color(ret)
-        //         }
-        //         var colr = (1 === sta.bEditable) ? "lightgreen" : "red"
-        //         var msg = `<font color='${colr}'>bEditable=${sta.bEditable}</font>`
-        //         var colr = (1 === sta.bRepositable) ? "lightgreen" : "yellow"
-        //         msg += `,<font color='${colr}'>bRepositable=${sta.bRepositable}</font>`
-        //     }
-        //     $("#account_set_info").html(msg).show()
-        // })
-
         PageUti.repo_status("#account_set_info")
-
     })
 
     //  Readonly now.
@@ -2947,7 +2906,7 @@ var PageUti = {
         $(showid).html("<font>start checking...</font>")
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
 
             $(showid).html("<font color='green'>ok.</font>")
