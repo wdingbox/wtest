@@ -1423,9 +1423,10 @@ BibleObjGituser.prototype.git_clone = function () {
     if (fs.existsSync(gitdir)) {
         inp.out.git_clone_res.desc += "|git folder exit but no .git"
         inp.out.git_clone_res.bExist = true
-        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S rm -rf ${proj.git_root}`).toString()
+        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S rm -rf ${gitdir}`).toString()
+        console.log(ret)
     }
-    
+
     
     var git_clone_cmd = `
     #!/bin/sh
@@ -1434,8 +1435,6 @@ BibleObjGituser.prototype.git_clone = function () {
     if [ -f "${proj.git_root}/.git/config" ]; then
         echo "${proj.git_root}/.git/config exists."
         echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
-        echo ${password} | sudo -S mkdir -p ${proj.git_root}/.git/tmp
-        echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/tmp
     else 
         echo "${proj.git_root}/.git/config does not exist."
     fi
