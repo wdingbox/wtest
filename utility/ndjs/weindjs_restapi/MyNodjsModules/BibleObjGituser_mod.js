@@ -724,7 +724,7 @@ NCache.Init = function () {
                 var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
                 var res4 = userProject.git_push()
 
-                var res5 = userProject.proj_destroy()
+                var res5 = userProject.run_proj_destroy()
             }
         }
     });
@@ -1083,7 +1083,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     return inp
 }
-BibleObjGituser.prototype.proj_destroy = function () {
+BibleObjGituser.prototype.run_proj_destroy = function () {
     var inp = this.m_inp
     var proj = inp.usr_proj;
     if (!proj) {

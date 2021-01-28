@@ -504,7 +504,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
                     var res4 = userProject.git_push()
 
-                    var res5 = userProject.proj_destroy()
+                    var res5 = userProject.run_proj_destroy()
                 }
             }
             userProject.profile_state()
