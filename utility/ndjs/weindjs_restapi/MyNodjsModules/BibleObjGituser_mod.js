@@ -734,7 +734,7 @@ NCache.Set = function (key, val) {
 }
 NCache.Get = function (key, val) {
     var val = this.myCache.get(key)
-    if (undefined !== val || null !== val) {
+    if (undefined !== val && null !== val) { //0 and "" are allowed.
         this.Set(key, val) //restart ttl -- reborn again.
     }
     return val
