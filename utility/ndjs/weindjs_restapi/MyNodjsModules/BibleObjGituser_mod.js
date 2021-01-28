@@ -713,7 +713,7 @@ myCache.on("del", function (key, val) {
     inp.out = BibleUti.Parse_inp_out_obj()
     inp.SSID = key
     var userProject = new BibleObjGituser(rootDir)
-    if (userProject.parse_inp(inp)) {
+    if (userProject.parse_inp_usr2proj(inp)) {
         userProject.profile_state()
         console.log(inp.out.state)
         if (0 === inp.out.state.bRepositable) {
@@ -794,16 +794,8 @@ BibleObjGituser.prototype.CacheGet = function (key) {
     return val
 }
 
-BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
-    var inp = this.m_inp;
-    inp.usr_proj.git_Usr_Pwd_Url = ""
-    if (inp.usr.passcode.trim().length > 0) {
-        inp.usr_proj.git_Usr_Pwd_Url = `https://${inp.usr_proj.username}:${inp.usr.passcode}@${inp.usr_proj.hostname}/${inp.usr_proj.username}/${inp.usr_proj.projname}.git`
-    }
 
-    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
-}
-BibleObjGituser.prototype.proj_parse_usr_signed_decipher_by_ssid = function (inp) {
+BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     inp.out.state.ssid_cur = inp.SSID
     if (!inp.SSID || inp.SSID.length === 0) {
         return null
@@ -831,14 +823,13 @@ BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
     if (!inp || !inp.out) {
         return null
     }
-    var _THIS = this
 
-    if (null === this.proj_parse_usr_signed_decipher_by_ssid(inp)) {
+    if (null === this.proj_get_usr_fr_cache_ssid(inp)) {
         return null
     }
-    return this.parse_inp(inp)
+    return this.parse_inp_usr2proj(inp)
 }
-BibleObjGituser.prototype.proj_parse_usr_signin_decipher_cuid_usrstr = function (inp) {
+BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return null
     console.log("inp.CUID", inp.CUID)
@@ -863,12 +854,12 @@ BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
         return null
     }
 
-    if (null === this.proj_parse_usr_signin_decipher_cuid_usrstr(inp)) {
+    if (null === this.proj_get_usr_fr_decipher_cuid(inp)) {
         return null
     }
-    return this.parse_inp(inp)
+    return this.parse_inp_usr2proj(inp)
 }
-BibleObjGituser.prototype.parse_inp = function (inp) {
+BibleObjGituser.prototype.parse_inp_usr2proj = function (inp) {
     if ("object" !== typeof inp.usr) {
         inp.usr_proj = null
         console.log("inp.usr is null")
@@ -891,8 +882,17 @@ BibleObjGituser.prototype.parse_inp = function (inp) {
         console.log(inp.out.desc)
         return null
     }
-    this.proj_parse_usr_final_check()
+    this.parse_inp_usr2proj_final()
     return inp
+}
+BibleObjGituser.prototype.parse_inp_usr2proj_final = function () {
+    var inp = this.m_inp;
+    inp.usr_proj.git_Usr_Pwd_Url = ""
+    if (inp.usr.passcode.trim().length > 0) {
+        inp.usr_proj.git_Usr_Pwd_Url = `https://${inp.usr_proj.username}:${inp.usr.passcode}@${inp.usr_proj.hostname}/${inp.usr_proj.username}/${inp.usr_proj.projname}.git`
+    }
+
+    inp.usr.repodesc = inp.usr.repodesc.trim().replace(/[\r|\n]/g, ",")//:may distroy cmdline.
 }
 
 BibleObjGituser.prototype.session_get_github_owner = function (docfile) {
