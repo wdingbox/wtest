@@ -44,12 +44,14 @@ var ApiJsonp_BibleObj = {
 
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        userProject.proj_parse_usr_signed(inp)
-        var kpf = userProject.genKeyPair()
-        var pkbs = ""
-        if (kpf) {
-            pkbs = Buffer.from(kpf.publicKey).toString("base64")
+        var pkb64 = ""
+        if(inp && inp.CUID){
+            var kpf = userProject.genKeyPair(inp.CUID)
+            if (kpf) {
+                pkb64 = kpf.pkb64
+            }
         }
+        
 
         //////////////
         var RestApi = {}
@@ -67,7 +69,7 @@ var Jsonpster = {
     url: "http://${res.req.headers.host}/",
     api: "",
     inp: ${structall},
-    pkbs:"${pkbs}",
+    pkb64:"${pkb64}",
 
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + btoa(encodeURIComponent(JSON.stringify(this.inp))) ;
@@ -101,14 +103,14 @@ RunAjaxPost_Signin : function (cbf) {
     this.inp.SSID = null
     if (!this.inp.CUID) return alert("missing CUID.")
     if ('object' != typeof this.inp.usr)return alert("missing usr.")
-    if (this.pkbs.length === 0)return alert("no pubkey. Please load page again.")
+    if (this.pkb64.length === 0)return alert("no pubkey. Please load page again.")
     
     var usrs = JSON.stringify(this.inp.usr)
     if (usrs.length > 500){return alert("max 4096-bit rsa: 501B. len="+usrs.length)}
 
     //alert(this.inp.usr)
     var encrypt = new JSEncrypt();
-    encrypt.setPublicKey(atob(this.pkbs));
+    encrypt.setPublicKey(atob(this.pkb64));
     this.inp.cipherusrs = encrypt.encrypt(usrs);
     this.inp.usr = null
 

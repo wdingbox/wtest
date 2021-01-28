@@ -671,64 +671,75 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 
+var NCache = {}
+NCache.m_checkperiod = 60 //s.
+NCache.m_TTL = NCache.m_checkperiod * 10 //seconds
+NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
+NCache.Init = function () {
+    NCache.myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
+    //myCache.ttl( "tuid", 3 )
+    NCache.myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
+    //myCache.ttl( "tuid", 6 )
+    var obj = NCache.myCache.get("tuid")
+    console.log(obj)
 
-const myCache_checkperiod = 60 //s.
-const myCache_TTL = myCache_checkperiod * 10 //seconds
-const myCache = new NodeCache({ checkperiod: myCache_checkperiod }); //checkperiod default is 600s.
-
-myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
-//myCache.ttl( "tuid", 3 )
-myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
-//myCache.ttl( "tuid", 6 )
-var obj = myCache.get("tuid")
-console.log(obj)
-
-myCache.on("del", function (key, val) {
-    console.log("\n\n\n\n\n\n\n\n\n\non expired")
-    console.log("on expired myCache_TTL=", myCache_TTL)
-    console.log("on expired myCache_checkperiod=", myCache_checkperiod)
-    // ... do something ...
-    console.log("on del key=", key)
-    console.log("on del val=", val)
-    if (!val) {
-        console.log("on del val=undefined")
-        return
-    }
-
-    var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
-
-    console.log("on del rootDir=", rootDir)
-    if (!rootDir) return
-
-    var acc = key + ""
-    if (!fs.existsSync(key)) {
-        console.log("already del rootDir=", rootDir)
-        return
-    }
-
-
-    console.log("on del proj_destroy=", rootDir)
-    var inp = {}
-    inp.usr = val
-    inp.out = BibleUti.Parse_inp_out_obj()
-    inp.SSID = key
-    var userProject = new BibleObjGituser(rootDir)
-    if (userProject.parse_inp_usr2proj(inp)) {
-        userProject.profile_state()
-        console.log(inp.out.state)
-        if (0 === inp.out.state.bRepositable) {
-            //case push failed. Don't delete
-            console.log("git dir not exit.")
-
-        } else {
-            var res2 = userProject.execSync_cmd_git("git add *")
-            var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
-            var res4 = userProject.git_push()
-
-            var res5 = userProject.proj_destroy()
+    NCache.myCache.on("del", function (key, val) {
+        console.log("\n\n\n\n\n\n\n\n\n\non expired")
+        console.log("on expired NCache.m_TTL=", NCache.m_TTL)
+        console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
+        // ... do something ...
+        console.log("on del key=", key)
+        console.log("on del val=", val)
+        if (!val) {
+            console.log("on del val=undefined")
+            return
         }
+
+        var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
+
+        console.log("on del rootDir=", rootDir)
+        if (!rootDir) return
+
+        if (!fs.existsSync(key)) {
+            console.log("Dir(key) not exist:", key)
+            return
+        }
+
+
+        console.log("on del proj_destroy=", rootDir)
+        var inp = {}
+        inp.usr = val
+        inp.out = BibleUti.Parse_inp_out_obj()
+        inp.SSID = key
+        var userProject = new BibleObjGituser(rootDir)
+        if (userProject.parse_inp_usr2proj(inp)) {
+            userProject.profile_state()
+            console.log(inp.out.state)
+            if (0 === inp.out.state.bRepositable) {
+                //case push failed. Don't delete
+                console.log("git dir not exit.")
+
+            } else {
+                var res2 = userProject.execSync_cmd_git("git add *")
+                var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
+                var res4 = userProject.git_push()
+
+                var res5 = userProject.proj_destroy()
+            }
+        }
+    });
+}
+NCache.Set = function (key, val) {
+    this.myCache.set(key, val, NCache.m_TTL) //restart ttl -- reborn again.
+}
+NCache.Get = function (key, val) {
+    var val = this.myCache.get(key)
+    if (undefined !== val && null !== val) {
+        this.Set(key, val) //restart ttl -- reborn again.
     }
-});
+    return val
+}
+NCache.Init()
 
 
 
@@ -758,10 +769,9 @@ var BibleObjGituser = function (rootDir) {
     var pathrootdir = rootDir + this.m_sRootNode
     this.m_SvrUsrsBCV = new SvrUsrsBCV(pathrootdir)
 
-    this.m_Cache = myCache;
 }
-BibleObjGituser.prototype.genKeyPair = function () {
-    if (!this.m_inp || !this.m_inp.CUID) return
+BibleObjGituser.prototype.genKeyPair = function (cuid) {
+    if (!cuid) return
     const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
         modulusLength: 4096, // Note:can encrypt txt len max 501 bytes. 
         publicKeyEncoding: {
@@ -776,23 +786,18 @@ BibleObjGituser.prototype.genKeyPair = function () {
     console.log("publicKey\n", publicKey)
     console.log("privateKey\n", privateKey)
 
+    var pkb64 = Buffer.from(publicKey).toString("base64")
+    console.log("pkb64\n", pkb64)
+    console.log("pkb64.len", pkb64.length)
 
-    var tuid = this.m_inp.CUID
-    //var fname = this.cuid_prvkey_fname_tmp()
-    //fs.writeFileSync(fname, privateKey, "utf8")
+    //var tuid = this.m_inp.CUID
+    var val = { publicKey: publicKey, privateKey: privateKey, pkb64: pkb64, CUID: cuid }
 
-    this.m_Cache.set(tuid, { publicKey: publicKey, privateKey: privateKey, CUID: tuid }, myCache_TTL)
-    return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
-}
-
-
-BibleObjGituser.prototype.CacheGet = function (key) {
-    var val = this.m_Cache.get(key)
-    if (undefined !== val && null !== val) {
-        this.m_Cache.set(key, val, myCache_TTL) //restart ttl -- reborn again.
-    }
+    NCache.Set(cuid, val)
     return val
 }
+
+
 
 
 BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
@@ -802,7 +807,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     }
 
 
-    inp.usr = this.CacheGet(inp.SSID)
+    inp.usr = NCache.Get(inp.SSID)
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
 
@@ -811,7 +816,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     if (inp.par && inp.par.aux) {
         if ("string" === typeof inp.par.aux.Update_repodesc) {
             inp.usr.repodesc = inp.par.aux.Update_repodesc
-            this.m_Cache.set(inp.SSID, inp.usr, myCache_TTL)
+            NCache.Set(inp.SSID, inp.usr)
             console.log(`Update_repodesc ************* = ${inp.usr.repodesc}`)
         }
     }
@@ -833,7 +838,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return null
     console.log("inp.CUID", inp.CUID)
-    var robj = this.m_Cache.take(inp.CUID) //delete immediately after use.
+    var robj = NCache.myCache.take(inp.CUID) //delete immediately after use.
     if (!robj) return null
     console.log(robj)
 
@@ -910,7 +915,7 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
     var pos = docfile.indexOf("/account/")
     var gitpath = docfile.substr(0, pos)
     console.log("gitpath", gitpath)
-    var usrObj = this.CacheGet(gitpath)
+    var usrObj = NCache.Get(gitpath)
     if (!usrObj) return null
     console.log("usrObj", usrObj)
     return { repodesc: usrObj.repodesc, pathfile: gitpath }
@@ -918,7 +923,7 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
 
 BibleObjGituser.prototype.session_create = function () {
     var gitdir = this.get_usr_git_dir()
-    this.m_Cache.set(gitdir, this.m_inp.usr, myCache_TTL)
+    NCache.Set(gitdir, this.m_inp.usr)
     console.log(gitdir, this.m_inp.usr)
 
     return { SSID: gitdir }
