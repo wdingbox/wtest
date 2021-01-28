@@ -1389,6 +1389,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 }
 
 BibleObjGituser.prototype.git_clone = function () {
+    var password = "lll" //dev mac
     var _THIS = this
     var inp = this.m_inp
     var proj = inp.usr_proj;
@@ -1405,6 +1406,7 @@ BibleObjGituser.prototype.git_clone = function () {
         inp.out.git_clone_res.bExist = true
         return inp
     }
+    
 
     var clone_https = inp.usr_proj.git_Usr_Pwd_Url
     if (clone_https.length === 0) {
@@ -1417,7 +1419,14 @@ BibleObjGituser.prototype.git_clone = function () {
     console.log("to clone: ", clone_https)
 
     //console.log("proj", proj)
-    var password = "lll" //dev mac
+    gitdir = this.get_usr_git_dir()
+    if (fs.existsSync(gitdir)) {
+        inp.out.git_clone_res.desc += "|git folder exit but no .git"
+        inp.out.git_clone_res.bExist = true
+        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S rm -rf ${proj.git_root}`).toString()
+    }
+    
+    
     var git_clone_cmd = `
     #!/bin/sh
     cd ${this.m_rootDir}
