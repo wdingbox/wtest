@@ -519,17 +519,17 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         // res.end();
     },
 
-    ApiUsrReposData_status: async function (req, res) {
+    ApiUsrReposData_status: function (req, res) {
         //if (!req || !res) {
         //    return inp_struct_account_setup
         //}
         //var inp = BibleUti.Parse_GET_req_to_inp(req)
-        BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
+        BibleUti.Parse_POST_req_to_inp(req, res, function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
                 var ret = userProject.run_proj_state()
-                var res2 = await userProject.exec_cmd_git("git status -sb")
+                var res2 = userProject.execSync_cmd_git("git status -sb")
                 if (res2 && res2.stdout) {
                     inp.out.state.git_status_sb = res2.stdout
                     inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
@@ -559,8 +559,8 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 userProject.run_proj_setup()
                 //await userProject.git_add_commit_push("push hard.", "");//real push hard.
 
-                var res2 = await userProject.exec_cmd_git("git add *")
-                var res3 = await userProject.exec_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
+                var res2 =  userProject.execSync_cmd_git("git add *")
+                var res3 =  userProject.execSync_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
                 var res4 = userProject.git_push()
             }
         })
@@ -605,7 +605,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
                 var ret = userProject.run_proj_state()
-                var rso = await userProject.cmd_exec()
+                var rso = userProject.execSync_cmd_git()
                 console.log("\n\n*cmd-res", rso)
             }
         })
