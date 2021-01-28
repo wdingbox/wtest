@@ -16,6 +16,7 @@ const crypto = require('crypto')
 const NodeCache = require("node-cache");
 const myCache = new NodeCache();
 
+
 myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 })
 var obj = myCache.get("tuid")
 console.log(obj)
@@ -682,7 +683,32 @@ BibleObjBackendService.prototype.get_rootDir = function (doc) {
 var g_BibleObjBackendService = new BibleObjBackendService()
 
 
+myCache.on("expired", function (key, val) {
+    // ... do something ...
+    console.log("on expired key:", key)
+    console.log("on expired val:", val)
+    var rootDir = g_BibleObjBackendService.get_rootDir()
+    console.log("on expired rootDir:", rootDir)
 
+    var inp = {}
+    inp.usr = val
+    inp.SSID = key
+    var userProject = new BibleObjGituser(rootDir)
+    if (userProject.proj_parse_usr_signed(inp)) {
+        userProject.profile_state()
+        if (0 === inp.out.state.bRepositable) {
+            //case push failed. Don't delete
+            console.log("git dir not exit.")
+
+        } else {
+            var res2 = userProject.execSync_cmd_git("git add *")
+            var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+            var res4 = userProject.git_push()
+
+            var res5 = userProject.proj_destroy()
+        }
+    }
+});
 
 
 
@@ -698,38 +724,15 @@ var BibleObjGituser = function (rootDir) {
     this.m_sBaseTemp = `${this.m_sRootNode}/temp`
 
     var pathrootdir = rootDir + this.m_sRootNode
+    g_BibleObjBackendService.set_rootDir(pathrootdir)
     this.m_backendService = g_BibleObjBackendService
-    this.m_backendService.set_rootDir(pathrootdir)
 
     this.m_SvrUsrsBCV = new SvrUsrsBCV()
     this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
 
     this.m_Cache = myCache;
 
-    myCache.on("expired", function (key, val) {
-        // ... do something ...
-        console.log("on expired key:", key)
-        console.log("on expired val:", val)
-
-        var inp = {}
-        inp.usr = val
-        inp.SSID = key
-        var userProject = new BibleObjGituser(rootDir)
-        if (userProject.proj_parse_usr_signed(inp)) {
-            userProject.profile_state()
-            if (0 === inp.out.state.bRepositable) {
-                //case push failed. Don't delete
-                console.log("git dir not exit.")
-
-            } else {
-                var res2 = userProject.execSync_cmd_git("git add *")
-                var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
-                var res4 = userProject.git_push()
-
-                var res5 = userProject.proj_destroy()
-            }
-        }
-    });
+    
 }
 BibleObjGituser.prototype.genKeyPair = function () {
     if (!this.m_inp || !this.m_inp.CUID) return
