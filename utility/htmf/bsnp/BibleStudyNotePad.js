@@ -2898,7 +2898,7 @@ var PageUti = {
         if (bForce) {
             //Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            //Jsonpster.inp.SSID = MyStorage.SSID()
+            Jsonpster.inp.SSID = MyStorage.SSID()
         }
 
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
@@ -2961,7 +2961,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            //Jsonpster.inp.SSID = MyStorage.SSID()
+            Jsonpster.inp.SSID = MyStorage.SSID()
         }
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
@@ -2987,7 +2987,7 @@ var PageUti = {
         if (bForce) {
             Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update() //force to destroy. test only.
         } else {
-            //Jsonpster.inp.SSID = MyStorage.SSID()
+            Jsonpster.inp.SSID = MyStorage.SSID()
         }
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
