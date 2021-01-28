@@ -16,8 +16,16 @@ const crypto = require('crypto')
 const NodeCache = require("node-cache");
 
 
-
+const WorkingRootNodeName = "bist"
 var BibleUti = {
+    WorkingRootDir: function (v) {
+        if (undefined === v) {
+            return BibleUti.m_rootDir
+        } else {
+            BibleUti.m_rootDir = v
+        }
+    },
+
     GetFilesAryFromDir: function (startPath, deep, cb) {//startPath, filter
         function recursiveDir(startPath, deep, outFilesArr) {
             var files = fs.readdirSync(startPath);
@@ -482,6 +490,10 @@ var BibleUti = {
         }
         return null
     },
+
+    Parse_inp_out_obj: function () {
+        return { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+    },
     Parse_POST_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
         console.log("req.url", req.url)
@@ -502,7 +514,7 @@ var BibleUti = {
                 var inpObj = null
                 try {
                     inpObj = JSON.parse(body)
-                    inpObj.out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+                    inpObj.out = BibleUti.Parse_inp_out_obj()
                 } catch (err) {
                     inpObj.err = err
                 }
@@ -557,7 +569,7 @@ var BibleUti = {
             //d64 = Buffer.from(d64, 'base64').toString()
             var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
 
-            var out = { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+            var out = BibleUti.Parse_inp_out_obj()
             try {
                 var inpObj = JSON.parse(sin);
                 inpObj.out = out
@@ -659,6 +671,7 @@ function BibleObjBackendService() {
     this.m_watchAccounts = {}
 }
 BibleObjBackendService.prototype.set_rootDir = function (rootDir) {
+    if (this.m_rootDir) return
     this.m_rootDir = rootDir
 }
 BibleObjBackendService.prototype.bind_folder_event = function (dir) {
@@ -694,30 +707,46 @@ myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
 var obj = myCache.get("tuid")
 console.log(obj)
 
-myCache.on("expired", function (key, val) {
-    // ... do something ...
+myCache.on("del", function (key, val) {
     console.log("\n\n\n\n\n\n\n\n\n\non expired")
     console.log("on expired myCache_TTL=", myCache_TTL)
     console.log("on expired myCache_checkperiod=", myCache_checkperiod)
-    console.log("on expired key=", key)
-    console.log("on expired val=", val)
-    var rootDir = g_BibleObjBackendService.get_rootDir()
-    console.log("on expired rootDir=", rootDir)
+    // ... do something ...
+    console.log("on del key=", key)
+    console.log("on del val=", val)
+    if (!val) {
+        console.log("on del val=undefined")
+        return
+    }
+
+    var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
+
+    console.log("on del rootDir=", rootDir)
     if (!rootDir) return
 
+    var acc = key + ""
+    if (!fs.existsSync(key)) {
+        console.log("already del rootDir=", rootDir)
+        return
+    }
+
+
+    console.log("on del proj_destroy=", rootDir)
     var inp = {}
     inp.usr = val
+    inp.out = BibleUti.Parse_inp_out_obj()
     inp.SSID = key
     var userProject = new BibleObjGituser(rootDir)
-    if (userProject.proj_parse_usr_signed(inp)) {
+    if (userProject.parse_inp(inp)) {
         userProject.profile_state()
+        console.log(inp.out.state)
         if (0 === inp.out.state.bRepositable) {
             //case push failed. Don't delete
             console.log("git dir not exit.")
 
         } else {
             var res2 = userProject.execSync_cmd_git("git add *")
-            var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+            var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
             var res4 = userProject.git_push()
 
             var res5 = userProject.proj_destroy()
@@ -746,12 +775,12 @@ var BibleObjGituser = function (rootDir) {
     this.m_rootDir = rootDir
 
 
-    this.m_sRootNode = "bist"
+    this.m_sRootNode = WorkingRootNodeName //"bist"
     this.m_sBaseUsrs = `${this.m_sRootNode}/usrs`
     this.m_sBaseTemp = `${this.m_sRootNode}/temp`
 
     var pathrootdir = rootDir + this.m_sRootNode
-    g_BibleObjBackendService.set_rootDir(pathrootdir)
+
     this.m_backendService = g_BibleObjBackendService
 
     this.m_SvrUsrsBCV = new SvrUsrsBCV()
@@ -873,6 +902,7 @@ BibleObjGituser.prototype.parse_inp = function (inp) {
         console.log("inp.usr is null")
         return null
     }
+    if (!this.m_inp) this.m_inp = inp
 
     inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
     if (!inp.usr_proj) {
@@ -1110,6 +1140,7 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     stat.bMyojDir = 1
     var accdir = this.get_usr_myoj_dir()
     if (!fs.existsSync(accdir)) {
+        console.log("notExist", accdir)
         stat.bMyojDir = 0
     }
 
@@ -1117,12 +1148,14 @@ BibleObjGituser.prototype.profile_state = function (cbf) {
     stat.bDatDir = 1
     var accdir = this.get_usr_dat_dir()
     if (!fs.existsSync(accdir)) {
+        console.log("notExist", accdir)
         stat.bDatDir = 0
     }
 
     stat.bGitDir = 1
     var git_config_fname = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(git_config_fname)) {
+        console.log("notExist", git_config_fname)
         stat.bGitDir = 0
         stat.bEditable = 0
         stat.bRepositable = 0

@@ -719,6 +719,7 @@ var BibleObjJsonpApi = {
     },
     init: function (app, rootDir) {
         BibleObjJsonpApi.m_rootDir = rootDir
+        BibleUti.WorkingRootDir(rootDir)
         //
         Object.keys(ApiJsonp_BibleObj).forEach(function (sapi) {
             console.log("api:", sapi)
