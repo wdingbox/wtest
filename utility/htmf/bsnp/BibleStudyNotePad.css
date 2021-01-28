@@ -334,7 +334,7 @@ body {
 
     #Tab_OutputBooksList{
         position: fixed;
-        left: 30px;
+        left: 2px;
         background-color: #5F95FC;
         z-index: 9999;
         padding: 0px 10px 10px 1px;
