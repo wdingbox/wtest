@@ -672,8 +672,8 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 
-const myCache_TTL = 10 //seconds
-const myCache_checkperiod = 1 //s.
+const myCache_TTL = 60 //seconds
+const myCache_checkperiod = 6 //s.
 const myCache = new NodeCache({ checkperiod: myCache_checkperiod }); //checkperiod default is 600s.
 
 myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
