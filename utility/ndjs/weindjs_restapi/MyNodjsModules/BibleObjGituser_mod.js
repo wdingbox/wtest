@@ -14,7 +14,7 @@ const execSync = require('child_process').execSync;
 const crypto = require('crypto')
 
 const NodeCache = require("node-cache");
-const myCache = new NodeCache();
+const myCache = new NodeCache({stdTTL: 1, checkperiod: 120 }); //in seconds.
 
 
 myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 })
