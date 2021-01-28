@@ -1511,16 +1511,6 @@ BibleObjGituser.prototype.exec_cmd_git = async function (gitcmd) {
     var _THIS = this
     var inp = this.m_inp
 
-    //if (!inp.par) {
-    //    inp.out.desc = "no par"
-    //    return null
-    //}
-
-    //console.log("inp.par.cmdline: ", inp.par.cmdline)
-    //if (!inp.par.cmdline) {
-    //    inp.out.desc = "no inp.par.cmdline"
-    //    return null
-    //}
 
     if (!fs.existsSync(this.get_usr_git_dir())) {
         inp.out.desc = "no git dir"
