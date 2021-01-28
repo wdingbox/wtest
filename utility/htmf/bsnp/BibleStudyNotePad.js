@@ -2966,7 +2966,7 @@ var PageUti = {
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
 
             //Uti.Msg("ret", ret)
             $("#otb").html("<font color='green'>Push is done.</font>")
@@ -2992,7 +2992,7 @@ var PageUti = {
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)
-        Jsonpster.Run(function (ret) {
+        Jsonpster.RunAjaxPost(function (ret) {
 
             $("#otb").html("<font color='green'>Pull is done.</font>")
             //dbg_pster(ret)
@@ -3041,7 +3041,7 @@ var PageUti = {
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
-            Jsonpster.Run(function (ret) {
+            Jsonpster.RunAjaxPost(function (ret) {
                 Uti.Msg(ret)
                 var res = ret.out.cmd_exec_res.success
                 var str2 = ""
