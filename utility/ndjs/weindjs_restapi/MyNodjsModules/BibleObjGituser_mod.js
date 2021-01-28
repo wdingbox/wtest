@@ -14,12 +14,8 @@ const execSync = require('child_process').execSync;
 const crypto = require('crypto')
 
 const NodeCache = require("node-cache");
-const myCache = new NodeCache({stdTTL: 1, checkperiod: 120 }); //in seconds.
 
 
-myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 })
-var obj = myCache.get("tuid")
-console.log(obj)
 
 var BibleUti = {
     GetFilesAryFromDir: function (startPath, deep, cb) {//startPath, filter
@@ -677,18 +673,37 @@ BibleObjBackendService.prototype.bind_folder_event = function (dir) {
         return
     }
 }
-BibleObjBackendService.prototype.get_rootDir = function (doc) {
-    this.m_rootDir = rootDir
+BibleObjBackendService.prototype.get_rootDir = function () {
+    return this.m_rootDir
 }
 var g_BibleObjBackendService = new BibleObjBackendService()
 
 
+
+
+
+
+const myCache_TTL = 10 //seconds
+const myCache_checkperiod = 1 //s.
+const myCache = new NodeCache({ checkperiod: myCache_checkperiod }); //checkperiod default is 600s.
+
+myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
+//myCache.ttl( "tuid", 3 )
+myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
+//myCache.ttl( "tuid", 6 )
+var obj = myCache.get("tuid")
+console.log(obj)
+
 myCache.on("expired", function (key, val) {
     // ... do something ...
-    console.log("on expired key:", key)
-    console.log("on expired val:", val)
+    console.log("\n\n\n\n\n\n\n\n\n\non expired")
+    console.log("on expired myCache_TTL=", myCache_TTL)
+    console.log("on expired myCache_checkperiod=", myCache_checkperiod)
+    console.log("on expired key=", key)
+    console.log("on expired val=", val)
     var rootDir = g_BibleObjBackendService.get_rootDir()
-    console.log("on expired rootDir:", rootDir)
+    console.log("on expired rootDir=", rootDir)
+    if (!rootDir) return
 
     var inp = {}
     inp.usr = val
@@ -714,6 +729,18 @@ myCache.on("expired", function (key, val) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 var BibleObjGituser = function (rootDir) {
     if (!rootDir.match(/\/$/)) rootDir += "/"
     this.m_rootDir = rootDir
@@ -732,7 +759,7 @@ var BibleObjGituser = function (rootDir) {
 
     this.m_Cache = myCache;
 
-    
+
 }
 BibleObjGituser.prototype.genKeyPair = function () {
     if (!this.m_inp || !this.m_inp.CUID) return
@@ -755,8 +782,15 @@ BibleObjGituser.prototype.genKeyPair = function () {
     //var fname = this.cuid_prvkey_fname_tmp()
     //fs.writeFileSync(fname, privateKey, "utf8")
 
-    myCache.set(tuid, { publicKey: publicKey, privateKey: privateKey, CUID: tuid })
+    this.m_Cache.set(tuid, { publicKey: publicKey, privateKey: privateKey, CUID: tuid }, myCache_TTL)
     return { publicKey: publicKey, privateKey: privateKey, CUID: tuid }
+}
+
+
+BibleObjGituser.prototype.CacheGet = function (key) {
+    var val = this.m_Cache.get(key)
+    this.m_Cache.set(key, val, myCache_TTL) //restart ttl -- reborn again.
+    return val
 }
 
 BibleObjGituser.prototype.proj_parse_usr_final_check = function () {
@@ -775,7 +809,7 @@ BibleObjGituser.prototype.proj_parse_usr_signed_decipher_by_ssid = function (inp
     }
 
 
-    inp.usr = myCache.get(inp.SSID)
+    inp.usr = this.CacheGet(inp.SSID)
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
 
@@ -784,7 +818,7 @@ BibleObjGituser.prototype.proj_parse_usr_signed_decipher_by_ssid = function (inp
     if (inp.par && inp.par.aux) {
         if ("string" === typeof inp.par.aux.Update_repodesc) {
             inp.usr.repodesc = inp.par.aux.Update_repodesc
-            myCache.set(inp.SSID, inp.usr)
+            this.m_Cache.set(inp.SSID, inp.usr, myCache_TTL)
             console.log(`Update_repodesc ************* = ${inp.usr.repodesc}`)
         }
     }
@@ -807,7 +841,7 @@ BibleObjGituser.prototype.proj_parse_usr_signin_decipher_cuid_usrstr = function 
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return null
     console.log("inp.CUID", inp.CUID)
-    var robj = myCache.get(inp.CUID)
+    var robj = this.m_Cache.take(inp.CUID) //delete immediately after use.
     if (!robj) return null
     console.log(robj)
 
@@ -874,7 +908,7 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
     var pos = docfile.indexOf("/account/")
     var gitpath = docfile.substr(0, pos)
     console.log("gitpath", gitpath)
-    var usrObj = myCache.get(gitpath)
+    var usrObj = this.CacheGet(gitpath)
     if (!usrObj) return null
     console.log("usrObj", usrObj)
     return { repodesc: usrObj.repodesc, pathfile: gitpath }
@@ -882,7 +916,7 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
 
 BibleObjGituser.prototype.session_create = function () {
     var gitdir = this.get_usr_git_dir()
-    myCache.set(gitdir, this.m_inp.usr)
+    this.m_Cache.set(gitdir, this.m_inp.usr, myCache_TTL)
     console.log(gitdir, this.m_inp.usr)
 
     return { SSID: gitdir }
@@ -1318,7 +1352,7 @@ BibleObjGituser.prototype.git_clone = function () {
         inp.out.git_clone_res.bExist = true
         return inp
     }
-    
+
 
     var clone_https = inp.usr_proj.git_Usr_Pwd_Url
     if (clone_https.length === 0) {
@@ -1339,7 +1373,7 @@ BibleObjGituser.prototype.git_clone = function () {
         console.log(ret)
     }
 
-    
+
     var git_clone_cmd = `
     #!/bin/sh
     cd ${this.m_rootDir}
