@@ -1922,7 +1922,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     //      PageUti.Repositories_History("#outConfig", 1)
     //  })
     $("#repodesc").on("focus", function () {
-        PageUti.Repositories_History("#outConfig", 2)
+        PageUti.Repositories_History("#account_set_info", 2)
         MyStorage.Repositories().repos_app_update()
     })
     //  $("#passcode").bind("focus", function () {
@@ -2796,7 +2796,7 @@ var PageUti = {
             $(showid).slideUp("slow")
             return
         }
-        var capary = ["", "Recent-Repositories", "Recent-Specifications"]
+        var capary = ["", "Recent_Repositories", "Recent_ShareIDs"]
         var ar = MyStorage.Repositories().repos_app_init()
         var uniqTmp = {}
         var stb = `<table id='account_history_table' class='center' border='1'><caption>${capary[cid]}</caption><tbody>`
@@ -4026,7 +4026,7 @@ var BibleInputMenuContainer = `
                     <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a><br>
                     
                     <button id="account_set">UpdateStatus</button>
-                    <a id="account_set_info"></a>
+                    <div id="account_set_info"></div>
                     </td>
                     
                 </tr>
