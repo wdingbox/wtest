@@ -713,7 +713,7 @@ NCache.Init = function () {
         inp.SSID = key
         var userProject = new BibleObjGituser(rootDir)
         if (userProject.parse_inp_usr2proj(inp)) {
-            userProject.profile_state()
+            userProject.run_proj_state()
             console.log(inp.out.state)
             if (0 === inp.out.state.bRepositable) {
                 //case push failed. Don't delete
@@ -1046,7 +1046,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         return null
     }
     inp.out.desc = "setup start."
-    var stat = this.profile_state()
+    var stat = this.run_proj_state()
     if (stat.bEditable === 1) {
         inp.out.desc += "|already setup."
         this.git_pull()
@@ -1055,14 +1055,14 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         if (stat.bGitDir !== 1) {
             this.git_clone()
             this.git_config_allow_push(false)
-            stat = this.profile_state()
+            stat = this.run_proj_state()
         } else {
             this.git_pull()
         }
 
         if (stat.bMyojDir !== 1) {
             this.cp_template_to_git()
-            stat = this.profile_state()
+            stat = this.run_proj_state()
         }
         if (stat.bDatDir !== 1) {
 
@@ -1077,7 +1077,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     this.chmod_R_777_acct()
 
-    var retp = this.profile_state()
+    var retp = this.run_proj_state()
     if (retp.bEditable === 1) {
     }
 
@@ -1105,10 +1105,10 @@ BibleObjGituser.prototype.run_proj_destroy = function () {
 
     //this.session_destroy()
 
-    this.profile_state()
+    this.run_proj_state()
     return inp
 }
-BibleObjGituser.prototype.profile_state = function (cbf) {
+BibleObjGituser.prototype.run_proj_state = function (cbf) {
     if (!this.m_inp.out || !this.m_inp.out.state) return console.log("******Fatal Error.")
     var stat = this.m_inp.out.state
     //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
@@ -1545,16 +1545,6 @@ BibleObjGituser.prototype.execSync_cmd_git = async function (gitcmd) {
     var _THIS = this
     var inp = this.m_inp
 
-    //if (!inp.par) {
-    //    inp.out.desc = "no par"
-    //    return null
-    //}
-
-    //console.log("inp.par.cmdline: ", inp.par.cmdline)
-    //if (!inp.par.cmdline) {
-    //    inp.out.desc = "no inp.par.cmdline"
-    //    return null
-    //}
 
     if (!fs.existsSync(this.get_usr_git_dir())) {
         inp.out.desc = "no git dir"

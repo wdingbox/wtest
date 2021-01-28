@@ -411,7 +411,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
                 userProject.run_proj_setup()
 
-                var retp = userProject.profile_state()
+                var retp = userProject.run_proj_state()
                 if (0) {
                     await userProject.git_pull(function (bSuccess) {
 
@@ -494,7 +494,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.profile_state()
+                userProject.run_proj_state()
                 if (0 === inp.out.state.bRepositable) {
                     //case push failed. Don't delete
                     console.log("git dir not exit.")
@@ -507,7 +507,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     var res5 = userProject.run_proj_destroy()
                 }
             }
-            userProject.profile_state()
+            userProject.run_proj_state()
         })
 
         // var sret = JSON.stringify(inp, null, 4)
@@ -528,7 +528,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
-                var ret = userProject.profile_state()
+                var ret = userProject.run_proj_state()
                 var res2 = await userProject.exec_cmd_git("git status -sb")
                 if (res2 && res2.stdout) {
                     inp.out.state.git_status_sb = res2.stdout
@@ -604,7 +604,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
-                var ret = userProject.profile_state()
+                var ret = userProject.run_proj_state()
                 var rso = await userProject.cmd_exec()
                 console.log("\n\n*cmd-res", rso)
             }
