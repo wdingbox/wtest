@@ -492,7 +492,10 @@ var BibleUti = {
     },
 
     Parse_inp_out_obj: function () {
-        return { data: null, desc: "", err: null, state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 } }
+        return {
+            data: null, desc: "", err: null,
+            state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 }
+        }
     },
     Parse_POST_req_to_inp: function (req, res, cbf) {
         console.log("req.method", req.method)
@@ -589,9 +592,7 @@ var BibleUti = {
 
 
 
-var SvrUsrsBCV = function () {
-}
-SvrUsrsBCV.prototype.set_rootDir = function (srcpath) {
+var SvrUsrsBCV = function (srcpath) {
     this.m_rootDir = srcpath
     this.output = {
         m_olis: [],
@@ -665,31 +666,6 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 
-
-
-function BibleObjBackendService() {
-    this.m_watchAccounts = {}
-}
-BibleObjBackendService.prototype.set_rootDir = function (rootDir) {
-    if (this.m_rootDir) return
-    this.m_rootDir = rootDir
-}
-BibleObjBackendService.prototype.bind_folder_event = function (dir) {
-    var _THIS = this
-    if (undefined === this.m_watchAccounts[dir]) {
-        this.m_watchAccounts[dir] = 0
-        fs.watch(dir, { recursive: true }, function (evt, fname) {
-            console.log("\n******************* event:", evt, fname)
-            console.log("\n")
-
-        })
-        return
-    }
-}
-BibleObjBackendService.prototype.get_rootDir = function () {
-    return this.m_rootDir
-}
-var g_BibleObjBackendService = new BibleObjBackendService()
 
 
 
@@ -780,15 +756,9 @@ var BibleObjGituser = function (rootDir) {
     this.m_sBaseTemp = `${this.m_sRootNode}/temp`
 
     var pathrootdir = rootDir + this.m_sRootNode
-
-    this.m_backendService = g_BibleObjBackendService
-
-    this.m_SvrUsrsBCV = new SvrUsrsBCV()
-    this.m_SvrUsrsBCV.set_rootDir(pathrootdir)
+    this.m_SvrUsrsBCV = new SvrUsrsBCV(pathrootdir)
 
     this.m_Cache = myCache;
-
-
 }
 BibleObjGituser.prototype.genKeyPair = function () {
     if (!this.m_inp || !this.m_inp.CUID) return
@@ -818,7 +788,9 @@ BibleObjGituser.prototype.genKeyPair = function () {
 
 BibleObjGituser.prototype.CacheGet = function (key) {
     var val = this.m_Cache.get(key)
-    this.m_Cache.set(key, val, myCache_TTL) //restart ttl -- reborn again.
+    if (undefined !== val && null !== val) {
+        this.m_Cache.set(key, val, myCache_TTL) //restart ttl -- reborn again.
+    }
     return val
 }
 
