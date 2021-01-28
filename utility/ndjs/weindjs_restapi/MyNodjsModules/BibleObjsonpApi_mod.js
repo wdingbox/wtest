@@ -240,7 +240,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
 
-            var stat = userProject.proj_setup()
+            var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) {
                 console.log("proj_setup failed.", stat)
                 return inp;
@@ -305,7 +305,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 save_res.desc = "proj=null"
                 return
             }
-            var stat = userProject.proj_setup()
+            var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
@@ -368,7 +368,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var proj = userProject.proj_parse_usr_signed(inp)
             if (!proj) return console.log("proj_parse_usr_signed failed.")
 
-            var stat = userProject.proj_setup()
+            var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
 
@@ -409,7 +409,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             if (proj) {
 
-                userProject.proj_setup()
+                userProject.run_proj_setup()
 
                 var retp = userProject.profile_state()
                 if (0) {
@@ -452,7 +452,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var ret = userProject.proj_parse_usr_signin(inp)
         if (ret) {
-            userProject.proj_setup()
+            userProject.run_proj_setup()
 
             if (inp.out.state.bEditable === 1) {
                 inp.out.state.SSID = userProject.session_create().SSID
@@ -479,7 +479,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var proj = userProject.proj_parse_usr_signin(inp)
             if (!proj) return console.log("proj_parse_usr_signin failed.")
 
-            var stat = userProject.proj_setup()
+            var stat = userProject.run_proj_setup()
             if (inp.out.state.bEditable === 1) {
                 inp.out.state.SSID = userProject.session_create().SSID
             }
@@ -556,7 +556,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.proj_setup()
+                userProject.run_proj_setup()
                 //await userProject.git_add_commit_push("push hard.", "");//real push hard.
 
                 var res2 = await userProject.exec_cmd_git("git add *")
@@ -582,7 +582,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.proj_setup()
+                userProject.run_proj_setup()
                 //await userProject.git_pull();
             }
 

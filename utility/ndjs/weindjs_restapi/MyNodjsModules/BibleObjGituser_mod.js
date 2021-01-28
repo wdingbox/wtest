@@ -1037,7 +1037,7 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     return dest_pfname
 }
 
-BibleObjGituser.prototype.proj_setup = function () {
+BibleObjGituser.prototype.run_proj_setup = function () {
     var inp = this.m_inp
     var proj = inp.usr_proj;
     if (!proj) {
