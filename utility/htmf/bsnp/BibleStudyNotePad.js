@@ -1900,10 +1900,15 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         $("#repopath").val("https://github.com/bsnp21/pub_test01.git")
         $("#passcode").val("")
     })
-    $("#account_date").on("click", function () {
-        var tx = $("#repodesc").val()
-        var d = new Date()
-        $("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
+    $("#share_public").on("click", function () {
+        var tx = $("#repodesc").val('*')
+        //var d = new Date()
+        //$("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
+    })
+    $("#share_private").on("click", function () {
+        var tx = $("#repodesc").val('')
+        //var d = new Date()
+        //$("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
     $("#account_helper").on("click", function () {
         Uti.open_child_window("./mySignIn.htm", function (data) {
@@ -3871,10 +3876,7 @@ var BibleInputMenuContainer = `
                        <button class='docSwitch ColorRecentMarks' title="RecentBooks">B</button>
                        <button class='docSwitch' title="RecentTouch">T</button>
                        <button class='docSwitch' title="MemoryVerse">M</button><br>
-                       <a id="clearUnse" class="RecentBCVsBtn" title='delete selected items'> x </a> 
-                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'> &#8767; </a>
-                       <a id="sortTbIts" class="RecentBCVsBtn" title='sort the list'> &#8710; </a>
-                       <a id="save2Repo" class="RecentBCVsBtn" style="display: none;" title='save to repo'>&#9635;</a>
+                       
                     </caption>
                     <thead></thead>
                     <tbody id='RecentBooks'>
@@ -3897,7 +3899,12 @@ var BibleInputMenuContainer = `
                     </tbody>
                     <tbody id='MemoryVerse'>
                     </tbody>
-                    
+                    <caption>
+                       <a id="clearUnse" class="RecentBCVsBtn" title='delete selected items'> x </a> 
+                       <a id="toggleSel" class="RecentBCVsBtn" title='toggle selected and unselected'> &#8767; </a>
+                       <a id="sortTbIts" class="RecentBCVsBtn" title='sort the list'> &#8710; </a>
+                       <a id="save2Repo" class="RecentBCVsBtn" style="display: none;" title='save to repo'>&#9635;</a>
+                    </caption>
                 </table>
             </div>
 
@@ -4014,7 +4021,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <a id="respdesc_history">ShareID</a>: 
                     <span id="repository_description">
-                    <a id="share_public">public</a> | <a id="account_date">private</a> 
+                    <a id="share_public">public</a> | <a id="share_private">private</a> 
                     </span>
                     <br>
                     <input id="repodesc" value='' placeholder='' ></input>
