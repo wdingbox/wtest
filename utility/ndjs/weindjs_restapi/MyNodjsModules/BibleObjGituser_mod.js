@@ -819,7 +819,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
     if (!inp.usr) {
-        inp.state.ssid_cur = "timeout"
+        inp.out.state.ssid_cur = "timeout"
     }
 
 
@@ -1022,6 +1022,22 @@ BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
     return pathfile + subpf
 }
 BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
+    var srcdir = this.get_dir_lib_template()
+    BibleUti.GetFilesAryFromDir(srcdir, true, function (fname) {
+        var ret = path.parse(fname);
+        var ext = ret.ext
+        var bas = ret.base
+        console.log(bas)
+        var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json$/)
+        if(mat){
+            console.log("=====================mat",mat) 
+
+        }
+    });
+    return
+    
+
+
     var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
 
     function _makeup_missing_myoj_file(dest_pfname, src) {
@@ -1104,6 +1120,8 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     }
 
     this.chmod_R_777_acct()
+
+    this.run_makingup_missing_files()
 
     var retp = this.run_proj_state()
     if (retp.bEditable === 1) {
