@@ -725,7 +725,9 @@ NCache.Init = function () {
         console.log("on expired NCache.m_TTL=", NCache.m_TTL)
         console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
         console.log("on expired NCache.m_MaxIdleTime=", NCache.m_MaxIdleTime)
+
         var tms = val.tms
+        if(!tms) return console.log("------------>>>>>>>>on expired, let it die.")
         var cur = (new Date()).getTime()
         var dlt = (cur - tms) / 1000.0 //(s)
         if (dlt > NCache.m_MaxIdleTime) {

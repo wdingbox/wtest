@@ -2790,7 +2790,7 @@ var g_obt = new OutputBibleTable()
 
 var PageUti = {
     Repo_fstat_table: function (ret) {
-        var tbs = "<table border='1'>"
+        var tbs = "<table border='1'><thead><tr><th>NoteFile</th><th>MemUsage</th></tr></thead>"
         if (ret.out.state && ret.out.state.fstat) {
             Object.keys(ret.out.state.fstat).forEach(function (key) {
                 var str = ret.out.state.fstat[key]
@@ -4048,6 +4048,13 @@ var BibleInputMenuContainer = `
                     <br>
                     <textarea id="repopath" value='https://github.com/bsnp21/pub_test01.git' placeholder='https://github.com/bsnp21/pub_test01.git' readonly></textarea>
                     <br>
+                    
+                    <a id="passcode_toggler">Password:</a> 
+                    <span id="repository_description">
+                    <a></a> 
+                    </span><br>
+                    <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a>
+                    <br>
                     <a id="respdesc_history">ShareID</a>: 
                     <span id="repository_description">
                     <a id="share_public">public</a> | <a id="share_private">private</a> 
@@ -4055,11 +4062,6 @@ var BibleInputMenuContainer = `
                     <br>
                     <input id="repodesc" value='' placeholder='' ></input>
                     <br>
-                    <a id="passcode_toggler">Password:</a> 
-                    <span id="repository_description">
-                    <a></a> 
-                    </span><br>
-                    <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a><br>
                     
                     <button id="account_updateStatus">UpdateStatus</button>
                     <div id="account_set_info"></div>
