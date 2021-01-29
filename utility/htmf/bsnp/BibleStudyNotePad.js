@@ -1917,7 +1917,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     Uti.visual_check_repository("#Format_Check")
 
-    $("#account_set").on("click", function () {
+    $("#account_updateStatus").on("click", function () {
         MyStorage.Repositories().repos_app_update()
         PageUti.repo_status("#account_set_info")
     })
@@ -2801,6 +2801,14 @@ var PageUti = {
                 tbs += `<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
             })
             tbs += "</table>"
+        } else {
+            var msgary = { "-1": "Sign-in Time Off", "0": "Repo is idling.", "1": "normal" }
+            var clrary = { "-1": "red", "0": "yellow", "1": "white" }
+            
+            if (undefined !== ret.out.state.bRepositable) {
+                var idx = ""+ret.out.state.bRepositable
+                tbs = `<a style='background-color:${clrary[idx]};color:black;'>${msgary[idx]}</a>`
+            }
         }
         return tbs
     },
@@ -4047,7 +4055,7 @@ var BibleInputMenuContainer = `
                     </span><br>
                     <input id="passcode" type="password" value='' readonly></input><a onclick="$('#passcode').val('')"></a><br>
                     
-                    <button id="account_set">UpdateStatus</button>
+                    <button id="account_updateStatus">UpdateStatus</button>
                     <div id="account_set_info"></div>
                     </td>
                     
@@ -4119,7 +4127,8 @@ CNST.FnameOfBibleObj =
     "cross_references": "cross-references",
     "_myCrossRef": "self modified cross-references",
     "_myNote": "personal biblical study notes",
-    "_myPrayer": "personal prayer, preach, prophect, paper, project,,,"
+    "_myPrayer": "personal prayer, preach, prophect, paper, project,,,",
+    "_mySubtitle": "sub-title of its following verses."
 };
 
 CNST.BiBookName = {

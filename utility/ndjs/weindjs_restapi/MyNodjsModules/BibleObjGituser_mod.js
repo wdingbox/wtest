@@ -724,13 +724,14 @@ NCache.Init = function () {
         console.log("\n\non expired")
         console.log("on expired NCache.m_TTL=", NCache.m_TTL)
         console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
+        console.log("on expired NCache.m_MaxIdleTime=", NCache.m_MaxIdleTime)
         var tms = val.tms
         var cur = (new Date()).getTime()
         var dlt = (cur - tms) / 1000.0 //(s)
-        console.log("onexpired, dlt=",dlt)
         if (dlt > NCache.m_MaxIdleTime) {
-            return console.log("------------>>>>>>>>on expired, let it die")
+            return console.log("------------>>>>>>>>on expired, let it die,dlt=",dlt)
         }
+        console.log("on expired, keep alive",dlt)
         NCache.myCache.set(key, val, NCache.m_TTL) //keep it.
     })
 }
@@ -817,6 +818,9 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     inp.usr = NCache.Get(inp.SSID)
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
+    if (!inp.usr) {
+        inp.state.ssid_cur = "timeout"
+    }
 
 
     //extra work: update repodesc
