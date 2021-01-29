@@ -2698,7 +2698,7 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
     var ret = this.create_trs(this.m_data.out.data)
     var bibOj = this.m_data.par.bibOj;
     var str = JSON.stringify(bibOj)
-    var sbcvlst = Uti.parse_bcvObj(bibOj)
+    var sbcvlst = Uti.parse_bcvOj2strlst(bibOj)
     //Object.keys(bibOj).forEach(function (bkc) {
     //    var oj = {}
     //    oj[bkc] = bibOj[bkc]
@@ -3209,7 +3209,7 @@ var Uti = {
         //targetary = targetary.slice(0, 100) //:max len 100. fetch idx range [0, 100].
     },
 
-    parse_bcvObj: function (sbcv) {
+    parse_bcvOj2strlst: function (sbcv) {
         if ("object" === typeof (sbcv)) {
             var ar = []
             Object.keys(sbcv).forEach(function (bkc) {
@@ -3229,7 +3229,7 @@ var Uti = {
     parse_bcv: function (sbcv, txt, outOj) {
         if (!sbcv) return null
         if ("object" === typeof (sbcv)) {
-            return this.parse_bcvObj(sbcv)
+            return this.parse_bcvOj2strlst(sbcv)
         }
 
         sbcv = sbcv.replace(/\s/g, "");
