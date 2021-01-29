@@ -513,7 +513,11 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).attr("contenteditable", "true")
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
-                showTxt = "<ol><li></li></ol>"
+                if("_mySubtitle"===this.m_rev){
+                    showTxt = "<h2></h2>"
+                }else{
+                    showTxt = "<ol><li></li></ol>"
+                }
             }
             showTxt = Uti.convert_std_bcv_in_text_To_unlinked(showTxt)
             $(this.m_id).html(showTxt)
