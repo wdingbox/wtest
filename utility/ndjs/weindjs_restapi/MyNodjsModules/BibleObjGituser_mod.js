@@ -656,9 +656,7 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
             console.log("fnd:", pathfile)
             if (cbf) cbf(spath, sfile)
         }
-        //var pathfile = path.join(spath, sfile);
-        //_This.output.m_olis.push(pathfile);
-        //console.log("fnd:", pathfile)
+
     })
     return this.output
 }
@@ -988,52 +986,62 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
         case "_": //: _myNode, _myTakeaway,
             {
                 var fnam = this.get_DocCode_Fname(DocCode)
-                if (inp.usr_proj) {
-                    dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
-                    ////---:
-                    if (!fs.existsSync(dest_pfname)) {
-                        var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-                        if (fs.existsSync(src)) {
-                            const { COPYFILE_EXCL } = fs.constants;
-                            fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-                        } else {
-                            console.log("* * * [Fatal Err] src not exist:", src)
-                        }
-                    }
-                    if (!fs.existsSync(dest_pfname)) {
-                        console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
-                    }
-                    console.log("\n\n* * * my dest_pfname:", dest_pfname)
-                }
+                dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
             }
             break
         case ".": //-: ./dat/localStorage
             {
                 var fnam = DocCode.substr(1)
-                if (inp.usr_proj) {
-                    dest_pfname = this.get_usr_acct_dir(`${fnam}_json.js`)
-                    ////---: 
-                    if (!fs.existsSync(dest_pfname)) {
-                        var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
-                        if (fs.existsSync(src)) {
-                            const { COPYFILE_EXCL } = fs.constants;
-                            fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-                        } else {
-                            console.log("* * * [Fatal Err] src not exist:", src)
-                        }
-                    }
-                    if (!fs.existsSync(dest_pfname)) {
-                        console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
-                    }
-                    console.log("\n\n* * * my dest_pfname:", dest_pfname)
-                }
-
+                dest_pfname = this.get_usr_acct_dir(`${fnam}_json.js`)
             }
             break;
         default: //: NIV, CUVS,  
             dest_pfname = `${this.m_rootDir}bible_obj_lib/jsdb/jsBibleObj/${DocCode}.json.js`;
             break;
     }
+    return dest_pfname
+}
+BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {    
+    var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
+    
+    function _makeup_missing_myoj_file (dest_pfname, src ) {
+        ////---:
+        if (!fs.existsSync(dest_pfname)) {
+            //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
+            if (fs.existsSync(src)) {
+                const { COPYFILE_EXCL } = fs.constants;
+                fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
+            } else {
+                console.log("* * * [Fatal Err] src not exist:", src)
+            }
+        }
+        if (!fs.existsSync(dest_pfname)) {
+            console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
+        }
+        console.log("\n\n* * * my dest_pfname:", dest_pfname)
+    }
+
+
+    var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
+
+    function _makeup_missing_dat_file  (dest_pfname, src) {
+        ////---: 
+        if (!fs.existsSync(dest_pfname)) {
+            
+            if (fs.existsSync(src)) {
+                const { COPYFILE_EXCL } = fs.constants;
+                fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
+            } else {
+                console.log("* * * [Fatal Err] src not exist:", src)
+            }
+        }
+        if (!fs.existsSync(dest_pfname)) {
+            console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
+        }
+        console.log("\n\n* * * my dest_pfname:", dest_pfname)
+    }
+
+
     return dest_pfname
 }
 
