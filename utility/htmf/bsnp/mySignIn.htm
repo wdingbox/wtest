@@ -196,36 +196,37 @@
 
 
         <div style="display: none;">
-        <br>
-        <div>
-            <a id="respdesc_history">ShareID:</a>
-            <span class="help_label" >
-                <a onclick="$('#repodesc').val('');">private</a> | 
-                <a onclick="$('#repodesc').val('*');">public</a> | 
-                <a onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
-            </span>
-            
-            <div class="helpinfo Species">
-                <ol>
-                    Equal Access Right (EAR) Principle.  
-                    <li>
-                        Users with same ShareID can view/communicate each others equally.
-                    </li>
-                    <li>
-                        Star(*) is for public without proctection. You can veiew everyone, and everyone can view you.
-                    </li>
-                    <li>
-                        Blank is for private only. You cannot see others, and others cannot see you.
-                    </li>
-                </ol>
+            <br>
+            <div>
+                <a id="respdesc_history">ShareID:</a>
+                <span class="help_label">
+                    <a onclick="$('#repodesc').val('');">private</a> |
+                    <a onclick="$('#repodesc').val('*');">public</a> |
+                    <a onclick="$('.helpinfo.Species').toggle('slow');">help?</a>
+                </span>
+
+                <div class="helpinfo Species">
+                    <ol>
+                        Equal Access Right (EAR) Principle.
+                        <li>
+                            Users with same ShareID can view/communicate each others equally.
+                        </li>
+                        <li>
+                            Star(*) is for public without proctection. You can veiew everyone, and everyone can view
+                            you.
+                        </li>
+                        <li>
+                            Blank is for private only. You cannot see others, and others cannot see you.
+                        </li>
+                    </ol>
+                </div>
             </div>
+
+
+
+            <input id="repodesc" class="inputxt" style="width:100%;" maxlength="200" value="" placeholder=""></input>
         </div>
 
-        
-       
-        <input id="repodesc" class="inputxt" style="width:100%;" maxlength="200" value="" placeholder=""></input>
-        </div>
-        
 
 
 
@@ -388,7 +389,7 @@
 
         $("#signin").on("click", function () {
             PageUti.repo_Signin("#otb", function (ret) {
-                if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length>1) {
+                if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
                     var svrip = Uti.Jsonpster_crossloader_get_ip()
                     window.open("BibleStudyNotePad.htm?ip=" + svrip, '_self');
                 } else {
@@ -399,25 +400,20 @@
     })
 </script>
 <script>
-    Uti.Jsonpster_crossloader(0,function(ret){
-        $("#signin").attr("disabled", null)
-    })
+    $(function(){
 
-
-    function test_Jsonpster_exist() {
-        if ("undefined" === typeof Jsonpster) {
-            console.log("Jsonpster not exist yet")
-        }
-        else {
+        Uti.Jsonpster_crossloader(0, function (ret) {
+            $("#signin").attr("disabled", null)
+    
             $("title").text("signin")
             Uti.Msg("Sign-In")
             $("#txtarea").hide()
             var ar = MyStorage.Repositories().repos_app_init()
-
+    
             console.log(Jsonpster)
             //$("#histroy").trigger("click")
-            clearInterval(iid)
-        }
-    }
-    var iid = setInterval(test_Jsonpster_exist, 500)
+    
+        })
+    })
+
 </script>
