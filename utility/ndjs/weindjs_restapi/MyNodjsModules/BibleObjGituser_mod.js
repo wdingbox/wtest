@@ -729,9 +729,9 @@ NCache.Init = function () {
         var cur = (new Date()).getTime()
         var dlt = (cur - tms) / 1000.0 //(s)
         if (dlt > NCache.m_MaxIdleTime) {
-            return console.log("------------>>>>>>>>on expired, let it die,dlt=",dlt)
+            return console.log("------------>>>>>>>>on expired, let it die,dlt=", dlt)
         }
-        console.log("on expired, keep alive",dlt)
+        console.log("on expired, keep alive", dlt)
         NCache.myCache.set(key, val, NCache.m_TTL) //keep it.
     })
 }
@@ -1013,6 +1013,13 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
             break;
     }
     return dest_pfname
+}
+BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
+    var pathfile = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate`
+    if (undefined === subpf) {
+        return pathfile
+    }
+    return pathfile + subpf
 }
 BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
     var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
