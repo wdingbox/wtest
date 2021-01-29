@@ -3545,10 +3545,16 @@ var Uti = {
 
 
         setTimeout(() => {
+            if (0 === idx) {//signin page loaded.
+                if (Jsonpster && Jsonpster.pkb64) {
+                    //localStorage("pkb64", Jsonpster.pkb64) //keep it for reset?.
+                }
+            }
             if (idx > 0) {//post-loading after transit-page-loading-from-main-page.
                 console.log("crossload-2:SSID=", MyStorage.SSID())
                 Jsonpster.inp.usr = null
                 Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
+
             }
             if (cbf) cbf()
         }, 1000)

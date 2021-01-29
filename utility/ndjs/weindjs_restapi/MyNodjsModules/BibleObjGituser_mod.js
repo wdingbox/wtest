@@ -670,41 +670,34 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 var NCache = {}
-NCache.m_checkperiod = 60 //s.
+NCache.m_MaxIdleTime = 36  //TimeToEnd(s).
+NCache.m_checkperiod = 3 //s.
 NCache.m_TTL = NCache.m_checkperiod * 10 //seconds
 NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
 NCache.Init = function () {
-    NCache.myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
+    NCache.myCache.set("test", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
     //myCache.ttl( "tuid", 3 )
-    NCache.myCache.set("tuid", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
+    NCache.myCache.set("test", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
     //myCache.ttl( "tuid", 6 )
-    var obj = NCache.myCache.get("tuid")
+    var obj = NCache.myCache.get("test")
     console.log(obj)
 
     NCache.myCache.on("del", function (key, val) {
-        console.log("\n\n\n\n\n\n\n\n\n\non expired")
-        console.log("on expired NCache.m_TTL=", NCache.m_TTL)
-        console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
+        console.log("\n\n\n\n\n\n\n\n\n\non del")
+        console.log("on del NCache.m_TTL=", NCache.m_TTL)
+        console.log("on del NCache.m_checkperiod=", NCache.m_checkperiod)
         // ... do something ...
         console.log("on del key=", key)
         console.log("on del val=", val)
-        if (!val) {
-            console.log("on del val=undefined")
-            return
-        }
 
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
-
         console.log("on del rootDir=", rootDir)
-        if (!rootDir) return
 
-        if (!fs.existsSync(key)) {
-            console.log("Dir(key) not exist:", key)
-            return
-        }
+        if (!val) return console.log("on del, val=undefined")
+        if (!fs.existsSync(rootDir)) return console.log(`existsSync(${rootDir}) not exist.`)
+        if (!fs.existsSync(key)) return console.log(`existsSync(${key}) not exist.`)
 
-
-        console.log("on del proj_destroy=", rootDir)
+        console.log("start to del proj_destroy ssid=", key)
         var inp = {}
         inp.usr = val
         inp.out = BibleUti.Parse_inp_out_obj()
@@ -726,14 +719,30 @@ NCache.Init = function () {
             }
         }
     });
+
+    NCache.myCache.on("expired", function (key, val) {
+        console.log("\n\non expired")
+        console.log("on expired NCache.m_TTL=", NCache.m_TTL)
+        console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
+        var tms = val.tms
+        var cur = (new Date()).getTime()
+        var dlt = (cur - tms) / 1000.0 //(s)
+        console.log("onexpired, dlt=",dlt)
+        if (dlt > NCache.m_MaxIdleTime) {
+            return console.log("onexpired, let it die")
+        }
+        NCache.myCache.set(key, val, NCache.m_TTL) //keep it.
+    })
 }
-NCache.Set = function (key, val) {
-    this.myCache.set(key, val, NCache.m_TTL) //restart ttl -- reborn again.
+NCache.Set = function (key, val, ttl) {
+    if (undefined === ttl) ttl = NCache.m_TTL
+    if ("object" === typeof val) val.tms = (new Date()).getTime() //timestampe for last access.
+    this.myCache.set(key, val, ttl) //restart ttl -- reborn again.
 }
-NCache.Get = function (key, val) {
+NCache.Get = function (key, ttl) {
     var val = this.myCache.get(key)
     if (undefined !== val && null !== val) { //0 and "" are allowed.
-        this.Set(key, val) //restart ttl -- reborn again.
+        this.Set(key, val, ttl) //restart ttl -- reborn again.
     }
     return val
 }
@@ -836,7 +845,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return null
     console.log("inp.CUID", inp.CUID)
-    var robj = NCache.myCache.take(inp.CUID) //delete immediately after use.
+    var robj = NCache.myCache.take(inp.CUID) //take: for safety delete immediately after use.
     if (!robj) return null
     console.log(robj)
 
@@ -1001,10 +1010,10 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
-BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {    
+BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
     var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-    
-    function _makeup_missing_myoj_file (dest_pfname, src ) {
+
+    function _makeup_missing_myoj_file(dest_pfname, src) {
         ////---:
         if (!fs.existsSync(dest_pfname)) {
             //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
@@ -1024,10 +1033,10 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
 
     var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
 
-    function _makeup_missing_dat_file  (dest_pfname, src) {
+    function _makeup_missing_dat_file(dest_pfname, src) {
         ////---: 
         if (!fs.existsSync(dest_pfname)) {
-            
+
             if (fs.existsSync(src)) {
                 const { COPYFILE_EXCL } = fs.constants;
                 fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.

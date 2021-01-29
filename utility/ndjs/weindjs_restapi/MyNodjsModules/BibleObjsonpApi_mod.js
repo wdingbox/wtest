@@ -202,7 +202,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             //if (!inp.usr.f_path) inp.usr.f_path = ""
             var proj = userProject.proj_parse_usr_signed(inp)
-
+            var stat = userProject.run_proj_setup()
             var TbcvObj = {};
             if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
                 for (var i = 0; i < inp.par.fnames.length; i++) {
@@ -210,6 +210,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                     var jsfname = userProject.get_pfxname(trn)
                     console.log("jsfname:", jsfname)
                     var bib = BibleUti.loadObj_by_fname(jsfname);
+                    if(!bib.obj) continue
                     var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
                     TbcvObj[trn] = bcObj;
                     inp.out.desc += ":" + trn
@@ -230,16 +231,10 @@ const RestApi = JSON.parse('${jstr_RestApi}');
     },
 
     ApiBibleObj_load_by_bibOj: function (req, res) {
-        //function _run(req, res) {
-        //    if (!req || !res) {
-        //        return { state: { desc: "req|res null" } }
-        //    }
-        //    var inp = BibleUti.Parse_GET_req_to_inp(req)
 
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
-
             var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) {
                 console.log("proj_setup failed.", stat)
@@ -277,19 +272,7 @@ const RestApi = JSON.parse('${jstr_RestApi}');
                 inp.out.data = bcvT
                 //console.log(bcvT)
             }
-            //return inp
         })
-
-        //var inp = _run(req, res)
-        //console.log("read inp.out:")
-        //console.log(inp.out)
-        //
-        //var sret = JSON.stringify(inp);
-        //var sid = ""
-        ////console.log("sert:", sret)
-        //res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        //res.write(`Jsonpster.Response(${sret},${sid});`);
-        //res.end();
     },
 
     ApiBibleObj_write_Usr_BkcChpVrs_txt: async function (req, res) {
