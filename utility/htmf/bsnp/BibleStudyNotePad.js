@@ -4141,9 +4141,9 @@ CNST.FnameOfBibleObj =
     "STUS": "Studium Biblicum Version by Catholic,1968",
     "WLVS": "Wen Li Version. 文理和合本新約全書於1906年出版，新舊約全書於1919年出版.修訂新約後的新舊約全書，於1923年出版，至1934年印行最後一版, 原本分為官話、深文理、淺文理三種譯本，稱為「聖經唯一，譯本則三」。後來深淺文理合併為文理和合本 https://zh.wikisource.org/wiki/%E8%81%96%E7%B6%93_(%E5%92%8C%E5%90%88%E6%9C%AC) \n\nFor 1895 新約淺文理(包爾騰(John Shaw Burdon)、柏亨利(Henry Blodget)) https://bible.fhl.net/ob/nob.html?book=8 ",
     "cross_references": "cross-references",
-    "_myCrossRef": "self modified cross-references",
-    "_myNote": "personal biblical study notes",
-    "_myPrayer": "personal prayer, preach, prophect, paper, project,,,",
+    "_myCrossRef": "User can modify cross-references for related verses in the Bible. Recommended to follow the standard abbreviation format. For example, <br>Gen2:7 refers to Genesis, chapter 2, verse 7. <br>1Jn5:12 refers to 1-John, chapter 5, verse 12.",
+    "_myNote": "personal biblical study notes, commentary, questions, testimony, reflections, takeaway, other website links etc.",
+    "_myPrayer": "personal prayer, preach, prophect, paper or project related to the verse and real life..",
     "_mySubtitle": "sub-title of its following verses."
 };
 
