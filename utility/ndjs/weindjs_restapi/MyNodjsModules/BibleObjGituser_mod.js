@@ -1073,33 +1073,8 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
         }
     });
     return
-
-
-
     var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-
-
-
     var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
-
-    function _makeup_missing_dat_file(dest_pfname, src) {
-        ////---: 
-        if (!fs.existsSync(dest_pfname)) {
-
-            if (fs.existsSync(src)) {
-                const { COPYFILE_EXCL } = fs.constants;
-                fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-            } else {
-                console.log("* * * [Fatal Err] src not exist:", src)
-            }
-        }
-        if (!fs.existsSync(dest_pfname)) {
-            console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
-        }
-        console.log("\n\n* * * my dest_pfname:", dest_pfname)
-    }
-
-
     return dest_pfname
 }
 
