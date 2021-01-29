@@ -3897,7 +3897,7 @@ var BibleInputMenuContainer = `
                     <div id='Tab_NamesOfBibleDocuments_caps'></div>
                     <button class='docSwitch' title='Selection' note='doclist'>D</button>
                     <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
-                    <button class='docSwitch' title='Searching' note='searchi'>&#8635;</button>
+                    <button class='docSwitch' title='Searching' note='searchi' old='&#8635;'>=</button>
                     </caption>
                     <thead id=""></thead>
                     <tbody>
