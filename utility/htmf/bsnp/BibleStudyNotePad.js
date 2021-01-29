@@ -1535,7 +1535,12 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
                 _THIS.m_selectedItems_ary.splice(idx, 1) //remove size 1 @idx.
             }
         } else {//will be selected and added back
-            _THIS.m_selectedItems_ary.push(name)
+            if ("_mySubtitle" === name) {
+                _THIS.m_selectedItems_ary.unshift(name)
+            } else {
+                _THIS.m_selectedItems_ary.push(name)
+            }
+
         }
         MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
@@ -2804,9 +2809,9 @@ var PageUti = {
         } else {
             var msgary = { "-1": "Sign-in Time Off", "0": "Repo is idling.", "1": "normal" }
             var clrary = { "-1": "red", "0": "yellow", "1": "white" }
-            
+
             if (undefined !== ret.out.state.bRepositable) {
-                var idx = ""+ret.out.state.bRepositable
+                var idx = "" + ret.out.state.bRepositable
                 tbs = `<a style='background-color:${clrary[idx]};color:black;'>${msgary[idx]}</a>`
             }
         }
