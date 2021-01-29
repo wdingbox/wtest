@@ -1496,49 +1496,6 @@ BibleObjGituser.prototype.git_push = function () {
     return this.m_inp.out.git_push_res
 }
 
-//  BibleObjGituser.prototype.cmd_exec = async function () {
-//      var _THIS = this
-//      var inp = this.m_inp
-//  
-//      if (!inp.par) {
-//          inp.out.desc = "no par"
-//          return
-//      }
-//  
-//      console.log("inp.par.cmdline: ", inp.par.cmdline)
-//      if (!inp.par.cmdline) {
-//          inp.out.desc = "no inp.par.cmdline"
-//          return
-//      }
-//  
-//      var res = await this.exec_cmd_git(inp.par.cmdline)
-//  
-//      return res
-//  }
-//  BibleObjGituser.prototype.exec_cmd_git = async function (gitcmd) {
-//      var _THIS = this
-//      var inp = this.m_inp
-//  
-//  
-//      if (!fs.existsSync(this.get_usr_git_dir())) {
-//          inp.out.desc = "no git dir"
-//          return null
-//      }
-//  
-//  
-//      //console.log("proj", proj)
-//      var password = "lll" //dev mac
-//      var scmd = `
-//      #!/bin/sh
-//      cd ${this.get_usr_git_dir()}
-//      echo ${password} | sudo -S ${gitcmd}
-//      `
-//      console.log("\n----git_cmd start:>", scmd)
-//      var res = await BibleUti.exec_Cmd(scmd)
-//      console.log("\n----git_cmd end.")
-//  
-//      return res
-//  }
 BibleObjGituser.prototype.execSync_cmd_git = async function (gitcmd) {
     var _THIS = this
     var inp = this.m_inp
