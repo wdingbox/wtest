@@ -468,12 +468,12 @@ const RestApi = JSON.parse('${jstr_RestApi}');
         res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
-    UsrReposPost_Signin: async function (req, res) {
+    UsrReposPost_Signin:  function (req, res) {
         console.log("UsrReposPost_Signin")
         if (!req || !res) {
             return inp_struct_account_setup
         }
-        BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
+        BibleUti.Parse_POST_req_to_inp(req, res, function (inp) {
             //: unlimited write size. 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signin(inp)
