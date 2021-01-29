@@ -729,7 +729,7 @@ NCache.Init = function () {
         var dlt = (cur - tms) / 1000.0 //(s)
         console.log("onexpired, dlt=",dlt)
         if (dlt > NCache.m_MaxIdleTime) {
-            return console.log("onexpired, let it die")
+            return console.log("------------>>>>>>>>on expired, let it die")
         }
         NCache.myCache.set(key, val, NCache.m_TTL) //keep it.
     })
