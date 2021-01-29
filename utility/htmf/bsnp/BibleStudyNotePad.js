@@ -2696,9 +2696,17 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
 
     console.log("result:", this.m_data.out.result)
     var ret = this.create_trs(this.m_data.out.data)
+    var bibOj = this.m_data.par.bibOj;
+    var str = JSON.stringify(bibOj)
+    var sbcvlst = Uti.parse_bcvObj(bibOj)
+    //Object.keys(bibOj).forEach(function (bkc) {
+    //    var oj = {}
+    //    oj[bkc] = bibOj[bkc]
+    //    sbcvlst += Uti.parse_bcv(oj) + ", "
+    //})
 
     var s = "<table id='BibOut' border='1'>";
-    s += `<caption><p/><p>TotRows=${ret.size}</p></caption>`;
+    s += `<caption><p>TotRows=${ret.size}</p><p>${sbcvlst}</p></caption>`;
     s += "<thead><th>#</th></thead>";
     s += "<tbody>";
     s += ret.trs;
@@ -3201,26 +3209,27 @@ var Uti = {
         //targetary = targetary.slice(0, 100) //:max len 100. fetch idx range [0, 100].
     },
 
-
-    parse_bcv: function (sbcv, txt, outOj) {
-        if (!sbcv) return null
+    parse_bcvObj: function (sbcv) {
         if ("object" === typeof (sbcv)) {
             var ar = []
             Object.keys(sbcv).forEach(function (bkc) {
-                ar.push(bkc)
+                //ar.push(bkc)
                 Object.keys(sbcv[bkc]).forEach(function (chp) {
-                    ar.push(chp)
+                    //ar.push(chp)
                     Object.keys(sbcv[bkc][chp]).forEach(function (vrs) {
-                        ar.push(vrs)
+                        var sbcv = `${bkc}${chp}:${vrs}`
+                        ar.push(sbcv)
                     })
                 })
             })
-            if (ar.length === 3) {
-                return `${ar[0]}${ar[1]}:${ar[2]}`
-            }
-            else {
-                return ar.join(" ")
-            }
+            return ar
+        }
+        return null
+    },
+    parse_bcv: function (sbcv, txt, outOj) {
+        if (!sbcv) return null
+        if ("object" === typeof (sbcv)) {
+            return this.parse_bcvObj(sbcv)
         }
 
         sbcv = sbcv.replace(/\s/g, "");
