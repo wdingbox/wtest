@@ -813,8 +813,8 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
 
 
     //extra work: update repodesc
-    if (inp.par && inp.par.aux) {
-        if ("string" === typeof inp.par.aux.Update_repodesc) {
+    if (inp.usr && inp.par) {
+        if (inp.par.aux && "string" === typeof inp.par.aux.Update_repodesc) {
             inp.usr.repodesc = inp.par.aux.Update_repodesc
             NCache.Set(inp.SSID, inp.usr)
             console.log(`Update_repodesc ************* = ${inp.usr.repodesc}`)
