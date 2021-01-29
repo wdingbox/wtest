@@ -819,7 +819,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
     if (!inp.usr) {
-        inp.out.state.ssid_cur = "timeout"
+        //inp.out.state.ssid_cur = "timeout"
     }
 
 
@@ -1021,41 +1021,63 @@ BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
     }
     return pathfile + subpf
 }
+
+
+var fname = "bible_obj_lib/jsdb/UsrDataTemplate/myoj/myNote_json.js"
+console.log("==========test===========", fname)
+var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
+if (mat) {
+    console.log("=====================     mat", mat[1])
+
+}
 BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
+
+    function _makeup_missing_myoj_file(dest_pfname, src) {
+        if (!fs.existsSync(src)) return console.log(`* * * [src Fatal Err]not existsSync(${src})`)
+        if (fs.existsSync(dest_pfname)) return console.log(`already existsSync(${dest_pfname});`)
+        ////---:
+        //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
+        console.log("* * * * *  * des:", dest_pfname)
+        console.log("* * * * *  * src:", src)
+        const { COPYFILE_EXCL } = fs.constants;
+        fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
+
+        if (!fs.existsSync(dest_pfname)) {
+            console.log("* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
+        }
+    }
+
+    var _THIS = this
     var srcdir = this.get_dir_lib_template()
     BibleUti.GetFilesAryFromDir(srcdir, true, function (fname) {
         var ret = path.parse(fname);
         var ext = ret.ext
         var bas = ret.base
-        console.log(bas)
-        var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json$/)
-        if(mat){
-            console.log("=====================mat",mat) 
-
+        //console.log(bas)
+        //console.log("=====================     fname", fname)
+        var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
+        if (mat) {
+            //console.log("=====================     mat", mat)
+            var doc = "_" + mat[1]
+            var gitpfx = _THIS.get_pfxname(doc)
+            //console.log("gitpfx", gitpfx)
+            _makeup_missing_myoj_file(gitpfx, fname)
+        }
+        var mat = fname.match(/[\/]dat[\/]([\w]+)_json\.js$/)
+        if (mat) {
+            //console.log("=====================     mat", mat)
+            var doc = mat[1]
+            var gitpfx = _THIS.get_pfxname("./dat/"+doc)
+            console.log("dat", gitpfx)
+            _makeup_missing_myoj_file(gitpfx, fname)
         }
     });
     return
-    
+
 
 
     var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
 
-    function _makeup_missing_myoj_file(dest_pfname, src) {
-        ////---:
-        if (!fs.existsSync(dest_pfname)) {
-            //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-            if (fs.existsSync(src)) {
-                const { COPYFILE_EXCL } = fs.constants;
-                fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-            } else {
-                console.log("* * * [Fatal Err] src not exist:", src)
-            }
-        }
-        if (!fs.existsSync(dest_pfname)) {
-            console.log("\n\n* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
-        }
-        console.log("\n\n* * * my dest_pfname:", dest_pfname)
-    }
 
 
     var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
