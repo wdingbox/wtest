@@ -1520,7 +1520,8 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         if (sFile === v) hil += " searchFile"
-        str += "<tr><td class='cbkn " + hil + "'>" + v + "</td></tr>";
+        if (v[0] === "_") hil += " _myEditableDoc"
+        str += `<tr><td class='cbkn  ${hil}'>${v}</td></tr>`;
     });
 
 

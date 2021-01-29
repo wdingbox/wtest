@@ -164,8 +164,12 @@ body {
 
     .searchFile, #SearchInCaption {
         color: black;
-        border: 1px solid black;
+        text-decoration: overline underline;
     }
+    ._myEditableDoc {
+        border : 1px solid lightcyan;
+    }
+
     #SearchInCaption{
         background-color: red;
         padding: 0 10px 0 10px;
