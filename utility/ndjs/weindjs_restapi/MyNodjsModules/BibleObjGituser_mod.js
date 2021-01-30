@@ -47,6 +47,7 @@ var BibleUti = {
             };
         };/////////////////////////////////////
 
+        if (!fs.existsSync(startPath)) return []
         var outFilesArr = [];
         recursiveDir(startPath, deep, outFilesArr);
         return outFilesArr;
@@ -727,7 +728,7 @@ NCache.Init = function () {
         console.log("on expired NCache.m_MaxIdleTime=", NCache.m_MaxIdleTime)
 
         var tms = val.tms
-        if(!tms) return console.log("------------>>>>>>>>on expired, let it die.")
+        if (!tms) return console.log("------------>>>>>>>>on expired, let it die.")
         var cur = (new Date()).getTime()
         var dlt = (cur - tms) / 1000.0 //(s)
         if (dlt > NCache.m_MaxIdleTime) {
@@ -1063,7 +1064,7 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
         if (mat) {
             //console.log("=====================     mat", mat)
             var doc = mat[1]
-            var gitpfx = _THIS.get_pfxname("./dat/"+doc)
+            var gitpfx = _THIS.get_pfxname("./dat/" + doc)
             console.log("dat", gitpfx)
             _makeup_missing_myoj_file(gitpfx, fname)
         }
@@ -1075,6 +1076,7 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
 }
 
 BibleObjGituser.prototype.run_proj_setup = function () {
+    console.log("********************************************* run setup 1")
     var inp = this.m_inp
     var proj = inp.usr_proj;
     if (!proj) {
@@ -1086,28 +1088,33 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     var stat = this.run_proj_state()
     if (stat.bEditable === 1) {
         inp.out.desc += "|already setup."
-        console.log("failed inp.out.desc", inp.out.desc)
+        console.log("stat.bEditable", inp.out.desc)
         this.git_pull()
     } else {
         console.log("start inp.out.desc", inp)
         inp.out.state.bNewCloned = 1
         if (stat.bGitDir !== 1) {
+            console.log("********************************************* run setup 2")
             this.git_clone()
             this.git_config_allow_push(false)
             stat = this.run_proj_state()
         } else {
+            console.log("********************************************* run setup 3")
             this.git_pull()
+
         }
 
         if (stat.bMyojDir !== 1) {
+            console.log("********************************************* run setup 4")
             this.cp_template_to_git()
             stat = this.run_proj_state()
         }
         if (stat.bDatDir !== 1) {
-
+            console.log("********************************************* run setup 5")
         }
 
         if (stat.bMyojDir === 1) {
+            console.log("********************************************* run setup 6")
             var accdir = this.get_usr_acct_dir()
             this.chmod_R_(777, accdir)
         }
@@ -1155,37 +1162,26 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
     //inp.out.state = { bGitDir: -1, bMyojDir: -1, bEditable: -1, bRepositable: -1 }
 
 
-    stat.bMyojDir = 1
-    var accdir = this.get_usr_myoj_dir()
-    if (!fs.existsSync(accdir)) {
-        console.log("notExist", accdir)
-        stat.bMyojDir = 0
-    }
+    var dir = this.get_usr_myoj_dir()
+    stat.bMyojDir = (fs.existsSync(dir)) ? 1 : 0
 
+    var dir = this.get_usr_dat_dir()
+    stat.bDatDir = (fs.existsSync(dir)) ? 1 : 0
 
-    stat.bDatDir = 1
-    var accdir = this.get_usr_dat_dir()
-    if (!fs.existsSync(accdir)) {
-        console.log("notExist", accdir)
-        stat.bDatDir = 0
-    }
+    var dir = this.get_usr_git_dir("/.git/config")
+    stat.bGitDir = (fs.existsSync(dir)) ? 1 : 0
 
-    stat.bGitDir = 1
-    var git_config_fname = this.get_usr_git_dir("/.git/config")
-    if (!fs.existsSync(git_config_fname)) {
-        console.log("notExist", git_config_fname)
-        stat.bGitDir = 0
-        stat.bEditable = 0
-        stat.bRepositable = 0
-        return stat;
-    }
+    stat.bEditable = (1 === stat.bMyojDir && 1 === stat.bDatDir && 1 === stat.bGitDir) ? 1 : 0
+    //stat.bRepositable = stat.bGitDir
+
+    //if (stat.bGitDir <= 0) return
 
     stat.config = this.load_git_config()
 
     /////// git status
-    stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
+    //stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
     this.m_inp.out.state.bRepositable = 0
-    if (this.m_inp.usr.passcode.length > 0) {
+    if (this.m_inp.usr && this.m_inp.usr.passcode.length > 0) {
         //if clone with password ok, it would ok for pull/push 
         stat.bRepositable = 1
     }
@@ -1307,6 +1303,7 @@ BibleObjGituser.prototype.chmod_R_ = function (mode, dir) {
 
 BibleObjGituser.prototype.load_git_config = function () {
     var git_config_fname = this.get_usr_git_dir("/.git/config")
+    if(!fs.existsSync(git_config_fname)) return ""
     //if (!this.m_git_config_old || !this.m_git_config_new) {
     var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
     var ipos1 = txt.indexOf(this.m_inp.usr.repopath)
