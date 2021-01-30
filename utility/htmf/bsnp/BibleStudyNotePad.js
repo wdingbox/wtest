@@ -2822,7 +2822,7 @@ var PageUti = {
             })
         }
 
-        var msgary = { "-1": "Sign-in Time Off", "0": "In Hibernate Mode.", "1": "Normal" }
+        var msgary = { "-1": "Sign-in Time Off", "0": "In Hibernate Mode.", "1": "Active Mode" }
         var clrary = { "-1": "red", "0": "yellow", "1": "green" }
 
         var caps = ""
@@ -2957,8 +2957,8 @@ var PageUti = {
     repo_status: function (showid) {
         $(showid).html("<font>start checking...</font>")
 
-        var rsr = MyStorage.Repositories().repos_app_update()
-        Jsonpster.inp.aux = { Update_repodesc: rsr.repodesc, cacheTTL: MyStorage.cacheTTL() }
+        
+        Jsonpster.inp.aux = { Update_repodesc: MyStorage.Repositories().repos_app_update().repodesc, cacheTTL: MyStorage.cacheTTL() }
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -3582,9 +3582,10 @@ var Uti = {
                         //localStorage("pkb64", Jsonpster.pkb64) //keep it for reset?.
                     }
                 }
-                if (idx > 0) {//post-loading after transit-page-loading-from-main-page.
+                if (idx > 0) {//1:main-page loaded  after transit from signin-page.
                     console.log("crossload-2:SSID=", MyStorage.SSID())
                     Jsonpster.inp.usr = null
+                    Jsonpster.inp.aux = {cacheTTL: MyStorage.cacheTTL() }
                     Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
 
                 }

@@ -831,7 +831,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
 
     return inp.usr
 }
-BibleObjGituser.prototype.proj_update_par_aux_to_cache_ssid = function (inp) {
+BibleObjGituser.prototype.proj_update_cache_ssid_by_inp_aux = function (inp) {
 
     if (!inp.SSID || inp.SSID.length === 0 || !inp.usr || !inp.aux) {
         return null
@@ -840,9 +840,12 @@ BibleObjGituser.prototype.proj_update_par_aux_to_cache_ssid = function (inp) {
     //extra work: update repodesc
     if ("string" === typeof inp.aux.Update_repodesc) {
         inp.usr.repodesc = inp.aux.Update_repodesc
-        console.log(`Update_repodesc ************* = ${JSON.stringify(inp.aux)}`)
-        NCache.Set(inp.SSID, inp.usr, inp.aux.cacheTTL)
     }
+    if (inp.aux.cacheTTL) {
+
+    }
+    NCache.Set(inp.SSID, inp.usr, inp.aux.cacheTTL)
+    console.log(`Update_repodesc ************* = ${JSON.stringify(inp.aux)}`)
 
     return inp.usr
 }
@@ -855,7 +858,7 @@ BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
     if (null === this.proj_get_usr_fr_cache_ssid(inp)) {
         return null
     }
-    this.proj_update_par_aux_to_cache_ssid(inp)
+    this.proj_update_cache_ssid_by_inp_aux(inp)
     return this.parse_inp_usr2proj(inp)
 }
 BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
