@@ -945,16 +945,16 @@ BibleObjGituser.prototype.session_create = function () {
 
 BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
     var dir = `${this.m_rootDir}${this.m_sBaseTemp}`
-    if (!fs.existsSync(dir)) {
-        //fs.mkdirSync(dir, 0777, { recursive: true });
-        var password = "lll"
-        var command = `
-            echo ${password} | sudo -S mkdir -p ${dir}
-            echo ${password} | sudo -S chmod 777 ${dir}
-            `
-        var ret = BibleUti.execSync_Cmd(command)
-        console.log(ret)
-    }
+    // if (!fs.existsSync(dir)) {
+    //     //fs.mkdirSync(dir, 0777, { recursive: true });
+    //     var password = "lll"
+    //     var command = `
+    //         echo ${password} | sudo -S mkdir -p ${dir}
+    //         echo ${password} | sudo -S chmod 777 ${dir}
+    //         `
+    //     var ret = BibleUti.execSync_Cmd(command)
+    //     console.log(ret)
+    // }
     return `${dir}${subpath}`
 }
 BibleObjGituser.prototype.get_usr_acct_dir = function (subpath) {
@@ -1017,6 +1017,22 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     }
     return dest_pfname
 }
+BibleObjGituser.prototype.get_userpathfile_from_tempathfile = function (tmpathfile) {
+    //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
+    var mat = tmpathfile.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
+    if (mat) {
+        var doc = "_" + mat[1]
+        var gitpfx = this.get_pfxname(doc)
+        return gitpfx
+    }
+    //var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
+    var mat = tmpathfile.match(/[\/]dat[\/]([\w]+)_json\.js$/)
+    if (mat) {
+        var doc = mat[1]
+        var gitpfx = this.get_pfxname("./dat/" + doc)
+        return gitpfx
+    }
+}
 BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
     var pathfile = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate`
     if (undefined === subpf) {
@@ -1027,9 +1043,9 @@ BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
 
 
 
-BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
+BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
 
-    function _makeup_missing_myoj_file(dest_pfname, src) {
+    function _copy_file(dest_pfname, src) {
         if (!fs.existsSync(src)) return console.log(`* * * [src Fatal Err]not existsSync(${src})`)
         if (fs.existsSync(dest_pfname)) return console.log(`already existsSync(${dest_pfname});`)
         ////---:
@@ -1046,33 +1062,29 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
 
     var _THIS = this
     var srcdir = this.get_dir_lib_template()
-    BibleUti.GetFilesAryFromDir(srcdir, true, function (fname) {
-        var ret = path.parse(fname);
+    var nMissed = 0
+    BibleUti.GetFilesAryFromDir(srcdir, true, function (srcfname) {
+        var ret = path.parse(srcfname);
         var ext = ret.ext
         var bas = ret.base
-        //console.log(bas)
-        //console.log("=====================     fname", fname)
-        var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
-        if (mat) {
-            //console.log("=====================     mat", mat)
-            var doc = "_" + mat[1]
-            var gitpfx = _THIS.get_pfxname(doc)
-            //console.log("gitpfx", gitpfx)
-            _makeup_missing_myoj_file(gitpfx, fname)
-        }
-        var mat = fname.match(/[\/]dat[\/]([\w]+)_json\.js$/)
-        if (mat) {
-            //console.log("=====================     mat", mat)
-            var doc = mat[1]
-            var gitpfx = _THIS.get_pfxname("./dat/" + doc)
-            console.log("dat", gitpfx)
-            _makeup_missing_myoj_file(gitpfx, fname)
+
+        var gitpfx = _THIS.get_userpathfile_from_tempathfile(srcfname)
+        if (!fs.existsSync(gitpfx)) {
+            nMissed++
+            console.log("cp:", srcfname)
+            console.log("to:", gitpfx)
+            const { COPYFILE_EXCL } = fs.constants;
+            if (bCpy) {
+                var pet = path.parse(gitpfx);
+                if (!fs.existsSync(pet.dir)) {
+                    var ret = BibleUti.execSync_Cmd(`echo lll | sudo -S mkdir -p  ${pet.dir}`)
+                    var ret = BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${pet.dir}`)
+                }
+                fs.copyFileSync(srcfname, gitpfx, COPYFILE_EXCL) //failed if des exists.
+            }
         }
     });
-    return
-    var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-    var src_dat = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate${fnam}_json.js`
-    return dest_pfname
+    return nMissed
 }
 
 BibleObjGituser.prototype.run_proj_setup = function () {
@@ -1123,7 +1135,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     this.chmod_R_777_acct()
 
-    this.run_makingup_missing_files()
+    this.run_makingup_missing_files(true)
 
     var retp = this.run_proj_state()
     if (retp.bEditable === 1) {
@@ -1303,7 +1315,7 @@ BibleObjGituser.prototype.chmod_R_ = function (mode, dir) {
 
 BibleObjGituser.prototype.load_git_config = function () {
     var git_config_fname = this.get_usr_git_dir("/.git/config")
-    if(!fs.existsSync(git_config_fname)) return ""
+    if (!fs.existsSync(git_config_fname)) return ""
     //if (!this.m_git_config_old || !this.m_git_config_new) {
     var olds, news, txt = fs.readFileSync(git_config_fname, "utf8")
     var ipos1 = txt.indexOf(this.m_inp.usr.repopath)

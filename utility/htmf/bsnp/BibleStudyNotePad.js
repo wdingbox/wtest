@@ -2812,7 +2812,7 @@ var PageUti = {
             })
             tbs += "</table>"
         } else {
-            var msgary = { "-1": "Sign-in Time Off", "0": "Repo is idling.", "1": "normal" }
+            var msgary = { "-1": "Sign-in Time Off", "0": "Session is hibernating.", "1": "normal" }
             var clrary = { "-1": "red", "0": "yellow", "1": "white" }
 
             if (undefined !== ret.out.state.bRepositable) {
