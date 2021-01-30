@@ -1025,13 +1025,7 @@ BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
 }
 
 
-var fname = "bible_obj_lib/jsdb/UsrDataTemplate/myoj/myNote_json.js"
-console.log("==========test===========", fname)
-var mat = fname.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
-if (mat) {
-    console.log("=====================     mat", mat[1])
 
-}
 BibleObjGituser.prototype.run_makingup_missing_files = function (fnam) {
 
     function _makeup_missing_myoj_file(dest_pfname, src) {
@@ -1092,8 +1086,10 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     var stat = this.run_proj_state()
     if (stat.bEditable === 1) {
         inp.out.desc += "|already setup."
+        console.log("failed inp.out.desc", inp.out.desc)
         this.git_pull()
     } else {
+        console.log("start inp.out.desc", inp)
         inp.out.state.bNewCloned = 1
         if (stat.bGitDir !== 1) {
             this.git_clone()
@@ -1405,6 +1401,7 @@ BibleObjGituser.prototype.git_clone = function () {
     if (fs.existsSync(gitdir)) {
         inp.out.git_clone_res.desc += "|already done."
         inp.out.git_clone_res.bExist = true
+        console.log("already exist:", gitdir)
         return inp
     }
 
@@ -1415,6 +1412,7 @@ BibleObjGituser.prototype.git_clone = function () {
     }
     if (clone_https.length === 0) {
         inp.out.git_clone_res.desc += ",no url."
+        console.log("clone_https null:", clone_https)
         return inp
     }
     console.log("to clone: ", clone_https)

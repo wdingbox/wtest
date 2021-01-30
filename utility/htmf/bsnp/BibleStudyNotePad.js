@@ -4084,7 +4084,7 @@ var BibleInputMenuContainer = `
 
 
 
-                <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+++</a>
+                <button onclick="$('#DevTool').toggle();">*</button><a id="operation_res">+</a>
                 <div id="DevTool" style='display:none;'>
                 <button onclick="$('#txtarea').val('');$('#operation_res').text('+')" title='clearout txt'>x</button>
                 <button id="Check_bcv">Check(bcv)</button>
