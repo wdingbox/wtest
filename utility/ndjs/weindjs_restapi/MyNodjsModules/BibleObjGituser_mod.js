@@ -1056,8 +1056,8 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
         var gitpfx = _THIS.get_userpathfile_from_tempathfile(srcfname)
         if (!fs.existsSync(gitpfx)) {
             nMissed++
-            console.log("cp:", srcfname)
-            console.log("to:", gitpfx)
+            console.log("-src:", srcfname)
+            console.log("-des:", gitpfx)
             const { COPYFILE_EXCL } = fs.constants;
             if (bCpy) {
                 var pet = path.parse(gitpfx);
@@ -1080,7 +1080,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         console.log("failed git setup", inp.out.desc)
         return null
     }
-   
+
     var dir = this.get_usr_git_dir()
     if (!fs.existsSync(dir)) {
         this.git_clone()
@@ -1088,8 +1088,10 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         this.git_pull()
     }
 
-    this.run_makingup_missing_files(true)
-    this.chmod_R_777_acct()
+    if (fs.existsSync(dir)) {
+        this.run_makingup_missing_files(true)
+        this.chmod_R_777_acct()
+    }
 
     this.run_proj_state()
     return inp
