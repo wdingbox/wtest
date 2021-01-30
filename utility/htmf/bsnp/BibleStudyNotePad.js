@@ -31,7 +31,7 @@ var MyStorage = {
 
         var txt = JSON.stringify({ "#MemoryVerse": ary }, null, 4)
         console.log(txt)
-        //Jsonpster.inp.SSID = MyStorage.SSID()
+        
         //if (!Jsonpster.inp.usr) return alert("user is not set yet.")
 
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
@@ -624,7 +624,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             Uti.Msg("No save")
             return
         }
-        //Jsonpster.inp.SSID = MyStorage.SSID()
+        
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         Jsonpster.inp.par = par
@@ -644,7 +644,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         //Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: psr.bcvObj } //old
         //Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
 
-        //Jsonpster.inp.SSID = MyStorage.SSID()
+        
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
@@ -1991,7 +1991,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $(".StorageRepo_Signout").on("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
-        //Jsonpster.inp.SSID = MyStorage.SSID()
+        
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
@@ -2326,7 +2326,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
         return alert("null oj")
     }
 
-    //Jsonpster.inp.SSID = MyStorage.SSID()
+    
     //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
@@ -2358,7 +2358,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
-    //Jsonpster.inp.SSID = MyStorage.SSID()
+    
     //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
@@ -2422,7 +2422,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         gen_search_strn_history()
         document.g_NextIndex = -1
 
-        //Jsonpster.inp.SSID = MyStorage.SSID()
+        
         //Jsonpster.inp.CUID = MyStorage.GenCUID()
 
         Jsonpster.inp.par = g_aim.get_search_inp();
@@ -3087,7 +3087,7 @@ var PageUti = {
             var cmd = $(this).text()
             console.log(cmd)
 
-            //Jsonpster.inp.SSID = MyStorage.SSID()
+            
             //Jsonpster.inp.CUID = MyStorage.GenCUID()
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
