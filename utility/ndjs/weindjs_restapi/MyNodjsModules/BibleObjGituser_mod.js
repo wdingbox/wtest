@@ -1045,21 +1045,6 @@ BibleObjGituser.prototype.get_dir_lib_template = function (subpf) {
 
 BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
 
-    function _copy_file(dest_pfname, src) {
-        if (!fs.existsSync(src)) return console.log(`* * * [src Fatal Err]not existsSync(${src})`)
-        if (fs.existsSync(dest_pfname)) return console.log(`already existsSync(${dest_pfname});`)
-        ////---:
-        //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-        console.log("* * * * *  * des:", dest_pfname)
-        console.log("* * * * *  * src:", src)
-        const { COPYFILE_EXCL } = fs.constants;
-        fs.copyFileSync(src, dest_pfname, COPYFILE_EXCL) //failed if des exists.
-
-        if (!fs.existsSync(dest_pfname)) {
-            console.log("* * * [Fatal Err] missing file cannot be fixed:", dest_pfname)
-        }
-    }
-
     var _THIS = this
     var srcdir = this.get_dir_lib_template()
     var nMissed = 0
@@ -1186,8 +1171,7 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
     stat.bEditable = (1 === stat.bMyojDir && 1 === stat.bDatDir && 1 === stat.bGitDir) ? 1 : 0
     //stat.bRepositable = stat.bGitDir
 
-    //if (stat.bGitDir <= 0) return
-
+    stat.missedFiles = this.run_makingup_missing_files(false)
     stat.config = this.load_git_config()
 
     /////// git status
