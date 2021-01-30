@@ -863,10 +863,10 @@ BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
 }
 BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
     console.log("inp.CUID", inp.CUID)
-    if (!inp.CUID || inp.CUID.length === 0) return null
-    console.log("inp.CUID", inp.CUID)
+    if (!inp.CUID || inp.CUID.length === 0) return console.log(inp.CUID)
+    
     var robj = NCache.myCache.take(inp.CUID) //take: for safety delete immediately after use.
-    if (!robj) return null
+    if (!robj) return console.log("cache null=" + inp.CUID)
     console.log(robj)
 
     console.log(inp.cipherusrs)
