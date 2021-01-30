@@ -2930,7 +2930,7 @@ var PageUti = {
                     $(showid).html("<font color='green'>Success</font>")
 
                 } else {
-                    $(showid).html("<font color='red'>Error: Wrong Repository or Password</font>")
+                    $(showid).html("<font color='red'>Error: Wrong Repository or Password or Sign-in timeout.</font>")
                 }
             } else {
                 $(showid).html("<font color='red'>Error: Wrong Repository</font>")
