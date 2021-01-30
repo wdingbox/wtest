@@ -34,7 +34,7 @@ var MyStorage = {
         
         //if (!Jsonpster.inp.usr) return alert("user is not set yet.")
 
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
         Uti.Msg("Repo_save:", Jsonpster)
@@ -53,7 +53,7 @@ var MyStorage = {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.api = RestApi.ApiUsrDat_load.str
         Jsonpster.RunAjaxPost(function (ret) {
             if (cbf) cbf(ret)
@@ -625,7 +625,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             return
         }
         
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         Jsonpster.inp.par = par
         console.log("inp:", Jsonpster)
@@ -645,7 +645,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         //Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
 
         
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
         console.log("Jsonpster:", Jsonpster)
@@ -1992,7 +1992,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $(".StorageRepo_Signout").on("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
         
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.RunAjaxPost(function (ret) {
@@ -2327,7 +2327,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     }
 
     
-    //Jsonpster.inp.CUID = MyStorage.GenCUID()
+    
 
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2359,7 +2359,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
     
-    //Jsonpster.inp.CUID = MyStorage.GenCUID()
+    
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2423,7 +2423,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         document.g_NextIndex = -1
 
         
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
 
         Jsonpster.inp.par = g_aim.get_search_inp();
         Jsonpster.api = RestApi.ApiBibleObj_search_txt.str;
@@ -2952,7 +2952,7 @@ var PageUti = {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
 
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
@@ -3014,7 +3014,7 @@ var PageUti = {
         } else {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -3040,7 +3040,7 @@ var PageUti = {
         } else {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
-        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -3088,7 +3088,7 @@ var PageUti = {
             console.log(cmd)
 
             
-            //Jsonpster.inp.CUID = MyStorage.GenCUID()
+            
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
