@@ -16,6 +16,9 @@ var MyStorage = {
             }
 
             this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
+
+            $("#cacheTTL").val(MyStorage.cacheTTL())
+            
         } else {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
@@ -232,6 +235,16 @@ var MyStorage = {
         } else {
             if (parseInt(v) < 6) v = 6
             localStorage.setItem("FontSize", v)
+        }
+    },
+    cacheTTL:function (v) {
+        if (undefined === v) {
+            v = parseInt(localStorage.getItem("cacheTTL"));
+            if (!v || !Number.isInteger(v) || v.length === 0 || v < 1) return 1
+            return v
+        } else {
+            if (parseInt(v) < 1) v = 1
+            localStorage.setItem("cacheTTL", v)
         }
     },
 
@@ -1940,6 +1953,11 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         PageUti.Repositories_History("#account_set_info", 2)
         MyStorage.Repositories().repos_app_update()
     })
+
+    $("#cacheTTL").on("change", function () {
+        MyStorage.cacheTTL($(this).val())
+    })
+    
     //  $("#passcode").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", -1)
     //  })
@@ -3897,7 +3915,7 @@ var BibleInputMenuContainer = `
                     <div id='Tab_NamesOfBibleDocuments_caps'></div>
                     <button class='docSwitch' title='Selection' note='doclist'>D</button>
                     <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
-                    <button class='docSwitch' title='Searching' note='searchi' old='&#8635;'>=</button>
+                    <button class='docSwitch' title='Searching' note='searchi' old='&#8635;'>-</button>
                     </caption>
                     <thead id=""></thead>
                     <tbody>
@@ -4068,6 +4086,8 @@ var BibleInputMenuContainer = `
                     </span>
                     <br>
                     <input id="repodesc" value='' placeholder='' ></input>
+                    <br>
+                    <lable>TTL(m):<lable> <input id="cacheTTL" type='number' min='1' max='6000' length='100' unit='minute' placeholder=''></input>
                     <br>
                     
                     <button id="account_updateStatus">UpdateStatus</button>
