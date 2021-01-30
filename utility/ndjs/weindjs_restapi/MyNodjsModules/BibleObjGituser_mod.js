@@ -1075,12 +1075,29 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
 BibleObjGituser.prototype.run_proj_setup = function () {
     console.log("********************************************* run setup 1")
     var inp = this.m_inp
-    var proj = inp.usr_proj;
-    if (!proj) {
+    if (!inp.usr_proj || !inp.out.state) {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed git setup", inp.out.desc)
         return null
     }
+    var stat = inp.out.state
+    var dir = this.get_usr_git_dir()
+    if (!fs.existsSync(dir)) {
+        this.git_clone()
+    } else {
+        this.git_pull()
+    }
+
+    this.run_makingup_missing_files(true)
+    this.chmod_R_777_acct()
+
+    this.run_proj_state()
+    return inp
+
+
+
+
+
     inp.out.desc = "setup start."
     var stat = this.run_proj_state()
     if (stat.bEditable === 1) {
