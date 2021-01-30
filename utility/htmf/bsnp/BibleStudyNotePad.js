@@ -18,7 +18,7 @@ var MyStorage = {
             this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
-            
+
         } else {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
@@ -237,7 +237,7 @@ var MyStorage = {
             localStorage.setItem("FontSize", v)
         }
     },
-    cacheTTL:function (v) {
+    cacheTTL: function (v) {
         if (undefined === v) {
             v = parseInt(localStorage.getItem("cacheTTL"));
             if (!v || !Number.isInteger(v) || v.length === 0 || v < 1) return 1
@@ -526,9 +526,9 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).attr("contenteditable", "true")
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
-                if("_mySubtitle"===this.m_rev){
+                if ("_mySubtitle" === this.m_rev) {
                     showTxt = "<h2></h2>"
-                }else{
+                } else {
                     showTxt = "<ol><li></li></ol>"
                 }
             }
@@ -592,7 +592,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
 
         var rsr = MyStorage.Repositories().repos_app_update()
-        pster.inp.par.aux = { Update_repodesc: rsr.repodesc }
+        pster.inp.aux = { Update_repodesc: rsr.repodesc }
 
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
@@ -1957,7 +1957,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#cacheTTL").on("change", function () {
         MyStorage.cacheTTL($(this).val())
     })
-    
+
     //  $("#passcode").bind("focus", function () {
     //      PageUti.Repositories_History("#outConfig", -1)
     //  })
@@ -2812,7 +2812,7 @@ var g_obt = new OutputBibleTable()
 
 var PageUti = {
     Repo_fstat_table: function (ret) {
-        var tbs = "<table border='1'><thead><tr><th>NoteFile</th><th>MemUsage</th></tr></thead>"
+        var trs=""
         if (ret.out.state && ret.out.state.fstat) {
             Object.keys(ret.out.state.fstat).forEach(function (key) {
                 var str = ret.out.state.fstat[key]
@@ -2826,18 +2826,20 @@ var PageUti = {
                 if (str.indexOf("**") > 0) {
                     clsn = "repo_alert"
                 }
-                tbs += `<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
+                trs += `<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
             })
-            tbs += "</table>"
-        } else {
-            var msgary = { "-1": "Sign-in Time Off", "0": "Session is hibernating.", "1": "normal" }
-            var clrary = { "-1": "red", "0": "yellow", "1": "white" }
-
-            if (undefined !== ret.out.state.bRepositable) {
-                var idx = "" + ret.out.state.bRepositable
-                tbs = `<a style='background-color:${clrary[idx]};color:black;'>${msgary[idx]}</a>`
-            }
         }
+
+        var msgary = { "-1": "Sign-in Time Off", "0": "In Hibernate Mode.", "1": "Normal" }
+        var clrary = { "-1": "red", "0": "yellow", "1": "green" }
+
+        var caps = ""
+        if (undefined !== ret.out.state.bRepositable) {
+            var idx = "" + ret.out.state.bRepositable
+            caps = `<a style='background-color:${clrary[idx]};color:black;'>${msgary[idx]}</a>`
+        }
+
+        var tbs = `<table border='1'><caption>${caps}</caption><thead><tr><th>NoteFile</th><th>MemUsage</th></tr></thead>${trs}</table>`
         return tbs
     },
     Repositories_History: function (showid, cid) {
@@ -2964,7 +2966,7 @@ var PageUti = {
         $(showid).html("<font>start checking...</font>")
 
         var rsr = MyStorage.Repositories().repos_app_update()
-        Jsonpster.inp.par = { aux: { Update_repodesc: rsr.repodesc } }
+        Jsonpster.inp.aux = { Update_repodesc: rsr.repodesc, cacheTTL: MyStorage.cacheTTL() }
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost(function (ret) {
@@ -3580,9 +3582,9 @@ var Uti = {
         document.body.appendChild(e);
 
 
-        var tiid = setInterval(function(){
+        var tiid = setInterval(function () {
             console.log("wait for Jsonpster")
-            if("undefined" !== typeof Jsonpster){
+            if ("undefined" !== typeof Jsonpster) {
                 clearInterval(tiid)
                 if (0 === idx) {//signin page loaded.
                     if (Jsonpster && Jsonpster.pkb64) {
@@ -3593,7 +3595,7 @@ var Uti = {
                     console.log("crossload-2:SSID=", MyStorage.SSID())
                     Jsonpster.inp.usr = null
                     Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
-    
+
                 }
                 if (cbf) cbf()
             }
@@ -4087,7 +4089,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <input id="repodesc" value='' placeholder='' ></input>
                     <br>
-                    <lable>TTL(m):<lable> <input id="cacheTTL" type='number' min='1' max='6000' length='100' unit='minute' placeholder=''></input>
+                    <lable>Timeout(s):<lable> <input id="cacheTTL" type='number' min='1' max='6000' length='100' unit='minute' placeholder=''></input>
                     <br>
                     
                     <button id="account_updateStatus">UpdateStatus</button>

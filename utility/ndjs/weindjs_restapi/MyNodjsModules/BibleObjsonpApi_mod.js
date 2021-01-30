@@ -95,8 +95,8 @@ RunJsonP : function (cbf) {
 },
 RunAjaxPost : function(cbf){
     if (this.inp.SSID === null) return alert("lost inp.SSID")
-    if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
-    if (this.inp.usr != null) return alert("forbit inp.usr")
+    //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
+    if (this.inp.usr !== null) return alert("forbide inp.usr")
     this.RunAjax_PostTxt (cbf)
 },
 RunAjaxPost_Signin : function (cbf) {

@@ -492,7 +492,7 @@ var BibleUti = {
         return null
     },
 
-    Parse_inp_out_obj: function () {
+    default_inp_out_obj: function () {
         return {
             data: null, desc: "", err: null,
             state: { bGitDir: -1, bMyojDir: -1, bDatDir: -1, bEditable: -1, bRepositable: -1 }
@@ -518,7 +518,7 @@ var BibleUti = {
                 var inpObj = null
                 try {
                     inpObj = JSON.parse(body)
-                    inpObj.out = BibleUti.Parse_inp_out_obj()
+                    inpObj.out = BibleUti.default_inp_out_obj()
                 } catch (err) {
                     inpObj.err = err
                 }
@@ -573,7 +573,7 @@ var BibleUti = {
             //d64 = Buffer.from(d64, 'base64').toString()
             var sin = decodeURIComponent(d64);//must for client's encodeURIComponent
 
-            var out = BibleUti.Parse_inp_out_obj()
+            var out = BibleUti.default_inp_out_obj()
             try {
                 var inpObj = JSON.parse(sin);
                 inpObj.out = out
@@ -672,46 +672,43 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 var NCache = {}
 NCache.m_checkperiod = 3 //s.
-NCache.m_TTL = NCache.m_checkperiod * 10 //seconds
-NCache.m_MaxIdleTime = NCache.m_TTL * 10  //TimeToEnd(s).
+NCache.m_TTL = NCache.m_checkperiod * 3600 //seconds
+NCache.m_MFT = 3  //MaxForgivenTimes.
+
 NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
 NCache.Init = function () {
     NCache.myCache.set("test", { publicKey: 1, privateKey: 1, CUID: 1 }, 30)
     //myCache.ttl( "tuid", 3 )
+    console.log("ttl=", NCache.myCache.getTtl("test"))
+
     NCache.myCache.set("test", { publicKey: 1, privateKey: 1, CUID: 1 }, 10)
     //myCache.ttl( "tuid", 6 )
+    console.log("ttl=", NCache.myCache.getTtl("test"))
     var obj = NCache.myCache.get("test")
     console.log(obj)
 
     NCache.myCache.on("del", function (key, val) {
-        console.log("\n\n\n\n\n\n\n\n\n\non del")
-        console.log("on del NCache.m_TTL=", NCache.m_TTL)
-        console.log("on del NCache.m_checkperiod=", NCache.m_checkperiod)
+        console.log(`\n\n\n\n\n\n\n\n\n\non del, NCache.m_checkperiod=${NCache.m_checkperiod},m_TTL=${NCache.m_TTL}, m_MFT=${NCache.m_MFT}`)
         // ... do something ...
-        console.log("on del key=", key)
-        console.log("on del val=", val)
-
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
-        console.log("on del rootDir=", rootDir)
+        console.log(`on del:key=${key}, \n-val=${JSON.stringify(val)}, \n-rootDir=${rootDir}`)
 
         if (!val) return console.log("on del, val=undefined")
-        if (!fs.existsSync(rootDir)) return console.log(`existsSync(${rootDir}) not exist.`)
-        if (!fs.existsSync(key)) return console.log(`existsSync(${key}) not exist.`)
+        if (!fs.existsSync(rootDir)) return console.log(`not existsSync(${rootDir}).`)
+        if (!fs.existsSync(key)) return console.log(`not existsSync(${key}).`)
 
-        console.log("start to del proj_destroy ssid=", key)
+        console.log("* start to del proj_destroy ssid=", key)
         var inp = {}
         inp.usr = val
-        inp.out = BibleUti.Parse_inp_out_obj()
+        inp.out = BibleUti.default_inp_out_obj()
         inp.SSID = key
         var userProject = new BibleObjGituser(rootDir)
         if (userProject.parse_inp_usr2proj(inp)) {
             userProject.run_proj_state()
             console.log(inp.out.state)
-            if (0 === inp.out.state.bRepositable) {
-                //case push failed. Don't delete
-                console.log("git dir not exit.")
-
-            } else {
+            if (1 === inp.out.state.bRepositable) {
+                //
+                console.log("git dir exist. push before to delete it")
                 var res2 = userProject.execSync_cmd_git("git add *")
                 var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
                 var res4 = userProject.git_push()
@@ -719,28 +716,36 @@ NCache.Init = function () {
                 var res5 = userProject.run_proj_destroy()
             }
         }
+        console.log("* End of del proj_destroy ssid=", key)
     });
 
     NCache.myCache.on("expired", function (key, val) {
-        console.log("\n\non expired")
-        console.log("on expired NCache.m_TTL=", NCache.m_TTL)
-        console.log("on expired NCache.m_checkperiod=", NCache.m_checkperiod)
-        console.log("on expired NCache.m_MaxIdleTime=", NCache.m_MaxIdleTime)
+        console.log(`on expired:key=${key}, \n-val=${JSON.stringify(val)}`)
 
-        var tms = val.tms
-        if (!tms) return console.log("------------>>>>>>>>on expired, let it die.")
-        var cur = (new Date()).getTime()
-        var dlt = (cur - tms) / 1000.0 //(s)
-        if (dlt > NCache.m_MaxIdleTime) {
-            return console.log("------------>>>>>>>>on expired, let it die,dlt=", dlt)
+        if ("object" !== typeof val) {
+            console.log("on expired, non-obj die!~~~~", key)
+            return
         }
-        console.log("on expired, keep alive", dlt)
-        NCache.myCache.set(key, val, NCache.m_TTL) //keep it.
+        var tms = val.tms, ttl = val.ttl
+        if (!tms || !ttl) return console.log("on expired, let it die.", ttl, tms, key)
+        var cur = (new Date()).getTime() //(ms)
+        var dlt = (cur - tms) / 1000.0 //(s)
+
+        console.log(`on expired,MFT=${NCache.m_MFT}, ttl=${ttl}, dlt=${dlt}, key=${key}`)
+        if (dlt < ttl * NCache.m_MFT) {
+            console.log("on expired, keep alive!", key)
+            NCache.myCache.set(key, val, ttl) //keep it.
+        } else {
+            console.log("on expired, let it die!~~~~", key)
+        }
     })
 }
 NCache.Set = function (key, val, ttl) {
     if (undefined === ttl) ttl = NCache.m_TTL
-    if ("object" === typeof val) val.tms = (new Date()).getTime() //timestampe for last access.
+    if ("object" === typeof val) {
+        val.tms = (new Date()).getTime() //timestampe for last access.
+        val.ttl = ttl
+    }
     this.myCache.set(key, val, ttl) //restart ttl -- reborn again.
 }
 NCache.Get = function (key, ttl) {
@@ -817,7 +822,6 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
         return null
     }
 
-
     inp.usr = NCache.Get(inp.SSID)
     console.log("inp.SSID:", inp.SSID)
     console.log("inp.usr", inp.usr)
@@ -825,14 +829,19 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
         //inp.out.state.ssid_cur = "timeout"
     }
 
+    return inp.usr
+}
+BibleObjGituser.prototype.proj_update_par_aux_to_cache_ssid = function (inp) {
+
+    if (!inp.SSID || inp.SSID.length === 0 || !inp.usr || !inp.aux) {
+        return null
+    }
 
     //extra work: update repodesc
-    if (inp.usr && inp.par) {
-        if (inp.par.aux && "string" === typeof inp.par.aux.Update_repodesc) {
-            inp.usr.repodesc = inp.par.aux.Update_repodesc
-            NCache.Set(inp.SSID, inp.usr)
-            console.log(`Update_repodesc ************* = ${inp.usr.repodesc}`)
-        }
+    if ("string" === typeof inp.aux.Update_repodesc) {
+        inp.usr.repodesc = inp.aux.Update_repodesc
+        console.log(`Update_repodesc ************* = ${JSON.stringify(inp.aux)}`)
+        NCache.Set(inp.SSID, inp.usr, inp.aux.cacheTTL)
     }
 
     return inp.usr
@@ -846,6 +855,7 @@ BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
     if (null === this.proj_get_usr_fr_cache_ssid(inp)) {
         return null
     }
+    this.proj_update_par_aux_to_cache_ssid(inp)
     return this.parse_inp_usr2proj(inp)
 }
 BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
@@ -1145,7 +1155,7 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
     /////// git status
     //stat.bEditable = stat.bGitDir * stat.bMyojDir * stat.bDatDir
     this.m_inp.out.state.bRepositable = 0
-    if (this.m_inp.usr && this.m_inp.usr.passcode.length > 0) {
+    if (stat.config.length > 0) {
         //if clone with password ok, it would ok for pull/push 
         stat.bRepositable = 1
     }
