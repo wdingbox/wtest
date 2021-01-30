@@ -238,12 +238,14 @@ var MyStorage = {
         }
     },
     cacheTTL: function (v) {
+        const defaultVal = 60
         if (undefined === v) {
             v = parseInt(localStorage.getItem("cacheTTL"));
-            if (!v || !Number.isInteger(v) || v.length === 0 || v < 1) return 1
+            if (!v || !Number.isInteger(v) || v.length === 0 || v < 1) return defaultVal
             return v
         } else {
-            if (parseInt(v) < 1) v = 1
+            if (!Number.isInteger(ival)) return alert(`not Number.isInteger(${v})`)
+            if (parseInt(v) < 1) v = defaultVal
             localStorage.setItem("cacheTTL", v)
         }
     },
