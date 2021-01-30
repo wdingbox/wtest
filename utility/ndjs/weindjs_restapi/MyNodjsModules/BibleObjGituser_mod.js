@@ -1080,7 +1080,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         console.log("failed git setup", inp.out.desc)
         return null
     }
-    var stat = inp.out.state
+   
     var dir = this.get_usr_git_dir()
     if (!fs.existsSync(dir)) {
         this.git_clone()
@@ -1092,57 +1092,6 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     this.chmod_R_777_acct()
 
     this.run_proj_state()
-    return inp
-
-
-
-
-
-    inp.out.desc = "setup start."
-    var stat = this.run_proj_state()
-    if (stat.bEditable === 1) {
-        inp.out.desc += "|already setup."
-        console.log("stat.bEditable", inp.out.desc)
-        this.git_pull()
-    } else {
-        console.log("start inp.out.desc", inp)
-        inp.out.state.bNewCloned = 1
-        if (stat.bGitDir !== 1) {
-            console.log("********************************************* run setup 2")
-            this.git_clone()
-            this.git_config_allow_push(false)
-            stat = this.run_proj_state()
-        } else {
-            console.log("********************************************* run setup 3")
-            this.git_pull()
-
-        }
-
-        if (stat.bMyojDir !== 1) {
-            console.log("********************************************* run setup 4")
-            this.cp_template_to_git()
-            stat = this.run_proj_state()
-        }
-        if (stat.bDatDir !== 1) {
-            console.log("********************************************* run setup 5")
-        }
-
-        if (stat.bMyojDir === 1) {
-            console.log("********************************************* run setup 6")
-            var accdir = this.get_usr_acct_dir()
-            this.chmod_R_(777, accdir)
-        }
-
-    }
-
-    this.chmod_R_777_acct()
-
-    this.run_makingup_missing_files(true)
-
-    var retp = this.run_proj_state()
-    if (retp.bEditable === 1) {
-    }
-
     return inp
 }
 BibleObjGituser.prototype.run_proj_destroy = function () {
