@@ -892,12 +892,13 @@ BibleObjGituser.prototype.proj_parse_usr_signin = function (inp) {
     return this.parse_inp_usr2proj(inp)
 }
 BibleObjGituser.prototype.parse_inp_usr2proj = function (inp) {
-    if ("object" !== typeof inp.usr) {
+    if ("object" !== typeof inp.usr || !inp.usr) {
         inp.usr_proj = null
         console.log("inp.usr is null")
         return null
     }
     if (!this.m_inp) this.m_inp = inp
+    console.log(inp)
 
     inp.usr_proj = BibleUti._interpret_repo_url(inp.usr.repopath)
     if (!inp.usr_proj) {
