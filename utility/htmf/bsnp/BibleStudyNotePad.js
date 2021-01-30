@@ -4039,8 +4039,7 @@ var BibleInputMenuContainer = `
                 
                 <a href='https://bsnp21.github.io/home/' owner='williamwding' email='yahoo.com' xxxhref='https://wdingbox.github.io/ham12/'>Home</a> |
                 <a id='NewPage' target='_blank'>New</a> | 
-                <a id="account_helper">More</a> | 
-                <a target='_blank' href='../index.htm'>.</a>  
+                <a id="account_helper">More</a> |
 
                 
                 <button class="StorageRepo_Signout">Sign Out</button>
@@ -4089,6 +4088,7 @@ var BibleInputMenuContainer = `
                 <div id="DevTool" style='display:none;'>
                 <button onclick="$('#txtarea').val('');$('#operation_res').text('+')" title='clearout txt'>x</button>
                 <button id="Check_bcv">Check(bcv)</button>
+                <a target='_blank' href='../index.htm'>.</a>  
                 <textarea id="txtarea" style='width:100%;' rows='20'  value='search results...' title='log.'></textarea><br>
                 </div>
                 
