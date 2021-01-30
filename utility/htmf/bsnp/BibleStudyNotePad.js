@@ -32,7 +32,7 @@ var MyStorage = {
         var txt = JSON.stringify({ "#MemoryVerse": ary }, null, 4)
         console.log(txt)
         
-        //if (!Jsonpster.inp.usr) return alert("user is not set yet.")
+        
 
         
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
@@ -123,7 +123,7 @@ var MyStorage = {
             $("#SignOut_repopathname").text(reob.repo)
 
             obj.repopath = reob.full_path
-            //////bad idea:  Object.assign(Jsonpster.inp.usr, obj)
+            
             var ar = this.repos_store_set(obj)
             return ar
         }
@@ -442,7 +442,6 @@ function PopupMenu_EdiTag() {
 PopupMenu_EdiTag.prototype.init_popup = function (par) {
     this.m_par = par
 
-    //$("#RevTag_Info").text(Jsonpster.inp.usr.repopath)
 
     this.m_ediDiv.setId_Txt(par.m_txuid, par.m_rev, par.m_outxtObj)
     this.m_ediBtn.init_associate(this.m_ediDiv)
@@ -641,10 +640,6 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     $("#RevTag_Load").bind("click", function () {
         var psr = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
-        //Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: psr.bcvObj } //old
-        //Jsonpster.api = RestApi.ApiBibleObj_read_Usr_BkcChpVrs_txt.str //old
-
-        
         
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
@@ -2326,9 +2321,6 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
         return alert("null oj")
     }
 
-    
-    
-
     var fnamesArr = par.BCVtagClusterInfo.newselary; //tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
@@ -3108,7 +3100,6 @@ var PageUti = {
         })
     },
     LoadStorageInRepos: function (eid) {
-        //Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
 
         MyStorage.Repo_load(function (ret) {
             console.log("data", ret)
