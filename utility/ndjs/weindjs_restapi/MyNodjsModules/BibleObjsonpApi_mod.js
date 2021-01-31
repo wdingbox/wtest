@@ -58,7 +58,7 @@ var ApiJsonp_BibleObj = {
         Object.keys(this).forEach(function (key) {
             RestApi[key] = { str: key };//, inp: ApiJsonp_BibleObj[key]() };
         })
-        var jstr_RestApi = JSON.stringify(RestApi);
+        var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi,null,4)}`
         var structall = JSON.stringify(inp_struct_all)
         var SvrUrl = `http://${res.req.headers.host}/`
 
@@ -67,41 +67,15 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api: "",
-    inp: {},
+    inp: { CUID:null, usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
-
-Url: function (){
-    this.m_src = this.url + this.api + '?inp=' + btoa(encodeURIComponent(JSON.stringify(this.inp))) ;
-    return this.m_src;
-},
 onBeforeRun : function(){
-
 },
 onAfterRun : function(){
+},
 
-},
-xxxxxxxxxxxRun : function (cbf) {
-    this.RunJsonP(cbf)
-    this.api = this.inp.par = this.inp.usr = null;
-},
-xxxxxxxxxxxRunJsonP : function (cbf) {
-    if (!cbf) alert('callback m_cbf null');
-    if (!this.api) alert('api=null');
-    if (!this.inp) alert('inp=null');
-    this.m_cbf = cbf;
-    var s = document.createElement('script');
-    s.src = this.Url()
-    document.body.appendChild(s);
-    console.log('Jsonpster:', Jsonpster);
-},
-RunAjaxPost_Signed : function(cbf){
-    if (this.inp.SSID === null) return alert("lost inp.SSID")
-    //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
-    if (this.inp.usr !== null) return alert("forbide inp.usr")
-    this.RunAjax_PostTxt (cbf)
-},
-RunAjaxPost_Signin : function (cbf) {
+onSignin : function(){
     this.inp.SSID = null
     if (!this.inp.CUID) return alert("missing CUID.")
     if ('object' != typeof this.inp.usr)return alert("missing usr.")
@@ -120,7 +94,19 @@ RunAjaxPost_Signin : function (cbf) {
     console.log(this.inp)
     console.log("Jsonpster")
     console.log(Jsonpster)
+},
+onSigned : function(){
+    if (this.inp.SSID === null) return alert("lost inp.SSID")
+    //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
+    if (this.inp.usr !== null) return alert("forbidden inp.usr")
+},
 
+RunAjaxPost_Signed : function(cbf){
+    this.onSigned()
+    this.RunAjax_PostTxt (cbf)
+},
+RunAjaxPost_Signin : function (cbf) {
+    this.onSignin()
     this.RunAjax_PostTxt (cbf)
 },
 RunAjax_PostTxt : function(cbf){
@@ -156,40 +142,8 @@ RunAjax_PostTxt : function(cbf){
             //alert("textStatus="+textStatus);
         });
 },
-xxRunPost : function (cbf) {
-    if(!cbf) return alert("cbf null.")
-    var surl = "http://${res.req.headers.host}/" + this.api
-    $.post(surl,
-        this.inp,
-        function(data, status){
-            if(cbf) cbf(data, status)
-            console.log("Data: " + data + ",Status: " + status);
-        }
-    )
-},
-xxRunPosts : function (cbf) {
-    if(!cbf) return alert("cbf null.")
-    var surl = "https://${res.req.headers.host}/"
-    surl = surl.replace("7778", "7775") + this.api
-    $.post(surl,
-        this.inp,
-        function(data, status){
-            if(cbf) cbf(data, status)
-            console.log("Data: " + data + ",Status: " + status);
-        }
-    )
-},
-xxRun_Post : function (cbf) {
-    if(!cbf) return alert("cbf null.")
-    var surl = "http://${res.req.headers.host}/" + this.api
-    $.post(surl,
-        this.inp
-    ).done(function(ret){
-        if(cbf) cbf(data, status)
-    })
-}
 };
-const RestApi = JSON.parse('${jstr_RestApi}');
+${jstr_RestApi}
 `;;;;;;;;;;;;;;
 
         console.log(s);
