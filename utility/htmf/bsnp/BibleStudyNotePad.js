@@ -248,7 +248,7 @@ var MyStorage = {
         }
     },
     cacheTTL: function (v) {
-        const defaultVal = 60
+        const defaultVal = 3600
         if("#"===v){
             v = $("#cacheTTL").val()
             return v
