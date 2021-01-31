@@ -60,30 +60,32 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = JSON.stringify(RestApi);
         var structall = JSON.stringify(inp_struct_all)
+        var SvrUrl = `http://${res.req.headers.host}/`
 
 
 
         var s = `
 var Jsonpster = {
-    host: "${res.req.headers.host}",
-    url: "http://${res.req.headers.host}/",
+    SvrUrl: "${SvrUrl}",
     api: "",
-    inp: ${structall},
+    inp: {},
     pkb64:"${pkb64}",
 
 Url: function (){
     this.m_src = this.url + this.api + '?inp=' + btoa(encodeURIComponent(JSON.stringify(this.inp))) ;
     return this.m_src;
 },
-Response : function(dat, sid){
-    this.inp.sid = sid
-    this.m_cbf(dat)
+onBeforeRun : function(){
+
 },
-Run : function (cbf) {
+onAfterRun : function(){
+
+},
+xxxxxxxxxxxRun : function (cbf) {
     this.RunJsonP(cbf)
     this.api = this.inp.par = this.inp.usr = null;
 },
-RunJsonP : function (cbf) {
+xxxxxxxxxxxRunJsonP : function (cbf) {
     if (!cbf) alert('callback m_cbf null');
     if (!this.api) alert('api=null');
     if (!this.inp) alert('inp=null');
@@ -93,7 +95,7 @@ RunJsonP : function (cbf) {
     document.body.appendChild(s);
     console.log('Jsonpster:', Jsonpster);
 },
-RunAjaxPost : function(cbf){
+RunAjaxPost_Signed : function(cbf){
     if (this.inp.SSID === null) return alert("lost inp.SSID")
     //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
     if (this.inp.usr !== null) return alert("forbide inp.usr")
@@ -106,7 +108,7 @@ RunAjaxPost_Signin : function (cbf) {
     if (this.pkb64.length === 0)return alert("no pubkey. Please load page again.")
     
     var usrs = JSON.stringify(this.inp.usr)
-    if (usrs.length > 500){return alert("max 4096-bit rsa: 501B. len="+usrs.length)}
+    if (usrs.length > 500) {return alert("max 4096-bit rsa: 501B. len="+usrs.length)}
 
     //alert(this.inp.usr)
     var encrypt = new JSEncrypt();
@@ -122,7 +124,8 @@ RunAjaxPost_Signin : function (cbf) {
     this.RunAjax_PostTxt (cbf)
 },
 RunAjax_PostTxt : function(cbf){
-    var surl = "http://${res.req.headers.host}/" + this.api
+    this.onBeforeRun()
+    var surl = this.SvrUrl + this.api
     this.inp.api = this.api
     $.ajax({
         type: "POST",
@@ -142,8 +145,9 @@ RunAjax_PostTxt : function(cbf){
             //cbf(JSON.parse(data))
         })
         .done(function( data ) {
-            //console.log("done",data);
-            cbf(JSON.parse(data))
+            var ret = JSON.parse(data)
+            Jsonpster.onAfterRun(ret)
+            cbf (ret)
             Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = null;
         })
         .fail( function(xhr, textStatus, errorThrown) {

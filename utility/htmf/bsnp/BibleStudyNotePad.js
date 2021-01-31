@@ -38,7 +38,7 @@ var MyStorage = {
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
         Uti.Msg("Repo_save:", Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             cbf(ret)
         })
     },
@@ -55,7 +55,7 @@ var MyStorage = {
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
         
         Jsonpster.api = RestApi.ApiUsrDat_load.str
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             if (cbf) cbf(ret)
         })
     },
@@ -631,7 +631,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         Jsonpster.inp.par = par
         console.log("inp:", Jsonpster)
         Uti.Msg(Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             console.log("ret", ret)
             Uti.Msg(ret.out)
             _THIS.m_ediBtn.enable_edit(false, true)
@@ -648,7 +648,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         console.log("Jsonpster:", Jsonpster)
         Uti.Msg(Jsonpster)
 
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             console.log("ret", ret.out.data)
             Uti.Msg(ret.out)
             if (ret.out.data) {
@@ -1992,7 +1992,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             $("body").attr("onbeforeunload", null)
             window.open("./index.htm", "_self")
             MyStorage.SSID("")
@@ -2327,7 +2327,7 @@ AppInstancesManager.prototype.loadBible_verse_by_bibOj = function (par) {
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
-    Jsonpster.RunAjaxPost(function (ret) {
+    Jsonpster.RunAjaxPost_Signed(function (ret) {
         if (!ret.out.data) return alert("no out.data")
         _THIS.loadBible_verse_by_bibOj_output(ret, par)
         setTimeout(function () {
@@ -2359,7 +2359,7 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
     Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str;
     Uti.Msg(Jsonpster);
-    Jsonpster.RunAjaxPost(function (ret) {
+    Jsonpster.RunAjaxPost_Signed(function (ret) {
         if (!ret.out.data) return alert("no out.data")
         _THIS.apiCallback_Gen_output_table(ret)
         setTimeout(function () {
@@ -2424,7 +2424,7 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         Uti.Msg(Jsonpster)
         if (!Jsonpster.inp.par) return
         $("#searchNextresult").text("Serach str in server site..")
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             _THIS.apiCallback_Gen_output_table(ret, function (size) {
                 $("#searchNextresult").text("0/" + size)
             });
@@ -2950,7 +2950,7 @@ var PageUti = {
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             $("#otb").html("<font color='green'>Repos is undocked.</font>")
             Uti.Msg("ret", ret)
             MyStorage.SSID("")
@@ -2963,7 +2963,7 @@ var PageUti = {
         Jsonpster.inp.aux = { Update_repodesc: MyStorage.Repositories().repos_app_update().repodesc, cacheTTL: MyStorage.cacheTTL() }
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
 
             $(showid).html("<font color='green'>ok.</font>")
@@ -3011,7 +3011,7 @@ var PageUti = {
         
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
 
             //Uti.Msg("ret", ret)
             $("#otb").html("<font color='green'>Push is done.</font>")
@@ -3037,7 +3037,7 @@ var PageUti = {
         
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
 
             $("#otb").html("<font color='green'>Pull is done.</font>")
             //dbg_pster(ret)
@@ -3086,7 +3086,7 @@ var PageUti = {
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
-            Jsonpster.RunAjaxPost(function (ret) {
+            Jsonpster.RunAjaxPost_Signed(function (ret) {
                 Uti.Msg(ret)
                 var res = ret.out.cmd_exec_res.success
                 var str2 = ""
@@ -3540,7 +3540,7 @@ var Uti = {
         Jsonpster.inp = JSON.parse(myNotes).inp
         Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt.str
         console.log("Jsonpster:", Jsonpster.inp)
-        Jsonpster.RunAjaxPost(function (ret) {
+        Jsonpster.RunAjaxPost_Signed(function (ret) {
             console.log("ret", ret)
             if (cbf) cbf(ret)
         })
