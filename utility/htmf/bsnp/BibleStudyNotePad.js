@@ -31,10 +31,10 @@ var MyStorage = {
 
         var txt = JSON.stringify({ "#MemoryVerse": ary }, null, 4)
         console.log(txt)
-        
-        
 
-        
+
+
+
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"], data: txt }
         Jsonpster.api = RestApi.ApiUsrDat_save.str
         Uti.Msg("Repo_save:", Jsonpster)
@@ -53,7 +53,7 @@ var MyStorage = {
         var txt = JSON.stringify(localStorage, null, 4)
         console.log(txt)
         Jsonpster.inp.par = { fnames: ["./dat/localStorage"] }
-        
+
         Jsonpster.api = RestApi.ApiUsrDat_load.str
         Jsonpster.RunAjaxPost_Signed(function (ret) {
             if (cbf) cbf(ret)
@@ -68,6 +68,16 @@ var MyStorage = {
             localStorage.setItem(sTUID, uid)
         }
         return uid
+    },
+    SSID: function (ssid) {
+        const sessId = "SSID"
+        if (undefined === ssid) {
+            var ret = localStorage.getItem(sessId)
+            if (!ret) return alert("Invalid SessionID. \n- Please sign out/in again.")
+            return ret
+        } else {
+            localStorage.setItem(sessId, ssid)
+        }
     },
 
     Repositories: function () {
@@ -123,7 +133,7 @@ var MyStorage = {
             $("#SignOut_repopathname").text(reob.repo)
 
             obj.repopath = reob.full_path
-            
+
             var ar = this.repos_store_set(obj)
             return ar
         }
@@ -239,13 +249,24 @@ var MyStorage = {
     },
     cacheTTL: function (v) {
         const defaultVal = 60
+        if("#"===v){
+            v = $("#cacheTTL").val()
+            return v
+        }
+        if("on"===v){
+            $("#cacheTTL").on("click, change",function(){
+                var v = $(this).val()
+
+            })
+        }
         if (undefined === v) {
             v = parseInt(localStorage.getItem("cacheTTL"));
             if (!v || !Number.isInteger(v) || v.length === 0 || v < 1) return defaultVal
             return v
         } else {
-            if (!Number.isInteger(ival)) return alert(`not Number.isInteger(${v})`)
-            if (parseInt(v) < 1) v = defaultVal
+            v = parseInt(v)
+            if (!Number.isInteger(v)) return alert(`not Number.isInteger(${v})`)
+            if (v < 1) v = defaultVal
             localStorage.setItem("cacheTTL", v)
         }
     },
@@ -287,16 +308,7 @@ var MyStorage = {
     },
 
 
-    SSID: function (ssid) {
-        const sessId = "SSID"
-        if (undefined === ssid) {
-            var ret = localStorage.getItem(sessId)
-            if (!ret) return alert("Invalid SessionID. \n- Please sign out/in again.")
-            return ret
-        } else {
-            localStorage.setItem(sessId, ssid)
-        }
-    }
+   
 }
 
 
@@ -591,10 +603,6 @@ PopupMenu_EdiTag.prototype.init = function () {
         pster.inp.SSID = Jsonpster.inp.SSID = MyStorage.SSID()
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
 
-
-        var rsr = MyStorage.Repositories().repos_app_update()
-        pster.inp.aux = { Update_repodesc: rsr.repodesc }
-
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         localStorage.setItem("myNote", JSON.stringify(pster))
         return pster.inp.par
@@ -625,8 +633,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             Uti.Msg("No save")
             return
         }
-        
-        
+
+
         Jsonpster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt.str
         Jsonpster.inp.par = par
         console.log("inp:", Jsonpster)
@@ -642,7 +650,7 @@ PopupMenu_EdiTag.prototype.init = function () {
 
     $("#RevTag_Load").bind("click", function () {
         var psr = Uti.parse_bcv(_THIS.m_par.m_bcv, "")
-        
+
         Jsonpster.inp.par = { fnames: [_THIS.m_par.m_rev], bibOj: psr.bcvObj }
         Jsonpster.api = RestApi.ApiBibleObj_load_by_bibOj.str
         console.log("Jsonpster:", Jsonpster)
@@ -1988,8 +1996,8 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     })
     $(".StorageRepo_Signout").on("click", function () {
         //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
-        
-        
+
+
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Jsonpster.RunAjaxPost_Signed(function (ret) {
@@ -2352,8 +2360,8 @@ AppInstancesManager.prototype.loadBible_chapter_by_bibOj = function (oj) {
     }
     if (!oj || Object.keys(oj) === 0) return alert("oj is null")
 
-    
-    
+
+
 
     var fnamesArr = tab_documentsClusterList.get_selected_seq_fnamesArr();
     Jsonpster.inp.par = { fnames: fnamesArr, bibOj: oj, Search: null };
@@ -2416,8 +2424,8 @@ AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
         gen_search_strn_history()
         document.g_NextIndex = -1
 
-        
-        
+
+
 
         Jsonpster.inp.par = g_aim.get_search_inp();
         Jsonpster.api = RestApi.ApiBibleObj_search_txt.str;
@@ -2806,7 +2814,7 @@ var g_obt = new OutputBibleTable()
 
 var PageUti = {
     Repo_fstat_table: function (ret) {
-        var trs=""
+        var trs = ""
         if (ret.out.state && ret.out.state.fstat) {
             Object.keys(ret.out.state.fstat).forEach(function (key) {
                 var str = ret.out.state.fstat[key]
@@ -2946,7 +2954,7 @@ var PageUti = {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
 
-        
+
         Jsonpster.inp.par = {}
         Jsonpster.api = RestApi.ApiUsrReposData_destroy.str
         Uti.Msg("start", Jsonpster)
@@ -2959,8 +2967,8 @@ var PageUti = {
     repo_status: function (showid) {
         $(showid).html("<font>start checking...</font>")
 
-        
-        Jsonpster.inp.aux = { Update_repodesc: MyStorage.Repositories().repos_app_update().repodesc, cacheTTL: MyStorage.cacheTTL() }
+
+
         Jsonpster.api = RestApi.ApiUsrReposData_status.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost_Signed(function (ret) {
@@ -3008,7 +3016,7 @@ var PageUti = {
         } else {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
-        
+
         Jsonpster.api = RestApi.ApiUsrReposData_git_push.str
         Uti.Msg("start", Jsonpster)
         Jsonpster.RunAjaxPost_Signed(function (ret) {
@@ -3034,7 +3042,7 @@ var PageUti = {
         } else {
             Jsonpster.inp.SSID = MyStorage.SSID()
         }
-        
+
         Jsonpster.api = RestApi.ApiUsrReposData_git_pull.str
         Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.RunAjaxPost_Signed(function (ret) {
@@ -3081,8 +3089,8 @@ var PageUti = {
             var cmd = $(this).text()
             console.log(cmd)
 
-            
-            
+
+
             Jsonpster.inp.par = { cmdline: cmd }
             Jsonpster.api = RestApi.ApiUsr_Cmdline_Exec.str
             //dbg_pster()
@@ -3587,7 +3595,11 @@ var Uti = {
                 if (idx > 0) {//1:main-page loaded  after transit from signin-page.
                     console.log("crossload-2:SSID=", MyStorage.SSID())
                     Jsonpster.inp.usr = null
-                    Jsonpster.inp.aux = {cacheTTL: MyStorage.cacheTTL() }
+                    Jsonpster.onBeforeRun = function () {
+                        var uiv = MyStorage.Repositories().repos_app_update().repodesc
+                        var ttl = MyStorage.cacheTTL("#")
+                        Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
+                    }
                     Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
 
                 }

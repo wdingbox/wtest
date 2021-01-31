@@ -687,7 +687,9 @@ NCache.Init = function () {
     var obj = NCache.myCache.get("test")
     console.log(obj)
 
-    NCache.myCache.on("del", function (key, val) {
+
+
+    function _destroy_git_proj(key, val) {
         console.log(`\n\n\n\n\n\n\n\n\n\non del, NCache.m_checkperiod=${NCache.m_checkperiod},m_TTL=${NCache.m_TTL}, m_MFT=${NCache.m_MFT}`)
         // ... do something ...
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
@@ -717,17 +719,17 @@ NCache.Init = function () {
             }
         }
         console.log("* End of del proj_destroy ssid=", key)
-    });
+    }
 
-    NCache.myCache.on("expired", function (key, val) {
-        console.log(`on expired:key=${key}, \n-val=${JSON.stringify(val)}`)
 
+    function _MaxForgivenTimes(key, val) {
         if ("object" !== typeof val) {
-            console.log("on expired, non-obj die!~~~~", key)
+            console.log("on expired, non-obj must dies!~~~~", key)
             return
         }
+
         var tms = val.tms, ttl = val.ttl
-        if (!tms || !ttl) return console.log("on expired, let it die.", ttl, tms, key)
+        if (!tms || !ttl) return console.log("on expired, invalid must die.", ttl, tms, key)
         var cur = (new Date()).getTime() //(ms)
         var dlt = (cur - tms) / 1000.0 //(s)
 
@@ -736,8 +738,16 @@ NCache.Init = function () {
             console.log("on expired, keep alive!", key)
             NCache.myCache.set(key, val, ttl) //keep it.
         } else {
-            console.log("on expired, let it die!~~~~", key)
+            console.log("on expired, ~~~~~~~~~ die ~~~~~~~", key)
         }
+    }
+
+    NCache.myCache.on("del", function (key, val) {
+        _destroy_git_proj(key, val)
+        _MaxForgivenTimes(key, val)
+    });
+    NCache.myCache.on("expired", function (key, val) {
+        //console.log(`on expired:key=${key}, \n-val=${JSON.stringify(val)}`)
     })
 }
 NCache.Set = function (key, val, ttl) {
@@ -845,7 +855,7 @@ BibleObjGituser.prototype.proj_update_cache_ssid_by_inp_aux = function (inp) {
 
     }
     NCache.Set(inp.SSID, inp.usr, inp.aux.cacheTTL)
-    console.log(`Update_repodesc ************* = ${JSON.stringify(inp.aux)}`)
+    console.log(`Update_repodesc ************* inp.aux= ${JSON.stringify(inp.aux)}`)
 
     return inp.usr
 }
@@ -864,7 +874,7 @@ BibleObjGituser.prototype.proj_parse_usr_signed = function (inp) {
 BibleObjGituser.prototype.proj_get_usr_fr_decipher_cuid = function (inp) {
     console.log("inp.CUID", inp.CUID)
     if (!inp.CUID || inp.CUID.length === 0) return console.log(inp.CUID)
-    
+
     var robj = NCache.myCache.take(inp.CUID) //take: for safety delete immediately after use.
     if (!robj) return console.log("cache null=" + inp.CUID)
     console.log(robj)
