@@ -163,6 +163,7 @@ ${jstr_RestApi}
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             //if (!inp.usr.f_path) inp.usr.f_path = ""
             var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
             var stat = userProject.run_proj_setup()
             var TbcvObj = {};
             if (proj && "object" === typeof inp.par.fnames) {//['NIV','ESV']
@@ -182,6 +183,7 @@ ${jstr_RestApi}
             inp.out.data = BibleUti.search_str_in_bcvT(bcvT, inp.par.Search.File, inp.par.Search.Strn);
 
             inp.out.desc += ":success."
+            userProject.run_proj_state()
         })
         // var sret = JSON.stringify(inp);
         // var sid = ""
@@ -196,6 +198,7 @@ ${jstr_RestApi}
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
             var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) {
                 console.log("proj_setup failed.", stat)
@@ -233,6 +236,7 @@ ${jstr_RestApi}
                 inp.out.data = bcvT
                 //console.log(bcvT)
             }
+            userProject.run_proj_state()
         })
     },
 
@@ -245,10 +249,8 @@ ${jstr_RestApi}
             var save_res = { desc: "to save" }
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
-            if (!proj) {
-                save_res.desc = "proj=null"
-                return
-            }
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
+
             var stat = userProject.run_proj_setup()
             if (!stat || stat.out.state.bEditable !== 1) return console.log("proj_setup failed.", stat)
 
@@ -310,11 +312,13 @@ ${jstr_RestApi}
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
-            if (proj) {
-                if ("string" === typeof inp.par.aux.Update_repodesc) {
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
 
-                }
+            if ("string" === typeof inp.aux.Update_repodesc) {
+                console.log(inp.usr)
             }
+
+
             var doc = inp.par.fnames[0]
             //var docname = userProject.get_DocCode_Fname(doc)
             var docpathfilname = userProject.get_pfxname(doc)
@@ -430,6 +434,7 @@ ${jstr_RestApi}
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
 
             if (proj) {
 
@@ -517,20 +522,22 @@ ${jstr_RestApi}
         // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.run_proj_state()
-                if (0 === inp.out.state.bRepositable) {
-                    //case push failed. Don't delete
-                    console.log("git dir not exit.")
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
 
-                } else {
-                    var res2 = userProject.execSync_cmd_git("git add *")
-                    var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
-                    var res4 = userProject.git_push()
+            userProject.run_proj_state()
+            if (0 === inp.out.state.bRepositable) {
+                //case push failed. Don't delete
+                console.log("git dir not exit.")
 
-                    var res5 = userProject.run_proj_destroy()
-                }
+            } else {
+                var res2 = userProject.execSync_cmd_git("git add *")
+                var res3 = userProject.execSync_cmd_git(`git commit -m "before del. repodesc:${inp.usr.repodesc}"`)
+                var res4 = userProject.git_push()
+
+                var res5 = userProject.run_proj_destroy()
             }
+
             userProject.run_proj_state()
         })
 
@@ -551,14 +558,16 @@ ${jstr_RestApi}
         BibleUti.Parse_POST_req_to_inp(req, res, function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr_signed(inp)) {
-                var ret = userProject.run_proj_state()
-                var res2 = userProject.execSync_cmd_git("git status -sb")
-                if (res2 && res2.stdout) {
-                    inp.out.state.git_status_sb = res2.stdout
-                    inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
-                }
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
+
+            var ret = userProject.run_proj_state()
+            var res2 = userProject.execSync_cmd_git("git status -sb")
+            if (res2 && res2.stdout) {
+                inp.out.state.git_status_sb = res2.stdout
+                inp.out.state.is_git_behind = res2.stdout.indexOf("behind")
             }
+            userProject.run_proj_state()
         })
 
         // var sret = JSON.stringify(inp, null, 4)
@@ -579,14 +588,17 @@ ${jstr_RestApi}
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.run_proj_setup()
-                //await userProject.git_add_commit_push("push hard.", "");//real push hard.
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
 
-                var res2 = userProject.execSync_cmd_git("git add *")
-                var res3 = userProject.execSync_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
-                var res4 = userProject.git_push()
-            }
+            userProject.run_proj_setup()
+            //await userProject.git_add_commit_push("push hard.", "");//real push hard.
+
+            var res2 = userProject.execSync_cmd_git("git add *")
+            var res3 = userProject.execSync_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
+            var res4 = userProject.git_push()
+
+            userProject.run_proj_state()
         })
         //var sret = JSON.stringify(inp, null, 4)
         //var sid = ""
@@ -605,10 +617,12 @@ ${jstr_RestApi}
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr_signed(inp)) {
-                userProject.run_proj_setup()
-                //await userProject.git_pull();
-            }
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
+
+            userProject.run_proj_setup()
+            userProject.git_pull();
+            userProject.run_proj_state()
 
         })
         //var sret = JSON.stringify(inp, null, 4)
@@ -627,11 +641,13 @@ ${jstr_RestApi}
         // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            if (userProject.proj_parse_usr_signed(inp)) {
-                var ret = userProject.run_proj_state()
-                var rso = userProject.execSync_cmd_git()
-                console.log("\n\n*cmd-res", rso)
-            }
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (!proj) return console.log("proj_parse_usr_signed failed.")
+
+            var ret = userProject.run_proj_state()
+            var rso = userProject.execSync_cmd_git()
+            console.log("\n\n*cmd-res", rso)
+            userProject.run_proj_state()
         })
 
         // var sret = JSON.stringify(inp, null, 4)

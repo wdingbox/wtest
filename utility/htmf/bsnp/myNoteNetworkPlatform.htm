@@ -264,7 +264,7 @@ ${scmd}
                 })
 
             } else {
-                alert("saving has issues.")
+                alert("sharing has issues.")
             }
             $("#allusrs").html(trs)
             //})
@@ -281,7 +281,7 @@ ${scmd}
 <script>
     $(function () {
         //init_CKEditor()
-        init_ui_cmd()
+        //init_ui_cmd()
         Uti.Jsonpster_crossloader(2, function () {
             Uti.after_page_transit_load_allusrs_bcv(function (ret) {
                 load_allusrs_bcv(ret)

@@ -249,12 +249,12 @@ var MyStorage = {
     },
     cacheTTL: function (v) {
         const defaultVal = 3600
-        if("#"===v){
+        if ("#" === v) {
             v = $("#cacheTTL").val()
             return v
         }
-        if("on"===v){
-            $("#cacheTTL").on("click, change",function(){
+        if ("on" === v) {
+            $("#cacheTTL").on("click, change", function () {
                 var v = $(this).val()
 
             })
@@ -308,7 +308,7 @@ var MyStorage = {
     },
 
 
-   
+
 }
 
 
@@ -3592,16 +3592,25 @@ var Uti = {
                         //localStorage("pkb64", Jsonpster.pkb64) //keep it for reset?.
                     }
                 }
-                if (idx > 0) {//1:main-page loaded  after transit from signin-page.
-                    console.log("crossload-2:SSID=", MyStorage.SSID())
-                    Jsonpster.inp.usr = null
+                if (1 === idx) {
+                    //only works with ui in main-page.
                     Jsonpster.onBeforeRun = function () {
                         var uiv = MyStorage.Repositories().repos_app_update().repodesc
                         var ttl = MyStorage.cacheTTL("#")
                         Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
                     }
+                }
+                if(2===idx){
+                    Jsonpster.onBeforeRun = function () {
+                        var uiv = MyStorage.Repositories().repos_store_get().repodesc
+                        var ttl = MyStorage.cacheTTL() //from localStorage
+                        Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
+                    }
+                }
+                if (idx > 0) {//1:main-page loaded  after transit from signin-page.
+                    console.log("crossload-2:SSID=", MyStorage.SSID())
+                    Jsonpster.inp.usr = null
                     Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
-
                 }
                 if (cbf) cbf()
             }

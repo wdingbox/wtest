@@ -433,7 +433,7 @@ ${scmd}
             Jsonpster.inp = pster.inp
             Jsonpster.api = pster.api
             console.log("inp:", pster.inp)
-            Jsonpster.RunAjaxPost(function (ret) {
+            Jsonpster.RunAjaxPost_Signed(function (ret) {
                 console.log("ret", ret)
                 var res = ret.out.save_res
                 if (res && res.saved_size) {
