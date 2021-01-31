@@ -45,20 +45,20 @@ var ApiJsonp_BibleObj = {
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var pkb64 = ""
-        if(inp && inp.CUID){
+        if (inp && inp.CUID) {
             var kpf = userProject.genKeyPair(inp.CUID)
             if (kpf) {
                 pkb64 = kpf.pkb64
             }
         }
-        
+
 
         //////////////
         var RestApi = {}
         Object.keys(this).forEach(function (key) {
-            RestApi[key] = { str: key };//, inp: ApiJsonp_BibleObj[key]() };
+            RestApi[key] = key; //, inp: ApiJsonp_BibleObj[key]() };
         })
-        var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi,null,4)}`
+        var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi, null, 4)}`
         var structall = JSON.stringify(inp_struct_all)
         var SvrUrl = `http://${res.req.headers.host}/`
 
@@ -70,6 +70,9 @@ var Jsonpster = {
     inp: { CUID:null, usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
+getUrl : function(){
+    return this.SvrUrl + this.api
+},
 onBeforeRun : function(){
 },
 onAfterRun : function(){
@@ -111,7 +114,7 @@ RunAjaxPost_Signin : function (cbf) {
 },
 RunAjax_PostTxt : function(cbf){
     this.onBeforeRun()
-    var surl = this.SvrUrl + this.api
+    var surl = this.getUrl()
     this.inp.api = this.api
     $.ajax({
         type: "POST",
@@ -168,7 +171,7 @@ ${jstr_RestApi}
                     var jsfname = userProject.get_pfxname(trn)
                     console.log("jsfname:", jsfname)
                     var bib = BibleUti.loadObj_by_fname(jsfname);
-                    if(!bib.obj) continue
+                    if (!bib.obj) continue
                     var bcObj = BibleUti.copy_biobj(bib.obj, inp.par.bibOj);
                     TbcvObj[trn] = bcObj;
                     inp.out.desc += ":" + trn
@@ -297,6 +300,86 @@ ${jstr_RestApi}
         //res.end();
     },
 
+    /////
+    ApiBibleObj_read_crossnetwork_BkcChpVrs_txt: function (req, res) {
+        // if (!req || !res) {
+        //     return inp_struct_base
+        // }
+        // var inp = BibleUti.Parse_GET_req_to_inp(req)
+        BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
+
+            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
+            var proj = userProject.proj_parse_usr_signed(inp)
+            if (proj) {
+                if ("string" === typeof inp.par.aux.Update_repodesc) {
+
+                }
+            }
+            var doc = inp.par.fnames[0]
+            //var docname = userProject.get_DocCode_Fname(doc)
+            var docpathfilname = userProject.get_pfxname(doc)
+            var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname)
+            //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
+
+
+
+            //////----
+            function __load_to_obj(outObj, jsfname, owner, inp) {
+                //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
+                var bio = BibleUti.loadObj_by_fname(jsfname);
+                var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+                if (karyObj.kary.length < 3) {
+                    inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+                }
+                if (proj && bio.obj && karyObj.kary.length >= 3) {
+                    var usr_repo = owner + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
+                    outObj[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
+                } else {
+                }
+            }
+
+
+            /////--------------
+            var retObj = {}
+            var owner = userProject.session_get_github_owner(docpathfilname)
+            __load_to_obj(retObj, docpathfilname, owner, inp)
+            //console.log("jspfn:", jsfname)
+            console.log("dcpfn:", docpathfilname)
+            if (inp.usr.repodesc.trim().length > 0) {
+                for (var i = 0; i < outfil.m_olis.length; i++) {
+                    var jspfn = outfil.m_olis[i]
+                    if (docpathfilname === jspfn) continue;
+                    console.log("*docfname=", jspfn)
+                    var others = userProject.session_git_repodesc_load(jspfn)
+                    if (!others) continue
+                    if ("*" === inp.usr.repodesc) {//no restriction
+                        var owner = userProject.session_get_github_owner(jspfn)
+                        __load_to_obj(retObj, jspfn, owner, inp)
+                        continue
+                    }
+                    console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
+                    if (others.repodesc === inp.usr.repodesc) {
+                        var owner = userProject.session_get_github_owner(jspfn)
+                        __load_to_obj(retObj, jspfn, owner, inp)
+                    }
+                }
+            } else {
+                console.log("Private Only.")
+            }
+
+            inp.out.repodesc = inp.usr.repodesc
+            inp.out.data = retObj
+        })
+
+
+
+        // var sret = JSON.stringify(inp)
+        // var sid = ""
+        // res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        // res.write(`Jsonpster.Response(${sret},${sid});`);
+        // res.end();
+    },
+
 
     ///////////////////////////////////
     ApiUsrDat_save: async function (req, res) {
@@ -409,7 +492,7 @@ ${jstr_RestApi}
         res.write(`Jsonpster.Response(${sret},${sid});`);
         res.end();
     },
-    UsrReposPost_Signin:  function (req, res) {
+    UsrReposPost_Signin: function (req, res) {
         console.log("UsrReposPost_Signin")
         if (!req || !res) {
             return inp_struct_account_setup
@@ -500,8 +583,8 @@ ${jstr_RestApi}
                 userProject.run_proj_setup()
                 //await userProject.git_add_commit_push("push hard.", "");//real push hard.
 
-                var res2 =  userProject.execSync_cmd_git("git add *")
-                var res3 =  userProject.execSync_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
+                var res2 = userProject.execSync_cmd_git("git add *")
+                var res3 = userProject.execSync_cmd_git(`git commit -m "svr-push. repodesc:${inp.usr.repodesc}"`)
                 var res4 = userProject.git_push()
             }
         })
@@ -559,85 +642,6 @@ ${jstr_RestApi}
         // res.end();
     },
 
-    /////
-    ApiBibleObj_read_crossnetwork_BkcChpVrs_txt: function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_base
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
-        BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
-
-            var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-            var proj = userProject.proj_parse_usr_signed(inp)
-            if (proj) {
-                if ("string" === typeof inp.par.aux.Update_repodesc) {
-
-                }
-            }
-            var doc = inp.par.fnames[0]
-            //var docname = userProject.get_DocCode_Fname(doc)
-            var docpathfilname = userProject.get_pfxname(doc)
-            var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname)
-            //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
-
-
-
-            //////----
-            function __load_to_obj(outObj, jsfname, owner, inp) {
-                //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
-                var bio = BibleUti.loadObj_by_fname(jsfname);
-                var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
-                if (karyObj.kary.length < 3) {
-                    inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
-                }
-                if (proj && bio.obj && karyObj.kary.length >= 3) {
-                    var usr_repo = owner + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
-                    outObj[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
-                } else {
-                }
-            }
-
-
-            /////--------------
-            var retObj = {}
-            var owner = userProject.session_get_github_owner(docpathfilname)
-            __load_to_obj(retObj, docpathfilname, owner, inp)
-            //console.log("jspfn:", jsfname)
-            console.log("dcpfn:", docpathfilname)
-            if (inp.usr.repodesc.trim().length > 0) {
-                for (var i = 0; i < outfil.m_olis.length; i++) {
-                    var jspfn = outfil.m_olis[i]
-                    if (docpathfilname === jspfn) continue;
-                    console.log("*docfname=", jspfn)
-                    var others = userProject.session_git_repodesc_load(jspfn)
-                    if (!others) continue
-                    if ("*" === inp.usr.repodesc) {//no restriction
-                        var owner = userProject.session_get_github_owner(jspfn)
-                        __load_to_obj(retObj, jspfn, owner, inp)
-                        continue
-                    }
-                    console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
-                    if (others.repodesc === inp.usr.repodesc) {
-                        var owner = userProject.session_get_github_owner(jspfn)
-                        __load_to_obj(retObj, jspfn, owner, inp)
-                    }
-                }
-            } else {
-                console.log("Private Only.")
-            }
-
-            inp.out.repodesc = inp.usr.repodesc
-            inp.out.data = retObj
-        })
-
-
-
-        // var sret = JSON.stringify(inp)
-        // var sid = ""
-        // res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        // res.write(`Jsonpster.Response(${sret},${sid});`);
-        // res.end();
-    }
 
 }//// BibleRestApi ////
 
