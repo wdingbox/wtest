@@ -66,9 +66,9 @@ var ApiJsonp_BibleObj = {
 
         var s = `
 var Jsonpster = {
-    SvrUrl: "${SvrUrl}",
     api: "",
     inp: {},
+    SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
 
 Url: function (){
