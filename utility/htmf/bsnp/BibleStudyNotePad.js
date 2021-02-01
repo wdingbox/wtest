@@ -188,6 +188,30 @@ var MyStorage = {
             }
             return ar;
         }
+        MostRecentAry.prototype.gen_table = function (elid, cbf_click) {
+            var trs = ""
+            var ar = this.get_ary(), idx = 0
+            ar.forEach(function (strn) {
+                if (strn.trim().length > 0) {
+                    trs += (`<tr><td class='idx'>${++idx}</td><td class='option'>${strn}</td></tr>`);
+                }
+            })
+
+            //history
+            //console.log(ret);
+            var stb=`<table border='1'><caption>recent ids</caption>${trs}</table>`
+            $(elid).html(stb)
+            $(elid).find(".option").bind("click", function () {
+                $(elid).find(".hili").removeClass("hili")
+                $(this).addClass("hili");
+                var s = $(this).text().trim();
+                if (cbf_click) cbf_click(s)
+            });
+            $(elid).find(".idx").bind("click", function () {
+                var tx = $(this).next().toggleClass("deleteItem").text();
+
+            });
+        }
         return new MostRecentAry(sid)
     },
     ////--------
@@ -3600,7 +3624,7 @@ var Uti = {
                         Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
                     }
                 }
-                if(2===idx){
+                if (2 === idx) {
                     Jsonpster.onBeforeRun = function () {
                         var uiv = MyStorage.Repositories().repos_store_get().repodesc
                         var ttl = MyStorage.cacheTTL() //from localStorage
@@ -4181,7 +4205,8 @@ CNST.FnameOfBibleObj =
     "_myCrossRef": "User can modify cross-references for related verses in the Bible. Recommended to follow the standard abbreviation format. For example, <br>Gen2:7 refers to Genesis, chapter 2, verse 7. <br>1Jn5:12 refers to 1-John, chapter 5, verse 12.",
     "_myNote": "personal biblical study notes, commentary, questions, testimony, reflections, takeaway, other website links etc.",
     "_myPrayer": "personal prayer, preach, prophect, paper or project related to the verse and real life..",
-    "_mySubtitle": "sub-title of its following verses."
+    "_mySubtitle": "sub-title of its following verses.",
+    "_mySummary": "summary of chapter or its prevous verses."
 };
 
 CNST.BiBookName = {
