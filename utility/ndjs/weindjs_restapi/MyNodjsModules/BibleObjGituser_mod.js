@@ -1087,8 +1087,8 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
                 var pet = path.parse(gitpfx);
                 if (!fs.existsSync(pet.dir)) {
                     var ret = BibleUti.execSync_Cmd(`echo lll | sudo -S mkdir -p  ${pet.dir}`)
-                    var ret = BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${pet.dir}`)
                 }
+                BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${pet.dir}`)
                 fs.copyFileSync(srcfname, gitpfx, COPYFILE_EXCL) //failed if des exists.
             }
         }
@@ -1108,13 +1108,15 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     var dir = this.get_usr_git_dir()
     if (!fs.existsSync(dir)) {
         this.git_clone()
-    } else {
-        this.git_pull()
-    }
+    } 
 
     if (fs.existsSync(dir)) {
+        this.git_pull()
         this.run_makingup_missing_files(true)
         this.chmod_R_777_acct()
+        this.chmod_R_777_acct("/myoj")
+        this.chmod_R_777_acct("/dat")
+        this.run_makingup_missing_files(true)
     }
 
     this.run_proj_state()
@@ -1247,7 +1249,7 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
     }
     return inp
 }
-BibleObjGituser.prototype.chmod_R_777_acct = function () {
+BibleObjGituser.prototype.chmod_R_777_acct = function (spath) {
     // mode : "777" 
     var inp = this.m_inp
     var proj = inp.usr_proj;
@@ -1256,7 +1258,7 @@ BibleObjGituser.prototype.chmod_R_777_acct = function () {
         console.log("failed git setup", inp.out.desc)
         return inp
     }
-    var dir = this.get_usr_acct_dir()
+    var dir = this.get_usr_acct_dir(spath)
     console.log("perm:", dir)
     if (!fs.existsSync(dir)) {
         return inp
