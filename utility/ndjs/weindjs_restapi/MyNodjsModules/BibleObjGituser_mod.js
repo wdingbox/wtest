@@ -1108,14 +1108,11 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     var dir = this.get_usr_git_dir()
     if (!fs.existsSync(dir)) {
         this.git_clone()
-    } 
+    } else{
+        this.git_pull()
+    }
 
     if (fs.existsSync(dir)) {
-        this.git_pull()
-        this.run_makingup_missing_files(true)
-        this.chmod_R_777_acct()
-        this.chmod_R_777_acct("/myoj")
-        this.chmod_R_777_acct("/dat")
         this.run_makingup_missing_files(true)
     }
 

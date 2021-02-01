@@ -19,6 +19,8 @@ var MyStorage = {
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
+            $("#idatetiemstampe").text((new Date).toString())
+
         } else {
             // Sorry! No Web Storage support..
             alert("Sorry, your browser does not support Web Storage...")
@@ -199,7 +201,7 @@ var MyStorage = {
 
             //history
             //console.log(ret);
-            var stb=`<table border='1'><caption>recent ids</caption>${trs}</table>`
+            var stb = `<table border='1'><caption>recent ids</caption>${trs}</table>`
             $(elid).html(stb)
             $(elid).find(".option").bind("click", function () {
                 $(elid).find(".hili").removeClass("hili")
@@ -564,7 +566,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
                 if ("_mySubtitle" === this.m_rev) {
-                    showTxt = "<h2></h2>"
+                    showTxt = "<a class='_mySubtitle'></a>"
                 } else {
                     showTxt = "<ol><li></li></ol>"
                 }
@@ -1585,9 +1587,19 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
             if ("_mySubtitle" === name) {
                 _THIS.m_selectedItems_ary.unshift(name)
             } else {
-                _THIS.m_selectedItems_ary.push(name)
+                var pos = _THIS.m_selectedItems_ary.indexOf("_mySummary")
+                if (pos >= 0) {
+                    _THIS.m_selectedItems_ary.splice(pos, 0, name) //insert before summary.
+                } else {
+                    _THIS.m_selectedItems_ary.push(name) //push back.
+                }
             }
-
+        }
+        _THIS.m_selectedItems_ary.sort()
+        var pos = _THIS.m_selectedItems_ary.indexOf("_mySubtitle")
+        if (pos > 0) {
+            _THIS.m_selectedItems_ary.splice(pos,1);
+            _THIS.m_selectedItems_ary.unshift("_mySubtitle") //mv to first.
         }
         MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
@@ -1972,6 +1984,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_updateStatus").on("click", function () {
         MyStorage.Repositories().repos_app_update()
         PageUti.repo_status("#account_set_info")
+        $("#idatetiemstampe").text((new Date).toString())
     })
 
     //  Readonly now.
@@ -4128,7 +4141,7 @@ var BibleInputMenuContainer = `
                     <br>
                     <input id="repodesc" value='' placeholder='' ></input>
                     <br>
-                    <lable>Timeout(s):<lable> <input id="cacheTTL" type='number' min='1' max='6000' length='100' unit='minute' placeholder=''></input>
+                    <lable>Timeout(s):<lable> <input id="cacheTTL" type='number' min='1' max='6000' length='100' unit='minute' placeholder=''></input> <a id='idatetiemstampe'></a>
                     <br>
                     
                     <button id="account_updateStatus">UpdateStatus</button>
