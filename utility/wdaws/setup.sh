@@ -2,20 +2,22 @@
 
 
 
-ssh -i /path/my-key-pair.pem my-instance-user-name@my-instance-public-dns-name
+#ssh -i /path/my-key-pair.pem my-instance-user-name@my-instance-public-dns-name
 
 
 
-dig +short myip.opendns.com @resolver1.opendns.com 
+#dig +short myip.opendns.com @resolver1.opendns.com 
 
 
 sudo apt-get update
 sudo apt-get install git
-
 sudo apt-get install npm
 sudo apt-get install nodejs
+sudo apt-get install apache2
+sudo npm install pm2 -g
 
-sudo apt install apache2
+##############################
+# on AWS only.
 sudo ufw app list
 #  Output
 #  Available applications:
@@ -40,22 +42,22 @@ sudo systemctl status apache2
 ##  
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Starting The Apache HTTP Server...
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Started The Apache HTTP Server.
-sudo npm install pm2 -g
+
 
 
 cd /var/www/html
-mkdir wdaws
+mkdir -p wdaws
 cd wdaws
 git clone https://github.com/wdingbox/ham12.git
 git clone https://github.com/wdingbox/bible_concordance.git
 git clone https://github.com/wdingbox/bible_obj_lib.git
-git clone https://github.com/wdingbox/bible_obj_usr.git
-git clone https://github.com/wdingbox/hebrew_ciu.git
+#git clone https://github.com/wdingbox/bible_obj_usr.git
+#git clone https://github.com/wdingbox/hebrew_ciu.git
 
 cd /var/www/html
 cp ./wdaws/ham12/utility/wdaws/*.htm ./index.htm
 
-cd /var/www/html/wdaws/ham12/utility/ndjs/weindjs_restapi/
+cd ./ham12/utility/ndjs/weindjs_restapi/
 pm2 start a.node.js --watch 
 
 
