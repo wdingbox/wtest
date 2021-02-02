@@ -5,7 +5,7 @@
 
 
 
-SvrIP="52.87.154.78"
+SvrIP="100.25.162.34"
 
 
 SRC="ssed_index.htm" 
