@@ -17,7 +17,7 @@ var MyStorage = {
 
             this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
 
-            
+
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
@@ -185,11 +185,12 @@ var MyStorage = {
         MostRecentAry.prototype.addonTop = function (strn) {
             if (!strn) return
             var ar = this.get_ary()
-            Uti.addonTopOfAry(ar, strn)
             if (!ar) {
+                ar = [strn]
             } else {
-                localStorage.setItem(this.m_sid, JSON.stringify(ar))
+                Uti.addonTopOfAry(ar, strn)
             }
+            localStorage.setItem(this.m_sid, JSON.stringify(ar))
             return ar;
         }
         MostRecentAry.prototype.gen_history_table = function (elid, cbf_click) {
@@ -3647,7 +3648,7 @@ var Uti = {
                         Jsonpster.inp.aux = { Search_repodesc: uiv, cacheTTL: ttl }
                     }
                 }
-                
+
                 if (cbf) cbf()
             }
         }, 10)
