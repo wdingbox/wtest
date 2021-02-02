@@ -566,7 +566,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
                 if ("_mySubtitle" === this.m_rev) {
-                    showTxt = "<a class='_mySubtitle'></a>"
+                    showTxt = "<a class='_mySubtitle'>#</a>"
                 } else {
                     showTxt = "<ol><li></li></ol>"
                 }
@@ -1598,7 +1598,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         _THIS.m_selectedItems_ary.sort()
         var pos = _THIS.m_selectedItems_ary.indexOf("_mySubtitle")
         if (pos > 0) {
-            _THIS.m_selectedItems_ary.splice(pos,1);
+            _THIS.m_selectedItems_ary.splice(pos, 1);
             _THIS.m_selectedItems_ary.unshift("_mySubtitle") //mv to first.
         }
         MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
@@ -2814,7 +2814,7 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                             txt = _THIS.get_matched_txt(txt)
 
                             var htmtag = 'a'
-                            if (revId.match(/^_[a-zA-Z]/)) {//E.g. "NIV",  "_myNote"
+                            if (revId.match(/^_[a-zA-Z]/) && revId !== "_mySubtitle") {//E.g. "NIV",  "_myNote"
                                 htmtag = 'div'
                                 txt = Uti.convert_std_bcv_in_text_To_linked(txt)
                             }
@@ -3633,13 +3633,13 @@ var Uti = {
                     //only works with ui in main-page.
                     Jsonpster.onBeforeRun = function () {
                         var uiv = MyStorage.Repositories().repos_app_update().repodesc
-                        var ttl = MyStorage.cacheTTL("#")
+                        var ttl = MyStorage.cacheTTL("#")//from ui.
                         Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
                     }
                 }
                 if (2 === idx) {
                     Jsonpster.onBeforeRun = function () {
-                        var uiv = MyStorage.Repositories().repos_store_get().repodesc
+                        var uiv = $("#repodesc").val();//MyStorage.Repositories().repos_store_get().repodesc
                         var ttl = MyStorage.cacheTTL() //from localStorage
                         Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
                     }

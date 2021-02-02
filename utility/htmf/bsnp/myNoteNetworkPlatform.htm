@@ -162,8 +162,9 @@
             })
         })
 
-        $("#runCmd").on("click",function(){
+        $("#runCmd").on("click", function () {
             Uti.after_page_transit_load_allusrs_bcv(function (ret) {
+
                 show_loaded_allusrs_bcv(ret)
             })
         })

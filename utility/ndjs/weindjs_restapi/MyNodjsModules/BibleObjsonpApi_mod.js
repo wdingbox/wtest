@@ -314,18 +314,20 @@ ${jstr_RestApi}
             var proj = userProject.proj_parse_usr_signed(inp)
             if (!proj) return console.log("proj_parse_usr_signed failed.")
 
-            if ("string" === typeof inp.aux.Update_repodesc) {
-                console.log(inp.usr)
+            console.log(inp.aux)
+            if (!inp.aux) {
+                console.log("no inp.aux.")
             }
-
+            if (!inp.aux.Update_repodesc) {
+                console.log("no shareID.")
+            }
+            var shareID = inp.aux.Update_repodesc
 
             var doc = inp.par.fnames[0]
             //var docname = userProject.get_DocCode_Fname(doc)
             var docpathfilname = userProject.get_pfxname(doc)
             var outfil = userProject.m_SvrUsrsBCV.gen_crossnet_files_of(docpathfilname)
             //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
-
-
 
             //////----
             function __load_to_obj(outObj, jsfname, owner, inp) {
@@ -349,29 +351,25 @@ ${jstr_RestApi}
             __load_to_obj(retObj, docpathfilname, owner, inp)
             //console.log("jspfn:", jsfname)
             console.log("dcpfn:", docpathfilname)
-            if (inp.usr.repodesc.trim().length > 0) {
-                for (var i = 0; i < outfil.m_olis.length; i++) {
-                    var jspfn = outfil.m_olis[i]
-                    if (docpathfilname === jspfn) continue;
-                    console.log("*docfname=", jspfn)
-                    var others = userProject.session_git_repodesc_load(jspfn)
-                    if (!others) continue
-                    if ("*" === inp.usr.repodesc) {//no restriction
-                        var owner = userProject.session_get_github_owner(jspfn)
-                        __load_to_obj(retObj, jspfn, owner, inp)
-                        continue
-                    }
-                    console.log("*repodesc=", others.repodesc, inp.usr.repodesc)
-                    if (others.repodesc === inp.usr.repodesc) {
-                        var owner = userProject.session_get_github_owner(jspfn)
-                        __load_to_obj(retObj, jspfn, owner, inp)
-                    }
+            for (var i = 0; i < outfil.m_olis.length; i++) {
+                var jspfn = outfil.m_olis[i]
+                if (docpathfilname === jspfn) continue;
+                console.log("*docfname=", jspfn)
+                var others = userProject.session_git_repodesc_load(jspfn)
+                if (!others) continue
+                if ("*" === shareID) {//no restriction
+                    var owner = userProject.session_get_github_owner(jspfn)
+                    __load_to_obj(retObj, jspfn, owner, inp)
+                    continue
                 }
-            } else {
-                console.log("Private Only.")
+                console.log("*repodesc=", others.repodesc, shareID)
+                if (others.repodesc === shareID) {
+                    var owner = userProject.session_get_github_owner(jspfn)
+                    __load_to_obj(retObj, jspfn, owner, inp)
+                }
             }
 
-            inp.out.repodesc = inp.usr.repodesc
+            inp.out.repodesc = shareID
             inp.out.data = retObj
         })
 

@@ -187,9 +187,14 @@ body {
         background-color: brown;
     }
 
+    a.tx_mySubtitle{
+        font-weight: bold;
+        font-size: xx-large;
+        background-color: lightyellow;
+        color:black
+    }
 
-
-    div.tx[contenteditable] {
+    div.tx[contenteditable], a.tx[contenteditable] {
         background-color:wheat;
         border: 2px solid red;
         color: black;
@@ -685,3 +690,5 @@ input[title='NIV']:checked:after {
 input[readonly], textarea[readonly]{
     background-color: lightgray;
 }
+
+
