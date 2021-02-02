@@ -19,3 +19,4 @@ pm2 start ../../ndjs/weindjs_restapi/a.node.js
 pm2 save
 
 
+pm2 list
