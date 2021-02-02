@@ -85,7 +85,7 @@
 
 
     <h>FGID: </h><input id="repodesc" placeholder="Fellowship Group ID"></input> <button id="runCmd">@</button>
-    <div id="account_set_info"></div>
+    <div id="account_history"></div>
 
     <table border="1">
         <caption id="scap"></caption>
@@ -155,12 +155,16 @@
     $(function () {
         //init_CKEditor()
         //init_ui_cmd()
-        var hist = MyStorage.MostRecentAryInStore("#repodesc");
         $("#repodesc").on("focus", function () {
-            hist.gen_table("#account_set_info", function (s) {
-                $("#repodesc").val(s)
-            })
+            PageUti.Repositories_History("#account_history", 2)
         })
+
+        //var hist = MyStorage.MostRecentAryInStore("#repodesc");
+        //$("#repodesc").on("focus", function () {
+        //    hist.gen_table("#account_history", function (s) {
+        //        $("#repodesc").val(s)
+        //    })
+        //})
 
         $("#runCmd").on("click", function () {
             Uti.after_page_transit_load_allusrs_bcv(function (ret) {

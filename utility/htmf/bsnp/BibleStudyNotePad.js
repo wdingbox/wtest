@@ -3252,7 +3252,7 @@ var Uti = {
         })
     },
     validate_repository_url: function (repoath) {
-        if (!repoath) return alert("repopath is not defined.")
+        if (!repoath) return null;// alert("repopath is not defined.")
         repoath = repoath.trim()
         if (repoath.length === 0) return alert("repopath is empty")
 
