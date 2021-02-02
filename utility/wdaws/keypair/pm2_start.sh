@@ -6,6 +6,8 @@ pm2 start a.node.js --watch
 pm2 log
 
 
+#check ubutu version.
+lsb_release -a
 ##########################
 #pm2 start app.js --watch 
 #automatically restart your application when a file is modified
