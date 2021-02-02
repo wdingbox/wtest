@@ -4,10 +4,6 @@
 
 
 sudo apt-get update
-sudo apt-get install git
-
-sudo apt-get install npm
-sudo apt-get install nodejs
 
 sudo apt install apache2
 sudo ufw app list
@@ -34,7 +30,7 @@ sudo systemctl status apache2
 ##  
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Starting The Apache HTTP Server...
 ##  Dec 03 19:13:22 ip-172-31-59-85 systemd[1]: Started The Apache HTTP Server.
-sudo npm install pm2 -g
+
 
 
 
