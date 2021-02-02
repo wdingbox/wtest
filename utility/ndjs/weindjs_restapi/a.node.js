@@ -25,8 +25,8 @@ const {
 var { BibleObjJsonpApi } = require("./MyNodjsModules/BibleObjsonpApi_mod");
 const { BibleUti } = require("./MyNodjsModules/BibleObjGituser_mod")
 
-var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
-var BibDesk = require("./MyNodjsModules/BibDesk.module").BibDesk;
+// var HebrewQ = require("./MyNodjsModules/HebrewQ.module").HebrewQ;
+// var BibDesk = require("./MyNodjsModules/BibDesk.module").BibDesk;
 
 var Upload_Object = require("./upload/Upload_Object.module").Upload_Object;
 
