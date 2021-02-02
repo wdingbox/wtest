@@ -49,12 +49,12 @@ uploadObj.upload_page(app);
 BibleObjJsonpApi.init(app, "../../../../");
 
 //// For HebrewQ study /////
-var hbrq = new HebrewQ();
-hbrq.HebrewRestApi(app);
+//var hbrq = new HebrewQ();
+//hbrq.HebrewRestApi(app);
 
 ////
-var bibDesk = new BibDesk();
-bibDesk.RestApi(app);
+//var bibDesk = new BibDesk();
+//bibDesk.RestApi(app);
 
 
 
