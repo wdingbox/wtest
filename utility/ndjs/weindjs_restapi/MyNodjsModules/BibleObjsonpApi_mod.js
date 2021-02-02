@@ -318,10 +318,11 @@ ${jstr_RestApi}
             if (!inp.aux) {
                 console.log("no inp.aux.")
             }
-            if (!inp.aux.Update_repodesc) {
-                console.log("no shareID.")
+            if (!inp.aux.Search_repodesc) {
+                console.log("no Search_repodesc.")
             }
-            var shareID = inp.aux.Update_repodesc
+            var shareID = inp.aux.Search_repodesc
+            var inpObj = inp.par.inpObj
 
             var doc = inp.par.fnames[0]
             //var docname = userProject.get_DocCode_Fname(doc)
@@ -330,15 +331,16 @@ ${jstr_RestApi}
             //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
             //////----
-            function __load_to_obj(outObj, jsfname, owner, inp) {
+            function __load_to_obj(outObj, jsfname, owner, shareID, inpObj, ) {
                 //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
                 var bio = BibleUti.loadObj_by_fname(jsfname);
-                var karyObj = BibleUti.inpObj_to_karyObj(inp.par.inpObj)
+                var karyObj = BibleUti.inpObj_to_karyObj(inpObj)
                 if (karyObj.kary.length < 3) {
-                    inp.out.desc = `err inpObj: ${JSON.stringify(karyObj)}`
+                    console.log("error", )
                 }
                 if (proj && bio.obj && karyObj.kary.length >= 3) {
-                    var usr_repo = owner + "@" + (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
+                    var tms = (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
+                    var usr_repo = `${owner}#${shareID}@${tms}`
                     outObj[usr_repo] = bio.obj[karyObj.bkc][karyObj.chp][karyObj.vrs]
                 } else {
                 }
@@ -348,9 +350,10 @@ ${jstr_RestApi}
             /////--------------
             var retObj = {}
             var owner = userProject.session_get_github_owner(docpathfilname)
-            __load_to_obj(retObj, docpathfilname, owner, inp)
+            __load_to_obj(retObj, docpathfilname, owner, inp.usr.repodesc, inpObj)
             //console.log("jspfn:", jsfname)
             console.log("dcpfn:", docpathfilname)
+
             for (var i = 0; i < outfil.m_olis.length; i++) {
                 var jspfn = outfil.m_olis[i]
                 if (docpathfilname === jspfn) continue;
@@ -359,13 +362,13 @@ ${jstr_RestApi}
                 if (!others) continue
                 if ("*" === shareID) {//no restriction
                     var owner = userProject.session_get_github_owner(jspfn)
-                    __load_to_obj(retObj, jspfn, owner, inp)
+                    __load_to_obj(retObj, jspfn, owner, others.repodesc, inpObj)
                     continue
                 }
                 console.log("*repodesc=", others.repodesc, shareID)
                 if (others.repodesc === shareID) {
                     var owner = userProject.session_get_github_owner(jspfn)
-                    __load_to_obj(retObj, jspfn, owner, inp)
+                    __load_to_obj(retObj, jspfn, owner, others.repodesc, inpObj)
                 }
             }
 

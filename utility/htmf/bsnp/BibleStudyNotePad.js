@@ -17,6 +17,8 @@ var MyStorage = {
 
             this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
 
+            this.MostRecent_Update_repodesc = this.MostRecentAryInStore("Update_repodesc")
+
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
             $("#idatetiemstampe").text((new Date).toString())
@@ -190,7 +192,7 @@ var MyStorage = {
             }
             return ar;
         }
-        MostRecentAry.prototype.gen_table = function (elid, cbf_click) {
+        MostRecentAry.prototype.gen_history_table = function (elid, cbf_click) {
             var trs = ""
             var ar = this.get_ary(), idx = 0
             ar.forEach(function (strn) {
@@ -3597,22 +3599,10 @@ var Uti = {
 
         var svrurl = `http://${svrip}/Jsonpster/`;
 
-        if (0 === idx) {//initial-sign-in-page-loading
+        if (0 === idx) {//initial-sign-in-page-loading only
             var tuid = MyStorage.GenCUID()
             svrurl += `?inp=${tuid}`;
             //SSID will be ready after sign-in success.
-        }
-        if (1 === idx) {//first-main-page-loading-after-sign-in
-            //localStorage.setItem("svrurl", svrurl) //alway stick on this url for all pages.
-            console.log("crossload-1:svrurl=", svrurl)
-            console.log("crossload-1:CUID=", MyStorage.GenCUID())
-            console.log("crossload-1:SSID=", MyStorage.SSID())
-        }
-        if (2 === idx) {//transit-page-loading-from-main-page.
-            //svrurl = localStorage.getItem("svrurl")
-            console.log("crossload-2:svrurl=", svrurl)
-            console.log("crossload-2:CUID=", MyStorage.GenCUID())
-            console.log("crossload-2:SSID=", MyStorage.SSID())
         }
 
         var e = document.createElement("script");
@@ -3629,6 +3619,12 @@ var Uti = {
                         //localStorage("pkb64", Jsonpster.pkb64) //keep it for reset?.
                     }
                 }
+                else if (idx > 0) {//1:main-page loaded  after transit from signin-page.
+                    console.log("crossload-2:SSID=", MyStorage.SSID())
+                    Jsonpster.inp.usr = null
+                    Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
+                }
+
                 if (1 === idx) {
                     //only works with ui in main-page.
                     Jsonpster.onBeforeRun = function () {
@@ -3644,11 +3640,14 @@ var Uti = {
                         Jsonpster.inp.aux = { Update_repodesc: uiv, cacheTTL: ttl }
                     }
                 }
-                if (idx > 0) {//1:main-page loaded  after transit from signin-page.
-                    console.log("crossload-2:SSID=", MyStorage.SSID())
-                    Jsonpster.inp.usr = null
-                    Jsonpster.inp.SSID = MyStorage.SSID() //first time for new page. to load AjxPOST
+                if (3 === idx) {//for crossnet search
+                    Jsonpster.onBeforeRun = function () {
+                        var uiv = $("#Search_repodesc").val();//MyStorage.Repositories().repos_store_get().repodesc
+                        var ttl = MyStorage.cacheTTL() //from localStorage
+                        Jsonpster.inp.aux = { Search_repodesc: uiv, cacheTTL: ttl }
+                    }
                 }
+                
                 if (cbf) cbf()
             }
         }, 10)

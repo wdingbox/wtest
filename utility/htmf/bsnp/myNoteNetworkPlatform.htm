@@ -84,7 +84,7 @@
 
 
 
-    <h>FGID: </h><input id="repodesc" placeholder="Fellowship Group ID"></input> <button id="runCmd">@</button>
+    <h>FGID: </h><input id="Search_repodesc" placeholder="Fellowship Group ID"></input> <button id="runCmd">Run</button>
     <div id="account_history"></div>
 
     <table border="1">
@@ -161,15 +161,16 @@
 
         //var hist = MyStorage.MostRecentAryInStore("#repodesc");
         //$("#repodesc").on("focus", function () {
-        //    hist.gen_table("#account_history", function (s) {
+        //    hist.gen_history_table("#account_history", function (s) {
         //        $("#repodesc").val(s)
         //    })
         //})
 
         $("#runCmd").on("click", function () {
-            Uti.after_page_transit_load_allusrs_bcv(function (ret) {
-
-                show_loaded_allusrs_bcv(ret)
+            Uti.Jsonpster_crossloader(3, function () {
+                Uti.after_page_transit_load_allusrs_bcv(function (ret) {
+                    show_loaded_allusrs_bcv(ret)
+                })
             })
         })
 
