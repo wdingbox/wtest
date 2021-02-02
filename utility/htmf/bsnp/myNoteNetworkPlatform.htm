@@ -155,18 +155,15 @@
     $(function () {
         //init_CKEditor()
         //init_ui_cmd()
-        $("#repodesc").on("focus", function () {
-            PageUti.Repositories_History("#account_history", 2)
+        var search_reposdesc = MyStorage.MostRecentAryInStore("Search_repodesc")
+        $("#Search_repodesc").on("focus", function () {
+            search_reposdesc.gen_history_table("#account_history", function(s){
+                $("#Search_repodesc").val(s)
+            })
         })
 
-        //var hist = MyStorage.MostRecentAryInStore("#repodesc");
-        //$("#repodesc").on("focus", function () {
-        //    hist.gen_history_table("#account_history", function (s) {
-        //        $("#repodesc").val(s)
-        //    })
-        //})
-
         $("#runCmd").on("click", function () {
+            search_reposdesc.addonTop($("#Search_repodesc").val())
             Uti.Jsonpster_crossloader(3, function () {
                 Uti.after_page_transit_load_allusrs_bcv(function (ret) {
                     show_loaded_allusrs_bcv(ret)

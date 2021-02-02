@@ -17,7 +17,7 @@ var MyStorage = {
 
             this.MostRecentSearchStrn = this.MostRecentAryInStore("MostRecentSearchStrn")
 
-            this.MostRecent_Update_repodesc = this.MostRecentAryInStore("Update_repodesc")
+            
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
@@ -203,7 +203,7 @@ var MyStorage = {
 
             //history
             //console.log(ret);
-            var stb = `<table border='1'><caption>recent ids</caption>${trs}</table>`
+            var stb = `<table border='1'><caption>MostRecentHistory</caption>${trs}</table>`
             $(elid).html(stb)
             $(elid).find(".option").bind("click", function () {
                 $(elid).find(".hili").removeClass("hili")
