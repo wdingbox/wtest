@@ -14,7 +14,7 @@ sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup sys
 
 pm2 startup upstart
 
-pm2 ../../ndjs/weindjs_restapi/a.node.js
+pm2 start ../../ndjs/weindjs_restapi/a.node.js
 
 pm2 save
 
