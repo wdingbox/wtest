@@ -11,7 +11,7 @@ sudo git clone https://github.com/wdingbox/bible_obj_lib.git
 #git clone https://github.com/wdingbox/hebrew_ciu.git
 
 
-sudo cp ./ham12/utility/wdaws/*.htm ../index.htm
+sudo cp ./ham12/utility/wdaws/*.htm ../index.html
 
 
 cd ham12/utility/ndjs/weindjs_restapi/
