@@ -782,7 +782,8 @@ NCache.Init()
 
 
 
-
+//../../../../bist/usrs/{hostname}/{Usrname}/{projname}/account/dat
+//../../../../bist/usrs/{hostname}/{Usrname}/{projname}/account/myoj
 var BibleObjGituser = function (rootDir) {
     if (!rootDir.match(/\/$/)) rootDir += "/"
     this.m_rootDir = rootDir
@@ -1104,20 +1105,21 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         console.log("failed git setup", inp.out.desc)
         return null
     }
-    var dir = this.get_usr_acct_dir()
-    if (!fs.existsSync(dir)) {
-        this.execSync_cmd_git(`sudo -S mkdir -p ${dir}`)
-    } 
 
-    var dir = this.get_usr_git_dir()
+    var dir = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(dir)) {
         this.git_clone()
-    } else{
+    } else {
         this.git_pull()
     }
 
     if (fs.existsSync(dir)) {
         this.run_makingup_missing_files(true)
+    }
+
+    var dir = this.get_usr_acct_dir()
+    if (fs.existsSync(dir)) {
+        this.execSync_cmd_git(`sudo -S chmod -R 777 ${dir}`)
     }
 
     this.run_proj_state()
@@ -1382,6 +1384,12 @@ BibleObjGituser.prototype.git_clone = function () {
         inp.out.desc += ", failed inp.usr parse"
         console.log("failed-git-parse", inp.out.desc)
         return inp
+    }
+
+    var dir = this.m_rootDir
+    if (!fs.existsSync(dir)) {
+        console.log("Fatal Error: not exist dir:", dir)
+        return null
     }
 
     inp.out.git_clone_res = { desc: "git-clone", bExist: false }
