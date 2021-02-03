@@ -464,6 +464,7 @@ var BibleUti = {
 
 
         usr_proj.base_Dir = base_Dir
+        usr_proj.user_dir = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}`
         usr_proj.git_root = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}`
         usr_proj.acct_dir = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}/account`
         usr_proj.dest_myo = `${base_Dir}/${usr_proj.hostname}/${usr_proj.username}/${usr_proj.projname}/account/myoj`
@@ -1003,6 +1004,13 @@ BibleObjGituser.prototype.get_usr_dat_dir = function (subpath) {
     }
     return `${this.m_rootDir}${this.m_inp.usr_proj.dest_dat}${subpath}`
 }
+BibleObjGituser.prototype.get_usrdir = function (subpath) {
+    if (!this.m_inp.usr_proj) return ""
+    if (!subpath) {
+        return `${this.m_rootDir}${this.m_inp.usr_proj.dest_dat}`
+    }
+    return `${this.m_rootDir}${this.m_inp.usr_proj.dest_dat}${subpath}`
+}
 
 BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
     if (!this.m_inp.usr_proj) return ""
@@ -1414,6 +1422,12 @@ BibleObjGituser.prototype.git_clone = function () {
     console.log("to clone: ", clone_https)
 
     //console.log("proj", proj)
+    var dir = inp.usr_proj.user_dir
+    if (!fs.existsSync(dir)) {
+        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S mkdir -p ${dir}`).toString()
+    }
+    var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S chmod -R 777 ${dir}`).toString()
+
     gitdir = this.get_usr_git_dir()
     if (fs.existsSync(gitdir)) {
         inp.out.git_clone_res.desc += "|git folder exit but no .git"
