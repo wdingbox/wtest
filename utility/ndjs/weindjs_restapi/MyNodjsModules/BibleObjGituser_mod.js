@@ -368,6 +368,7 @@ var BibleUti = {
 
         ret.writeback = function () {
             var s2 = JSON.stringify(this.obj, null, 4);
+            BibleUti.execSync_Cmd(`sudo -S chmod -R 777 ${this.fname}`)
             fs.writeFileSync(this.fname, this.header + s2);
             ret.dlt_size = ret.header.length + s2.length - ret.fsize
         }
@@ -1127,7 +1128,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     var dir = this.get_usr_acct_dir()
     if (fs.existsSync(dir)) {
-        this.execSync_cmd_git(`sudo -S chmod -R 777 ${dir}`)
+        BibleUti.execSync_Cmd(`sudo -S chmod -R 777 ${dir}`)
     }
 
     this.run_proj_state()
