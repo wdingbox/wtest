@@ -1104,6 +1104,10 @@ BibleObjGituser.prototype.run_proj_setup = function () {
         console.log("failed git setup", inp.out.desc)
         return null
     }
+    var dir = this.get_usr_acct_dir()
+    if (!fs.existsSync(dir)) {
+        this.execSync_cmd_git(`sudo -S mkdir -p ${dir}`)
+    } 
 
     var dir = this.get_usr_git_dir()
     if (!fs.existsSync(dir)) {
