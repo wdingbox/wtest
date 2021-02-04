@@ -187,12 +187,14 @@ body {
         background-color: brown;
     }
 
-    a.tx_mySubtitle{
+    .tx_mySubtitle{
+        display: inline;
         font-weight: bold;
         font-size: xx-large;
         background-color: lightyellow;
         color:black
     }
+    
 
     div.tx[contenteditable], a.tx[contenteditable] {
         background-color:wheat;

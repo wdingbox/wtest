@@ -2742,7 +2742,7 @@ OutputBibleTable.prototype.update_table_tr = function (ret, par) {
     this.Set_Event_output_table(trID)
     return;
 }
-OutputBibleTable.prototype.get_matched_txt = function (txt) {
+OutputBibleTable.prototype.get_search_matched_txt = function (txt) {
     //ret = this.convert_rbcv_2_bcvRobj(ret)
     if (!this.m_inpage_findstrn) return txt
     var findstrn = this.m_inpage_findstrn
@@ -2814,11 +2814,11 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                 switch (typeof val) {
                     case "object"://trn
                         $.each(val, function (revId, txt) {
-                            txt = _THIS.get_matched_txt(txt)
+                            txt = _THIS.get_search_matched_txt(txt)
 
-                            var htmtag = 'a'
-                            if (revId.match(/^_[a-zA-Z]/) && revId !== "_mySubtitle") {//E.g. "NIV",  "_myNote"
-                                htmtag = 'div'
+                            var vrsTxtTag = 'a' //a is ued for scripture txt. 
+                            if (revId.match(/^_[a-zA-Z]/)) {//E.g. "NIV",  "_myNote"
+                                vrsTxtTag = 'div'
                                 txt = Uti.convert_std_bcv_in_text_To_linked(txt)
                             }
 
@@ -2828,7 +2828,7 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                             }
                             uuid = `${revId}_${vol}_${chp}_${vrs}`;
                             var revTag = `<sup txuid='${uuid}' class='popupclicklabel revTag' title='${sbcv}'>${revId}</sup>`
-                            var vrsTxt = `<${htmtag} id='${uuid}' ${clsname}>${txt}</${htmtag}>`
+                            var vrsTxt = `<${vrsTxtTag} id='${uuid}' ${clsname}>${txt}</${vrsTxtTag}>`
                             trs += `<div>${revTag}${vrsTxt}</div>`;
                         });
                         break;
