@@ -26,6 +26,7 @@ var BibleUti = {
         }
     },
 
+
     GetFilesAryFromDir: function (startPath, deep, cb) {//startPath, filter
         function recursiveDir(startPath, deep, outFilesArr) {
             var files = fs.readdirSync(startPath);
@@ -590,6 +591,42 @@ var BibleUti = {
         }
 
     },
+    Update_SvrIP_in_HomeSitePage: function () {
+        var inp = {}
+        inp.usr = { repopath: "https://github.com/bsnp21/home.git", passcode: "3edcFDSA", repodesc: "" }
+        inp.out = BibleUti.default_inp_out_obj()
+        inp.SSID = "../../../../bist/usrs/github.com/bsnp21/home"
+        var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
+        var userProject = new BibleObjGituser(rootDir)
+        if (!userProject.parse_inp_usr2proj(inp)) {
+            return
+        }
+        userProject.git_clone()
+        userProject.run_proj_state()
+        console.log(inp.out.state)
+        if (1 === inp.out.state.bRepositable) {
+            //
+            var fidx = userProject.get_usr_git_dir("/index.html")
+            if (!fs.existsSync(fidx)) {
+                return console.log("Error update HomeSiteSvrIP. Not exist", fidx)
+            }
+            BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${fidx}`)
+            var txt = fs.readFileSync(fidx, "utf8")
+            var SvrIP = "0.0.0.0"
+            SvrIP = BibleUti.execSync_Cmd("dig +short myip.opendns.com @resolver1.opendns.com")
+            console.log("ret SvrIP=", SvrIP)
+            txt = txt.replace(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/g, SvrIP)
+            fs.writeFileSync(fidx, txt, "utf8")
+            console.log(txt)
+            console.log("git dir exist. push before to delete it")
+            var res2 = userProject.execSync_cmd_git("git add *")
+            var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
+            var res4 = userProject.git_push()
+
+            var res5 = userProject.run_proj_destroy()
+        }
+
+    },
     //// BibleUti /////
 }
 
@@ -768,6 +805,7 @@ NCache.Get = function (key, ttl) {
     return val
 }
 NCache.Init()
+
 
 
 

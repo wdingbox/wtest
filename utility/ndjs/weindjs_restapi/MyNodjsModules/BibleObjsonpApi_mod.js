@@ -61,6 +61,7 @@ var ApiJsonp_BibleObj = {
         var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi, null, 4)}`
         var structall = JSON.stringify(inp_struct_all)
         var SvrUrl = `http://${res.req.headers.host}/`
+        console.log("SvrUrl=",SvrUrl)
 
 
 
@@ -684,6 +685,7 @@ var BibleObjJsonpApi = {
     init: function (app, rootDir) {
         BibleObjJsonpApi.m_rootDir = rootDir
         BibleUti.WorkingRootDir(rootDir)
+        BibleUti.Update_SvrIP_in_HomeSitePage()
         //
         Object.keys(ApiJsonp_BibleObj).forEach(function (sapi) {
             console.log("api:", sapi)
