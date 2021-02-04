@@ -610,7 +610,7 @@ var BibleUti = {
             if (!fs.existsSync(fidx)) {
                 return console.log("Error update HomeSiteSvrIP. Not exist", fidx)
             }
-            BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${fidx}`)
+            BibleUti.execSync_Cmd(` sudo -S chmod 777 ${fidx}`)
             var txt = fs.readFileSync(fidx, "utf8")
             var SvrIP = "0.0.0.0"
             SvrIP = BibleUti.execSync_Cmd("dig +short myip.opendns.com @resolver1.opendns.com")
@@ -1134,9 +1134,9 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
             if (bCpy) {
                 var pet = path.parse(gitpfx);
                 if (!fs.existsSync(pet.dir)) {
-                    var ret = BibleUti.execSync_Cmd(`echo lll | sudo -S mkdir -p  ${pet.dir}`)
+                    var ret = BibleUti.execSync_Cmd(` sudo -S mkdir -p  ${pet.dir}`)
                 }
-                BibleUti.execSync_Cmd(`echo lll | sudo -S chmod 777 ${pet.dir}`)
+                BibleUti.execSync_Cmd(` sudo -S chmod 777 ${pet.dir}`)
                 fs.copyFileSync(srcfname, gitpfx, COPYFILE_EXCL) //failed if des exists.
             }
         }
@@ -1182,9 +1182,9 @@ BibleObjGituser.prototype.run_proj_destroy = function () {
 
     //console.log("proj", proj)
     var gitdir = this.get_usr_git_dir()
-    var password = "lll" //dev mac
+    //var password = "lll" //dev mac
     var proj_destroy = `
-    echo ${password} | sudo -S rm -rf ${gitdir}
+      sudo -S rm -rf ${gitdir}
     `
 
     if (fs.existsSync(`${gitdir}`)) {
@@ -1278,15 +1278,15 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
     }
 
     //console.log("proj", proj)
-    var password = "lll" //dev mac
+    //var password = "lll" //dev mac
     var acctDir = this.get_usr_acct_dir()
     var cp_template_cmd = `
     #!/bin/sh
-    echo ${password} | sudo -S mkdir -p ${acctDir}
-    echo ${password} | sudo -S chmod -R 777 ${acctDir}
-    #echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
-    echo ${password} | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
-    echo ${password} | sudo -S chmod -R 777 ${acctDir}
+     sudo -S mkdir -p ${acctDir}
+     sudo -S chmod -R 777 ${acctDir}
+    # sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
+     sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
+     sudo -S chmod -R 777 ${acctDir}
     echo " cp_template_cmd end."
     #cd -`
 
@@ -1313,8 +1313,8 @@ BibleObjGituser.prototype.chmod_R_777_acct = function (spath) {
     if (!fs.existsSync(dir)) {
         return inp
     }
-    var password = "lll"
-    var change_perm_cmd = `echo ${password} | sudo -S chmod -R 777 ${dir}`
+    //var password = "lll"
+    var change_perm_cmd = ` sudo -S chmod -R 777 ${dir}`
 
     inp.out.change_perm = BibleUti.execSync_Cmd(change_perm_cmd).toString()
 
@@ -1333,8 +1333,8 @@ BibleObjGituser.prototype.chmod_R_ = function (mode, dir) {
     if (!fs.existsSync(dir)) {
         return inp
     }
-    var password = "lll"
-    var change_perm_cmd = `echo ${password} | sudo -S chmod -R ${mode} ${dir}`
+    //var password = "lll"
+    var change_perm_cmd = ` sudo -S chmod -R ${mode} ${dir}`
 
     inp.out.change_perm = BibleUti.execSync_Cmd(change_perm_cmd).toString()
 
@@ -1423,7 +1423,7 @@ BibleObjGituser.prototype.git_config_allow_push = function (bAllowPush) {
 }
 
 BibleObjGituser.prototype.git_clone = function () {
-    var password = "lll" //dev mac
+    //var password = "lll" //dev mac
     var _THIS = this
     var inp = this.m_inp
     var proj = inp.usr_proj;
@@ -1463,15 +1463,15 @@ BibleObjGituser.prototype.git_clone = function () {
     //console.log("proj", proj)
     var dir = inp.usr_proj.user_dir
     if (!fs.existsSync(dir)) {
-        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S mkdir -p ${dir}`).toString()
+        var ret = BibleUti.execSync_Cmd(` sudo -S mkdir -p ${dir}`).toString()
     }
-    var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S chmod -R 777 ${dir}`).toString()
+    var ret = BibleUti.execSync_Cmd(` sudo -S chmod -R 777 ${dir}`).toString()
 
     gitdir = this.get_usr_git_dir()
     if (fs.existsSync(gitdir)) {
         inp.out.git_clone_res.desc += "|git folder exit but no .git"
         inp.out.git_clone_res.bExist = true
-        var ret = BibleUti.execSync_Cmd(`echo ${password} | sudo -S rm -rf ${gitdir}`).toString()
+        var ret = BibleUti.execSync_Cmd(` sudo -S rm -rf ${gitdir}`).toString()
         console.log(ret)
     }
 
@@ -1479,10 +1479,10 @@ BibleObjGituser.prototype.git_clone = function () {
     var git_clone_cmd = `
     #!/bin/sh
     cd ${this.m_rootDir}
-    echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
+     sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
     if [ -f "${proj.git_root}/.git/config" ]; then
         echo "${proj.git_root}/.git/config exists."
-        echo ${password} | sudo -S chmod  777 ${proj.git_root}/.git/config
+         sudo -S chmod  777 ${proj.git_root}/.git/config
     else 
         echo "${proj.git_root}/.git/config does not exist."
     fi
@@ -1518,26 +1518,26 @@ BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
         return console.log("gitdir not exists.");
     }
 
-    password = "lll" //dev mac
+    //password = "lll" //dev mac
     var command = `
     #!/bin/bash
     set -x #echo on
     echo '=>cd ${gitdir}'
     cd  ${gitdir}
     echo '=>git status'
-    echo ${password} | sudo -S git status
+     sudo -S git status
     echo '=>git diff'
-    echo ${password} | sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
+     sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
     echo '=>git add *'
-    echo ${password} | sudo -S git add *
+     sudo -S git add *
     echo '=>git commit'
-    echo ${password} | sudo -S git commit -m "Sync:${msg}. repodesc:${inp.usr.repodesc}"
+     sudo -S git commit -m "Sync:${msg}. repodesc:${inp.usr.repodesc}"
     echo '=>git push'
-    echo ${password} | sudo -S GIT_TERMINAL_PROMPT=0 git push
+     sudo -S GIT_TERMINAL_PROMPT=0 git push
     echo '=>git status'
-    echo ${password} | sudo -S git status
+     sudo -S git status
     echo '=>git status -sb'
-    echo ${password} | sudo -S git status -sb
+     sudo -S git status -sb
     `
     console.log('exec_command:', command)
     console.log('exec_command start:')
@@ -1592,11 +1592,11 @@ BibleObjGituser.prototype.execSync_cmd_git = async function (gitcmd) {
 
 
     //console.log("proj", proj)
-    var password = "lll" //dev mac
+    //var password = "lll" //dev mac
     var scmd = `
     #!/bin/sh
     cd ${this.get_usr_git_dir()}
-    echo ${password} | sudo -S ${gitcmd}
+     sudo -S ${gitcmd}
     `
     console.log("\n----git_cmd start:>", scmd)
     var res = BibleUti.execSync_Cmd(scmd)
