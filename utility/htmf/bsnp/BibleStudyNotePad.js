@@ -237,7 +237,7 @@ var MyStorage = {
         if (undefined === v) {
             var ar = localStorage.getItem(uid);
             if (!ar || ar.length === 0) {
-                ar = ["NIV", "_myNote"]
+                ar = ["NIV", "e_Note"]
             } else {
                 ar = ar.split(",")
             }
@@ -568,8 +568,8 @@ PopupMenu_EdiTag.prototype.init = function () {
             $(this.m_id).attr("contenteditable", "true")
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
-                if ("_mySubtitle" === this.m_rev) {
-                    showTxt = "<a class='_mySubtitle'>#</a>"
+                if ("e_Subtitle" === this.m_rev) {
+                    showTxt = "<a class='e_Subtitle'>#</a>"
                 } else {
                     showTxt = "<ol><li></li></ol>"
                 }
@@ -633,7 +633,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
 
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
-        localStorage.setItem("myNote", JSON.stringify(pster))
+        localStorage.setItem("e_Note", JSON.stringify(pster))
         return pster.inp.par
     }
 
@@ -808,7 +808,7 @@ PopupMenu.prototype.popup = function (par) {
     if (ret) {
         this.popupMenu_BcvTag.init_popup(par)
     } else {
-        if ("_" === par.m_strTag[0]) {
+        if (par.m_strTag.match(/^e_/)) {
             this.popupMenu_EdiTag.init_popup(par)
         } else {
             this.popupMenu_RevTag.init_popup(par)
@@ -1571,7 +1571,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
         if (sFile === v) hil += " searchFile"
-        if (v[0] === "_") hil += " _myEditableDoc"
+        if (v[0] === "e") hil += " e_EditableDoc"
         str += `<tr><td class='cbkn  ${hil}'>${v}</td></tr>`;
     });
 
@@ -1587,10 +1587,10 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
                 _THIS.m_selectedItems_ary.splice(idx, 1) //remove size 1 @idx.
             }
         } else {//will be selected and added back
-            if ("_mySubtitle" === name) {
+            if ("e_Subtitle" === name) {
                 _THIS.m_selectedItems_ary.unshift(name)
             } else {
-                var pos = _THIS.m_selectedItems_ary.indexOf("_mySummary")
+                var pos = _THIS.m_selectedItems_ary.indexOf("e_Summary")
                 if (pos >= 0) {
                     _THIS.m_selectedItems_ary.splice(pos, 0, name) //insert before summary.
                 } else {
@@ -1599,10 +1599,10 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
             }
         }
         _THIS.m_selectedItems_ary.sort()
-        var pos = _THIS.m_selectedItems_ary.indexOf("_mySubtitle")
+        var pos = _THIS.m_selectedItems_ary.indexOf("e_Subtitle")
         if (pos > 0) {
             _THIS.m_selectedItems_ary.splice(pos, 1);
-            _THIS.m_selectedItems_ary.unshift("_mySubtitle") //mv to first.
+            _THIS.m_selectedItems_ary.unshift("e_Subtitle") //mv to first.
         }
         MyStorage.LastSelectedDocsList(_THIS.m_selectedItems_ary)
         Uti.Msg(name + " : " + CNST.FnameOfBibleObj[name]);
@@ -2817,7 +2817,7 @@ OutputBibleTable.prototype.create_trs = function (odat) {
                             txt = _THIS.get_search_matched_txt(txt)
 
                             var vrsTxtTag = 'a' //a is ued for scripture txt. 
-                            if (revId.match(/^_[a-zA-Z]/)) {//E.g. "NIV",  "_myNote"
+                            if (revId.match(/^e_[a-zA-Z]/)) {//E.g. "NIV",  "e_Note"
                                 vrsTxtTag = 'div'
                                 txt = Uti.convert_std_bcv_in_text_To_linked(txt)
                             }
@@ -3554,7 +3554,7 @@ var Uti = {
         }
 
         //_Max_struct
-        //std case1: "Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 _myCrossRef)
+        //std case1: "Gen23:7, Gen23:5, 1Sa26:6, Gen25:10, Gen49:30, Gen27:46, Gen10:15, 2Sa23:39" (Gen23:3 e_CrossRef)
         //std case2: "Gen1:3-Gen23:9, Gen23:5"
         //var hdry = _get_list(str)
         var ret = _check_std_bcv(str)
@@ -3583,7 +3583,7 @@ var Uti = {
 
     after_page_transit_load_allusrs_bcv: function (cbf) {
 
-        var myNotes = localStorage.getItem("myNote")
+        var myNotes = localStorage.getItem("e_Note")
 
         Jsonpster.inp = JSON.parse(myNotes).inp
         Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt
@@ -4215,11 +4215,11 @@ CNST.FnameOfBibleObj =
     "STUS": "Studium Biblicum Version by Catholic,1968",
     "WLVS": "Wen Li Version. 文理和合本新約全書於1906年出版，新舊約全書於1919年出版.修訂新約後的新舊約全書，於1923年出版，至1934年印行最後一版, 原本分為官話、深文理、淺文理三種譯本，稱為「聖經唯一，譯本則三」。後來深淺文理合併為文理和合本 https://zh.wikisource.org/wiki/%E8%81%96%E7%B6%93_(%E5%92%8C%E5%90%88%E6%9C%AC) \n\nFor 1895 新約淺文理(包爾騰(John Shaw Burdon)、柏亨利(Henry Blodget)) https://bible.fhl.net/ob/nob.html?book=8 ",
     "cross_references": "cross-references",
-    "_myCrossRef": "User can modify cross-references for related verses in the Bible. Recommended to follow the standard abbreviation format. For example, <br>Gen2:7 refers to Genesis, chapter 2, verse 7. <br>1Jn5:12 refers to 1-John, chapter 5, verse 12.",
-    "_myNote": "personal biblical study notes, commentary, questions, testimony, reflections, takeaway, other website links etc.",
-    "_myPrayer": "personal prayer, preach, prophect, paper or project related to the verse and real life..",
-    "_mySubtitle": "sub-title of its following verses.",
-    "_mySummary": "summary of chapter or its prevous verses."
+    "e_CrossRef": "User can modify cross-references for related verses in the Bible. Recommended to follow the standard abbreviation format. For example, <br>Gen2:7 refers to Genesis, chapter 2, verse 7. <br>1Jn5:12 refers to 1-John, chapter 5, verse 12.",
+    "e_Note": "personal biblical study notes, commentary, questions, testimony, reflections, takeaway, other website links etc.",
+    "e_Prayer": "personal prayer, preach, prophect, paper or project related to the verse and real life..",
+    "e_Subtitle": "sub-title of its following verses.",
+    "e_Summary": "summary of chapter or its prevous verses."
 };
 
 CNST.BiBookName = {

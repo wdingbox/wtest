@@ -1061,17 +1061,18 @@ BibleObjGituser.prototype.get_usr_git_dir = function (subpath) {
 }
 
 BibleObjGituser.prototype.get_DocCode_Fname = function (DocCode) {
-    if (DocCode[0] != "_") return ""
-    var fnam = DocCode.substr(1)
-    return `${fnam}_json.js`
+    if (!DocCode.match(/^e_/)) return "" //:like, e_Note
+    //var fnam = DocCode.replace(/^e_/, "my")  //:myNode_json.js
+    return `${DocCode}_json.js`
 }
 BibleObjGituser.prototype.get_pfxname = function (DocCode) {
     var inp = this.m_inp
     //var DocCode = inp.par.fnames[0]
-    if (!DocCode || !inp.usr_proj) return ""
+    if (!DocCode) return ""
     var dest_pfname = ""
     switch (DocCode[0]) {
-        case "_": //: _myNode, _myTakeaway,
+        case "_": //: _myNode,
+        case "e": //: e_Node,
             {
                 var fnam = this.get_DocCode_Fname(DocCode)
                 dest_pfname = this.get_usr_myoj_dir(`/${fnam}`)
@@ -1091,9 +1092,9 @@ BibleObjGituser.prototype.get_pfxname = function (DocCode) {
 }
 BibleObjGituser.prototype.get_userpathfile_from_tempathfile = function (tmpathfile) {
     //var src = `${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/myoj/${fnam}`
-    var mat = tmpathfile.match(/[\/]myoj[\/](my[\w]+)_json\.js$/)
+    var mat = tmpathfile.match(/[\/]myoj[\/]([\w]+)_json\.js$/) //::/myoj/myNode_json.js
     if (mat) {
-        var doc = "_" + mat[1]
+        var doc = mat[1];//.replace(/^my/, "e_")  //docname: 
         var gitpfx = this.get_pfxname(doc)
         return gitpfx
     }
