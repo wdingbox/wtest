@@ -613,7 +613,7 @@ var BibleUti = {
             BibleUti.execSync_Cmd(` sudo -S chmod 777 ${fidx}`)
             var txt = fs.readFileSync(fidx, "utf8")
             var SvrIP = "0.0.0.0"
-            SvrIP = BibleUti.execSync_Cmd("dig +short myip.opendns.com @resolver1.opendns.com")
+            SvrIP = BibleUti.execSync_Cmd("dig +short myip.opendns.com @resolver1.opendns.com").toString().trim()
             console.log("ret SvrIP=", SvrIP)
             txt = txt.replace(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/g, SvrIP)
             fs.writeFileSync(fidx, txt, "utf8")

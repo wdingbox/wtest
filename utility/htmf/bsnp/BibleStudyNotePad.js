@@ -633,7 +633,7 @@ PopupMenu_EdiTag.prototype.init = function () {
         pster.inp.par = { fnames: [_THIS.m_par.m_rev], inpObj: ret.bcvObj }
 
         pster.api = RestApi.ApiBibleObj_write_Usr_BkcChpVrs_txt
-        localStorage.setItem("e_Note", JSON.stringify(pster))
+        localStorage.setItem("myNote", JSON.stringify(pster))
         return pster.inp.par
     }
 
@@ -3583,7 +3583,7 @@ var Uti = {
 
     after_page_transit_load_allusrs_bcv: function (cbf) {
 
-        var myNotes = localStorage.getItem("e_Note")
+        var myNotes = localStorage.getItem("myNote")
 
         Jsonpster.inp = JSON.parse(myNotes).inp
         Jsonpster.api = RestApi.ApiBibleObj_read_crossnetwork_BkcChpVrs_txt

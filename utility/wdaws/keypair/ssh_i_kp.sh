@@ -5,7 +5,7 @@
 
 
 
-SvrIP="107.22.129.77"
+SvrIP="34.227.20.213"
 
 #ssh -i /path/my-key-pair.pem my-instance-user-name@my-instance-public-dns-name
 WDKEY="wdkeypair"
