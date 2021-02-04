@@ -2859,7 +2859,7 @@ var PageUti = {
             Object.keys(ret.out.state.fstat).forEach(function (key) {
                 var str = ret.out.state.fstat[key]
 
-                var nam = key.split("_")[0]
+                var nam = key.replace(/_json\.js$/, "");//.split("_")[0]
                 if (nam === "localStorage") return
                 var clsn = ""
                 if (str.indexOf("*") > 0) {
@@ -2868,7 +2868,7 @@ var PageUti = {
                 if (str.indexOf("**") > 0) {
                     clsn = "repo_alert"
                 }
-                trs += `<tr class='${clsn}'><td>_${nam}</td><td>${str}</td></tr>`
+                trs += `<tr class='${clsn}'><td>${nam}</td><td>${str}</td></tr>`
             })
         }
 
