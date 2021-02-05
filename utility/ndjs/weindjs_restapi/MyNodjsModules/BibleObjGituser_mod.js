@@ -490,7 +490,8 @@ var BibleUti = {
 
 
             var owner = `_${hostname}_${username}_${projname}`
-            return { hostname: hostname, username: username, projname: projname, ownerstr: owner }
+            var ownerId = `${hostname}/${username}/${projname}`
+            return { hostname: hostname, username: username, projname: projname, ownerId: ownerId, ownerstr: owner }
         }
         return null
     },
@@ -595,7 +596,7 @@ var BibleUti = {
         var inp = {}
         inp.usr = { repopath: "https://github.com/bsnp21/home.git", passcode: "3edcFDSA", repodesc: "" }
         inp.out = BibleUti.default_inp_out_obj()
-        inp.SSID = "../../../../bist/usrs/github.com/bsnp21/home"
+        //inp.SSID = "github.com/bsnp21/home"; //SSID Not Used At all. "../../../../bist/usrs/github.com/bsnp21/home"
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
         var userProject = new BibleObjGituser(rootDir)
         if (!userProject.parse_inp_usr2proj(inp)) {
@@ -606,7 +607,7 @@ var BibleUti = {
         console.log(inp.out.state)
         if (1 === inp.out.state.bRepositable) {
             //
-            var fidx = userProject.get_usr_git_dir("/index.html")
+            var fidx = userProject.get_usr_git_dir("/index.html")//="../../../../bist/usrs/github.com/bsnp21/home/index.html"
             if (!fs.existsSync(fidx)) {
                 return console.log("Error update HomeSiteSvrIP. Not exist", fidx)
             }
@@ -1002,10 +1003,14 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
 
 BibleObjGituser.prototype.session_create = function () {
     var gitdir = this.get_usr_git_dir()
-    NCache.Set(gitdir, this.m_inp.usr)
-    console.log(gitdir, this.m_inp.usr)
 
-    return { SSID: gitdir }
+    if(!this.m_inp.usr_proj) return null
+    var ssid = this.m_inp.usr_proj.ownerId 
+    var ssid_b64 = Buffer.from(ssid).toString("base64")
+    NCache.Set(ssid_b64, this.m_inp.usr)
+    console.log(ssid, ssid_b64, this.m_inp.usr)
+
+    return ssid_b64
 }
 
 BibleObjGituser.prototype.get_proj_tmp_dir = function (subpath) {
@@ -1234,13 +1239,14 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
     BibleUti.GetFilesAryFromDir(accdir, true, function (fname) {
         var ret = path.parse(fname);
         var ext = ret.ext
+        var nam = ret.base.replace(/_json\.js$/,"")
         //console.log("ret:",ret)
         var sta = fs.statSync(fname)
         var fMB = (sta.size / 1000000).toFixed(2)
         totalsize += sta.size
         var str = "" + fMB + "/100(MB)"
         if (fMB >= 80.0) { ////** Github: 100 MB per file, 1 GB per repo, svr:10GB
-            var str = ret.base + ":" + fMB + "/100(MB)"
+            var str = nam + ":" + fMB + "/100(MB)"
             warnsAry.push(str)
             iAlertLevel = 1
             str += "*"
@@ -1250,7 +1256,7 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
             iAlertLevel = 2
             str += "*"
         }
-        fstat[ret.base] = str
+        fstat[nam] = str
     });
 
     stat.fstat = fstat

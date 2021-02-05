@@ -115,6 +115,7 @@ RunAjaxPost_Signin : function (cbf) {
 },
 RunAjax_PostTxt : function(cbf){
     this.onBeforeRun()
+    if (!this.api) return alert("ErrApi="+this.api)
     var surl = this.getUrl()
     this.inp.api = this.api
     $.ajax({
@@ -486,7 +487,7 @@ ${jstr_RestApi}
             userProject.run_proj_setup()
 
             if (inp.out.state.bEditable === 1) {
-                inp.out.state.SSID = userProject.session_create().SSID
+                inp.out.state.SSID = userProject.session_create()
             }
         }
 
@@ -512,7 +513,7 @@ ${jstr_RestApi}
 
             var stat = userProject.run_proj_setup()
             if (inp.out.state.bEditable === 1) {
-                inp.out.state.SSID = userProject.session_create().SSID
+                inp.out.state.SSID = userProject.session_create()
             }
         })
     },
