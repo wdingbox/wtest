@@ -4219,7 +4219,7 @@ CNST.FnameOfBibleObj =
     "e_Note": "personal biblical study notes, commentary, questions, testimony, reflections, takeaway, other website links etc.",
     "e_Prayer": "personal prayer, preach, prophect, paper or project related to the verse and real life..",
     "e_Subtitle": "sub-title of its following verses.",
-    "e_Summary": "summary of chapter or its prevous verses."
+    "e_Summary": "summary of chapter or pericope."
 };
 
 CNST.BiBookName = {
