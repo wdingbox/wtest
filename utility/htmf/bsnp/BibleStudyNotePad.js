@@ -21,7 +21,7 @@ var MyStorage = {
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
-            $("#idatetiemstampe").text((new Date).toString())
+            
 
         } else {
             // Sorry! No Web Storage support..
@@ -2087,6 +2087,7 @@ var AppInstancesManager = function () {
 AppInstancesManager.prototype.init = function (cbf) {
     var _This = this
 
+    $("#idatetiemstampe").text((new Date).toString())
 
 
     $("body").prepend(BibleInputMenuContainer);

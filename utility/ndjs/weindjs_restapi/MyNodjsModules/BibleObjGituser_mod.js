@@ -711,9 +711,9 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 var NCache = {}
-NCache.m_checkperiod = 3 //s.
-NCache.m_TTL = NCache.m_checkperiod * 3600 //seconds
-NCache.m_MFT = 3  //MaxForgivenTimes.
+NCache.m_checkperiod = 300 //s.
+NCache.m_TTL = NCache.m_checkperiod * 6 //seconds (default)
+NCache.m_MFT = 300  //MaxForgivenTimes== ttl * 300.
 
 NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
 NCache.Init = function () {
