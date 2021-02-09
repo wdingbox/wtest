@@ -712,9 +712,9 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 var NCache = {}
-NCache.m_checkperiod = 300 //s.
+NCache.m_checkperiod = 10 //s.
 NCache.m_TTL = NCache.m_checkperiod * 6 //seconds (default)
-NCache.m_MFT = 300  //MaxForgivenTimes== ttl * 300.
+NCache.m_MFT = 300  //MaxForgivenTimesToKeepCache== ttl * 300.
 
 NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
 NCache.Init = function () {
@@ -862,7 +862,7 @@ BibleObjGituser.prototype.genKeyPair = function (cuid) {
     //var tuid = this.m_inp.CUID
     var val = { publicKey: publicKey, privateKey: privateKey, pkb64: pkb64, CUID: cuid }
 
-    NCache.Set(cuid, val)
+    NCache.Set(cuid, val, 60)
     return val
 }
 
@@ -879,7 +879,10 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     console.log("proj_get_usr_fr_cache_ssid inp.SSID:", inp.SSID)
     console.log("proj_get_usr_fr_cache_ssid inp.usr", inp.usr)
     if (!inp.usr) {
-        //inp.out.state.ssid_cur = "timeout"
+        inp.out.state.ssid_cur = "SSID-Timeout"
+        inp.out.state.bRepositable = 0
+        console.log("proj_get_usr_fr_cache_ssid:inp.out.state.ssid_cur=", inp.out.state.ssid_cur)
+        return null
     }
 
     return inp.usr
@@ -1141,9 +1144,9 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
             if (bCpy) {
                 var pet = path.parse(gitpfx);
                 if (!fs.existsSync(pet.dir)) {
-                    var ret = BibleUti.execSync_Cmd(` sudo -S mkdir -p  ${pet.dir}`)
+                    var ret = BibleUti.execSync_Cmd(`echo '' | sudo -S mkdir -p  ${pet.dir}`)
                 }
-                BibleUti.execSync_Cmd(` sudo -S chmod 777 ${pet.dir}`)
+                BibleUti.execSync_Cmd(`echo '' | sudo -S chmod 777 ${pet.dir}`)
                 fs.copyFileSync(srcfname, gitpfx, COPYFILE_EXCL) //failed if des exists.
             }
         }
@@ -1299,12 +1302,11 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
     var acctDir = this.get_usr_acct_dir()
     var cp_template_cmd = `
     #!/bin/sh
-     sudo -S mkdir -p ${acctDir}
-     sudo -S chmod -R 777 ${acctDir}
+    echo '' | sudo -S mkdir -p ${acctDir}
+    echo '' | sudo -S chmod -R 777 ${acctDir}
     # sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
-     sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
-     sudo -S chmod -R 777 ${acctDir}
-    echo " cp_template_cmd end."
+    echo '' | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
+    echo '' | sudo -S chmod -R 777 ${acctDir}
     #cd -`
 
     inp.out.cp_template_cmd = cp_template_cmd
@@ -1590,7 +1592,7 @@ BibleObjGituser.prototype.git_pull = function (cbf) {
     return this.m_inp.out.git_pull_res
 }
 
-BibleObjGituser.prototype.git_push = function () {
+BibleObjGituser.prototype.git_push = async function () {
     this.git_config_allow_push(true)
     var ret = this.m_inp.out.git_push_res = this.execSync_cmd_git("git push").toString()
     if (null !== ret) {
@@ -1604,7 +1606,7 @@ BibleObjGituser.prototype.git_push = function () {
 }
 BibleObjGituser.prototype.git_push_test = function () {
     var tm = (new Date()).toString()
-    console.log("tm=",tm)
+    console.log("tm=", tm)
 
     var dir = this.get_usr_git_dir()
 
