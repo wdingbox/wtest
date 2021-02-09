@@ -876,8 +876,8 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     }
 
     inp.usr = NCache.Get(inp.SSID)
-    console.log("inp.SSID:", inp.SSID)
-    console.log("inp.usr", inp.usr)
+    console.log("proj_get_usr_fr_cache_ssid inp.SSID:", inp.SSID)
+    console.log("proj_get_usr_fr_cache_ssid inp.usr", inp.usr)
     if (!inp.usr) {
         //inp.out.state.ssid_cur = "timeout"
     }
