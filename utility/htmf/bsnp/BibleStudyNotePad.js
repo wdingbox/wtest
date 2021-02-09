@@ -1987,7 +1987,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_updateStatus").on("click", function () {
         MyStorage.Repositories().repos_app_update()
         PageUti.repo_status("#account_set_info")
-        $("#idatetiemstampe").text((new Date).toString())
+        $("#idatetiemstampe").text((new Date()).toString())
     })
 
     //  Readonly now.
@@ -2087,7 +2087,7 @@ var AppInstancesManager = function () {
 AppInstancesManager.prototype.init = function (cbf) {
     var _This = this
 
-    $("#idatetiemstampe").text((new Date).toString())
+    $("#idatetiemstampe").text((new Date()).toString())
 
 
     $("body").prepend(BibleInputMenuContainer);

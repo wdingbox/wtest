@@ -1166,13 +1166,14 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     } else {
         this.git_pull()
     }
+
     if (!fs.existsSync(dir)) {
         return null
     }
+
     if (null === this.git_push_test()) {
         return null
     }
-
 
 
     if (fs.existsSync(dir)) {
@@ -1602,7 +1603,7 @@ BibleObjGituser.prototype.git_push = function () {
     return ret
 }
 BibleObjGituser.prototype.git_push_test = function () {
-    var tm = (new Date()).getTime()
+    var tm = (new Date()).toString()
     console.log("tm=",tm)
 
     var dir = this.get_usr_git_dir()
@@ -1611,7 +1612,7 @@ BibleObjGituser.prototype.git_push_test = function () {
     var logname = "test.log"
     var cmd = `
     cd ${dir}
-    echo lll | sudo -S  echo ${tm}> ${logname}
+    echo lll | sudo -S  echo '${tm}'> ${logname}
     echo lll | sudo -S  git add ${logname}
     echo lll | sudo -S  git commit -m 'test.log'
     echo lll | sudo -S  git push
@@ -1642,7 +1643,7 @@ BibleObjGituser.prototype.execSync_cmd_git = function (gitcmd) {
     var scmd = `
     #!/bin/sh
     cd ${this.get_usr_git_dir()}
-     sudo -S ${gitcmd}
+     echo lll |sudo -S ${gitcmd}
     `
     console.log("\n----git_cmd start:>", scmd)
     var res = BibleUti.execSync_Cmd(scmd)
