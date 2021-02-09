@@ -388,12 +388,14 @@
         Uti.visual_check_repository("#Format_Check")
 
         $("#signin").on("click", function () {
+            $("#signin").attr("disabled", true)
             PageUti.repo_Signin("#otb", function (ret) {
                 if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
                     var svrip = Uti.Jsonpster_crossloader_get_ip()
                     window.open("BibleStudyNotePad.htm?ip=" + svrip, '_self');
                 } else {
                     //$("#txtarea").show()
+                    $("#signin").attr("disabled", null)
                 }
             })
         })
