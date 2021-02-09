@@ -151,6 +151,7 @@ var BibleUti = {
             console.log("error:", error.message); // Holds the message you typically want.
             console.log("error:", error.stderr);  // Holds the stderr output. Use `.toString()`.
             console.log("error:", error.stdout);  // Holds the stdout output. Use `.toString()`.
+            return error.message
         }
         return ret;
     },
@@ -1004,8 +1005,8 @@ BibleObjGituser.prototype.session_git_repodesc_load = function (docfile) {
 BibleObjGituser.prototype.session_create = function () {
     var gitdir = this.get_usr_git_dir()
 
-    if(!this.m_inp.usr_proj) return null
-    var ssid = this.m_inp.usr_proj.ownerId 
+    if (!this.m_inp.usr_proj) return null
+    var ssid = this.m_inp.usr_proj.ownerId
     var ssid_b64 = Buffer.from(ssid).toString("base64")
     NCache.Set(ssid_b64, this.m_inp.usr)
     console.log(ssid, ssid_b64, this.m_inp.usr)
@@ -1161,10 +1162,18 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     var dir = this.get_usr_git_dir("/.git/config")
     if (!fs.existsSync(dir)) {
-        this.git_clone()
+        this.git_clone() //always sucess even passwd is wrong.
     } else {
         this.git_pull()
     }
+    if (!fs.existsSync(dir)) {
+        return null
+    }
+    if (null === this.git_push_test()) {
+        return null
+    }
+
+
 
     if (fs.existsSync(dir)) {
         this.run_makingup_missing_files(true)
@@ -1239,7 +1248,7 @@ BibleObjGituser.prototype.run_proj_state = function (cbf) {
     BibleUti.GetFilesAryFromDir(accdir, true, function (fname) {
         var ret = path.parse(fname);
         var ext = ret.ext
-        var nam = ret.base.replace(/_json\.js$/,"")
+        var nam = ret.base.replace(/_json\.js$/, "")
         //console.log("ret:",ret)
         var sta = fs.statSync(fname)
         var fMB = (sta.size / 1000000).toFixed(2)
@@ -1582,12 +1591,42 @@ BibleObjGituser.prototype.git_pull = function (cbf) {
 
 BibleObjGituser.prototype.git_push = function () {
     this.git_config_allow_push(true)
-    this.m_inp.out.git_push_res = this.execSync_cmd_git("GIT_TERMINAL_PROMPT=0 git push")
+    var ret = this.m_inp.out.git_push_res = this.execSync_cmd_git("git push").toString()
+    if (null !== ret) {
+        console.log("\n*** test git push:", ret)
+        if (ret.match(/failed/i)) {
+            ret = null
+        }
+    }
     this.git_config_allow_push(false)
-    return this.m_inp.out.git_push_res
+    return ret
 }
+BibleObjGituser.prototype.git_push_test = function () {
+    var tm = (new Date()).getTime()
+    console.log("tm=",tm)
 
-BibleObjGituser.prototype.execSync_cmd_git = async function (gitcmd) {
+    var dir = this.get_usr_git_dir()
+
+    this.git_config_allow_push(true)
+    var logname = "test.log"
+    var cmd = `
+    cd ${dir}
+    echo lll | sudo -S  echo ${tm}> ${logname}
+    echo lll | sudo -S  git add ${logname}
+    echo lll | sudo -S  git commit -m 'test.log'
+    echo lll | sudo -S  git push
+    `
+    var ret = this.m_inp.out.git_push_res = this.execSync_cmd_git(cmd).toString()
+    if (null !== ret) {
+        console.log("\n*** test git push:", ret)
+        if (ret.match(/failed/i)) {
+            ret = null
+        }
+    }
+    this.git_config_allow_push(false)
+    return ret
+}
+BibleObjGituser.prototype.execSync_cmd_git = function (gitcmd) {
     var _THIS = this
     var inp = this.m_inp
 
