@@ -478,7 +478,7 @@ var BibleUti = {
     },
 
     _interpret_repo_url: function (proj_url) {
-        if(!proj_url) return null
+        if (!proj_url) return null
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
         const hostname = "github.com"
@@ -713,9 +713,10 @@ SvrUsrsBCV.prototype.gen_crossnet_files_of = function (docpathfilname, cbf) {
 
 
 var NCache = {}
-NCache.m_checkperiod = 10 //s.
+NCache.m_checkperiod = 60 //s.
 NCache.m_TTL = NCache.m_checkperiod * 6 //seconds (default)
 NCache.m_MFT = 300  //MaxForgivenTimesToKeepCache== ttl * 300.
+NCache.m_MAX = 3600 * 200  //about a week
 
 NCache.myCache = new NodeCache({ checkperiod: NCache.m_checkperiod }); //checkperiod default is 600s.
 NCache.Init = function () {
@@ -738,15 +739,15 @@ NCache.Init = function () {
         console.log(`on del:key=${key}, \n-val=${JSON.stringify(val)}, \n-rootDir=${rootDir}`)
 
         if (!val) return console.log("on del: !val")
-        if ("object" !== typeof(val) ) return console.log("on del: val not valid inp.usr obj")
-        if (!val.repopath) return console.log("on del: val not valid inp.usr.repopath null")
+        if ("object" !== typeof (val)) return console.log("on del: val not valid inp.usr obj")
+        if (!val.repopath) return console.log("on del: val invalid. inp.usr.repopath null")
 
         if (!fs.existsSync(rootDir)) return console.log(`not existsSync(${rootDir}).`)
         //if (!fs.existsSync(key)) return console.log(`not existsSync(${key}).`)
-        
+
         var gitdir = Buffer.from(key, 'base64').toString('utf8')
-        console.log("* start to del proj_destroy ssid=", key)
-        console.log("* start to del proj_destroy ownr=", gitdir)
+        console.log("on del:* start to del proj_destroy ssid=", key)
+        console.log("on del:* start to del proj_destroy ownr=", gitdir)
         var inp = {}
         inp.usr = val
         inp.out = BibleUti.default_inp_out_obj()
@@ -757,7 +758,7 @@ NCache.Init = function () {
             console.log(inp.out.state)
             if (1 === inp.out.state.bRepositable) {
                 //
-                console.log("git dir exist. push before to delete it")
+                console.log("on del:git dir exist. push before to delete it")
                 var res2 = userProject.execSync_cmd_git("git add *")
                 var res3 = userProject.execSync_cmd_git(`git commit -m "on del in Cache"`)
                 var res4 = userProject.git_push()
@@ -765,28 +766,39 @@ NCache.Init = function () {
                 var res5 = userProject.run_proj_destroy()
             }
         }
-        console.log("* End of del proj_destroy ssid=", key, gitdir)
+        console.log("on del:* End of del proj_destroy ssid=", key, gitdir)
     }
 
 
     function _MaxForgivenTimes(key, val) {
         if ("object" !== typeof val) {
-            console.log("on expired, non-obj must dies!~~~~", key)
-            return
+            return console.log("on expired, must dies!~~~~~~~~~~~~", key)
+        }
+
+        if (key.match(/^CUID\d+\.\d+/)) {//key=CUID16129027802800.6753972926962513, 
+            return console.log("on expired, must dies!~~~~~~~~~~~~", key)
         }
 
         var tms = val.tms, ttl = val.ttl
-        if (!tms || !ttl) return console.log("on expired, invalid must die.", ttl, tms, key)
+        if (!tms || !ttl) {
+            return console.log("on expired, invalid must die.", ttl, tms, key)
+        }
+
         var cur = (new Date()).getTime() //(ms)
         var dlt = (cur - tms) / 1000.0 //(s)
+        var max = ttl * NCache.m_MFT
+        if (max > NCache.m_MAX) {
+            max = NCache.m_MAX
+        }
 
         console.log(`on expired,MFT=${NCache.m_MFT}, ttl=${ttl}, dlt=${dlt}, key=${key}`)
-        if (dlt < ttl * NCache.m_MFT) {
+        if (dlt < max) {
             console.log("on expired, keep alive!", key)
             NCache.myCache.set(key, val, ttl) //keep it.
         } else {
             console.log("on expired, ~~~~~~~~~ die ~~~~~~~", key)
         }
+        console.log("on expired end!\n\n\n\n\n\n\n")
     }
 
     NCache.myCache.on("del", function (key, val) {
@@ -795,6 +807,7 @@ NCache.Init = function () {
     });
     NCache.myCache.on("expired", function (key, val) {
         //console.log(`on expired:key=${key}, \n-val=${JSON.stringify(val)}`)
+        _MaxForgivenTimes(key, val)
     })
 }
 NCache.Set = function (key, val, ttl) {
@@ -807,9 +820,16 @@ NCache.Set = function (key, val, ttl) {
 }
 NCache.Get = function (key, ttl) {
     var val = this.myCache.get(key)
-    if (undefined !== val && null !== val) { //0 and "" are allowed.
-        this.Set(key, val, ttl) //restart ttl -- reborn again.
+    if (undefined === val || null === val) { //0 and "" are allowed.
+        return null
     }
+    if (undefined === ttl) {
+        if ("object" === typeof (val)) {
+            ttl = val.ttl
+            this.Set(key, val, ttl) //restart ttl -- reborn again.
+        }
+    }
+    console.log("reset ttl w/", val)
     return val
 }
 NCache.Init()
@@ -868,7 +888,7 @@ BibleObjGituser.prototype.genKeyPair = function (cuid) {
     //var tuid = this.m_inp.CUID
     var val = { publicKey: publicKey, privateKey: privateKey, pkb64: pkb64, CUID: cuid }
 
-    NCache.Set(cuid, val, 600) //set 10min for sign-in page..
+    NCache.Set(cuid, val, 60) //set 10min for sign-in page..
     return val
 }
 
@@ -880,13 +900,19 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     if (!inp.SSID || inp.SSID.length === 0) {
         return null
     }
+    if (!NCache.myCache.has(inp.SSID)) {
+        console.log("proj_get_usr_fr_cache_ssid: has no key: NCache.myCache.has(inp.SSID)")
+        return null
+    }
 
-    inp.usr = NCache.Get(inp.SSID)
+    var ttl = (inp.aux && inp.aux.cacheTTL) ? inp.aux.cacheTTL : null
+
+    inp.usr = NCache.Get(inp.SSID, ttl)
     console.log("proj_get_usr_fr_cache_ssid inp.SSID:", inp.SSID)
-    console.log("proj_get_usr_fr_cache_ssid inp.usr", inp.usr)
+    console.log("proj_get_usr_fr_cache_ssid:inp.aux.cacheTTL=", ttl)
+    console.log("proj_get_usr_fr_cache_ssid:inp=", inp)
     if (!inp.usr) {
         inp.out.state.ssid_cur = "SSID-Timeout"
-        inp.out.state.bRepositable = -1
         console.log("proj_get_usr_fr_cache_ssid:inp.out.state.ssid_cur=", inp.out.state.ssid_cur)
         return null
     }
@@ -1018,7 +1044,7 @@ BibleObjGituser.prototype.session_create = function () {
     var ssid = this.m_inp.usr_proj.ownerId
     var ssid_b64 = Buffer.from(ssid).toString("base64")
     NCache.Set(ssid_b64, this.m_inp.usr)
-    console.log(ssid, ssid_b64, this.m_inp.usr)
+    console.log("session_create:", ssid, ssid_b64, this.m_inp.usr)
 
     return ssid_b64
 }
