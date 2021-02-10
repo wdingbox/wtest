@@ -61,7 +61,7 @@ var ApiJsonp_BibleObj = {
         var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi, null, 4)}`
         var structall = JSON.stringify(inp_struct_all)
         var SvrUrl = `http://${res.req.headers.host}/`
-        console.log("SvrUrl=",SvrUrl)
+        console.log("SvrUrl=", SvrUrl)
 
 
 
@@ -333,12 +333,12 @@ ${jstr_RestApi}
             //var docpathfilname = userProject.get_usr_myoj_dir("/" + docname)
 
             //////----
-            function __load_to_obj(outObj, jsfname, owner, shareID, inpObj, ) {
+            function __load_to_obj(outObj, jsfname, owner, shareID, inpObj,) {
                 //'../../../../bible_study_notes/usrs/bsnp21/pub_wd01/account/myoj/myNote_json.js': 735213,
                 var bio = BibleUti.loadObj_by_fname(jsfname);
                 var karyObj = BibleUti.inpObj_to_karyObj(inpObj)
                 if (karyObj.kary.length < 3) {
-                    console.log("error", )
+                    console.log("error",)
                 }
                 if (proj && bio.obj && karyObj.kary.length >= 3) {
                     var tms = (new Date(bio.stat.mtime)).toISOString().substr(0, 10)
@@ -511,9 +511,14 @@ ${jstr_RestApi}
             var proj = userProject.proj_parse_usr_signin(inp)
             if (!proj) return console.log("proj_parse_usr_signin failed.")
 
-            var stat = userProject.run_proj_setup()
+            userProject.run_proj_setup()
             if (inp.out.state.bEditable === 1) {
-                inp.out.state.SSID = userProject.session_create()
+                if (null === userProject.git_push_test()) {
+                    //inp.out.state.bEditable =  inp.out.state.bRepositable = 0
+                    userProject.run_proj_destroy()
+                }else{
+                    inp.out.state.SSID = userProject.session_create()
+                }
             }
         })
     },

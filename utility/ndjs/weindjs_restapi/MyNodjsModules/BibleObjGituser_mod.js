@@ -478,13 +478,14 @@ var BibleUti = {
     },
 
     _interpret_repo_url: function (proj_url) {
+        if(!proj_url) return null
         //https://github.com/wdingbox/Bible_obj_weid.git
         var reg = new RegExp(/^https\:\/\/github\.com\/(\w+)\/(\w+)(\.git)$/)
         const hostname = "github.com"
 
         var mat = proj_url.match(/^https\:\/\/github\.com[\/](([^\/]*)[\/]([^\.]*))[\.]git$/)
         if (mat && mat.length === 4) {
-            console.log("mat:", mat)
+            //console.log("mat:", mat)
             //return { format: 2, desc: "full_path", full_path: mat[0], user_repo: mat[1], user: mat[2], repo: mat[3] }
             var username = mat[2]
             var projname = mat[3]
@@ -736,11 +737,16 @@ NCache.Init = function () {
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
         console.log(`on del:key=${key}, \n-val=${JSON.stringify(val)}, \n-rootDir=${rootDir}`)
 
-        if (!val) return console.log("on del, val=undefined")
-        if (!fs.existsSync(rootDir)) return console.log(`not existsSync(${rootDir}).`)
-        if (!fs.existsSync(key)) return console.log(`not existsSync(${key}).`)
+        if (!val) return console.log("on del: !val")
+        if ("object" !== typeof(val) ) return console.log("on del: val not valid inp.usr obj")
+        if (!val.repopath) return console.log("on del: val not valid inp.usr.repopath null")
 
+        if (!fs.existsSync(rootDir)) return console.log(`not existsSync(${rootDir}).`)
+        //if (!fs.existsSync(key)) return console.log(`not existsSync(${key}).`)
+        
+        var gitdir = Buffer.from(key, 'base64').toString('utf8')
         console.log("* start to del proj_destroy ssid=", key)
+        console.log("* start to del proj_destroy ownr=", gitdir)
         var inp = {}
         inp.usr = val
         inp.out = BibleUti.default_inp_out_obj()
@@ -759,7 +765,7 @@ NCache.Init = function () {
                 var res5 = userProject.run_proj_destroy()
             }
         }
-        console.log("* End of del proj_destroy ssid=", key)
+        console.log("* End of del proj_destroy ssid=", key, gitdir)
     }
 
 
@@ -862,7 +868,7 @@ BibleObjGituser.prototype.genKeyPair = function (cuid) {
     //var tuid = this.m_inp.CUID
     var val = { publicKey: publicKey, privateKey: privateKey, pkb64: pkb64, CUID: cuid }
 
-    NCache.Set(cuid, val, 60)
+    NCache.Set(cuid, val, 600) //set 10min for sign-in page..
     return val
 }
 
@@ -880,7 +886,7 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
     console.log("proj_get_usr_fr_cache_ssid inp.usr", inp.usr)
     if (!inp.usr) {
         inp.out.state.ssid_cur = "SSID-Timeout"
-        inp.out.state.bRepositable = 0
+        inp.out.state.bRepositable = -1
         console.log("proj_get_usr_fr_cache_ssid:inp.out.state.ssid_cur=", inp.out.state.ssid_cur)
         return null
     }
@@ -1171,10 +1177,6 @@ BibleObjGituser.prototype.run_proj_setup = function () {
     }
 
     if (!fs.existsSync(dir)) {
-        return null
-    }
-
-    if (null === this.git_push_test()) {
         return null
     }
 
