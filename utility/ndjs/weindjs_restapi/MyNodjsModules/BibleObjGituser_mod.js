@@ -370,7 +370,7 @@ var BibleUti = {
 
         ret.writeback = function () {
             var s2 = JSON.stringify(this.obj, null, 4);
-            BibleUti.execSync_Cmd(`sudo -S chmod -R 777 ${this.fname}`)
+            BibleUti.execSync_Cmd(`echo 'lll'| sudo -S chmod -R 777 ${this.fname}`)
             fs.writeFileSync(this.fname, this.header + s2);
             ret.dlt_size = ret.header.length + s2.length - ret.fsize
         }
@@ -613,7 +613,7 @@ var BibleUti = {
             if (!fs.existsSync(fidx)) {
                 return console.log("Error update HomeSiteSvrIP. Not exist", fidx)
             }
-            BibleUti.execSync_Cmd(` sudo -S chmod 777 ${fidx}`)
+            BibleUti.execSync_Cmd(`echo 'lll'|  sudo -S chmod 777 ${fidx}`)
             var txt = fs.readFileSync(fidx, "utf8")
             var SvrIP = "0.0.0.0"
             SvrIP = BibleUti.execSync_Cmd("dig +short myip.opendns.com @resolver1.opendns.com").toString().trim()
@@ -1176,9 +1176,9 @@ BibleObjGituser.prototype.run_makingup_missing_files = function (bCpy) {
             if (bCpy) {
                 var pet = path.parse(gitpfx);
                 if (!fs.existsSync(pet.dir)) {
-                    var ret = BibleUti.execSync_Cmd(`echo '' | sudo -S mkdir -p  ${pet.dir}`)
+                    var ret = BibleUti.execSync_Cmd(`echo 'lll' | sudo -S mkdir -p  ${pet.dir}`)
                 }
-                BibleUti.execSync_Cmd(`echo '' | sudo -S chmod 777 ${pet.dir}`)
+                BibleUti.execSync_Cmd(`echo 'lll' | sudo -S chmod 777 ${pet.dir}`)
                 fs.copyFileSync(srcfname, gitpfx, COPYFILE_EXCL) //failed if des exists.
             }
         }
@@ -1213,7 +1213,7 @@ BibleObjGituser.prototype.run_proj_setup = function () {
 
     var dir = this.get_usr_acct_dir()
     if (fs.existsSync(dir)) {
-        BibleUti.execSync_Cmd(`sudo -S chmod -R 777 ${dir}`)
+        BibleUti.execSync_Cmd(`echo 'lll' |sudo -S chmod -R 777 ${dir}`)
     }
 
     this.run_proj_state()
@@ -1330,11 +1330,11 @@ BibleObjGituser.prototype.cp_template_to_git = function () {
     var acctDir = this.get_usr_acct_dir()
     var cp_template_cmd = `
     #!/bin/sh
-    echo '' | sudo -S mkdir -p ${acctDir}
-    echo '' | sudo -S chmod -R 777 ${acctDir}
+    echo 'lll' | sudo -S mkdir -p ${acctDir}
+    echo 'lll' | sudo -S chmod -R 777 ${acctDir}
     # sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate  ${acctDir}/
-    echo '' | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
-    echo '' | sudo -S chmod -R 777 ${acctDir}
+    echo 'lll' | sudo -S cp -aR  ${this.m_rootDir}bible_obj_lib/jsdb/UsrDataTemplate/*  ${acctDir}/.
+    echo 'lll' | sudo -S chmod -R 777 ${acctDir}
     #cd -`
 
     inp.out.cp_template_cmd = cp_template_cmd
@@ -1361,7 +1361,7 @@ BibleObjGituser.prototype.chmod_R_777_acct = function (spath) {
         return inp
     }
     //var password = "lll"
-    var change_perm_cmd = ` sudo -S chmod -R 777 ${dir}`
+    var change_perm_cmd = `echo 'lll'|  sudo -S chmod -R 777 ${dir}`
 
     inp.out.change_perm = BibleUti.execSync_Cmd(change_perm_cmd).toString()
 
@@ -1510,15 +1510,15 @@ BibleObjGituser.prototype.git_clone = function () {
     //console.log("proj", proj)
     var dir = inp.usr_proj.user_dir
     if (!fs.existsSync(dir)) {
-        var ret = BibleUti.execSync_Cmd(` sudo -S mkdir -p ${dir}`).toString()
+        var ret = BibleUti.execSync_Cmd(`echo 'lll'| sudo -S mkdir -p ${dir}`).toString()
     }
-    var ret = BibleUti.execSync_Cmd(` sudo -S chmod -R 777 ${dir}`).toString()
+    var ret = BibleUti.execSync_Cmd(`echo 'lll'|  sudo -S chmod -R 777 ${dir}`).toString()
 
     gitdir = this.get_usr_git_dir()
     if (fs.existsSync(gitdir)) {
         inp.out.git_clone_res.desc += "|git folder exit but no .git"
         inp.out.git_clone_res.bExist = true
-        var ret = BibleUti.execSync_Cmd(` sudo -S rm -rf ${gitdir}`).toString()
+        var ret = BibleUti.execSync_Cmd(`echo 'lll'|  sudo -S rm -rf ${gitdir}`).toString()
         console.log(ret)
     }
 
@@ -1526,10 +1526,10 @@ BibleObjGituser.prototype.git_clone = function () {
     var git_clone_cmd = `
     #!/bin/sh
     cd ${this.m_rootDir}
-     sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
+    echo 'lll'|  sudo -S GIT_TERMINAL_PROMPT=0 git clone  ${clone_https}  ${proj.git_root}
     if [ -f "${proj.git_root}/.git/config" ]; then
         echo "${proj.git_root}/.git/config exists."
-         sudo -S chmod  777 ${proj.git_root}/.git/config
+        echo 'lll'| sudo -S chmod  777 ${proj.git_root}/.git/config
     else 
         echo "${proj.git_root}/.git/config does not exist."
     fi
@@ -1572,19 +1572,19 @@ BibleObjGituser.prototype.git_add_commit_push_Sync = function (msg) {
     echo '=>cd ${gitdir}'
     cd  ${gitdir}
     echo '=>git status'
-     sudo -S git status
+    echo 'lll'|  sudo -S git status
     echo '=>git diff'
-     sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
+    echo 'lll'|  sudo -S git diff --ignore-space-at-eol -b -w --ignore-blank-lines --color-words=.
     echo '=>git add *'
-     sudo -S git add *
+    echo 'lll'|  sudo -S git add *
     echo '=>git commit'
-     sudo -S git commit -m "Sync:${msg}. repodesc:${inp.usr.repodesc}"
+    echo 'lll'|  sudo -S git commit -m "Sync:${msg}. repodesc:${inp.usr.repodesc}"
     echo '=>git push'
-     sudo -S GIT_TERMINAL_PROMPT=0 git push
+    echo 'lll'|  sudo -S GIT_TERMINAL_PROMPT=0 git push
     echo '=>git status'
-     sudo -S git status
+    echo 'lll'| sudo -S git status
     echo '=>git status -sb'
-     sudo -S git status -sb
+    echo 'lll'|  sudo -S git status -sb
     `
     console.log('exec_command:', command)
     console.log('exec_command start:')
