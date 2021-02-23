@@ -21,7 +21,7 @@ var MyStorage = {
 
             $("#cacheTTL").val(MyStorage.cacheTTL())
 
-            
+
 
         } else {
             // Sorry! No Web Storage support..
@@ -376,7 +376,7 @@ PopupMenu_BcvTag.prototype.init_links = function () {
         },
     }
 
-    $("#blb").click(function () {
+    $("#blueletterbible").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
 
         var blbvol = CNST.BlueLetterBibleCode[ret.vol];
@@ -398,14 +398,26 @@ PopupMenu_BcvTag.prototype.init_links = function () {
         ret.set_href(`${ont}/${bkname}/${ret.chp}.html#${ret.vrs}`);
 
     });
+    //https://biblehub.com/commentaries/genesis/2-24.htm
+    $("#biblehub").click(function () {
+        var ret = Ext_Link_Menu.HiliEx(this)
+
+        var volm = ret._vol;
+        var bkname = CNST.BiBookName[ret.vol][0];
+        bkname = bkname.replace(/_/g, "-")
+        bkname = bkname.toLowerCase()
+        ret.set_href(bkname + "/" + parseInt(ret.chp3) + "-" + parseInt(ret.vrs) + ".htm");
+
+    });
+
     $("#h_g").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
 
         var volm = ret._vol;
         var bkidx = CNST.BookID2IdxCode[volm];
         ret.set_href(bkidx[0] + volm + "_" + ret.chp3 + ".htm#" + ret.vrs);
-
     });
+
     $("#gtw").click(function () {
         var ret = Ext_Link_Menu.HiliEx(this)
 
@@ -3815,17 +3827,18 @@ var BibleInputMenuContainer = `
     <tbody id="divPopupMenu_BcvTag">
         <tr>
             <td>
-                <a id="blb" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
+                <a id="blueletterbible" ref="https://www.blueletterbible.org/kjv/">blueletterbible.org</a>
             </td>
         </tr>
         <tr>
             <td>
+                <!----- bkup ref="../../../../bible_concordance/rel/hgsbible/hgb/" title='Hebrew_Greek'   h_g---->
                 <a id="qbible_com" ref="http://www.qbible.com/" sample="hebrew-old-testament/genesis/50.html#1" title='http://www.qbible.com/hebrew-old-testament/genesis/50.html#1'>qbible.com</a>
             </td>
         </tr>
         <tr>
             <td>
-                <a id="h_g" ref="../../../../bible_concordance/rel/hgsbible/hgb/" title='Hebrew_Greek'>h_g</a>
+                <a id="biblehub" ref="https://biblehub.com/" samp="commentaries/genesis/2-24.htm" title='Hebrew_Greek'>BibleHub</a>
             </td>
         </tr>
         <tr>

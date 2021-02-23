@@ -901,8 +901,8 @@ BibleObjGituser.prototype.proj_get_usr_fr_cache_ssid = function (inp) {
         return null
     }
     if (!NCache.myCache.has(inp.SSID)) {
-        console.log("proj_get_usr_fr_cache_ssid: has no key: NCache.myCache.has(inp.SSID)")
-        return null
+        console.log("proj_get_usr_fr_cache_ssid: has no key: NCache.myCache.has(inp.SSID)", inp.SSID)
+        //return null
     }
 
     var ttl = (inp.aux && inp.aux.cacheTTL) ? inp.aux.cacheTTL : null
