@@ -1723,9 +1723,25 @@ Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
 
 
 
-
-
-
+function Tab_DocumentSelected_Search(tid) {
+    this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
+ 
+    this.m_selectedItems_ary = MyStorage.LastSelectedDocsList();//["CUVS"] //default
+}
+Tab_DocumentSelected_Search.prototype.init = function () {
+   
+}
+Tab_DocumentSelected_Search.prototype.Update_DocSel_Table = function (tbodyID) {
+    var ar = MyStorage.LastSelectedDocsList();
+    var trs = ""
+    for(var i=0; i<ar.length; i++){
+        trs +=`<tr><td>${ar[i]}</td><tr>`
+    }
+    $(tbodyID).html(trs).find("td").on("click",function(){
+        $(tbodyID).find(".hili").removeClass("hili")
+        $(this).addClass("hili")
+    })
+}
 
 
 
@@ -2077,7 +2093,7 @@ GroupsMenuMgr.prototype.collapse = function () {
 var groupsMenuMgr = new GroupsMenuMgr()
 
 
-
+var tab_DocumentSelected_Search = new Tab_DocumentSelected_Search()
 
 
 var showup = new ShowupBCV() // ShowupBknChpVrsPanel()
@@ -2218,6 +2234,8 @@ AppInstancesManager.prototype.init = function (cbf) {
     })
 
 
+    
+    tab_DocumentSelected_Search.Update_DocSel_Table("#Tab_doc_option_for_search")
 
     tab_documentsClusterList.Init_Docs_Table({
         onClickItm: function (par) {
@@ -2232,10 +2250,12 @@ AppInstancesManager.prototype.init = function (cbf) {
                 } else if ("object" === typeof (par)) {
                     _This.loadBible_verse_by_bibOj(par);
                 }
+                tab_DocumentSelected_Search.Update_DocSel_Table("#Tab_doc_option_for_search")
             }
 
         }
     });
+    
 
 
     markHistory.init()
@@ -4049,18 +4069,30 @@ var BibleInputMenuContainer = `
                 <a id="toggle_Case">toggleCase</a>  <br>
                 <button id="RemoveSearchStrn">Delete Selected History</button>
                 <br>  
+                <table id="Tab_selected_Doc_Search" border='1' style="float:left;">
+                    <caption>Search</caption>
+                    <tbody id="Tab_doc_option_for_search">
+                        <tr>
+                            <td>
+                                                       
+    
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <table id="Tab_regex_history_lst" border='1' style="float:left;">
-                <caption>Search History</caption>
-                <tbody>
-                    <tr>
-                        <td>
-                            click search results<br>
-                            to show history serch<br>                           
+                    <caption>History</caption>
+                    <tbody>
+                        <tr>
+                            <td>
+                                click search results<br>
+                                to show history serch<br>                           
 
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
            
             </div>
 
