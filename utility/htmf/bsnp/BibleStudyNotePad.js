@@ -1577,12 +1577,12 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    const sFile = MyStorage.LastSearchInDocument()
-    if (sFile.length === 0) alert(0)
+    //const sFile = MyStorage.LastSearchInDocument()
+    //if (sFile.length === 0) alert(0)
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
-        if (sFile === v) hil += " searchFile"
+        //if (sFile === v) hil += " searchFile"
         if (v[0] === "e") hil += " e_EditableDoc"
         str += `<tr><td class='cbkn  ${hil}'>${v}</td></tr>`;
     });
@@ -1644,15 +1644,15 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    var sFile = MyStorage.LastSearchInDocument()
-    if (_THIS.m_selectedItems_ary.indexOf(sFile) < 0) { //searchFile Must be among the selected.
-        sFile = _THIS.m_selectedItems_ary[0]
-        MyStorage.LastSearchInDocument(sFile)
-    }
+    //var sFile = MyStorage.LastSearchInDocument()
+    //if (_THIS.m_selectedItems_ary.indexOf(sFile) < 0) { //searchFile Must be among the selected.
+    //    sFile = _THIS.m_selectedItems_ary[0]
+    //    MyStorage.LastSearchInDocument(sFile)
+    //}
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
-        if (sFile === v) hil = "hili searchFile"
+        //if (sFile === v) hil = "hili searchFile"
         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
@@ -1691,29 +1691,29 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
 }
 
 Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
-    var str = "";
-    var _THIS = this
-    var bknArr = Object.keys(CNST.FnameOfBibleObj);
-
-    var sFile = MyStorage.LastSearchInDocument()
-    $.each(_THIS.m_selectedItems_ary, function (i, v) {
-        var hil = "hili";
-        if (v === sFile) hil += " searchFile"
-        str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
-    });
-
-    function update_Searchin(_this) {
-        $(".searchFile").removeClass("searchFile");
-        $(_this).addClass("searchFile");
-        var txt = $(_this).text().trim()
-        MyStorage.LastSearchInDocument(txt)
-    }
-
-
-    $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
-        update_Searchin(this)
-        _THIS.m_onClickItm2Select("Searching")
-    });
+//     var str = "";
+//     var _THIS = this
+//     var bknArr = Object.keys(CNST.FnameOfBibleObj);
+// 
+//     var sFile = MyStorage.LastSearchInDocument()
+//     $.each(_THIS.m_selectedItems_ary, function (i, v) {
+//         var hil = "hili";
+//         if (v === sFile) hil += " searchFile"
+//         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
+//     });
+// 
+//     function update_Searchin(_this) {
+//         $(".searchFile").removeClass("searchFile");
+//         $(_this).addClass("searchFile");
+//         var txt = $(_this).text().trim()
+//         MyStorage.LastSearchInDocument(txt)
+//     }
+// 
+// 
+//     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
+//         update_Searchin(this)
+//         _THIS.m_onClickItm2Select("Searching")
+//     });
 }
 
 Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
@@ -1864,13 +1864,13 @@ Tab_DocumentSelected_Search.prototype.gen_search_strn_history = function () {
         $("#sinput").val(s);
     });
 
-    var str = MyStorage.LastSearchInDocument()
-    $("#SearchInCaption").text(str)
-    $("#SearchInCaption").on("click", function () {
-        //goto Cluster tab.
-        groupsMenuMgr.sel_default("Cluster")
-        tab_documentsClusterList.Set_TabState("Searching")
-    })
+    //var str = MyStorage.LastSearchInDocument()
+    //$("#SearchInCaption").text(str)
+    //$("#SearchInCaption").on("click", function () {
+    //    //goto Cluster tab.
+    //    groupsMenuMgr.sel_default("Cluster")
+    //    tab_documentsClusterList.Set_TabState("Searching")
+    //})
 }
 Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = function () {
     $("#Btn_Prev, #Btn_Next").hide()
@@ -1917,6 +1917,8 @@ Tab_DocumentSelected_Search.prototype.Update_DocSel_Table = function (tbodyID) {
     $(tbodyID).html(trs).find("td").on("click", function () {
         $(tbodyID).find(".hili").removeClass("hili")
         $(this).addClass("hili")
+        var txt = $(this).text()
+        MyStorage.LastSearchInDocument(txt)
         _THIS.onclick_inSvr_BibleObj_search_str()
     })
 }
