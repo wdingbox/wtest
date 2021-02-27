@@ -1308,7 +1308,7 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
             for (var i = 1; i < 10; i++) {
                 s += _td(num++, clsname);
             };
-            s += _td(0, clsname) + `</tr>`;
+            s += _td(0, clsname) + `<td class='imax'>max</td></tr>`;
             return s;
         };
 
@@ -1316,6 +1316,9 @@ DigitNumberInputZone.prototype.init_digi = function (shwup) {
         $(this.m_tbody).html(s)
         this.disable_all_digiKey(true);
         return
+    }
+    DigitNumberSet.prototype.set_max = function (imax) {
+        $(this.m_tbody).find(".imax").text(imax);
     }
     DigitNumberSet.prototype.disable_all_digiKey = function (b) {
         $(this.m_tbody).find(".digit").attr("disabled", b);
@@ -1395,6 +1398,7 @@ DigitNumberInputZone.prototype.init_Chp_digiKeys_by_vol = function () {
         return
     }
     var iMaxChap = Object.keys(_Max_struct[vol]).length;
+    this.m_Chp.set_max(iMaxChap)
     if (0 === chp) {
         if (1 === iMaxChap) {
             this.m_showup.m_Chp.append_showupVal(1)
@@ -1420,6 +1424,7 @@ DigitNumberInputZone.prototype.init_Vrs_digiKeys_by_vol = function () {
         return
     }
     var iMaxVrs = Object.keys(_Max_struct[vol][chp]).length;
+    this.m_Vrs.set_max(iMaxVrs)
     if (0 === vrs) {
         if (iMaxVrs >= 9) {
             this.m_Vrs.disable_zero_only()
