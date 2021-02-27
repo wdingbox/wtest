@@ -258,7 +258,7 @@ var MyStorage = {
             return v
         } else {
             if (v.length === 0) return "NIV"
-            $("#SearchInCaption").text(v)
+            //$("#SearchInCaption").text(v)
             localStorage.setItem(uid, v)
         }
     },
@@ -1576,12 +1576,10 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    //const sFile = MyStorage.LastSearchInDocument()
-    //if (sFile.length === 0) alert(0)
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
-        //if (sFile === v) hil += " searchFile"
+        
         if (v[0] === "e") hil += " e_EditableDoc"
         str += `<tr><td class='cbkn  ${hil}'>${v}</td></tr>`;
     });
@@ -1589,7 +1587,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
 
     function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
-        var hisearchFile = $(_this)[0].classList.contains('searchFile')
+        
         var name = $(_this).text();
 
         if (alreadyHili) {//will be deselected and removed
@@ -1625,11 +1623,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
             $(_this).addClass("hili")
             alert("Minimun 1 must be selected.")
         }
-        //cannot deselect searchFile
-        var hisearchFile = $(_this)[0].classList.contains('searchFile')
-        if (hisearchFile) {
-            //$(_this).addClass("hili")
-        }
+        
     }
 
 
@@ -1643,15 +1637,11 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-    //var sFile = MyStorage.LastSearchInDocument()
-    //if (_THIS.m_selectedItems_ary.indexOf(sFile) < 0) { //searchFile Must be among the selected.
-    //    sFile = _THIS.m_selectedItems_ary[0]
-    //    MyStorage.LastSearchInDocument(sFile)
-    //}
+  
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
-        //if (sFile === v) hil = "hili searchFile"
+        
         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
@@ -1838,13 +1828,7 @@ Tab_DocumentSelected_Search.prototype.gen_search_strn_history = function () {
         $("#sinput").val(s);
     });
 
-    //var str = MyStorage.LastSearchInDocument()
-    //$("#SearchInCaption").text(str)
-    //$("#SearchInCaption").on("click", function () {
-    //    //goto Cluster tab.
-    //    groupsMenuMgr.sel_default("Cluster")
-    //    tab_documentsClusterList.Set_TabState("Searching")
-    //})
+   
 }
 Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = function () {
     $("#Btn_Prev, #Btn_Next").hide()
@@ -4047,7 +4031,7 @@ var BibleInputMenuContainer = `
             <!----------------------------->
 
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
-                Document: <a id="SearchInCaption" class="searchFile">CUVS</a>
+                
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
                 
                 <button id="Btn_InSvr" title="search on servr">SvrSearch</button>

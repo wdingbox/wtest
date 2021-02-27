@@ -162,18 +162,12 @@ body {
         border: 5px solid red;
     }
 
-    .searchFile, #SearchInCaption {
-        color: black;
-        text-decoration: overline underline;
-    }
+   
     .e_EditableDoc {
         border : 1px solid lightcyan;
     }
 
-    #SearchInCaption{
-        background-color: red;
-        padding: 0 10px 0 10px;
-    }
+    
 
     sub {
         font-size: 8px;
