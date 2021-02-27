@@ -2355,7 +2355,7 @@ AppInstancesManager.prototype.init = function (cbf) {
 
     skinp.gen_panel({
         onClickItm: function (ch, volary, alreadyhili) {
-            skout.Popup_BookList_Table(ch, volary, alreadyhili, 85)
+            skout.Popup_BookList_Table(ch, volary, alreadyhili, 90)
 
             tab_category.rm_hili()
         }
