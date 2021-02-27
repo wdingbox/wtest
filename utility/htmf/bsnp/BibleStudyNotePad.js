@@ -1726,7 +1726,7 @@ Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
 function Tab_DocumentSelected_Search(tid) {
     //this.m_tbid = tid // "#Tab_NamesOfBibleDocuments"
     this.cbf_click_doc_to_run_search = null
- 
+
     //this.m_selectedItems_ary = MyStorage.LastSelectedDocsList();//["CUVS"] //default
 }
 Tab_DocumentSelected_Search.prototype.init = function () {
@@ -1750,71 +1750,7 @@ Tab_DocumentSelected_Search.prototype.init = function () {
         Uti.Msg("tot:" + document.g_NextIndex);
     };
 
-    function onclick_inSvr_BibleObj_search_str() {
-        $("#Btn_Prev, #Btn_Next").hide()
 
-        var s = $("#sinput").val().trim();
-        if (s.length === 0) return alert("empty input")
-
-        MyStorage.MostRecentSearchStrn.addonTop(s)
-        gen_search_strn_history()
-        document.g_NextIndex = -1
-
-
-
-        _THIS.cbf_click_doc_to_run_search()
-        // Jsonpster.inp.par = g_aim.get_search_inp();
-        // Jsonpster.api = RestApi.ApiBibleObj_search_txt;
-        // Uti.Msg(Jsonpster)
-        // if (!Jsonpster.inp.par) return
-        // $("#searchNextresult").text("Serach str in server site..")
-        // Jsonpster.RunAjaxPost_Signed(function (ret) {
-        //     _THIS.apiCallback_Gen_output_table(ret, function (size) {
-        //         $("#searchNextresult").text("0/" + size)
-        //     });
-        //     Uti.Msg(ret.out.result);
-        // })
-
-        //test
-        var unicds = "";
-        for (var i = 0; i < s.length; i++) {
-            var ch = s.charCodeAt(i);
-            if (ch > 512) {
-                unicds += "\\u" + ch.toString(16);
-            }
-        }
-        Uti.Msg(s, "unicode:", unicds);
-    }
-
-    function gen_search_strn_history() {
-        if (undefined === document.m_SearchStrnInPage) document.m_SearchStrnInPage = ""
-        var s = document.m_SearchStrnInPage
-
-        var trs = ""
-        var ar = MyStorage.MostRecentSearchStrn.get_ary()
-        ar.forEach(function (strn) {
-            var matcls = (s === strn.trim()) ? "SearchStrnInPage" : ""
-            if (strn.trim().length > 0) {
-                trs += (`<tr><td class='option ${matcls}'>${strn}</td></tr>`);
-            }
-        })
-
-        //history
-        //console.log(ret);
-        $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
-            $(this).toggleClass("hili");
-            var s = $(this).text().trim();
-            $("#sinput").val(s);
-        });
-
-        var str = MyStorage.LastSearchInDocument()
-        $("#SearchInCaption").text(str)
-        $("#SearchInCaption").on("click", function () {
-            //goto Cluster tab.
-            groupsMenuMgr.sel_default("Cluster")
-            tab_documentsClusterList.Set_TabState("Searching")
-        })
-    }
 
     $("#Btn_Prev, #Btn_Next").hide()
     $("#Btn_Prev").on("click", function () {
@@ -1831,7 +1767,7 @@ Tab_DocumentSelected_Search.prototype.init = function () {
         g_obt.Gen_output_table()
 
         document.m_SearchStrnInPage = s
-        gen_search_strn_history()
+        _THIS.gen_search_strn_history()
         if (s.length === 0) return alert("reset ok.")
         MyStorage.MostRecentSearchStrn.addonTop(s)
         document.g_NextIndex = -1
@@ -1843,7 +1779,7 @@ Tab_DocumentSelected_Search.prototype.init = function () {
         $("#searchNextresult").text("0/" + nFound)
     })
     $("#Btn_InSvr").on("click", function () {
-        onclick_inSvr_BibleObj_search_str()
+        _THIS.onclick_inSvr_BibleObj_search_str()
     })
     $("#searchNextresult").on("click", function () {
         $(this).text(".....")
@@ -1903,17 +1839,85 @@ Tab_DocumentSelected_Search.prototype.init = function () {
         $("#sinput").val(s)
     })
 
-    gen_search_strn_history()   
+    this.gen_search_strn_history()
+}
+
+
+Tab_DocumentSelected_Search.prototype.gen_search_strn_history = function () {
+    if (undefined === document.m_SearchStrnInPage) document.m_SearchStrnInPage = ""
+    var s = document.m_SearchStrnInPage
+
+    var trs = ""
+    var ar = MyStorage.MostRecentSearchStrn.get_ary()
+    ar.forEach(function (strn) {
+        var matcls = (s === strn.trim()) ? "SearchStrnInPage" : ""
+        if (strn.trim().length > 0) {
+            trs += (`<tr><td class='option ${matcls}'>${strn}</td></tr>`);
+        }
+    })
+
+    //history
+    //console.log(ret);
+    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
+        $(this).toggleClass("hili");
+        var s = $(this).text().trim();
+        $("#sinput").val(s);
+    });
+
+    var str = MyStorage.LastSearchInDocument()
+    $("#SearchInCaption").text(str)
+    $("#SearchInCaption").on("click", function () {
+        //goto Cluster tab.
+        groupsMenuMgr.sel_default("Cluster")
+        tab_documentsClusterList.Set_TabState("Searching")
+    })
+}
+Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = function () {
+    $("#Btn_Prev, #Btn_Next").hide()
+
+    var s = $("#sinput").val().trim();
+    if (s.length === 0) return alert("empty input")
+
+    MyStorage.MostRecentSearchStrn.addonTop(s)
+    this.gen_search_strn_history()
+    document.g_NextIndex = -1
+
+
+
+    this.cbf_click_doc_to_run_search()
+    // Jsonpster.inp.par = g_aim.get_search_inp();
+    // Jsonpster.api = RestApi.ApiBibleObj_search_txt;
+    // Uti.Msg(Jsonpster)
+    // if (!Jsonpster.inp.par) return
+    // $("#searchNextresult").text("Serach str in server site..")
+    // Jsonpster.RunAjaxPost_Signed(function (ret) {
+    //     _THIS.apiCallback_Gen_output_table(ret, function (size) {
+    //         $("#searchNextresult").text("0/" + size)
+    //     });
+    //     Uti.Msg(ret.out.result);
+    // })
+
+    //test
+    var unicds = "";
+    for (var i = 0; i < s.length; i++) {
+        var ch = s.charCodeAt(i);
+        if (ch > 512) {
+            unicds += "\\u" + ch.toString(16);
+        }
+    }
+    Uti.Msg(s, "unicode:", unicds);
 }
 Tab_DocumentSelected_Search.prototype.Update_DocSel_Table = function (tbodyID) {
+    var _THIS = this
     var ar = MyStorage.LastSelectedDocsList();
     var trs = ""
-    for(var i=0; i<ar.length; i++){
-        trs +=`<tr><td>${ar[i]}</td><tr>`
+    for (var i = 0; i < ar.length; i++) {
+        trs += `<tr><td>${ar[i]}</td><tr>`
     }
-    $(tbodyID).html(trs).find("td").on("click",function(){
+    $(tbodyID).html(trs).find("td").on("click", function () {
         $(tbodyID).find(".hili").removeClass("hili")
         $(this).addClass("hili")
+        _THIS.onclick_inSvr_BibleObj_search_str()
     })
 }
 
@@ -2409,7 +2413,7 @@ AppInstancesManager.prototype.init = function (cbf) {
 
 
     //tab_DocumentSelected_Search.init()
-    tab_DocumentSelected_Search.cbf_click_doc_to_run_search = function(){
+    tab_DocumentSelected_Search.cbf_click_doc_to_run_search = function () {
         Jsonpster.inp.par = g_aim.get_search_inp();
         Jsonpster.api = RestApi.ApiBibleObj_search_txt;
         Uti.Msg(Jsonpster)
@@ -2422,7 +2426,7 @@ AppInstancesManager.prototype.init = function (cbf) {
             Uti.Msg(ret.out.result);
         })
     }
-    
+
     tab_DocumentSelected_Search.Update_DocSel_Table("#Tab_doc_option_for_search")
 
     tab_documentsClusterList.Init_Docs_Table({
@@ -2443,7 +2447,7 @@ AppInstancesManager.prototype.init = function (cbf) {
 
         }
     });
-    
+
 
 
     markHistory.init()
@@ -2654,182 +2658,7 @@ AppInstancesManager.prototype.get_search_inp = function () {
     }
     return inp;
 };
-AppInstancesManager.prototype.onclicks_btns_in_grpMenu_search = function () {
-    var _THIS = this
-    function onclick_inpage_find_next(incrs, _this) {
-        if (undefined === document.g_NextIndex) document.g_NextIndex = 0
-        document.g_NextIndex += incrs
-        var matSize = $(".matInPage").length;
-        if (document.g_NextIndex < 0) document.g_NextIndex = matSize - 1
-        if (document.g_NextIndex >= matSize) document.g_NextIndex = 0
-        $(".matNextIdx").removeClass("matNextIdx");
-        $(".matInPage").each(function (i, v) {
-            if (document.g_NextIndex === i) {
-                $(this).addClass("matNextIdx")
-                $(this)[0].scrollIntoViewIfNeeded(true)
-            }
-        });
 
-        var disp = `${document.g_NextIndex}/${matSize}`
-        $("#searchNextresult").text(disp).css("color", "black")
-        Uti.Msg("tot:" + document.g_NextIndex);
-    };
-
-    function onclick_inSvr_BibleObj_search_str() {
-        $("#Btn_Prev, #Btn_Next").hide()
-
-        var s = $("#sinput").val().trim();
-        if (s.length === 0) return alert("empty input")
-
-        MyStorage.MostRecentSearchStrn.addonTop(s)
-        gen_search_strn_history()
-        document.g_NextIndex = -1
-
-
-
-
-        Jsonpster.inp.par = g_aim.get_search_inp();
-        Jsonpster.api = RestApi.ApiBibleObj_search_txt;
-        Uti.Msg(Jsonpster)
-        if (!Jsonpster.inp.par) return
-        $("#searchNextresult").text("Serach str in server site..")
-        Jsonpster.RunAjaxPost_Signed(function (ret) {
-            _THIS.apiCallback_Gen_output_table(ret, function (size) {
-                $("#searchNextresult").text("0/" + size)
-            });
-            Uti.Msg(ret.out.result);
-        })
-
-        //test
-        var unicds = "";
-        for (var i = 0; i < s.length; i++) {
-            var ch = s.charCodeAt(i);
-            if (ch > 512) {
-                unicds += "\\u" + ch.toString(16);
-            }
-        }
-        Uti.Msg(s, "unicode:", unicds);
-    }
-
-    function gen_search_strn_history() {
-        if (undefined === document.m_SearchStrnInPage) document.m_SearchStrnInPage = ""
-        var s = document.m_SearchStrnInPage
-
-        var trs = ""
-        var ar = MyStorage.MostRecentSearchStrn.get_ary()
-        ar.forEach(function (strn) {
-            var matcls = (s === strn.trim()) ? "SearchStrnInPage" : ""
-            if (strn.trim().length > 0) {
-                trs += (`<tr><td class='option ${matcls}'>${strn}</td></tr>`);
-            }
-        })
-
-        //history
-        //console.log(ret);
-        $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
-            $(this).toggleClass("hili");
-            var s = $(this).text().trim();
-            $("#sinput").val(s);
-        });
-
-        var str = MyStorage.LastSearchInDocument()
-        $("#SearchInCaption").text(str)
-        $("#SearchInCaption").on("click", function () {
-            //goto Cluster tab.
-            groupsMenuMgr.sel_default("Cluster")
-            tab_documentsClusterList.Set_TabState("Searching")
-        })
-    }
-
-    $("#Btn_Prev, #Btn_Next").hide()
-    $("#Btn_Prev").on("click", function () {
-        onclick_inpage_find_next(-1, this)
-    })
-    $("#Btn_Next").on("click", function () {
-        onclick_inpage_find_next(+1, this)
-    })
-    $("#Btn_InPage").on("click", function () {
-        $("#Btn_Prev, #Btn_Next").hide()
-        var s = $("#sinput").val();
-        var err = g_obt.set_inpage_findstrn(s)
-        if (err) return alert(err)
-        g_obt.Gen_output_table()
-
-        document.m_SearchStrnInPage = s
-        gen_search_strn_history()
-        if (s.length === 0) return alert("reset ok.")
-        MyStorage.MostRecentSearchStrn.addonTop(s)
-        document.g_NextIndex = -1
-
-        var nFound = $(".matInPage").length;
-        if (nFound > 0) {
-            $("#Btn_Prev, #Btn_Next").show()
-        }
-        $("#searchNextresult").text("0/" + nFound)
-    })
-    $("#Btn_InSvr").on("click", function () {
-        onclick_inSvr_BibleObj_search_str()
-    })
-    $("#searchNextresult").on("click", function () {
-        $(this).text(".....")
-        $("#sinput").val("").focus()
-    })
-    $("#RemoveSearchStrn").on("click", function () {
-        var ar = []
-        $("#Tab_regex_history_lst").find(".option").each(function () {
-            var tx = $(this).text().trim()
-            if ($(this).hasClass("hili")) {
-                $(this).parentsUntil("tbody").empty()
-            } else {
-                ar.push(tx)
-            }
-        })
-        MyStorage.MostRecentSearchStrn.set_ary(ar)
-    })
-    $("#REGEXP_AND").on("click", function () {
-        var s = $("#sinput").val().trim();
-        if (s.length === 0) return alert("empty")
-        MyStorage.MostRecentSearchStrn.addonTop(s)
-        var ar = s.split(" ")
-        var sss = ""
-        ar.forEach(function (str) {
-            if (str.length > 0) {
-                sss += `(?=.*${str})`
-            }
-        })
-        $("#sinput").val(sss)
-    })
-    $("#REGEXP_IgnoreCase").on("click", function () {
-        var s = $("#sinput").val().trim();
-        if (s.length === 0) return alert("empty")
-        MyStorage.MostRecentSearchStrn.addonTop(s)
-
-        var sss = "/" + s + "/i"
-        $("#sinput").val(sss)
-    })
-    $("#toggle_Case").on("click", function () {
-        function _camelize(str) {
-            str = str.toLowerCase().replace(/[\s]+(.)/g, function (match, chr) {
-                return ' ' + chr.toUpperCase();
-            });
-            str = str.replace(/^(.)/, function (match, chr) {
-                return chr.toUpperCase();
-            })
-            return str
-        }
-        var s = $("#sinput").val();
-        if (s === s.toLowerCase()) {
-            s = s.toUpperCase();
-        } else if (s === s.toUpperCase()) {
-            s = _camelize(s);
-        } else {
-            s = s.toLowerCase();
-        }
-        $("#sinput").val(s)
-    })
-
-    gen_search_strn_history()
-}
 
 
 
