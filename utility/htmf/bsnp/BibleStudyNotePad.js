@@ -1533,7 +1533,6 @@ Tab_DocumentsClusterList.prototype.Set_TabState = function (val) {
     switch (val) {
         case "Selection": _THIS.Gen_table_for_Documents(); break;
         case "Sequences": _THIS.Gen_table_for_Sequencer(); break;
-        case "Searching": _THIS.Gen_table_for_Searchin(); break;
         default: alert("fatal error")
     }
 }
@@ -1690,31 +1689,6 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     });
 }
 
-Tab_DocumentsClusterList.prototype.Gen_table_for_Searchin = function () {
-//     var str = "";
-//     var _THIS = this
-//     var bknArr = Object.keys(CNST.FnameOfBibleObj);
-// 
-//     var sFile = MyStorage.LastSearchInDocument()
-//     $.each(_THIS.m_selectedItems_ary, function (i, v) {
-//         var hil = "hili";
-//         if (v === sFile) hil += " searchFile"
-//         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
-//     });
-// 
-//     function update_Searchin(_this) {
-//         $(".searchFile").removeClass("searchFile");
-//         $(_this).addClass("searchFile");
-//         var txt = $(_this).text().trim()
-//         MyStorage.LastSearchInDocument(txt)
-//     }
-// 
-// 
-//     $(this.m_tbid + " tbody").html(str).find(".cbkn").bind("click", function () {
-//         update_Searchin(this)
-//         _THIS.m_onClickItm2Select("Searching")
-//     });
-}
 
 Tab_DocumentsClusterList.prototype.get_selected_seq_fnamesArr = function () {
     return this.m_selectedItems_ary
@@ -2438,9 +2412,9 @@ AppInstancesManager.prototype.init = function (cbf) {
                     if ("reloadtable" === par) {
                         _This.loadBible_chapter_by_bibOj();
                     }
-                    if ("Searching" === par) {
-                        groupsMenuMgr.sel_default("Search")
-                    }
+                    //if ("Searching" === par) {
+                    //    groupsMenuMgr.sel_default("Search")
+                    //}
                 } else if ("object" === typeof (par)) {
                     _This.loadBible_verse_by_bibOj(par);
                 }
@@ -4020,9 +3994,9 @@ var BibleInputMenuContainer = `
                 <table id="Tab_NamesOfBibleDocuments" border="1" style="float:left;">
                     <caption>
                     <div id='Tab_NamesOfBibleDocuments_caps'></div>
-                    <button class='docSwitch' title='Selection' note='doclist'>D</button>
+                    <button class='docSwitch' title='Selection' note='doclist'>=</button>
                     <button class='docSwitch' title='Sequences' note='uparrow'>&#8645;</button>
-                    <button class='docSwitch' title='Searching' note='searchi' old='&#8635;'>-</button>
+                    <a class='docSwitch' title='Searching' note='searchi' old='&#8635;'></a>
                     </caption>
                     <thead id=""></thead>
                     <tbody>
