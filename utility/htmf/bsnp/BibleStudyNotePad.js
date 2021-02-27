@@ -1742,9 +1742,9 @@ Tab_DocumentSelected_Search.prototype.init = function () {
         }
         $("#searchNextresult").text("0/" + nFound)
     })
-    $("#Btn_InSvr").on("click", function () {
-        _THIS.onclick_inSvr_BibleObj_search_str()
-    })
+    //$("#Btn_InSvr").on("click", function () {
+    //    _THIS.onclick_inSvr_BibleObj_search_str()
+    //})
     $("#searchNextresult").on("click", function () {
         $(this).text(".....")
         $("#sinput").val("").focus()
@@ -4034,7 +4034,7 @@ var BibleInputMenuContainer = `
                 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
                 
-                <button id="Btn_InSvr" title="search on servr">SvrSearch</button>
+                
                 <button id="Btn_InPage" style='float:right;' title="search on local table">Paging</button>
                 <a id="searchNextresult" >...</a>
 

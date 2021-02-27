@@ -83,6 +83,7 @@ body {
     .GrpMenu{
         background-color: gray;
         display:none;
+        width:350px;
     }
    
 
