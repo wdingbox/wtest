@@ -176,13 +176,13 @@ var BibleUti = {
             for (const [chp, vrsObj] of Object.entries(chpObj)) {
                 //console.log("bc", bkc, chp)
                 if (!vrsObj || Object.keys(vrsObj).length === 0) {
-                    retOb[bkc][chp] = BibleObj[bkc][chp]  //copyy whole chapter
+                    if (BibleObj[bkc]) retOb[bkc][chp] = BibleObj[bkc][chp]  //copyy whole chapter
                     continue
                 }
                 retOb[bkc][chp] = {}
                 for (const [vrs, txt] of Object.entries(vrsObj)) {
                     //console.log(`${key}: ${value}`);
-                    retOb[bkc][chp][vrs] = BibleObj[bkc][chp][vrs]
+                    if (BibleObj[bkc] && BibleObj[bkc][chp]) retOb[bkc][chp][vrs] = BibleObj[bkc][chp][vrs]
                 }
             }
         }
