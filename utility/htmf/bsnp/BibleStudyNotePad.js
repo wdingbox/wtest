@@ -1751,7 +1751,7 @@ Tab_DocumentSelected_Search.prototype.init = function () {
     })
     $("#RemoveSearchStrn").on("click", function () {
         var ar = []
-        $("#Tab_regex_history_lst").find(".option").each(function () {
+        $("#Tab_regex_history_search").find(".option").each(function () {
             var tx = $(this).text().trim()
             if ($(this).hasClass("hili")) {
                 $(this).parentsUntil("tbody").empty()
@@ -1822,7 +1822,7 @@ Tab_DocumentSelected_Search.prototype.gen_search_strn_history = function () {
 
     //history
     //console.log(ret);
-    $("#Tab_regex_history_lst tbody").html(trs).find(".option").bind("click", function () {
+    $("#Tab_regex_history_search tbody").html(trs).find(".option").bind("click", function () {
         $(this).toggleClass("hili");
         var s = $(this).text().trim();
         $("#sinput").val(s);
@@ -4057,7 +4057,7 @@ var BibleInputMenuContainer = `
                         </tr>
                     </tbody>
                 </table>
-                <table id="Tab_regex_history_lst" border='1' style="float:left;">
+                <table id="Tab_regex_history_search" border='1' style="float:left;">
                     <caption>History</caption>
                     <tbody>
                         <tr>

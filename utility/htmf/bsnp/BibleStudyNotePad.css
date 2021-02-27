@@ -389,12 +389,14 @@ body {
     }
 
 
-    #Tab_regex_history_lst thead,
+    #Tab_selected_Doc_Search thead,
+    #Tab_regex_history_search thead,
     #Tab_MostRecent_BCV thead {
         display: block;
     }
 
-    #Tab_regex_history_lst tbody,
+    #Tab_selected_Doc_Search tbody,
+    #Tab_regex_history_search tbody,
     #Tab_MostRecent_BCV tbody {
         height: 225px;
         overflow-y: scroll;
@@ -403,7 +405,7 @@ body {
 
 
 
-    #Tab_regex_history_lst td {
+    #Tab_regex_history_search td {
         
         overflow: hidden;
         display: inline-block;
