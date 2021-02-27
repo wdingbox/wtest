@@ -1848,17 +1848,7 @@ Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = functi
 
 
     this.cbf_click_doc_to_run_search()
-    // Jsonpster.inp.par = g_aim.get_search_inp();
-    // Jsonpster.api = RestApi.ApiBibleObj_search_txt;
-    // Uti.Msg(Jsonpster)
-    // if (!Jsonpster.inp.par) return
-    // $("#searchNextresult").text("Serach str in server site..")
-    // Jsonpster.RunAjaxPost_Signed(function (ret) {
-    //     _THIS.apiCallback_Gen_output_table(ret, function (size) {
-    //         $("#searchNextresult").text("0/" + size)
-    //     });
-    //     Uti.Msg(ret.out.result);
-    // })
+    
 
     //test
     var unicds = "";
@@ -4038,19 +4028,18 @@ var BibleInputMenuContainer = `
             <div class="GrpMenu" id="grp_Search" style="float:left;display:none;">
                 
                 <input id="sinput" cols='50' onkeyup="" ></input><br>
-                
-                
-                <button id="Btn_InPage" style='float:right;' title="search on local table">Paging</button>
                 <a id="searchNextresult" >...</a>
-
+                <div style='float:right;' >
                 <button id="Btn_Prev"  title="hili prev in page">Prev</button>
                 <button id="Btn_Next"  title="hili next in page">Next</button>
-                <br>
+                <button id="Btn_InPage" title="search on local table">Paging</button>
+                </div><br>
+                <div style='float:left;display:inline-block'>
                 <a id="REGEXP_AND">AND</a> | 
                 <a id="REGEXP_IgnoreCase">IgnoreCase</a> | 
-                <a id="toggle_Case">toggleCase</a>  <br>
-                <button id="RemoveSearchStrn">Delete Selected History</button>
-                <br>  
+                <a id="toggle_Case">toggleCase</a>  | 
+                <a id="RemoveSearchStrn">Del</a>
+                </div>  
                 <table id="Tab_selected_Doc_Search" border='1' style="float:left;">
                     <caption>Search</caption>
                     <tbody id="Tab_doc_option_for_search">
