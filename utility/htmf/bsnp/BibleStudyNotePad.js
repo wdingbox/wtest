@@ -4040,6 +4040,7 @@ var BibleInputMenuContainer = `
                 <a id="toggle_Case">toggleCase</a>  | 
                 <a id="RemoveSearchStrn">Del</a>
                 </div>  
+                <br>
                 <table id="Tab_selected_Doc_Search" border='1' style="float:left;">
                     <caption>Search</caption>
                     <tbody id="Tab_doc_option_for_search">
