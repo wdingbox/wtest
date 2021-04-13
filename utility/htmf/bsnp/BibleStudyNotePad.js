@@ -2416,7 +2416,7 @@ AppInstancesManager.prototype.init = function (cbf) {
             digi.init_Vrs_digiKeys_by_vol()
             _This.loadBible_chapter_by_bibOj()
         } else {
-            var str = bcvAry.join(",")
+            var str = bcvAry.join(", ")
             Uti.Msg(str)
             var oj = {}
             bcvAry.forEach(function (bcv) {
