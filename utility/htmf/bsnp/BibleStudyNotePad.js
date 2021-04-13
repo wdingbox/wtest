@@ -3211,7 +3211,7 @@ var Uti = {
         if (ret.out.state) {
             if (ret.out.state.bEditable <= 0) {
                 $("#menuContainer, #repopath").addClass("menuContainer_red")
-                alert("Config Repository Invalid. \n- Editing will not work.")
+                alert("Config tag | Repository Invalid. \n- Editing will not work. \n- Try to go home to login again.")
             } else {
                 if (ret.out.state.bRepositable <= 0) {
                     $("#menuContainer, #passcode").addClass("menuContainer_yellow")
