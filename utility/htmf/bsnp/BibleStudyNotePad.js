@@ -2781,7 +2781,7 @@ OutputBibleTable.prototype.create_htm_table_str = function () {
     //})
 
     var s = "<table id='BibOut' border='1'>";
-    s += `<caption><p>TotRows=${ret.size}</p><p>${sbcvlst}</p></caption>`;
+    s += `<caption><p>TotRows=${ret.size}</p><p>${sbcvlst.join(", ")}</p></caption>`;
     s += "<thead><th>#</th></thead>";
     s += "<tbody>";
     s += ret.trs;
