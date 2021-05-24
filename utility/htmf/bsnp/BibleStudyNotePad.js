@@ -916,7 +916,7 @@ ShowupBCV.prototype.init = function () {
         if (CNST.Cat2VolArr[bkc]) {
             Bkname = bkc
         } else if (bkc) {
-            Bkname = CNST.BibVolNameEngChn(bkc)
+            Bkname = CNST.BibVolNameEngChn(bkc, MyStorage.get_select_val("#LanguageSel"))
         }
         $(this.m_showupBkiID).text(Bkname).attr("volcode", bkc);
     }
@@ -1199,7 +1199,7 @@ SingleKeyOutputBooksTable.prototype.ary_To_trs = function (vol_arr) {
             cls_custom += ' Custom_Selected_Book_Category'
         }
 
-        trarr.push(`<tr ${cls}><td class='${cls_custom}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol)}</td><td>${iMaxChap}</td></tr>`);
+        trarr.push(`<tr ${cls}><td class='${cls_custom}'>${vol}</td><td>${CNST.BibVolNameEngChn(vol, MyStorage.get_select_val("#LanguageSel"))}</td><td>${iMaxChap}</td></tr>`);
     });
     return trarr.join("");
 }
@@ -2343,6 +2343,9 @@ AppInstancesManager.prototype.init = function (cbf) {
             //d2.disable_all_digiKey(true)
 
             Uti.Msg(vol + " : maxChap = " + Object.keys(_Max_struct[vol]).length + "\n\n\n");
+
+            $("#oBible").html(`<h1>Please select chapter number for ${vol}.</h1>`)
+
         }
     })
 
@@ -4308,8 +4311,8 @@ CNST.BiBookName = {
     "Jud": ['Jude', 'jude', '犹大书',],
     "Rev": ['Revelation', 'revelation', '启示录',],
 };
-CNST.BibVolNameEngChn = function (Vid) {
-    var slan = MyStorage.get_select_val("#LanguageSel")
+CNST.BibVolNameEngChn = function (Vid, slan) {
+    
     switch (slan) {
         case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
     }
