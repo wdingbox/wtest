@@ -446,12 +446,12 @@ var BibleUti = {
 
     _check_pub_testing: function (inp) {
         if (inp.usr.passcode.length === 0) {
-            return inp_usr
+            return null
         }
         ////SpecialTestRule: repopath must be same as password.
         inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test", MYPASSWORD="3edcFDSA"
-        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0 ) {
+        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0 || 0 === inp.usr_proj.projname.indexOf("Guest")) {
             if (inp.usr_proj.projname !== inp.usr.passcode && MYPASSWORD !== inp.usr.passcode) {
                 console.log("This is for pub_test only but discord to the rule.")
                 return null
@@ -459,10 +459,6 @@ var BibleUti = {
                 console.log("This is for pub_test only: sucessfully pass the rule.")
                 inp.usr.passcode = MYPASSWORD
             }
-        }
-        if (0 === inp.usr_proj.projname.indexOf("Guest") ) {
-                console.log("This is for guest only: sucessfully pass the rule.")
-                inp.usr.passcode = MYPASSWORD
         }
         return inp
     },
