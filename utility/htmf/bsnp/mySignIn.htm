@@ -258,7 +258,8 @@
     </form>
     <div class="centered_elem">
 
-        <button id="signin" title="sign-n to endorse" disabled>Sign-in (endorse)</button>
+        <button class="signinBtn" id="SignInAsGuest" title="Guest without sign-in" disabled>Guest</button><br><br>
+        <button class="signinBtn" id="signInAsUsers" title="sign-n to endorse" disabled>Sign-in (endorse)</button>
         <div style="float:right;">
 
 
@@ -389,15 +390,28 @@
 
         Uti.visual_check_repository("#Format_Check")
 
-        $("#signin").on("click", function () {
-            $("#signin").attr("disabled", true)
+        $("#signInAsUsers").on("click", function () {
+            $(".signinBtn").attr("disabled", true)
             PageUti.repo_Signin("#otb", function (ret) {
                 if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
                     var svrip = Uti.Jsonpster_crossloader_get_ip()
                     window.open("BibleStudyNotePad.htm?ip=" + svrip, '_self');
                 } else {
                     //$("#txtarea").show()
-                    $("#signin").attr("disabled", null)
+                    $(".signinBtn").attr("disabled", null)
+                }
+            })
+        })
+        $("#SignInAsGuest").on("click", function () {
+            $(".signinBtn").attr("disabled", true)
+            $("#repodesc").val("https://github.com/bsnp21/Guest.git")
+            PageUti.repo_Signin("#otb", function (ret) {
+                if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
+                    var svrip = Uti.Jsonpster_crossloader_get_ip()
+                    window.open("BibleStudyNotePad.htm?ip=" + svrip, '_self');
+                } else {
+                    //$("#txtarea").show()
+                    $(".signinBtn").attr("disabled", null)
                 }
             })
         })
@@ -407,7 +421,7 @@
     $(function(){
 
         Uti.Jsonpster_crossloader(0, function (ret) {
-            $("#signin").attr("disabled", null)
+            $(".signinBtn").attr("disabled", null)
     
             $("title").text("signin")
             Uti.Msg("Sign-In")
