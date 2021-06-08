@@ -404,7 +404,7 @@
         })
         $("#SignInAsGuest").on("click", function () {
             $(".signinBtn").attr("disabled", true)
-            $("#repodesc").val("https://github.com/bsnp21/Guest.git")
+            $("#repopath").val("https://github.com/bsnp21/Guest.git")
             PageUti.repo_Signin("#otb", function (ret) {
                 if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
                     var svrip = Uti.Jsonpster_crossloader_get_ip()
