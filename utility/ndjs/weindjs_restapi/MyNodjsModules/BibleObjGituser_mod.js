@@ -451,7 +451,7 @@ var BibleUti = {
         ////SpecialTestRule: repopath must be same as password.
         inp.usr.repopath = inp.usr.repopath.trim()
         const PUB_TEST = "pub_test"
-        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0) {
+        if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0 || "Guest" === inp.usr_proj.projname) {
             if (inp.usr_proj.projname !== inp.usr.passcode && "3edcFDSA" !== inp.usr.passcode) {
                 console.log("This is for pub_test only but discord to the rule.")
                 return null
