@@ -581,7 +581,7 @@ PopupMenu_EdiTag.prototype.init = function () {
             var showTxt = this.m_otxObj[this.m_rev]
             if (!showTxt) {
                 if ("e_Subtitle" === this.m_rev) {
-                    showTxt = "<a class='e_Subtitle'>[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</a>"
+                    showTxt = "<a class='e_Subtitle'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>"
                 } else {
                     showTxt = "<ol><li></li></ol>"
                 }
