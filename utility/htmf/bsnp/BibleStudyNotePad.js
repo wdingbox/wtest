@@ -2143,7 +2143,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
-    Uti.visual_check_repository("#Format_Check")
+    
 
     $("#account_updateStatus").on("click", function () {
         MyStorage.Repositories().repos_app_update()
@@ -3258,7 +3258,7 @@ var Uti = {
                 $("#repopath").val(reob.full_path)
             }
             var ar = ["", "https-url", "user-repos"]
-            $(this).text(ar[reob.format])
+            $(this).text("Format:" + ar[reob.format])
             $("#SignOut_repopathname").text(reob.repo)
         })
     },
