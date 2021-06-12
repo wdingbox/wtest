@@ -404,7 +404,10 @@
             })
         })
         $("#SignInAsGuest").on("click", function () {
-            if(!confirm("Your saved notes could be overwritted by other guests. \n\n- Continue to login as a guest?")){
+            if(!confirm(`Notes:\n
+            1. Your data will be shared by others.\n
+            2. It's recommended to use your github account.\n\n
+            - Continue to login as a guest?`)){
                 return;
             }
             $(".signinBtn").attr("disabled", true)
