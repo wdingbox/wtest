@@ -404,7 +404,7 @@
             })
         })
         $("#SignInAsGuest").on("click", function () {
-            if(confirm("Guest's notes could be overwritted by other guests. \nContinue to login as guest?")){
+            if(!confirm("Guest's notes could be overwritted by other guests. \n\n\n- Continue to login as guest?")){
                 return;
             }
             $(".signinBtn").attr("disabled", true)
