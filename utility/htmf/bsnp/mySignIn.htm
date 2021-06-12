@@ -403,6 +403,9 @@
             })
         })
         $("#SignInAsGuest").on("click", function () {
+            if(confirm("Guest do not need account but may lost your saved data. \nContinue to login as guest?")){
+                return;
+            }
             $(".signinBtn").attr("disabled", true)
             $("#repopath").val("https://github.com/bsnp21/Guest.git")
             $("#passcode").val("Guest")
