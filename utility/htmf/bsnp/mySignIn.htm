@@ -404,7 +404,7 @@
             })
         })
         $("#SignInAsGuest").on("click", function () {
-            if(confirm("Guest do not need account but may lost your saved data. \nContinue to login as guest?")){
+            if(confirm("Guest's notes could be overwritted by other guests. \nContinue to login as guest?")){
                 return;
             }
             $(".signinBtn").attr("disabled", true)
