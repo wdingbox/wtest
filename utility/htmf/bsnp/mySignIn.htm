@@ -110,9 +110,11 @@
 
     <h2 style="text-align: center;margin-top: 50px;"><a href="https://bsnp21.github.io/home/">Bible Study Note Pad</a>
     </h2>
-    <p class='centeredtxt' onclick="$('#QuotesContainer').toggle('slow')">(make your study notes on any verse)</p>
+    <p class='centeredtxt'><br>
+        <button class="signinBtn" id="SignInAsGuest" title="Guest without sign-in" disabled>Guest Sign-in <br>(No any account required.)</button> 
+    </p>
+    
 
-    <div id="QuotesContainer" style="display: none;"></div>
 
 
 
@@ -258,7 +260,7 @@
     </form>
     <div class="centered_elem">
 
-        <button class="signinBtn" id="SignInAsGuest" title="Guest without sign-in" disabled>Guest</button><br><br>
+        
         <button class="signinBtn" id="signInAsUsers" title="sign-n to endorse" disabled>Sign-in (endorse)</button>
         <div style="float:right;">
 
@@ -341,8 +343,7 @@
 </html>
 <script>
     $(function () {
-        $("#QuotesContainer").html(quotestr)
-
+       
 
         $("#txtarea").hide()
         $("#toggle_txtarea").on("click", function () {
