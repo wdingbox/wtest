@@ -3602,6 +3602,46 @@ var Uti = {
         })
     },
 
+
+    Jsonpster_crossloader_get_ip: function (ip) {
+        if (!ip) {
+            //get ip from url param. ?ip=0.0.0.0:7778
+            const urlParams = new URLSearchParams(window.location.search);
+            var ip = urlParams.get('ip');
+            if (!ip) {
+                //use self ip.
+                ip = window.location.host
+            }
+            if (!ip) {
+                //use self ip.
+                ip = window.location.hostname
+            }
+            if (!ip) {
+                return alert("not localhost or missed in url with ?ip=x.x.x.x")
+            }
+            if ("undefined" === ip) {
+                return alert("not localhost or missed in url with ?ip=undefined")
+            }
+
+            if (ip.indexOf(":") < 0) ip += ":7778"
+
+            //other param form url param ?inp=0.0.0.0:778&#Gen2:7
+            var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
+            var bcv = ""
+            if (idx >= 0) {
+                //ip = window.location.href.substr(0, idx)
+                bcv = window.location.href.substr(1 + idx)
+                window.m_bcv = bcv
+            }
+            console.log("ip,pcv:", ip, bcv)
+        }
+
+        if ("undefined" != typeof RestApi) {
+            console.log("Jsonpster is already loaded. Ignore", ip)
+        }
+
+        return ip
+    },
     Jsonpster_crossloader: function (idx, cbf) {
         var svrip = this.Jsonpster_crossloader_get_ip()
         if (svrip.indexOf(":") < 0) return aler(svrip += ":7778 ---missed port")
@@ -3661,45 +3701,7 @@ var Uti = {
             }
         }, 10)
     },
-    Jsonpster_crossloader_get_ip: function (ip) {
-        if (!ip) {
-            //get ip from url param. ?ip=0.0.0.0:7778
-            const urlParams = new URLSearchParams(window.location.search);
-            var ip = urlParams.get('ip');
-            if (!ip) {
-                //use self ip.
-                ip = window.location.host
-            }
-            if (!ip) {
-                //use self ip.
-                ip = window.location.hostname
-            }
-            if (!ip) {
-                return alert("not localhost or missed in url with ?ip=x.x.x.x")
-            }
-            if ("undefined" === ip) {
-                return alert("not localhost or missed in url with ?ip=undefined")
-            }
-
-            if (ip.indexOf(":") < 0) ip += ":7778"
-
-            //other param form url param ?inp=0.0.0.0:778&#Gen2:7
-            var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
-            var bcv = ""
-            if (idx >= 0) {
-                //ip = window.location.href.substr(0, idx)
-                bcv = window.location.href.substr(1 + idx)
-                window.m_bcv = bcv
-            }
-            console.log("ip,pcv:", ip, bcv)
-        }
-
-        if ("undefined" != typeof RestApi) {
-            console.log("Jsonpster is already loaded. Ignore", ip)
-        }
-
-        return ip
-    },
+    
 
     copyTextToClipboard: function (text) {
         var textArea = document.createElement("textarea");
