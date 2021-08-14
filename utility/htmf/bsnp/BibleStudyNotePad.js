@@ -2196,7 +2196,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         })
     })
     $(".StorageRepo_Signout").on("click", function () {
-        //if (!confirm(" Before you sign out, \n make sure you have saved repos. \n (it could be destroyed permenantly).")) return
+        if (!confirm("Are you sure to sign out? \n\n (it could be destroyed permenantly).")) return;
 
 
         Jsonpster.inp.par = {}
