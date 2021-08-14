@@ -888,7 +888,7 @@ BibleObjGituser.prototype.genKeyPair = function (cuid) {
     //var tuid = this.m_inp.CUID
     var val = { publicKey: publicKey, privateKey: privateKey, pkb64: pkb64, CUID: cuid }
 
-    NCache.Set(cuid, val, 60) //set 10min for sign-in page..
+    NCache.Set(cuid, val, 6000) //set 100min for sign-in page..
     return val
 }
 
