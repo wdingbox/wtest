@@ -450,7 +450,7 @@ var BibleUti = {
         }
         ////SpecialTestRule: repopath must be same as password.
         inp.usr.repopath = inp.usr.repopath.trim()
-        const PUB_TEST = "pub_test", MYPASSWORD="3edcFDSA"
+        const PUB_TEST = "pub_test", MYPASSWORD="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"
         if (inp.usr_proj.projname.indexOf(PUB_TEST) === 0 || 0 === inp.usr_proj.projname.indexOf("Guest")) {
             if (inp.usr_proj.projname !== inp.usr.passcode && MYPASSWORD !== inp.usr.passcode) {
                 console.log("This is for pub_test only but discord to the rule.")
@@ -596,7 +596,7 @@ var BibleUti = {
     },
     Update_SvrIP_in_HomeSitePage: function () {
         var inp = {}
-        inp.usr = { repopath: "https://github.com/bsnp21/home.git", passcode: "3edcFDSA", repodesc: "" }
+        inp.usr = { repopath: "https://github.com/bsnp21/home.git", passcode: "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", repodesc: "" }
         inp.out = BibleUti.default_inp_out_obj()
         //inp.SSID = "github.com/bsnp21/home"; //SSID Not Used At all. "../../../../bist/usrs/github.com/bsnp21/home"
         var rootDir = BibleUti.WorkingRootDir();// + WorkingRootNodeName
