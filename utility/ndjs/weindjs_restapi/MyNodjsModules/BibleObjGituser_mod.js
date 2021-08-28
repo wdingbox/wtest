@@ -195,8 +195,8 @@ var BibleUti = {
                 if (!bcvRobj[vol]) bcvRobj[vol] = {}
                 for (const [chp, vrsObj] of Object.entries(chpObj)) {
                     if (!bcvRobj[vol][chp]) bcvRobj[vol][chp] = {}
-                    if (!vrsObj) continue
-		    for (const [vrs, txt] of Object.entries(vrsObj)) {
+                    if (!vrsObj) continue 
+		            for (const [vrs, txt] of Object.entries(vrsObj)) {
                         if (!bcvRobj[vol][chp][vrs]) bcvRobj[vol][chp][vrs] = {}
                         bcvRobj[vol][chp][vrs][rev] = txt
                     };
