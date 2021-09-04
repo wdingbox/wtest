@@ -4223,7 +4223,7 @@ var BibleInputMenuContainer = `
 
 
 //(1) add bibl_obj_lib/jsdb/jsBibleObj/bbe.json.js
-//(2) add the same name in CNST FnameOfBibleObj. 
+//(2) add the idential file name in CNST FnameOfBibleObj. 
 CNST.FnameOfBibleObj =
 {
     "BBE": "Basic Bible in English",
