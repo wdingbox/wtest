@@ -4222,7 +4222,8 @@ var BibleInputMenuContainer = `
         `;//////backtick for multiple lines. 
 
 
-
+//(1) add bibl_obj_lib/jsdb/jsBibleObj/bbe.json.js
+//(2) add the same name in CNST FnameOfBibleObj. 
 CNST.FnameOfBibleObj =
 {
     "BBE": "Basic Bible in English",
@@ -4233,6 +4234,7 @@ CNST.FnameOfBibleObj =
     "H_G": "Hebrew and Greek",
     "KJV": "King James Version",
     "KJV_Jw": "King James Version Jesus' Words",
+    "NHEB" : "New Heart Enlish Bible, yhwy, 2021",
     "NIV": "New International Version",
     "NIV_Jw": "New International Version Jesus' Words",
     "STUS": "Studium Biblicum Version by Catholic,1968",
