@@ -4227,6 +4227,7 @@ var BibleInputMenuContainer = `
 CNST.FnameOfBibleObj =
 {
     "BBE": "Basic Bible in English",
+    "CPDV" :"Catholic Public Domain Version",
     "CUVS": "Chinese Union Version Simplified, 官話和合本, 1919",
     "CUVsen": "CUV Simplied with English Name",
     "CUVpy": "Chinese Union Version PinYing",
