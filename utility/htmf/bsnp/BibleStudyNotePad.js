@@ -745,6 +745,16 @@ PopupMenu_RevTag.prototype.init = function () {
         Uti.copy2clipboard(txt, this)
         Uti.Msg(txt);
     })
+
+    $("#AudioPlayer").bind("click", function () {
+        var txt = $("#" + _THIS.m_par.m_txuid).text()
+        var bcv = _THIS.m_par.m_bcv
+        
+        txt = `"${txt}" (${bcv} ${rev})`;
+        var surl=`https://wdingbox.github.io/mplayer/aubi_player/htm/bible_verse_player.htm?bcv=${bcv}&txt=${txt}`
+        window.open(surl, "_blank")
+        Uti.Msg(bcv);
+    })
 }
 
 
@@ -3916,6 +3926,11 @@ var BibleInputMenuContainer = `
         <tr>
             <td>
                 <a id="Copy2clipboard">Copy2Clipboard</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a id="AudioPlayer">AudioPlayer</a>
             </td>
         </tr>
     </tbody>
