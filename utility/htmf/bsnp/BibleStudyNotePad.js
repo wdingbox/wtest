@@ -749,8 +749,8 @@ PopupMenu_RevTag.prototype.init = function () {
     $("#AudioPlayer").bind("click", function () {
         var txt = $("#" + _THIS.m_par.m_txuid).text()
         var bcv = _THIS.m_par.m_bcv
+        var rev = _THIS.m_par.m_strTag
         
-        txt = `"${txt}" (${bcv} ${rev})`;
         var surl=`https://wdingbox.github.io/mplayer/aubi_player/htm/bible_verse_player.htm?bcv=${bcv}&txt=${txt}`
         window.open(surl, "_blank")
         Uti.Msg(bcv);
