@@ -61,7 +61,7 @@ var ApiJsonp_BibleObj = {
         var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi, null, 4)}`
         var structall = JSON.stringify(inp_struct_all)
         var SvrUrl = `http://${res.req.headers.host}/`
-        if(res.req.headers.host.indexOf("7778")<0){
+        if (res.req.headers.host.indexOf("7778") < 0) {
             SvrUrl = `https://${res.req.headers.host}/`
         }
         console.log("SvrUrl=", SvrUrl)
@@ -519,7 +519,7 @@ ${jstr_RestApi}
                 if (null === userProject.git_push_test()) {
                     //inp.out.state.bEditable =  inp.out.state.bRepositable = 0
                     userProject.run_proj_destroy()
-                }else{
+                } else {
                     inp.out.state.SSID = userProject.session_create()
                 }
             }
