@@ -669,7 +669,7 @@ ${jstr_RestApi}
     test_https_work: async function (req, res) {
         console.log("test_https_work...")
         res.writeHead(200, { 'Content-Type': 'text/javascript' });
-        res.write(`test test_https_work if it works`);
+        res.write(`api: test_https_work, it works ok.`);
         res.end();
     },
 }//// BibleRestApi ////
