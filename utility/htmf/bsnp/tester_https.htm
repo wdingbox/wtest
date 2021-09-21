@@ -85,6 +85,48 @@
         //    console.log(data)
         //});
 
+
+
+
+        test()
+        test_1()
+
+
+
+
+
+    });/////////////
+    function test_1() {
+        $.ajax({
+            type: "POST",
+            url: "https://34.227.20.213:7775/Jsonpster/?inp=CUID16183049579770.7025479215513686" ,
+
+            data: {},
+            crossDomain: true,
+            success: function (dat, err) {
+                console.log(dat)
+                console.log(err)
+            },
+            dataType: "text",
+
+            //no effect
+            xhrFields: {
+                withCredentials: false
+            },
+            //no effect
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+
+        }).done(function (data) {
+            console.log("done");
+        }).fail(function (xhr, textStatus, errorThrown) {
+            alert(xhr.responseText);
+            alert(textStatus);
+        });;
+    }
+
+    function test() {
         $.ajax({
             type: "POST",
             url: "https://34.227.20.213:7775/test_https_work",
@@ -112,12 +154,116 @@
             alert(xhr.responseText);
             alert(textStatus);
         });;
+    }
 
 
 
 
 
+    var Jsonpster = {
+        api: "",
+        inp: { CUID: null, usr: null, SSID: null, par: null, aux: null },
+        SvrUrl: "https://34.227.20.213:7775/",
+        pkb64: "",
+        getUrl: function () {
+            return this.SvrUrl + this.api
+        },
+        onBeforeRun: function () {
+        },
+        onAfterRun: function () {
+        },
+
+        onSignin: function () {
+            this.inp.SSID = null
+            if (!this.inp.CUID) return alert("missing CUID.")
+            if ('object' != typeof this.inp.usr) return alert("missing usr.")
+            if (this.pkb64.length === 0) return alert("no pubkey. Please load page again.")
+
+            var usrs = JSON.stringify(this.inp.usr)
+            if (usrs.length > 500) { return alert("max 4096-bit rsa: 501B. len=" + usrs.length) }
+
+            //alert(this.inp.usr)
+            var encrypt = new JSEncrypt();
+            encrypt.setPublicKey(atob(this.pkb64));
+            this.inp.cipherusrs = encrypt.encrypt(usrs);
+            this.inp.usr = null
+
+            console.log(this.inp.cipherusrs.length)
+            console.log(this.inp)
+            console.log("Jsonpster")
+            console.log(Jsonpster)
+        },
+        onSigned: function () {
+            if (this.inp.SSID === null) return alert("lost inp.SSID")
+            //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
+            if (this.inp.usr !== null) return alert("forbidden inp.usr")
+        },
+
+        RunAjaxPost_Signed: function (cbf) {
+            this.onSigned()
+            this.RunAjax_PostTxt(cbf)
+        },
+        RunAjaxPost_Signin: function (cbf) {
+            this.onSignin()
+            this.RunAjax_PostTxt(cbf)
+        },
+        RunAjax_PostTxt: function (cbf) {
+            this.onBeforeRun()
+            if (!this.api) return alert("ErrApi=" + this.api)
+            var surl = this.getUrl()
+            this.inp.api = this.api
+            $.ajax({
+                type: "POST",
+                dataType: 'text',
+                contentType: "application/json; charset=utf-8",
+                url: surl,
+                data: JSON.stringify(this.inp),
+                username: 'user',
+                password: 'pass',
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: false
+                }
+            })
+                .success(function (data) {
+                    //console.log("success",data);
+                    //cbf(JSON.parse(data))
+                })
+                .done(function (data) {
+                    var ret = JSON.parse(data)
+                    Jsonpster.onAfterRun(ret)
+                    cbf(ret)
+                    Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = null;
+                })
+                .fail(function (xhr, textStatus, errorThrown) {
+                    console.log("surl", surl)
+                    alert("xhr.responseText=" + xhr.responseText + ",textStatus=" + textStatus);
+                    //alert("textStatus="+textStatus);
+                });
+        },
+    };
+    var RestApi = {
+        "Jsonpster": "Jsonpster",
+        "ApiBibleObj_search_txt": "ApiBibleObj_search_txt",
+        "ApiBibleObj_load_by_bibOj": "ApiBibleObj_load_by_bibOj",
+        "ApiBibleObj_write_Usr_BkcChpVrs_txt": "ApiBibleObj_write_Usr_BkcChpVrs_txt",
+        "ApiBibleObj_read_crossnetwork_BkcChpVrs_txt": "ApiBibleObj_read_crossnetwork_BkcChpVrs_txt",
+        "ApiUsrDat_save": "ApiUsrDat_save",
+        "ApiUsrDat_load": "ApiUsrDat_load",
+        "________ApiUsrReposData_create___test_only": "________ApiUsrReposData_create___test_only",
+        "UsrReposPost_Signin": "UsrReposPost_Signin",
+        "ApiUsrReposData_destroy": "ApiUsrReposData_destroy",
+        "ApiUsrReposData_status": "ApiUsrReposData_status",
+        "ApiUsrReposData_git_push": "ApiUsrReposData_git_push",
+        "ApiUsrReposData_git_pull": "ApiUsrReposData_git_pull",
+        "ApiUsr_Cmdline_Exec": "ApiUsr_Cmdline_Exec",
+        "test_https_work": "test_https_work"
+    }
 
 
-    });/////////////
+
+    Jsonpster.inp.CUID = "CUID1632248231829"
+    Jsonpster.inp.api = "UsrReposPost_Signin"
+    //Jsonpster.RunAjaxPost_Signin()
+
 </script>

@@ -45,6 +45,7 @@ var ApiJsonp_BibleObj = {
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var pkb64 = ""
+        console.log("inp", inp)
         if (inp && inp.CUID) {
             var kpf = userProject.genKeyPair(inp.CUID)
             if (kpf) {
