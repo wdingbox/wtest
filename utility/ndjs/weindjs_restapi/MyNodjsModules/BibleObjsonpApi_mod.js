@@ -151,7 +151,7 @@ RunAjax_PostTxt : function(cbf){
             //alert("textStatus="+textStatus);
         });
 },
-};
+}
 ${jstr_RestApi}
 `;;;;;;;;;;;;;;
 

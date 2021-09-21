@@ -78,7 +78,7 @@
     $(document).ready(function () {
 
         var e = document.createElement("script");
-        e.src = "https://34.227.20.213:7775/"
+        e.src = "https://34.227.20.213:7775/?inp=CUID16183049579770.7025479215513686"
         //document.body.appendChild(e);
 
         //$.post("https://34.227.20.213:7775/", function (data) {
@@ -89,7 +89,7 @@
 
 
         test()
-        test_1()
+        //test_1()
 
 
 
@@ -98,13 +98,15 @@
     });/////////////
     function test_1() {
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "https://34.227.20.213:7775/Jsonpster/?inp=CUID16183049579770.7025479215513686" ,
 
             data: {},
             crossDomain: true,
             success: function (dat, err) {
                 console.log(dat)
+                var srt = dat.substr(1+dat.indexOf("="))
+                var obj = JSON.parse(dat)
                 console.log(err)
             },
             dataType: "text",
@@ -262,8 +264,8 @@
 
 
 
-    Jsonpster.inp.CUID = "CUID1632248231829"
-    Jsonpster.inp.api = "UsrReposPost_Signin"
+    //Jsonpster.inp.CUID = "CUID1632248231829"
+    //Jsonpster.inp.api = "UsrReposPost_Signin"
     //Jsonpster.RunAjaxPost_Signin()
 
 </script>
