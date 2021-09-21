@@ -67,24 +67,55 @@
 
 <BODY onbeforeunload="return 'leave?';">
 
+    <button id="test" onclick="chek()">sign-in</button>
+    <button id="test" onclick="read()">read</button>
 
 </BODY>
 
 </HTML>
 
 <script language="javascript">
+
+    var CUID = "CUID"+(new Date()).getTime() + Math.random()
     console.log(window.location);
+    var e = document.createElement("script");
+    e.src = "https://34.227.20.213:7775/Jsonpster/?inp="+CUID
+    document.body.appendChild(e);
+
+
+    function chek() {
+        console.log(Jsonpster)
+        Jsonpster2 = Jsonpster
+        Jsonpster2.inp.CUID = CUID
+        Jsonpster2.api = "UsrReposPost_Signin"
+        Jsonpster2.inp.usr = { repopath: "https://github.com/bsnp21/pub_wd01.git", passcode: "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", repodesc: "des" }
+        Jsonpster2.RunAjaxPost_Signin(function(ret){
+            console.log(ret)
+            Jsonpster2.inp.SSID = ret.out.state.SSID
+        })
+    }
+    function read(){
+        Jsonpster2.inp.par = { fnames: ["NIV"], bibOj: {Gen:{"1":{"1":""}}} }
+        Jsonpster2.api = RestApi.ApiBibleObj_load_by_bibOj
+        
+        console.log("Jsonpster:", Jsonpster2)
+
+        Jsonpster2.RunAjaxPost_Signed(function (ret) {
+            console.log(ret)
+        })
+    }
 
     $(document).ready(function () {
 
-        var e = document.createElement("script");
-        e.src = "https://34.227.20.213:7775/?inp=CUID16183049579770.7025479215513686"
-        //document.body.appendChild(e);
+
 
         //$.post("https://34.227.20.213:7775/", function (data) {
         //    console.log(data)
         //});
 
+        //setTimeout(function(){
+        //    console.log(Jsonpster)
+        //},3000)
 
 
 
@@ -99,17 +130,21 @@
     function test_1() {
         $.ajax({
             type: "GET",
-            url: "https://34.227.20.213:7775/Jsonpster/?inp=CUID16183049579770.7025479215513686" ,
+            url: "https://34.227.20.213:7775/Jsonpster/?inp="+CUID,
 
             data: {},
             crossDomain: true,
             success: function (dat, err) {
-                console.log(dat)
-                var srt = dat.substr(1+dat.indexOf("="))
-                var obj = JSON.parse(dat)
+                console.log(Jsonpster)
+                //var p1 = 1 + dat.indexOf("="), p2 = dat.indexOf("var RestApi = {")
+                //var srt = dat.substring(p1, p2)
+                //var srt = srt.replace(/[\"]/g, "\\'")
+
+                //console.log(srt)
+                //var obj = JSON.parse(srt)
                 console.log(err)
             },
-            dataType: "text",
+            dataType: "script",
 
             //no effect
             xhrFields: {
@@ -162,7 +197,7 @@
 
 
 
-    var Jsonpster = {
+    var Jsonpster2 = {
         api: "",
         inp: { CUID: null, usr: null, SSID: null, par: null, aux: null },
         SvrUrl: "https://34.227.20.213:7775/",
@@ -264,8 +299,8 @@
 
 
 
-    //Jsonpster.inp.CUID = "CUID1632248231829"
-    //Jsonpster.inp.api = "UsrReposPost_Signin"
-    //Jsonpster.RunAjaxPost_Signin()
+
+
+
 
 </script>

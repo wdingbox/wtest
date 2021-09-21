@@ -46,12 +46,13 @@ var ApiJsonp_BibleObj = {
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var pkb64 = ""
         console.log("inp", inp)
-        if (inp && inp.CUID) {
-            var kpf = userProject.genKeyPair(inp.CUID)
-            if (kpf) {
-                pkb64 = kpf.pkb64
-            }
+        var cuid = "CUID" + (new Date()).getTime() + Math.random() 
+        //if (inp && inp.CUID) {
+        var kpf = userProject.genKeyPair(cuid)
+        if (kpf) {
+            pkb64 = kpf.pkb64
         }
+        //}
 
 
         //////////////
@@ -72,7 +73,7 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api: "",
-    inp: { CUID:null, usr:null, SSID:null, par:null, aux:null},
+    inp: { CUID:"${cuid}"", usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
 getUrl : function(){
