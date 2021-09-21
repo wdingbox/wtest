@@ -666,13 +666,19 @@ ${jstr_RestApi}
         // res.end();
     },
 
-
+    test_https_work: async function (req, res) {
+        console.log("test_https_work...")
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write(`test test_https_work if it works`);
+        res.end();
+    },
 }//// BibleRestApi ////
 
 var BibleObjJsonpApi = {
     set_postHeader: function (res) {
         // for cross domain post.
 
+        //
         // Website you wish to allow to connect
         res.setHeader('Access-Control-Allow-Origin', '*');
 
