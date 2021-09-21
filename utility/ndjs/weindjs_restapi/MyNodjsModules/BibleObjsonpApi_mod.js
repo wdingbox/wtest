@@ -73,7 +73,7 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api: "",
-    inp: { CUID:"${cuid}"", usr:null, SSID:null, par:null, aux:null},
+    inp: { CUID:"${cuid}", usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
 getUrl : function(){
