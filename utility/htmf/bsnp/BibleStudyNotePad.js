@@ -750,8 +750,8 @@ PopupMenu_RevTag.prototype.init = function () {
         var txt = $("#" + _THIS.m_par.m_txuid).text()
         var bcv = _THIS.m_par.m_bcv
         var rev = _THIS.m_par.m_strTag
-        
-        var surl=`https://wdingbox.github.io/mplayer/aubi_player/htm/bible_verse_player.htm?bcv=${bcv}&txt=${txt}`
+
+        var surl = `https://wdingbox.github.io/mplayer/aubi_player/htm/bible_verse_player.htm?bcv=${bcv}&txt=${txt}`
         window.open(surl, "_blank")
         Uti.Msg(bcv);
     })
@@ -1594,7 +1594,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
     $.each(bknArr, function (i, v) {
         var hil = "";
         if (_THIS.m_selectedItems_ary.indexOf(v) >= 0) hil = "hili";
-        
+
         if (v[0] === "e") hil += " e_EditableDoc"
         str += `<tr><td class='cbkn  ${hil}'>${v}</td></tr>`;
     });
@@ -1602,7 +1602,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
 
     function update_seletedItems(_this) {
         var alreadyHili = $(_this)[0].classList.contains('hili')
-        
+
         var name = $(_this).text();
 
         if (alreadyHili) {//will be deselected and removed
@@ -1638,7 +1638,7 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Documents = function () {
             $(_this).addClass("hili")
             alert("Minimun 1 must be selected.")
         }
-        
+
     }
 
 
@@ -1652,11 +1652,11 @@ Tab_DocumentsClusterList.prototype.Gen_table_for_Sequencer = function () {
     var _THIS = this
     var bknArr = Object.keys(CNST.FnameOfBibleObj);
 
-  
+
     var str = "";
     $.each(_THIS.m_selectedItems_ary, function (i, v) {
         var hil = "hili";
-        
+
         str += `<tr><td class='cbkn ${hil}'>${v}</td></tr>`;
     });
 
@@ -1843,7 +1843,7 @@ Tab_DocumentSelected_Search.prototype.gen_search_strn_history = function () {
         $("#sinput").val(s);
     });
 
-   
+
 }
 Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = function () {
     $("#Btn_Prev, #Btn_Next").hide()
@@ -1858,7 +1858,7 @@ Tab_DocumentSelected_Search.prototype.onclick_inSvr_BibleObj_search_str = functi
 
 
     this.cbf_click_doc_to_run_search()
-    
+
 
     //test
     var unicds = "";
@@ -2153,7 +2153,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
-    
+
 
     $("#account_updateStatus").on("click", function () {
         MyStorage.Repositories().repos_app_update()
@@ -3657,6 +3657,9 @@ var Uti = {
         if (svrip.indexOf(":") < 0) return aler(svrip += ":7778 ---missed port")
 
         var svrurl = `http://${svrip}/Jsonpster/`;
+        if (svrip.indexOf("7775") > 0){//ssl
+            svrurl = `https://${svrip}/Jsonpster/`;
+        }
 
         if (0 === idx) {//initial-sign-in-page-loading only
             var tuid = MyStorage.GenCUID()
@@ -3711,7 +3714,7 @@ var Uti = {
             }
         }, 10)
     },
-    
+
 
     copyTextToClipboard: function (text) {
         var textArea = document.createElement("textarea");
@@ -4242,7 +4245,7 @@ var BibleInputMenuContainer = `
 CNST.FnameOfBibleObj =
 {
     "BBE": "Basic Bible in English",
-    "CPDV" :"Catholic Public Domain Version",
+    "CPDV": "Catholic Public Domain Version",
     "CUVS": "Chinese Union Version Simplified, 官話和合本, 1919",
     "CUVsen": "CUV Simplied with English Name",
     "CUVpy": "Chinese Union Version PinYing",
@@ -4250,7 +4253,7 @@ CNST.FnameOfBibleObj =
     "H_G": "Hebrew and Greek",
     "KJV": "King James Version",
     "KJV_Jw": "King James Version Jesus' Words",
-    "NHEB_yhwh" : "New Heart Enlish Bible, yhwy, 2021",
+    "NHEB_yhwh": "New Heart Enlish Bible, yhwy, 2021",
     "NIV": "New International Version",
     "NIV_Jw": "New International Version Jesus' Words",
     "STUS": "Studium Biblicum Version by Catholic,1968",
@@ -4332,7 +4335,7 @@ CNST.BiBookName = {
     "Rev": ['Revelation', 'revelation', '启示录',],
 };
 CNST.BibVolNameEngChn = function (Vid, slan) {
-    
+
     switch (slan) {
         case "Chinese": return CNST.BiBookName[Vid][0] + " " + CNST.BiBookName[Vid][2];
     }
