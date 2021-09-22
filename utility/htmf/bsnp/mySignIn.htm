@@ -451,9 +451,10 @@
     })
 
     function init_svr() {
+        var surl = Uti.Jsonpster_svrurl()
         $.ajax({
             type: "GET",
-            url: "https://34.227.20.213:7775/Jsonpster/?inp=" + MyStorage.GenCUID(),
+            url: `${surl}/Jsonpster/?inp=` + MyStorage.GenCUID(),
 
             data: {},
             crossDomain: true,

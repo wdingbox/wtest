@@ -2982,8 +2982,8 @@ var PageUti = {
         }
 
         Jsonpster.inp.usr = MyStorage.Repositories().repos_app_update()
-        Jsonpster.inp.CUID = MyStorage.GenCUID()
-        Jsonpster.api = RestApi.UsrReposPost_Signin
+        //Jsonpster.inp.CUID = MyStorage.GenCUID()
+        //Jsonpster.api = RestApi.UsrReposPost_Signin
         Uti.Msg("Jsonpster", Jsonpster)
         Jsonpster.RunAjaxPost_Signin(function (ret) {
             Uti.Msg("ret.out.state", ret.out.state)
@@ -3612,6 +3612,13 @@ var Uti = {
         })
     },
 
+    Jsonpster_svrurl: function () {
+        //get ip from url param. ?ip=0.0.0.0:7778
+        const urlParams = new URLSearchParams(window.location.search);
+        var ip = urlParams.get('ip');
+        if (ip.indexOf("7778") > 0) return "http://" + ip
+        return "https://" + ip
+    },
 
     Jsonpster_crossloader_get_ip: function (ip) {
         if (!ip) {
@@ -3657,7 +3664,7 @@ var Uti = {
         if (svrip.indexOf(":") < 0) return aler(svrip += ":7778 ---missed port")
 
         var svrurl = `http://${svrip}/Jsonpster/`;
-        if (svrip.indexOf("7775") > 0){//ssl
+        if (svrip.indexOf("7775") > 0) {//ssl
             svrurl = `https://${svrip}/Jsonpster/`;
         }
 

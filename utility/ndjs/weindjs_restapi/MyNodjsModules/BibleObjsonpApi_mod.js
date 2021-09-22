@@ -44,16 +44,16 @@ var ApiJsonp_BibleObj = {
 
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
-        var pkb64 = ""
         console.log("inp", inp)
-
-        var sCUID = "CUID"+(new Date()).getTime() + Math.random()
-
+        
+        var sCUID = "CUID" + (new Date()).getTime() + Math.random()
         if (inp && inp.CUID) {
-            var kpf = userProject.genKeyPair(inp.CUID)
-            if (kpf) {
-                pkb64 = kpf.pkb64
-            }
+            sCUID = inp.CUID
+        }
+        var pkb64 = ""
+        var kpf = userProject.genKeyPair(sCUID)
+        if (kpf) {
+            pkb64 = kpf.pkb64
         }
 
 
@@ -64,6 +64,7 @@ var ApiJsonp_BibleObj = {
         })
         var jstr_RestApi = `var RestApi = ${JSON.stringify(RestApi, null, 4)}`
         var structall = JSON.stringify(inp_struct_all)
+        
         var SvrUrl = `http://${res.req.headers.host}/`
         if (res.req.headers.host.indexOf("7778") < 0) {
             SvrUrl = `https://${res.req.headers.host}/`
@@ -75,7 +76,7 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api: "",
-    inp: { CUID:null, usr:null, SSID:null, par:null, aux:null},
+    inp: { CUID:"${sCUID}", usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
 getUrl : function(){
