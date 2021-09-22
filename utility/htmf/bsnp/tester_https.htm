@@ -80,18 +80,19 @@
     console.log(window.location);
     var e = document.createElement("script");
     e.src = "https://34.227.20.213:7775/Jsonpster/?inp="+CUID
-    document.body.appendChild(e);
+    //document.body.appendChild(e);
 
 
     function chek() {
         console.log(Jsonpster)
         Jsonpster2 = Jsonpster
-        Jsonpster2.inp.CUID = CUID
+        //Jsonpster2.inp.CUID = CUID
         Jsonpster2.api = "UsrReposPost_Signin"
         Jsonpster2.inp.usr = { repopath: "https://github.com/bsnp21/pub_wd01.git", passcode: "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", repodesc: "des" }
         Jsonpster2.RunAjaxPost_Signin(function(ret){
             console.log(ret)
             Jsonpster2.inp.SSID = ret.out.state.SSID
+            console.log("SSID=", ret.out.state.SSID)
         })
     }
     function read(){
@@ -120,7 +121,7 @@
 
 
         test()
-        //test_1()
+        test_1()
 
 
 
@@ -130,7 +131,7 @@
     function test_1() {
         $.ajax({
             type: "GET",
-            url: "https://34.227.20.213:7775/Jsonpster/?inp="+CUID,
+            url: "https://34.227.20.213:7775/Jsonpster/?inp=",
 
             data: {},
             crossDomain: true,
