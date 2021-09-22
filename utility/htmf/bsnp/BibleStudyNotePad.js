@@ -2149,7 +2149,9 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
         //$("#repodesc").val(d.toISOString().substr(0, 10) + "," + d.toLocaleTimeString() + ". " + tx)
     })
     $("#account_helper").on("click", function () {
-        Uti.open_child_window("./mySignIn.htm", function (data) {
+        const urlParams = new URLSearchParams(window.location.search);
+        var ip = urlParams.get('ip');
+        Uti.open_child_window("./mySignIn.htm" , function (data) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
@@ -3616,6 +3618,8 @@ var Uti = {
         //get ip from url param. ?ip=0.0.0.0:7778
         const urlParams = new URLSearchParams(window.location.search);
         var ip = urlParams.get('ip');
+        if (!ip) return alert("?ip= not exist.")
+        if (ip.indexOf("http") === 0) return ip
         if (ip.indexOf("7778") > 0) return "http://" + ip
         return "https://" + ip
     },
@@ -4159,7 +4163,7 @@ var BibleInputMenuContainer = `
                 
                 <a href='https://bsnp21.github.io/home/' owner='williamwding' email='yahoo.com' xxxhref='https://wdingbox.github.io/ham12/'>Home</a> |
                 <a id='NewPage' target='_blank'>New</a> | 
-                <a id="account_helper">More</a> |
+                <a id="account_helper">Signin</a> |
 
                 
                 <button class="StorageRepo_Signout">Sign Out</button>
