@@ -803,8 +803,8 @@ NCache.Init = function () {
     }
 
     NCache.myCache.on("del", function (key, val) {
-        _destroy_git_proj(key, val)
-        _MaxForgivenTimes(key, val)
+        //_destroy_git_proj(key, val)
+        //_MaxForgivenTimes(key, val)
     });
     NCache.myCache.on("expired", function (key, val) {
         //console.log(`on expired:key=${key}, \n-val=${JSON.stringify(val)}`)
