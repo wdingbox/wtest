@@ -420,6 +420,7 @@
         Uti.visual_check_repository("#Format_Check")
 
         $("#signInAsUsers").on("click", function () {
+            console.log(Jsonpster)
             $(".signinBtn").attr("disabled", true)
             PageUti.repo_Signin("#otb", function (ret) {
                 if (ret.out.state && ret.out.state.SSID && ret.out.state.SSID.length > 1) {
