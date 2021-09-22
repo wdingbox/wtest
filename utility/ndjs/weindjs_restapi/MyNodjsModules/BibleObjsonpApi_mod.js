@@ -49,12 +49,12 @@ var ApiJsonp_BibleObj = {
 
         var sCUID = "CUID"+(new Date()).getTime() + Math.random()
 
-        //if (inp && inp.CUID) {
-            var kpf = userProject.genKeyPair(sCUID)
+        if (inp && inp.CUID) {
+            var kpf = userProject.genKeyPair(inp.CUID)
             if (kpf) {
                 pkb64 = kpf.pkb64
             }
-        //}
+        }
 
 
         //////////////
@@ -75,7 +75,7 @@ var ApiJsonp_BibleObj = {
         var s = `
 var Jsonpster = {
     api: "",
-    inp: { CUID:"${sCUID}", usr:null, SSID:null, par:null, aux:null},
+    inp: { CUID:null, usr:null, SSID:null, par:null, aux:null},
     SvrUrl: "${SvrUrl}",
     pkb64:"${pkb64}",
 getUrl : function(){
