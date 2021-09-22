@@ -36,6 +36,91 @@ inp_struct_account_setup.par = null
 var inp_struct_all = JSON.parse(JSON.stringify(inp_struct_base))
 inp_struct_all.par.Search = inp_struct_search.par.Search
 
+
+var JS_Jsonpster = {
+    api: "",
+    inp: { CUID: "${sCUID}", usr: null, SSID: null, par: null, aux: null },
+    SvrUrl: "${SvrUrl}",
+    pkb64: "${pkb64}",
+    getUrl: function () {
+        return this.SvrUrl + this.api
+    },
+    onBeforeRun: function () {
+    },
+    onAfterRun: function () {
+    },
+
+    onSignin: function () {
+        this.inp.SSID = null
+        if (!this.inp.CUID) return alert("missing CUID.")
+        if ('object' != typeof this.inp.usr) return alert("missing usr.")
+        if (this.pkb64.length === 0) return alert("no pubkey. Please load page again.")
+
+        var usrs = JSON.stringify(this.inp.usr)
+        if (usrs.length > 500) { return alert("max 4096-bit rsa: 501B. len=" + usrs.length) }
+
+        //alert(this.inp.usr)
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(atob(this.pkb64));
+        this.inp.cipherusrs = encrypt.encrypt(usrs);
+        this.inp.usr = null
+
+        this.api = "UsrReposPost_Signin"
+
+        console.log(this.inp.cipherusrs.length)
+        console.log(this.inp)
+        console.log("Jsonpster")
+        console.log(Jsonpster)
+    },
+    onSigned: function () {
+        if (this.inp.SSID === null) return alert("lost inp.SSID")
+        //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
+        if (this.inp.usr !== null) return alert("forbidden inp.usr")
+    },
+
+    RunAjaxPost_Signed: function (cbf) {
+        this.onSigned()
+        this.RunAjax_PostTxt(cbf)
+    },
+    RunAjaxPost_Signin: function (cbf) {
+        this.onSignin()
+        this.RunAjax_PostTxt(cbf)
+    },
+    RunAjax_PostTxt: function (cbf) {
+        this.onBeforeRun()
+        if (!this.api) return alert("ErrApi=" + this.api)
+        var surl = this.getUrl()
+        this.inp.api = this.api
+        $.ajax({
+            type: "POST",
+            dataType: 'text',
+            contentType: "application/json; charset=utf-8",
+            url: surl,
+            data: JSON.stringify(this.inp),
+            username: 'user',
+            password: 'pass',
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: false
+            }
+        })
+            .success(function (data) {
+                //console.log("success",data);
+                //cbf(JSON.parse(data))
+            })
+            .done(function (data) {
+                var ret = JSON.parse(data)
+                Jsonpster.onAfterRun(ret)
+                cbf(ret)
+                Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = null;
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                console.log("surl", surl)
+                alert("xhr.responseText=" + xhr.responseText + ",textStatus=" + textStatus);
+                //alert("textStatus="+textStatus);
+            });
+    },
+}
 var ApiJsonp_BibleObj = {
     Jsonpster: function (req, res) {
         ////////////////////////////////////////////
@@ -45,7 +130,7 @@ var ApiJsonp_BibleObj = {
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         console.log("inp", inp)
-        
+
         var sCUID = "CUID" + (new Date()).getTime() + Math.random()
         if (inp && inp.CUID) {
             //sCUID = inp.CUID
@@ -73,93 +158,7 @@ var ApiJsonp_BibleObj = {
 
 
 
-        var s = `
-var Jsonpster = {
-    api: "",
-    inp: { CUID:"${sCUID}", usr:null, SSID:null, par:null, aux:null},
-    SvrUrl: "${SvrUrl}",
-    pkb64:"${pkb64}",
-getUrl : function(){
-    return this.SvrUrl + this.api
-},
-onBeforeRun : function(){
-},
-onAfterRun : function(){
-},
-
-onSignin : function(){
-    this.inp.SSID = null
-    if (!this.inp.CUID) return alert("missing CUID.")
-    if ('object' != typeof this.inp.usr)return alert("missing usr.")
-    if (this.pkb64.length === 0)return alert("no pubkey. Please load page again.")
-    
-    var usrs = JSON.stringify(this.inp.usr)
-    if (usrs.length > 500) {return alert("max 4096-bit rsa: 501B. len="+usrs.length)}
-
-    //alert(this.inp.usr)
-    var encrypt = new JSEncrypt();
-    encrypt.setPublicKey(atob(this.pkb64));
-    this.inp.cipherusrs = encrypt.encrypt(usrs);
-    this.inp.usr = null
-
-    this.api = "UsrReposPost_Signin"
-
-    console.log(this.inp.cipherusrs.length)
-    console.log(this.inp)
-    console.log("Jsonpster")
-    console.log(Jsonpster)
-},
-onSigned : function(){
-    if (this.inp.SSID === null) return alert("lost inp.SSID")
-    //if (!this.inp.par) return alert("miissing inp.par="+this.inp.par)
-    if (this.inp.usr !== null) return alert("forbidden inp.usr")
-},
-
-RunAjaxPost_Signed : function(cbf){
-    this.onSigned()
-    this.RunAjax_PostTxt (cbf)
-},
-RunAjaxPost_Signin : function (cbf) {
-    this.onSignin()
-    this.RunAjax_PostTxt (cbf)
-},
-RunAjax_PostTxt : function(cbf){
-    this.onBeforeRun()
-    if (!this.api) return alert("ErrApi="+this.api)
-    var surl = this.getUrl()
-    this.inp.api = this.api
-    $.ajax({
-        type: "POST",
-        dataType: 'text',
-        contentType: "application/json; charset=utf-8",
-        url: surl,
-        data: JSON.stringify(this.inp),
-        username: 'user',
-        password: 'pass',
-        crossDomain : true,
-        xhrFields: {
-            withCredentials: false
-        }
-    })
-        .success(function( data ) {
-            //console.log("success",data);
-            //cbf(JSON.parse(data))
-        })
-        .done(function( data ) {
-            var ret = JSON.parse(data)
-            Jsonpster.onAfterRun(ret)
-            cbf (ret)
-            Jsonpster.api = Jsonpster.inp.par = Jsonpster.inp.usr = null;
-        })
-        .fail( function(xhr, textStatus, errorThrown) {
-            console.log("surl",surl)
-            alert("xhr.responseText="+xhr.responseText+",textStatus="+textStatus);
-            //alert("textStatus="+textStatus);
-        });
-},
-}
-${jstr_RestApi}
-`;;;;;;;;;;;;;;
+        var s = "var Jsonpster ="+JSON.parse(JS_Jsonpster,null,4) + "\n"+ jstr_RestApi
 
         console.log(s);
         res.send(s);
@@ -167,10 +166,6 @@ ${jstr_RestApi}
         //});
     },
     ApiBibleObj_search_txt: function (req, res) {
-        //if (!req || !res) {
-        //    return inp_struct_search
-        //}
-        //var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             //if (!inp.usr.f_path) inp.usr.f_path = ""
@@ -206,7 +201,6 @@ ${jstr_RestApi}
     },
 
     ApiBibleObj_load_by_bibOj: function (req, res) {
-
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
@@ -316,10 +310,6 @@ ${jstr_RestApi}
 
     /////
     ApiBibleObj_read_crossnetwork_BkcChpVrs_txt: function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_base
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
@@ -443,7 +433,6 @@ ${jstr_RestApi}
         })
     },
     ApiUsrDat_load: async function (req, res) {
-        //var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
@@ -486,10 +475,6 @@ ${jstr_RestApi}
 
 
     ________ApiUsrReposData_create___test_only: async function (req, res) {
-        console.log("ApiUsrReposData_create")
-        if (!req || !res) {
-            return inp_struct_account_setup
-        }
         var inp = BibleUti.Parse_GET_req_to_inp(req)
         var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
         var ret = userProject.proj_parse_usr_signin(inp)
@@ -534,10 +519,6 @@ ${jstr_RestApi}
     },
 
     ApiUsrReposData_destroy: async function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_account_setup
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)
@@ -569,10 +550,6 @@ ${jstr_RestApi}
     },
 
     ApiUsrReposData_status: function (req, res) {
-        //if (!req || !res) {
-        //    return inp_struct_account_setup
-        //}
-        //var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
@@ -599,10 +576,6 @@ ${jstr_RestApi}
 
 
     ApiUsrReposData_git_push: async function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_account_setup
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
@@ -628,10 +601,6 @@ ${jstr_RestApi}
     },
 
     ApiUsrReposData_git_pull: async function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_account_setup
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
 
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
@@ -653,10 +622,6 @@ ${jstr_RestApi}
     },
 
     ApiUsr_Cmdline_Exec: async function (req, res) {
-        // if (!req || !res) {
-        //     return inp_struct_account_setup
-        // }
-        // var inp = BibleUti.Parse_GET_req_to_inp(req)
         BibleUti.Parse_POST_req_to_inp(req, res, async function (inp) {
             var userProject = new BibleObjGituser(BibleObjJsonpApi.m_rootDir)
             var proj = userProject.proj_parse_usr_signed(inp)

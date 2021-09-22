@@ -2151,7 +2151,7 @@ GroupsMenuMgr.prototype.gen_grp_bar = function (popupBookList, hist) {
     $("#account_helper").on("click", function () {
         const urlParams = new URLSearchParams(window.location.search);
         var ip = urlParams.get('ip');
-        Uti.open_child_window("./mySignIn.htm" , function (data) {
+        Uti.open_child_window("./mySignIn.htm", function (data) {
             MyStorage.Repositories().repos_app_set(data)
         })
     })
@@ -3614,7 +3614,49 @@ var Uti = {
         })
     },
 
+    init_svr: function (cbf) {
+        var surl = Uti.Jsonpster_svrurl()
+        $.ajax({
+            type: "GET",
+            url: `${surl}/Jsonpster/?inp=` + MyStorage.GenCUID(),
+
+            data: {},
+            crossDomain: true,
+            success: function (dat, err) {
+                console.log(Jsonpster)
+                $(".signinBtn").attr("disabled", null)
+                console.log(err)
+                if (cbf) cbf()
+            },
+            dataType: "script", //exe script.
+
+            //no effect
+            xhrFields: {
+                withCredentials: false
+            },
+            //no effect
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+
+        }).done(function (data) {
+            console.log("done");
+        }).fail(function (xhr, textStatus, errorThrown) {
+            alert(xhr.responseText);
+            alert(textStatus);
+        });;
+    },
+
     Jsonpster_svrurl: function () {
+        var idx = window.location.href.indexOf("#") //case: ?ip=1.1.1.1#Gen1:1
+        var bcv = ""
+        if (idx >= 0) {
+            //ip = window.location.href.substr(0, idx)
+            bcv = window.location.href.substr(1 + idx)
+            window.m_bcv = bcv
+        }
+        console.log("ip,pcv:", ip, bcv)
+
         //get ip from url param. ?ip=0.0.0.0:7778
         const urlParams = new URLSearchParams(window.location.search);
         var ip = urlParams.get('ip');
@@ -3672,14 +3714,14 @@ var Uti = {
             svrurl = `https://${svrip}/Jsonpster/`;
         }
 
-        if (0 === idx) {//initial-sign-in-page-loading only
-            var tuid = MyStorage.GenCUID()
-            svrurl += `?inp=${tuid}`;
-            //SSID will be ready after sign-in success.
-        }
+        //if (0 === idx) {//initial-sign-in-page-loading only
+        //var tuid = MyStorage.GenCUID()
+        //svrurl += `?inp=${tuid}`;
+        //SSID will be ready after sign-in success.
+        //}
 
         var e = document.createElement("script");
-        e.src = svrurl
+        e.src = Uti.Jsonpster_svrurl()
         document.body.appendChild(e);
 
 

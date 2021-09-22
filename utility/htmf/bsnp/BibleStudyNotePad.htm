@@ -79,6 +79,12 @@
             g_aim.init();
         })
 
+        Uti.init_svr(function(Jsonpster){
+            Jsonpster.inp.CUID = null
+            Jsonpster.inp.SSID = MyStorage.SSID()
+            g_aim.init();
+        })
+
         //table_sort();
         //table_col_index();
 
